@@ -1,0 +1,8 @@
+
+*.pyc
+
+cosomis/.idea/
+
+cosomis/db.sqlite3
+
+.DS_Store
