@@ -14,7 +14,7 @@ class Subproject(models.Model):
     target_youth_beneficiaries = models.IntegerField()
     component = models.CharField(max_length=255)
     sub_component = models.CharField(max_length=255)
-    priorities = models.ManyToManyField('CommunityPriority')
+    priorities = models.ManyToManyField('CommunityPriority', null=True, blank=True)
 
 
 class CommunityPriority(models.Model):

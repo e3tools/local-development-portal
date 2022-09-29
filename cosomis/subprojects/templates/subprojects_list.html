@@ -15,13 +15,21 @@
                     <table id="table" class="table">
                         <thead>
                         <tr>
-                            <th>{% translate 'Name' %}</th>
+                            <th>{% translate 'Village' %}</th>
+                            <th>{% translate 'Canton' %}</th>
+                            <th>{% translate 'Region' %}</th>
+                            <th>{% translate 'Project Name' %}</th>
+                            <th>{% translate 'Status' %}</th>
                             <th>{% translate 'Action' %}</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for subproject in subprojects %}
                             <tr>
+                                <td>{{ subproject.administrative_level.name }}</td>
+                                <td>{{ subproject.administrative_level.parent.name }}</td>
+                                <td>{{ subproject.administrative_level.parent.parent.name }}</td>
+                                <td>{{ subproject.short_name }}</td>
                                 <td>{{ subproject.short_name }}</td>
                                 <td>
                                     <a href=""
