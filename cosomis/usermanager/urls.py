@@ -3,7 +3,7 @@ from django.urls import path
 
 from usermanager.forms import EmailAuthenticationForm
 
-app_name = 'authentication'
+app_name = 'usermanager'
 urlpatterns = [
     path('', auth_views.LoginView.as_view(
         authentication_form=EmailAuthenticationForm,

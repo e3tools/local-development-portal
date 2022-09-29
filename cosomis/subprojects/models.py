@@ -4,6 +4,8 @@ from administrativelevels.models import AdministrativeLevel
 
 # Create your models here.
 class Subproject(models.Model):
+    short_name = models.CharField(max_length=255)
+    description = models.TextField()
     administrative_level = models.ForeignKey(AdministrativeLevel, null=False, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
