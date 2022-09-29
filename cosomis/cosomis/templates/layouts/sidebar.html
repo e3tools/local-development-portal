@@ -25,9 +25,51 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                 <li class="nav-item">
                     <a href="{% url 'subprojects:list' %}"
+                       class="nav-link {% if active_level1 == 'subprojects' %}active{% endif %}">
+                        <i class="nav-icon fa fa-project-diagram"></i>
+                        <p>{% translate "Subprojects" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href=""
+                       class="nav-link {% if active_level1 == 'administrative_levels' %}active{% endif %}">
+                        <i class="nav-icon fa fa-home"></i>
+                        <p>{% translate "Administrative Levels" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href=""
+                       class="nav-link {% if active_level1 == 'financial' %}active{% endif %}">
+                        <i class="nav-icon fa fa-money"></i>
+                        <p>{% translate "Financial" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href=""
+                       class="nav-link {% if active_level1 == 'procurement' %}active{% endif %}">
+                        <i class="nav-icon fa fa-cart-plus"></i>
+                        <p>{% translate "Procurement" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href=""
                        class="nav-link {% if active_level1 == 'facilitators' %}active{% endif %}">
                         <i class="nav-icon fa fa-user-friends"></i>
-                        <p>{% translate "Subprojects" %}</p>
+                        <p>{% translate "Facilitators" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href=""
+                       class="nav-link {% if active_level1 == 'results_framework' %}active{% endif %}">
+                        <i class="nav-icon fa fa-pie-chart"></i>
+                        <p>{% translate "Results Framework" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href=""
+                       class="nav-link {% if active_level1 == 'reports' %}active{% endif %}">
+                        <i class="nav-icon fa fa-area-chart"></i>
+                        <p>{% translate "Reports" %}</p>
                     </a>
                 </li>
             </ul>

@@ -16,6 +16,9 @@ class Subproject(models.Model):
     sub_component = models.CharField(max_length=255)
     priorities = models.ManyToManyField('CommunityPriority', null=True, blank=True)
 
+    def __str__(self):
+        return self.short_name
+
 
 class CommunityPriority(models.Model):
     administrative_level = models.ForeignKey(AdministrativeLevel, null=False, on_delete=models.CASCADE)
@@ -23,9 +26,15 @@ class CommunityPriority(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.description
+
 
 class VulnerableGroup(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

@@ -24,3 +24,16 @@ class SubprojectsListView(PageMixin, LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return super().get_queryset()
 
+
+class SubprojectDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Subproject
+    template_name = 'subproject.html'
+    context_object_name = 'subproject'
+    title = 'Subproject'
+    active_level1 = 'subprojects'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]

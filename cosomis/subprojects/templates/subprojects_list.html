@@ -32,7 +32,7 @@
                                 <td>{{ subproject.short_name }}</td>
                                 <td>{{ subproject.short_name }}</td>
                                 <td>
-                                    <a href=""
+                                    <a href="{% url 'subprojects:detail' subproject.pk %}"
                                        class="btn btn-primary btn-xs">
                                         {% translate 'View subproject' %}
                                     </a>
