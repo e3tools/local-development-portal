@@ -35,6 +35,7 @@ class VulnerableGroup(models.Model):
     description = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    administrative_level = models.ForeignKey(AdministrativeLevel, null=False, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
