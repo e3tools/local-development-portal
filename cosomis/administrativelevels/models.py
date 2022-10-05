@@ -12,3 +12,13 @@ class AdministrativeLevel(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Village(models.Model):
+    """Model to present the village"""
+    name = models.CharField(max_length=150)
+    administrative_level = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
