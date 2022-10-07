@@ -4,7 +4,7 @@
     <link href="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.css' %}" rel="stylesheet">
     <style>
         #map {
-            height: 940px;
+            height: 1253px;
         }
 
     </style>
@@ -14,9 +14,9 @@
         <div class="card-body">
             <div class="overlay-wrapper">
                 <div class="row">
-                    <div class="col-9">
+                    <div class="col-12">
                         <div class="card">
-                            <div class="card-body" style="height: 975px;">
+                            <div class="card-body" style="height: 1300px;">
                                 <div id="map"></div>
                             </div>
                         </div>
@@ -35,6 +35,8 @@
     <script src="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.js' %}"></script>
     <script>
         let statistics_spin = $('#statistics-spin');
+        let markers = [];
+
         mapboxgl.accessToken = '{{ access_token }}';
         if (!mapboxgl.supported()) {
             alert('Your browser does not support Mapbox GL');
@@ -81,5 +83,12 @@
                 statistics_spin.hide();
             }, 1000);
         });
+
+        {% for subproject in subprojects %}
+            let marker = new mapboxgl.Marker()
+                .setLngLat([{{ subproject.administrative_level.longitude }}, {{ subproject.administrative_level.latitude }}])
+                .addTo(map);
+            markers.push(marker);
+        {% endfor %}
     </script>
 {% endblock %}
