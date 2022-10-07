@@ -11,8 +11,16 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 from pathlib import Path
+import os
+import django.conf.locale
+import environ
+from django.conf import global_settings
+from django.utils.translation import gettext_lazy as _
+
+# https://django-environ.readthedocs.io/en/latest/
+env = environ.Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -121,3 +129,19 @@ STATICFILES_DIRS = [
 LOGIN_URL = '/'
 
 LOGIN_REDIRECT_URL = 'subprojects:list'
+
+
+# Mapbox
+MAPBOX_ACCESS_TOKEN = env('MAPBOX_ACCESS_TOKEN')
+
+DIAGNOSTIC_MAP_LATITUDE = env('DIAGNOSTIC_MAP_LATITUDE')
+
+DIAGNOSTIC_MAP_LONGITUDE = env('DIAGNOSTIC_MAP_LONGITUDE')
+
+DIAGNOSTIC_MAP_ZOOM = env('DIAGNOSTIC_MAP_ZOOM')
+
+DIAGNOSTIC_MAP_WS_BOUND = env('DIAGNOSTIC_MAP_WS_BOUND')
+
+DIAGNOSTIC_MAP_EN_BOUND = env('DIAGNOSTIC_MAP_EN_BOUND')
+
+DIAGNOSTIC_MAP_ISO_CODE = env('DIAGNOSTIC_MAP_ISO_CODE')
