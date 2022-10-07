@@ -6,3 +6,5 @@ cosomis/.idea/
 cosomis/db.sqlite3
 
 .DS_Store
+
+cosomis/cosomis/.env
