@@ -10,25 +10,38 @@
     </style>
 {% endblock %}
 {% block content %}
-    <div class="card transparent">
-        <div class="card-body">
-            <div class="overlay-wrapper">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body" style="height: 1300px;">
-                                <div id="map"></div>
-                            </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card transparent">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="btn-group pull-right">
+                            <a class="btn btn-primary" href="{% url 'subprojects:list' %}">List View</a>
                         </div>
                     </div>
                 </div>
-                <div class="overlay z-index1000" id="statistics-spin">
-                    <i class="fas fa-10x fa-sync-alt fa-spin">
-                    </i>
+                <div class="card-body">
+                    <div class="overlay-wrapper">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body" style="height: 1300px;">
+                                        <div id="map"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overlay z-index1000" id="statistics-spin">
+                            <i class="fas fa-10x fa-sync-alt fa-spin">
+                            </i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
+
 {% endblock %}
 {% block javascript %}
     {{ block.super }}
