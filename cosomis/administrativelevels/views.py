@@ -32,6 +32,14 @@ class UploadCSVView(TemplateView):
     """Class to upload and save the administrativelevels"""
 
     template_name = 'upload.html'
+    context_object_name = 'Upload'
+    title = "Upload"
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
 
     def post(self, request, *args, **kwargs):
         datas = {}
