@@ -1,0 +1,107 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n %}
+{% block extracss %}
+    <link href="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.css' %}" rel="stylesheet">
+    <style>
+        #map {
+            height: 1253px;
+        }
+
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card transparent">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="btn-group pull-right">
+                            <a class="btn btn-primary" href="{% url 'subprojects:list' %}">List View</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="overlay-wrapper">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body" style="height: 1300px;">
+                                        <div id="map"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overlay z-index1000" id="statistics-spin">
+                            <i class="fas fa-10x fa-sync-alt fa-spin">
+                            </i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.js' %}"></script>
+    <script>
+        let statistics_spin = $('#statistics-spin');
+        let markers = [];
+
+        mapboxgl.accessToken = '{{ access_token }}';
+        if (!mapboxgl.supported()) {
+            alert('Your browser does not support Mapbox GL');
+        }
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [{{ lng }}, {{ lat }}],
+            zoom: {{ zoom }}
+        });
+
+        const bounds = [
+            {{ ws_bound }}, // [west, south]
+            {{ en_bound }}  // [east, north]
+        ];
+        // Set the map's max bounds.
+        map.setMaxBounds(bounds);
+
+        map.on('load', function () {
+            map.addLayer(
+                {
+                    'id': 'country-boundaries',
+                    'source': {
+                        'type': 'vector',
+                        'url': 'mapbox://mapbox.country-boundaries-v1',
+                    },
+                    'source-layer': 'country_boundaries',
+                    'type': 'fill',
+                    'paint': {
+                        'fill-color': '#00FFFF',
+                        'fill-opacity': 0.2,
+                    },
+                },
+                'country-label'
+            );
+
+            map.setFilter('country-boundaries', [
+                "in",
+                "iso_3166_1_alpha_3",
+                '{{ country_iso_code }}',
+            ]);
+
+            setTimeout(function () {
+                statistics_spin.hide();
+            }, 1000);
+        });
+
+        {% for subproject in subprojects %}
+            let marker = new mapboxgl.Marker()
+                .setLngLat([{{ subproject.administrative_level.longitude }}, {{ subproject.administrative_level.latitude }}])
+                .addTo(map);
+            markers.push(marker);
+        {% endfor %}
+    </script>
+{% endblock %}
