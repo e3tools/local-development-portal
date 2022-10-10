@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.views.generic import DetailView, TemplateView
 import pandas as pd
 
-from administrativelevels.models import Village
+from administrativelevels.models import AdministrativeLevel
 from administrativelevels.libraries import convert_file_to_dict
 from administrativelevels import functions as administrativelevels_functions
 
@@ -11,7 +11,7 @@ from administrativelevels import functions as administrativelevels_functions
 class VillageDetailView(DetailView):
     """Class to present the detail page of one village"""
 
-    model = Village
+    model = AdministrativeLevel
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = 'Village'
