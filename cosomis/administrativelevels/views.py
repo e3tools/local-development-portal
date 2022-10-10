@@ -1,6 +1,9 @@
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.views.generic import DetailView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from cosomis.mixins import PageMixin
+from django.http import Http404
 import pandas as pd
 
 from administrativelevels.models import AdministrativeLevel
@@ -8,13 +11,14 @@ from administrativelevels.libraries import convert_file_to_dict
 from administrativelevels import functions as administrativelevels_functions
 
 
-class VillageDetailView(DetailView):
+class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     """Class to present the detail page of one village"""
 
     model = AdministrativeLevel
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = 'Village'
+    active_level1 = 'financial'
     breadcrumb = [
         {
             'url': '',
@@ -24,16 +28,20 @@ class VillageDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
-        return context
+
+        if context.get("object") and context.get("object").type == "Village" : # Verify if the administrativeLevel type is Village
+            return context
+        raise Http404
+        
 
 
-
-class UploadCSVView(TemplateView):
+class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
     """Class to upload and save the administrativelevels"""
 
     template_name = 'upload.html'
     context_object_name = 'Upload'
     title = "Upload"
+    active_level1 = 'administrative_levels'
     breadcrumb = [
         {
             'url': '',
