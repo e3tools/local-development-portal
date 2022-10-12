@@ -39,3 +39,71 @@ class VulnerableGroup(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+
+class BaseModel(models.Model):
+	created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+	updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
+
+	class Meta:
+		abstract = True
+
+
+class VillageObstacle(BaseModel):
+    administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
+    focus_group = models.CharField(max_length=255)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.description
+
+
+class VillageGoal(BaseModel):
+    administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
+    focus_group = models.CharField(max_length=255)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.description
+
+
+class VillagePriority(BaseModel):
+    administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
+    subcomponent = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    proposed_men = models.IntegerField(null=True)
+    proposed_women = models.IntegerField(null=True)
+    estimated_cost = models.FloatField(null=True)
+    estimated_beneficiaries = models.IntegerField(null=True)
+    climate_changing_contribution = models.TextField(null=True)
+    eligibility = models.BooleanField(blank=True, null=True)
+    sector = models.CharField(max_length=255, null=True)
+    parent = models.ForeignKey('VillagePriority', null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class TypeMain(BaseModel):
+    administrative_level = models.ForeignKey(VillagePriority, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    value = models.CharField(max_length=255)
+
+    def __str__(self):
+        return "{} : {}".format(self.name, self.value)
+
+
+
+class PrioritiesMeeting(BaseModel):
+    description = models.TextField()
+    date_conducted = models.DateTimeField()
+    administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
+    village_obstacle = models.ForeignKey(VillageObstacle, null=True, blank=True, on_delete=models.CASCADE)
+    village_goal = models.ForeignKey(VillageGoal, null=True, blank=True, on_delete=models.CASCADE)
+    village_priority = models.ForeignKey(VillagePriority, null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.description
+
