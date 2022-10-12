@@ -14,20 +14,10 @@ class Subproject(models.Model):
     target_youth_beneficiaries = models.IntegerField()
     component = models.CharField(max_length=255)
     sub_component = models.CharField(max_length=255)
-    priorities = models.ManyToManyField('CommunityPriority', null=True, blank=True)
+    priorities = models.ManyToManyField('VillagePriority', null=True, blank=True, related_name='priorities_covered')
 
     def __str__(self):
         return self.short_name
-
-
-class CommunityPriority(models.Model):
-    administrative_level = models.ForeignKey(AdministrativeLevel, null=False, on_delete=models.CASCADE)
-    description = models.TextField()
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.description
 
 
 class VulnerableGroup(models.Model):
@@ -41,20 +31,19 @@ class VulnerableGroup(models.Model):
         return self.name
 
 
-
-
 class BaseModel(models.Model):
-	created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
-	updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+    updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
 
-	class Meta:
-		abstract = True
+    class Meta:
+        abstract = True
 
 
 class VillageObstacle(BaseModel):
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
     focus_group = models.CharField(max_length=255)
     description = models.TextField()
+    meeting = models.ForeignKey('VillageMeeting', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.description
@@ -64,6 +53,7 @@ class VillageGoal(BaseModel):
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
     focus_group = models.CharField(max_length=255)
     description = models.TextField()
+    meeting = models.ForeignKey('VillageMeeting', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.description
@@ -81,6 +71,7 @@ class VillagePriority(BaseModel):
     eligibility = models.BooleanField(blank=True, null=True)
     sector = models.CharField(max_length=255, null=True)
     parent = models.ForeignKey('VillagePriority', null=True, blank=True, on_delete=models.CASCADE)
+    meeting = models.ForeignKey('VillageMeeting', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -95,15 +86,10 @@ class TypeMain(BaseModel):
         return "{} : {}".format(self.name, self.value)
 
 
-
-class PrioritiesMeeting(BaseModel):
+class VillageMeeting(BaseModel):
     description = models.TextField()
     date_conducted = models.DateTimeField()
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
-    village_obstacle = models.ForeignKey(VillageObstacle, null=True, blank=True, on_delete=models.CASCADE)
-    village_goal = models.ForeignKey(VillageGoal, null=True, blank=True, on_delete=models.CASCADE)
-    village_priority = models.ForeignKey(VillagePriority, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.description
-
