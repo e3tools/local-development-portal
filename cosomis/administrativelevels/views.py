@@ -73,7 +73,7 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
     """Display administrative level list"""
 
     model = AdministrativeLevel
-    queryset = AdministrativeLevel.objects.filter(type = "Village")
+    queryset = AdministrativeLevel.objects.filter(type="Village")
     template_name = 'administrativelevels_list.html'
     context_object_name = 'administrativelevels'
     title = 'Administrative levels'
