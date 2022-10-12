@@ -90,6 +90,7 @@ class VillageMeeting(BaseModel):
     description = models.TextField()
     date_conducted = models.DateTimeField()
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
+    type = models.CharField(max_length=255)
 
     def __str__(self):
         return self.description
