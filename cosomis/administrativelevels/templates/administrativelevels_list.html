@@ -1,0 +1,85 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="input-group mb-3 search-bar">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+                <input class="form-control" id="search" placeholder="{% translate 'Search' %}...">
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="btn-group pull-right">
+                            <a class="btn btn-primary" href="{% url 'subprojects:map' %}">Map View</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive">
+                    <table id="table" class="table">
+                        <thead>
+                        <tr>
+                            <th>{% translate 'Village' %}</th>
+                            <th>{% translate 'Canton' %}</th>
+                            <th>{% translate 'Commune' %}</th>
+                            <th>{% translate 'Prefecture' %}</th>
+                            <th>{% translate 'Region' %}</th>
+                            <th>{% translate 'Action' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for administrativelevel in administrativelevels %}
+                            <tr>
+                                <td>{{ administrativelevel.name }}</td>
+                                <td>{{ administrativelevel.parent.name }}</td>
+                                <td>{{ administrativelevel.parent.parent.name }}</td>
+                                <td>{{ administrativelevel.parent.parent.parent.name }}</td>
+                                <td>{{ administrativelevel.parent.parent.parent.parent.name }}</td>
+                                <td>
+                                     <a href="{% url 'administrativelevels:village_detail' administrativelevel.pk %}"
+                                       class="btn btn-primary btn-xs">
+                                        {% translate 'View details' %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+
+            let table = $('#table').DataTable({
+                language: {
+                    url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
+                },
+                dom: "ltipr",
+                columnDefs: [
+                    {
+                        targets: 1,
+                        orderable: false,
+                        searchable: false,
+                    }
+                ],
+                lengthMenu: [10, 50, 100],
+                pageLength: 10,
+                order: [[0, 'desc']]
+            });
+            $('#search').on('keyup', function () {
+                table.search($(this).val()).draw();
+            });
+        });
+    </script>
+{% endblock %}

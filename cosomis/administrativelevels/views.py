@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from cosomis.mixins import PageMixin
 from django.http import Http404
@@ -67,4 +67,23 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         context = super(UploadCSVView, self).get(request, *args, **kwargs)
         return context
-    
+
+
+class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
+    """Display administrative level list"""
+
+    model = AdministrativeLevel
+    queryset = AdministrativeLevel.objects.filter(type = "Village")
+    template_name = 'administrativelevels_list.html'
+    context_object_name = 'administrativelevels'
+    title = 'Administrative levels'
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def get_queryset(self):
+        return super().get_queryset()
