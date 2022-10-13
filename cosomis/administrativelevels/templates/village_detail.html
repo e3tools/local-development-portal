@@ -222,15 +222,55 @@
         </div>
     </div>
     <div class="col-4">
-        <h4 class="font-weight-bold d-flex justify-content-center" style="margin-bottom: 25px;">{% translate 'Village Priorities' %}</h4>
+        <h4 class="font-weight-bold d-flex justify-content-center" style="margin-bottom: 25px;">{% translate 'Village Priorities' %}
+            &nbsp; <a href="#" class="font-weight-bold"> <i
+                class="fas fa-plus"></i></a>
+        </h4>
         <div class="card">
-            <div class="card-body" style="height: 300px;">
-
+            {% if object.get_list_priorities %}
+            <div class="card-body">
+                {% for priority in object.get_list_priorities|slice:":5" %}<!-- limit to 5 -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                {% with priority.name|add:" ("|add:priority.subcomponent|add:")" as namepriority_with_subcomponent %}
+                                <p class="" title="{{ namepriority_with_subcomponent }}">
+                                    <i class="fas fa-project-diagram"></i> &nbsp; 
+                                    {% if namepriority_with_subcomponent|length > 40 %}
+                                        {{ namepriority_with_subcomponent|slice:":40" }}...
+                                    {% else %}
+                                        {{ namepriority_with_subcomponent }}
+                                    {% endif %}
+                                </p>
+                                {% endwith %}
+                            </div>
+                            <div class="float-right">
+                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
+            {% if object.get_list_priorities|length > 5 %}
+            <div class="card-footer d-flex justify-content-center">
+                {% with object.get_list_priorities as priorities %}
+                    {% include "components/priorities_modal.html" %}
+                {% endwith %}
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="card-body">
+                <div class="font-weight-bold d-flex justify-content-center text-danger" >
+                    <p>{% translate 'Empty!' %}</p>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="col-4">
-        <h4 class="font-weight-bold d-flex justify-content-center" style="margin-bottom: 25px;">{% translate 'Village Development Pla' %}n</h4>
+        <h4 class="font-weight-bold d-flex justify-content-center" style="margin-bottom: 25px;">{% translate 'Village Development Plan' %}</h4>
         <div class="card">
             <div class="card-body" style="height: 300px;">
 
