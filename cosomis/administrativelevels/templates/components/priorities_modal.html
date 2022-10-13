@@ -1,0 +1,21 @@
+{% load i18n %}
+
+<!-- Link modal -->
+<h6>
+    <a data-toggle="modal" data-target="#priorities-list-modal" 
+        href="#" class="font-weight-bold text-primary">{% translate 'View All Priorities' %}</a>
+</h6>
+
+<!-- Modal -->
+<div class="modal fade" id="priorities-list-modal" tabindex="-1" role="dialog"
+    aria-labelledby="UploadTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+           {% include 'components/priorities_list.html' %}
+            
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
