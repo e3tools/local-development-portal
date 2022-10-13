@@ -16,4 +16,6 @@ class AdministrativeLevel(models.Model):
     def __str__(self):
         return self.name
 
-
+    def get_list_priorities(self):
+        """Method to get the list of the all priorities that the administrative is linked"""
+        return self.villagepriority_set.get_queryset()

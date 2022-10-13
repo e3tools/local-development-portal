@@ -1,7 +1,6 @@
-{% extends 'layouts/base.html' %}
+
 {% load static i18n %}
 
-{% block content %}
     <div class="row">
         <div class="col-12">
             <div class="input-group mb-3 search-bar">
@@ -14,8 +13,7 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="btn-group pull-right">
-                            <!-- <a class="btn btn-primary" href="{% url 'subprojects:map' %}">Map View</a> -->
-                            {% include 'components/upload.html' %}
+                            <a class="btn btn-primary" href="#">{% translate 'Add priority' %}</a>
                         </div>
                     </div>
                 </div>
@@ -23,26 +21,20 @@
                     <table id="table" class="table">
                         <thead>
                         <tr>
-                            <th>{% translate 'Village' %}</th>
-                            <th>{% translate 'Canton' %}</th>
-                            <th>{% translate 'Commune' %}</th>
-                            <th>{% translate 'Prefecture' %}</th>
-                            <th>{% translate 'Region' %}</th>
+                            <th>{% translate 'Name' %}</th>
+                            <th>{% translate 'sub Component' %}</th>
                             <th>{% translate 'Action' %}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for administrativelevel in administrativelevels %}
+                        {% for priority in priorities %}
                             <tr>
-                                <td>{{ administrativelevel.name }}</td>
-                                <td>{{ administrativelevel.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.parent.parent.name }}</td>
+                                <td align="left">{{ priority.name }}</td>
+                                <td>{{ priority.subcomponent }}</td>
                                 <td>
-                                     <a href="{% url 'administrativelevels:village_detail' administrativelevel.pk %}"
+                                    <a href="#"
                                        class="btn btn-primary btn-xs">
-                                        {% translate 'View details' %}
+                                        {% translate 'View' %}
                                     </a>
                                 </td>
                             </tr>
@@ -53,10 +45,6 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block javascript %}
-    {{ block.super }}
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -83,4 +71,4 @@
             });
         });
     </script>
-{% endblock %}
+    

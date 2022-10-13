@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from administrativelevels.models import AdministrativeLevel
 
@@ -15,6 +16,7 @@ class Subproject(models.Model):
     component = models.CharField(max_length=255)
     sub_component = models.CharField(max_length=255)
     priorities = models.ManyToManyField('VillagePriority', null=True, blank=True, related_name='priorities_covered')
+    ranking = models.IntegerField(default=0)
 
     def __str__(self):
         return self.short_name
@@ -44,6 +46,7 @@ class VillageObstacle(BaseModel):
     focus_group = models.CharField(max_length=255)
     description = models.TextField()
     meeting = models.ForeignKey('VillageMeeting', on_delete=models.CASCADE)
+    ranking = models.IntegerField(default=0)
 
     def __str__(self):
         return self.description
@@ -54,6 +57,7 @@ class VillageGoal(BaseModel):
     focus_group = models.CharField(max_length=255)
     description = models.TextField()
     meeting = models.ForeignKey('VillageMeeting', on_delete=models.CASCADE)
+    ranking = models.IntegerField(default=0)
 
     def __str__(self):
         return self.description
@@ -72,13 +76,14 @@ class VillagePriority(BaseModel):
     sector = models.CharField(max_length=255, null=True)
     parent = models.ForeignKey('VillagePriority', null=True, blank=True, on_delete=models.CASCADE)
     meeting = models.ForeignKey('VillageMeeting', on_delete=models.CASCADE)
+    ranking = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
 
 
 class TypeMain(BaseModel):
-    administrative_level = models.ForeignKey(VillagePriority, on_delete=models.CASCADE)
+    village_priority = models.ForeignKey(VillagePriority, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     value = models.CharField(max_length=255)
 
@@ -91,6 +96,7 @@ class VillageMeeting(BaseModel):
     date_conducted = models.DateTimeField()
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
     type = models.CharField(max_length=255)
+    ranking = models.IntegerField(default=0)
 
     def __str__(self):
         return self.description
