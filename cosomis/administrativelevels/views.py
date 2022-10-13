@@ -62,7 +62,7 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
         if message:
             messages.info(request, message)
 
-        return redirect('administrativelevels:upload')
+        return redirect('administrativelevels:list')
     
     def get(self, request, *args, **kwargs):
         context = super(UploadCSVView, self).get(request, *args, **kwargs)
