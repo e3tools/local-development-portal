@@ -234,16 +234,27 @@
                     <div class="card-body">
                         <div class="clearfix">
                             <div class="float-left">
-                                {% with priority.name|add:" ("|add:priority.subcomponent|add:")" as namepriority_with_subcomponent %}
-                                <p class="" title="{{ namepriority_with_subcomponent }}">
+                                {% if priority.component %}
+                                    {% with priority.name|add:" ("|add:priority.component.name|add:")" as namepriority_with_component %}
+                                    <p class="" title="{{ namepriority_with_component }}">
+                                        <i class="fas fa-project-diagram"></i> &nbsp; 
+                                        {% if namepriority_with_component|length > 40 %}
+                                            {{ namepriority_with_component|slice:":40" }}...
+                                        {% else %}
+                                            {{ namepriority_with_component }}
+                                        {% endif %}
+                                    </p>
+                                    {% endwith %}
+                                {% else %}
+                                <p class="" title="{{ priority.name }}">
                                     <i class="fas fa-project-diagram"></i> &nbsp; 
-                                    {% if namepriority_with_subcomponent|length > 40 %}
-                                        {{ namepriority_with_subcomponent|slice:":40" }}...
+                                    {% if priority.name|length > 40 %}
+                                        {{ priority.name|slice:":40" }}...
                                     {% else %}
-                                        {{ namepriority_with_subcomponent }}
+                                        {{ priority.name }}
                                     {% endif %}
                                 </p>
-                                {% endwith %}
+                                {% endif %}
                             </div>
                             <div class="float-right">
                                 <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
