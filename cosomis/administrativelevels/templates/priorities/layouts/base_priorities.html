@@ -1,0 +1,109 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n unicorn %}
+
+{% block extracss %}
+{{ block.super }}
+    {% unicorn_scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-9">
+            {% block content_priorities %}{% endblock %}
+        </div>
+        <div class="col-3">
+                        
+
+
+
+                        
+            <!-- Main Sidebar Container -->
+            <aside class="sidebar-light-primary soft-shadow sidebar-no-expand">
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Sidebar Menu -->
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" >
+                            <li class="nav-item">
+                                <a href="{% url 'administrativelevels:priorities_obstacles' administrativelevel_village.id %}"
+                                class="nav-link {% if active_level2 == 'obstacles' %}active{% endif %}">
+                                    <i class="nav-icon fa fa-project-diagram"></i>
+                                    <p class="font-weight-bold">A- {% translate "Obstacles" %}</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'administrativelevels:priorities_goals' administrativelevel_village.id %}"
+                                class="nav-link {% if active_level2 == 'goals' %}active{% endif %}">
+                                    <i class="nav-icon fa fa-eye"></i>
+                                    <p class="font-weight-bold">B- {% translate "Goals" %}</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'administrativelevels:priorities_priorities' administrativelevel_village.id %}"
+                                class="nav-link {% if active_level2 == 'eligible_priorities' %}active{% endif %}">
+                                    <i class="nav-icon fa fa-project-diagram"></i>
+                                    <p class="font-weight-bold">C- {% translate "Eligible Priorities" %}</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#"
+                                class="nav-link {% if active_level2 == 'not_eligible_priorities' %}active{% endif %}">
+                                    <i class="nav-icon fa fa-project-diagram"></i>
+                                    <p class="font-weight-bold">D- {% translate "Not Eligible Priorities" %}</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#"
+                                class="nav-link {% if active_level2 == 'priorities_order' %}active{% endif %}">
+                                    <i class="nav-icon fa fa-project-diagram"></i>
+                                    <p class="font-weight-bold">E- {% translate "Priorities Order" %}</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <!-- /.sidebar-menu -->
+                </div>
+                <!-- /.sidebar -->
+            </aside>
+
+
+
+
+
+
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        
+
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+            // $("#add_form").fadeOut();
+            // $("#btn_form").click(function(event){
+		    //     $("#add_form").fadeToggle("1000");
+            //     var i = this.getElementsByClassName("fas")[0];
+            //     if(i){
+            //         if(i.matches(".fa-plus")){
+            //             i.classList.remove("fa-plus");
+            //             i.classList.add("fa-minus");
+            //         }else{
+            //             i.classList.remove("fa-minus");
+            //             i.classList.add("fa-plus");
+            //         }
+            //     }
+                
+
+            // });
+
+            
+        });
+    </script>
+{% endblock %}
