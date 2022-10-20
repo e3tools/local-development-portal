@@ -1,0 +1,180 @@
+{% extends 'priorities/layouts/base_priorities.html' %}
+{% load static i18n unicorn %}
+
+{% block content_priorities %}
+{% csrf_token %}
+{% unicorn 'priorities' administrativelevel_village=administrativelevel_village priorities=priorities components=components goals=goals  %}
+   
+    <!-- <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="btn-group pull-left">
+                            <a class="text-primary font-weight-bold" href="#">C- {% translate 'List Of Development Priorities Eligible For Coso Project Funding' %}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% for object in priorities %}
+                    <div>
+                        <div>
+                          <span class="shadow-lg p-2 mb-5 bg-white rounded">{% translate 'Priority' %} {{ forloop.counter }}</span>
+                        </div>
+                        <div>
+                              <form class="" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                  <div class="col-10">
+                                      <div class="form-group row">
+  
+                                          <div class="col-4">
+                                              <div class="form-group row">
+                                                  <label for="component-{{ object.id }}" class="col-sm-5 col-form-label"><small>{% translate 'Component' %}</small></label>
+                                                  <select class="col-sm-7 form-control custom-select" name="component-{{ object.id }}" id="component-{{ object.id }}">
+                                                    {% if not object.component %}
+                                                        <option value="0" selected>------------</option>
+                                                    {% endif %}
+                                                    {% for component in components %}
+                                                        <option value="{{ component.id }}" {% if component.id == object.component.id %}selected{% endif %}>{{ component }}</option>
+                                                    {% endfor %}
+                                                  </select>
+                                              </div>
+                                          </div>
+                                          <div class="col-2">
+                                              <div class="form-group row">
+                                                  <label for="proposed_men-{{ object.id }}" class="col-sm-4 col-form-label"><small>{% translate 'Man' %}</small></label>
+                                                  <div class="col-sm-8">
+                                                      <input type="number" step="any" value="{{ object.proposed_men }}" class="form-control" id="proposed_men-{{ object.id }}" name="proposed_men-{{ object.id }}" />
+                                                  </div>
+                                              </div>
+                                          </div>
+                                         
+                                          <div class="col-3">
+                                              <div class="form-group row">
+                                                  <label for="proposed_women-{{ object.id }}" class="col-sm-4 col-form-label"><small>{% translate 'Woman' %}</small></label>
+                                                  <div class="col-sm-8">
+                                                      <input type="number" step="any" value="{{ object.proposed_women }}" class="form-control" id="proposed_women-{{ object.id }}" name="proposed_women-{{ object.id }}" />
+                                                  </div>
+                                              </div>
+                                          </div>
+          
+                                          <div class="col-3">
+                                              <div class="form-group row">
+                                                  <label for="estimated_cost-{{ object.id }}" class="col-sm-4 col-form-label"><small>{% translate 'Budget' %}</small></label>
+                                                  <div class="col-sm-8">
+                                                      <input type="number" step="any" value="{{ object.estimated_cost }}" class="form-control" id="estimated_cost-{{ object.id }}" name="estimated_cost-{{ object.id }}" />
+                                                  </div>
+                                              </div>
+                                          </div>
+  
+                                        </div>
+                                        <div class="form-group row">
+                                          <div class="col-12">
+                                              <div class="form-group row">
+                                                  <label for="climate_changing_contribution-{{ object.id }}" class="col-sm-2 col-form-label"><small>{% translate 'Description' %}</small></label>
+                                                  <div class="col-sm-10">
+                                                      <textarea class="form-control" id="climate_changing_contribution-{{ object.id }}" name="climate_changing_contribution-{{ object.id }}">{{ object.climate_changing_contribution }}</textarea>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                        </div>
+                                  </div>
+                                  <div class="col-2">
+                                    <button type="submit" class="btn btn-primary mb-2"><small><i class="fas fa-edit" ></i></small></button> &nbsp; 
+                                    <a type="reset" class="btn btn-danger mb-2" href="{% url 'administrativelevels:priority_delete' object.id %}"><small><i class="fas fa-times" ></i></small></a>
+                                  </div>
+                                </div>
+                              </form>
+                        </div>
+                    </div>
+                    <hr />
+                    {% endfor %}
+                    {% if goals %}
+                    <div class="d-flex justify-content-center">
+                        {% for goal in goals %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input rounded" type="checkbox" name="goal-{{ goal.id }}" id="goal-{{ goal.id }}" value="{{ goal.id }}">
+                                <label class="form-check-label" for="goal-{{ goal.id }}">{{ goal|title }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <hr />
+                    {% endif %}
+                    
+
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary mb-2 float-right" id="btn_form"><i class="fas fa-plus" ></i> <small>{% translate 'Add Another Goal' %}</small></button>
+                    <div class="clearfix"></div>
+                    <div id="add_form" style="margin-top: 50px;">
+                        <div>
+                            <form class="" method="post">
+                              {% csrf_token %}
+                              <div class="row">
+                                <div class="col-10">
+                                    <div class="form-group row">
+
+                                        <div class="col-4">
+                                            <div class="form-group row">
+                                                <label for="component" class="col-sm-5 col-form-label"><small>{% translate 'Component' %}</small></label>
+                                                <select class="col-sm-7 form-control custom-select" id="component" name="component" >
+                                                    {% for component in components %}
+                                                        <option value="{{ component.id }}" {% if forloop.counter0 == 0 %}selected{% endif %}>{{ component }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="form-group row">
+                                                <label for="proposed_men" class="col-sm-4 col-form-label"><small>{% translate 'Man' %}</small></label>
+                                                <div class="col-sm-8">
+                                                    <input type="number" step="any" class="form-control" id="proposed_men" name="proposed_men" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="col-3">
+                                            <div class="form-group row">
+                                                <label for="proposed_women" class="col-sm-4 col-form-label"><small>{% translate 'Woman' %}</small></label>
+                                                <div class="col-sm-8">
+                                                    <input type="number" step="any" class="form-control" id="proposed_women" name="proposed_women" />
+                                                </div>
+                                            </div>
+                                        </div>
+        
+                                        <div class="col-3">
+                                            <div class="form-group row">
+                                                <label for="estimated_cost" class="col-sm-4 col-form-label"><small>{% translate 'Budget' %}</small></label>
+                                                <div class="col-sm-8">
+                                                    <input type="number" step="any" class="form-control" id="estimated_cost" name="estimated_cost" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                      </div>
+                                      <div class="form-group row">
+                                        <div class="col-12">
+                                            <div class="form-group row">
+                                                <label for="climate_changing_contribution" class="col-sm-2 col-form-label"><small>{% translate 'Description' %}</small></label>
+                                                <div class="col-sm-10">
+                                                    <textarea class="form-control" id="climate_changing_contribution" name="climate_changing_contribution"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      </div>
+                                </div>
+                                <div class="col-2">
+                                    <button type="submit" class="btn btn-primary mb-2"><small>{% translate 'Add' %}</small></button>
+                                </div>
+                              </div>
+                            </form>
+                      </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div> -->
+{% endblock %}

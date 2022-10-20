@@ -1,0 +1,81 @@
+{% extends 'priorities/layouts/base_priorities.html' %}
+{% load static i18n unicorn %}
+
+{% block content_priorities %}
+{% csrf_token %}
+{% unicorn 'goals' administrativelevel_village=administrativelevel_village goals=goals GOALS_FOCUS_GROUP=GOALS_FOCUS_GROUP  %}
+    
+    <!-- <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="btn-group pull-left">
+                            <a class="text-primary font-weight-bold" href="#">B- {% translate 'Goals' %}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% for object in goals %}
+                    <div>
+                        <div>
+                          <span class="shadow-lg p-2 mb-5 bg-white rounded">{% translate 'Goal' %} {{ forloop.counter }}</span>
+                        </div>
+                        <div>
+                              <form class="form-inline d-flex" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                  <label for="group-{{ object.id }}">{% translate 'Group' %}</label>
+                                  <select class="form-control mx-sm-3 custom-select" style="width: 150px !important;" name="group-{{ object.id }}" id="group-{{ object.id }}">
+                                    {% for group in GOALS_FOCUS_GROUP %}
+                                        <option value="{{ group }}" {% if group == object.focus_group %}selected{% endif %}>{{ group }}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                                  <div class="form-group mx-sm-3 mb-2">
+                                    <label for="description-{{ object.id }}" class="col-form-label">{% translate 'Description' %}</label>
+                                    <textarea class="form-control mx-sm-3" cols="50" rows="3" id="description-{{ object.id }}" name="description-{{ object.id }}">{{ object.description }}</textarea>
+                                  </div>
+                                  <button type="submit" class="btn btn-primary mb-2"><small><i class="fas fa-edit" ></i></small></button> &nbsp; 
+                                    <a type="reset" class="btn btn-danger mb-2" href="{% url 'administrativelevels:goal_delete' object.id %}"><small><i class="fas fa-times" ></i></small></a>
+      
+                              </form>
+                        </div>
+                    </div>
+                    <hr />
+                    {% endfor %}
+                    
+
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary mb-2 float-right" id="btn_form"><i class="fas fa-plus" ></i> <small>{% translate 'Add Another Goal' %}</small></button>
+                    <div class="clearfix"></div>
+                    <div id="add_form" style="margin-top: 50px;">
+                        <div>
+                            <form class="form-inline d-flex" method="post">
+                              {% csrf_token %}
+                              <div class="form-group">
+                                <label for="group">{% translate 'Group' %}</label>
+                                <select class="form-control mx-sm-3 custom-select" id="group" name="group" style="width: 250px !important;">
+                                    {% for group in GOALS_FOCUS_GROUP %}
+                                        <option value="{{ group }}" {% if forloop.counter0 == 0 %}selected{% endif %}>{{ group }}</option>
+                                    {% endfor %}
+                                </select>
+                                
+                                <div class="form-group mx-sm-3 mb-2">
+                                  <label for="description" class="col-form-label">{% translate 'Description' %}</label>
+                                  <textarea class="form-control mx-sm-3" cols="50" rows="3" id="description" name="description"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mb-2"><small>{% translate 'Add' %}</small></button>
+
+                              </div>
+                            </form>
+                      </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div> -->
+{% endblock %}

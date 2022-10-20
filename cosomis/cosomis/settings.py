@@ -53,10 +53,12 @@ CREATED_APPS = [
     'usermanager',
     'subprojects',
     'administrativelevels',
+    'unicorn',
 ]
 
 THIRD_PARTY_APPS = [
     'bootstrap4',
+    'django_unicorn'
 ]
 
 INSTALLED_APPS += CREATED_APPS + THIRD_PARTY_APPS
