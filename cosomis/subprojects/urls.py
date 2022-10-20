@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.SubprojectsListView.as_view(), name='list'),
     path('map', views.SubprojectsMapView.as_view(), name='map'),
     path('<int:pk>', views.SubprojectDetailView.as_view(), name='detail'),
+    path('create', views.SubprojectCreateView.as_view(), name='create'),
 ]

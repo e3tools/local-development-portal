@@ -13,8 +13,11 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-12">
+                        <div class="btn-group pull-left">
+                            <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create' %}</a>
+                        </div>
                         <div class="btn-group pull-right">
-                            <a class="btn btn-primary" href="{% url 'subprojects:map' %}">Map View</a>
+                            <a class="btn btn-primary" href="{% url 'subprojects:map' %}">{% translate 'Map View' %}</a>
                         </div>
                     </div>
                 </div>

@@ -22,7 +22,7 @@
                         <thead>
                         <tr>
                             <th>{% translate 'Name' %}</th>
-                            <th>{% translate 'sub Component' %}</th>
+                            <th>{% translate 'Component' %}</th>
                             <th>{% translate 'Action' %}</th>
                         </tr>
                         </thead>
@@ -30,7 +30,7 @@
                         {% for priority in priorities %}
                             <tr>
                                 <td align="left">{{ priority.name }}</td>
-                                <td>{{ priority.subcomponent }}</td>
+                                <td>{{ priority.component.name }}</td>
                                 <td>
                                     <a href="#"
                                        class="btn btn-primary btn-xs">

@@ -13,8 +13,7 @@ class Subproject(models.Model):
     target_female_beneficiaries = models.IntegerField()
     target_male_beneficiaries = models.IntegerField()
     target_youth_beneficiaries = models.IntegerField()
-    component = models.CharField(max_length=255)
-    sub_component = models.CharField(max_length=255)
+    component = models.ForeignKey('Component', null=True, on_delete=models.CASCADE)
     priorities = models.ManyToManyField('VillagePriority', null=True, blank=True, related_name='priorities_covered')
     ranking = models.IntegerField(default=0)
 
@@ -65,15 +64,15 @@ class VillageGoal(BaseModel):
 
 class VillagePriority(BaseModel):
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
-    subcomponent = models.CharField(max_length=255)
+    component = models.ForeignKey('Component', null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    proposed_men = models.IntegerField(null=True)
-    proposed_women = models.IntegerField(null=True)
-    estimated_cost = models.FloatField(null=True)
-    estimated_beneficiaries = models.IntegerField(null=True)
-    climate_changing_contribution = models.TextField(null=True)
+    proposed_men = models.IntegerField(null=True, blank=True)
+    proposed_women = models.IntegerField(null=True, blank=True)
+    estimated_cost = models.FloatField(null=True, blank=True)
+    estimated_beneficiaries = models.IntegerField(null=True, blank=True)
+    climate_changing_contribution = models.TextField(null=True, blank=True)
     eligibility = models.BooleanField(blank=True, null=True)
-    sector = models.CharField(max_length=255, null=True)
+    sector = models.CharField(max_length=255, null=True, blank=True)
     parent = models.ForeignKey('VillagePriority', null=True, blank=True, on_delete=models.CASCADE)
     meeting = models.ForeignKey('VillageMeeting', on_delete=models.CASCADE)
     ranking = models.IntegerField(default=0)
@@ -100,3 +99,12 @@ class VillageMeeting(BaseModel):
 
     def __str__(self):
         return self.description
+
+
+class Component(BaseModel):
+    name = models.CharField(max_length=255)
+    parent = models.ForeignKey('Component', null=True, blank=True, on_delete=models.CASCADE)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name

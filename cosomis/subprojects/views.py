@@ -1,10 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
 from django.conf import settings
 from cosomis.mixins import AJAXRequestMixin, PageMixin
+from .forms import SubprojectForm
 from subprojects.models import Subproject
 from django.utils.translation import gettext_lazy
+from django import forms
 
 # Create your views here.
 
@@ -79,3 +81,28 @@ class SubprojectDetailView(LoginRequiredMixin, generic.DetailView):
             'title': title
         },
     ]
+
+
+class SubprojectCreateView(PageMixin, LoginRequiredMixin, generic.CreateView):
+    model = Subproject
+    template_name = 'subproject_create.html'
+    context_object_name = 'subproject'
+    title = 'Create Subproject'
+    active_level1 = 'subprojects'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+ 
+    form_class = SubprojectForm # specify the class form to be displayed
+
+    def post(self, request, *args, **kwargs):
+        form = SubprojectForm(request.POST)
+        if form.is_valid():
+            subproject = form.save()
+            subproject.save()
+            return redirect('subprojects:list')
+        return super(SubprojectCreateView, self).get(request, *args, **kwargs)
+        
