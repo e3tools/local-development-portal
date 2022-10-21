@@ -66,6 +66,7 @@ INSTALLED_APPS += CREATED_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', #tries to determine user's language using URL language prefix
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -86,6 +87,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'cosomis.services.overall_variables' #Called the function which presents the globals variables
             ],
         },
     },
@@ -105,7 +108,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -115,6 +118,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+
+LANGUAGES = [
+    ('en', _('English')), 
+    ('fr', _('French')), 
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
