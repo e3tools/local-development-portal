@@ -7,6 +7,7 @@ from cosomis.mixins import PageMixin
 from django.http import Http404
 import pandas as pd
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.translation import gettext_lazy as _
 
 from administrativelevels.models import AdministrativeLevel
 from administrativelevels.libraries import convert_file_to_dict
@@ -20,7 +21,7 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     model = AdministrativeLevel
     template_name = 'village_detail.html'
     context_object_name = 'village'
-    title = 'Village'
+    title = _('Village')
     active_level1 = 'financial'
     breadcrumb = [
         {
@@ -43,7 +44,7 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
 
     template_name = 'upload.html'
     context_object_name = 'Upload'
-    title = "Upload"
+    title = _("Upload")
     active_level1 = 'administrative_levels'
     breadcrumb = [
         {
@@ -59,7 +60,7 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
         except pd.errors.ParserError as exc:
             datas = convert_file_to_dict.conversion_file_xlsx_to_dict(request.FILES.get('file'))
         except Exception as exc:
-            messages.info(request, "An error has occurrd...")
+            messages.info(request, _("An error has occurred..."))
         
         message = administrativelevels_functions.save_csv_file_datas_in_db(datas) # call function to save CSV datas in database
         if message:
@@ -79,7 +80,7 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
     queryset = AdministrativeLevel.objects.filter(type="Village")
     template_name = 'administrativelevels_list.html'
     context_object_name = 'administrativelevels'
-    title = 'Administrative levels'
+    title = _('Administrative levels')
     active_level1 = 'administrative_levels'
     breadcrumb = [
         {
@@ -98,7 +99,7 @@ class ObstaclesListView(PageMixin, LoginRequiredMixin, ListView):
     model = VillageObstacle
     template_name = 'priorities/obstacles.html'
     context_object_name = 'obstacles'
-    title = 'Village development priorities - Cycle 1'
+    title = _('Village development priorities - Cycle 1')
     active_level1 = 'financial'
     active_level2 = 'obstacles'
     breadcrumb = [
@@ -139,7 +140,7 @@ class ObstaclesListView(PageMixin, LoginRequiredMixin, ListView):
             obstacle.administrative_level = ObstaclesListView.administrativelevel_village
             obstacle.meeting_id = 1
             obstacle.save()
-            messages.info(request, "Add successfully!")
+            messages.info(request, _("Add successfully!"))
         else:
             '''Edit'''
             for key in request.POST:
@@ -154,12 +155,12 @@ class ObstaclesListView(PageMixin, LoginRequiredMixin, ListView):
                             obstacle.focus_group = group
                             obstacle.description = description
                             obstacle.save()
-                            messages.info(request, "Update successfully!")
+                            messages.info(request, _("Update successfully!"))
                             break
                     except Exception as exc:
                         raise Http404
         if not description:
-            messages.info(request, "The description is required")
+            messages.info(request, _("The description is required"))
 
         return self.get(request, *args, **kwargs)
 
@@ -171,7 +172,7 @@ def obstacle_delete(request, obstacle_id):
         obstacle = VillageObstacle.objects.get(id=obstacle_id)
         administrative_level_id = obstacle.administrative_level_id
         obstacle.delete()
-        messages.info(request, "Obstacle delete successfully")
+        messages.info(request, _("Obstacle delete successfully"))
     except Exception as exc:
         raise Http404
     
@@ -184,7 +185,7 @@ class GoalsListView(PageMixin, LoginRequiredMixin, ListView):
     model = VillageGoal
     template_name = 'priorities/goals.html'
     context_object_name = 'goals'
-    title = 'Village development priorities - Cycle 1'
+    title = _('Village development priorities - Cycle 1')
     active_level1 = 'financial'
     active_level2 = 'goals'
     breadcrumb = [
@@ -225,7 +226,7 @@ class GoalsListView(PageMixin, LoginRequiredMixin, ListView):
             goal.administrative_level = GoalsListView.administrativelevel_village
             goal.meeting_id = 1
             goal.save()
-            messages.info(request, "Add successfully!")
+            messages.info(request, _("Add successfully!"))
         else:
             '''Edit'''
             for key in request.POST:
@@ -240,12 +241,12 @@ class GoalsListView(PageMixin, LoginRequiredMixin, ListView):
                             goal.focus_group = group
                             goal.description = description
                             goal.save()
-                            messages.info(request, "Update successfully!")
+                            messages.info(request, _("Update successfully!"))
                             break
                     except Exception as exc:
                         raise Http404
         if not description:
-            messages.info(request, "The description is required")
+            messages.info(request, _("The description is required"))
 
         return self.get(request, *args, **kwargs)
 
@@ -257,7 +258,7 @@ def goal_delete(request, goal_id):
         goal = VillageGoal.objects.get(id=goal_id)
         administrative_level_id = goal.administrative_level_id
         goal.delete()
-        messages.info(request, "Goal delete successfully")
+        messages.info(request, _("Goal delete successfully"))
     except Exception as exc:
         raise Http404
     
@@ -270,7 +271,7 @@ class PrioritiesListView(PageMixin, LoginRequiredMixin, ListView):
     model = VillagePriority
     template_name = 'priorities/priorities.html'
     context_object_name = 'priorities'
-    title = 'Village development priorities - Cycle 1'
+    title = _('Village development priorities - Cycle 1')
     active_level1 = 'financial'
     active_level2 = 'eligible_priorities'
     breadcrumb = [
@@ -318,7 +319,7 @@ class PrioritiesListView(PageMixin, LoginRequiredMixin, ListView):
             priority.administrative_level = PrioritiesListView.administrativelevel_village
             priority.meeting_id = 1
             priority.save()
-            messages.info(request, "Add successfully!")
+            messages.info(request, _("Add successfully!"))
         else:
             '''Edit'''
             for key in request.POST:
@@ -339,13 +340,13 @@ class PrioritiesListView(PageMixin, LoginRequiredMixin, ListView):
                             priority.estimated_cost = float(estimated_cost) if estimated_cost else 0.0
                             priority.climate_changing_contribution = climate_changing_contribution
                             priority.save()
-                            messages.info(request, "Update successfully!")
+                            messages.info(request, _("Update successfully!"))
                             break
                     except Exception as exc:
                         raise Http404
                         
         if not component_id or not climate_changing_contribution:
-            messages.info(request, "Choice one component and give the description!")
+            messages.info(request, _("Choice one component and give the description!"))
 
         return self.get(request, *args, **kwargs)
 
@@ -357,7 +358,7 @@ def priority_delete(request, priority_id):
         priority = VillagePriority.objects.get(id=priority_id)
         administrative_level_id = priority.administrative_level_id
         priority.delete()
-        messages.info(request, "Priority delete successfully")
+        messages.info(request, _("Priority delete successfully"))
     except Exception as exc:
         raise Http404
     

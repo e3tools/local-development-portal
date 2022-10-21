@@ -5,7 +5,7 @@ from django.conf import settings
 from cosomis.mixins import AJAXRequestMixin, PageMixin
 from .forms import SubprojectForm
 from subprojects.models import Subproject
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy as _
 from django import forms
 
 # Create your views here.
@@ -15,7 +15,7 @@ class SubprojectsListView(PageMixin, LoginRequiredMixin, generic.ListView):
     queryset = Subproject.objects.all()
     template_name = 'subprojects_list.html'
     context_object_name = 'subprojects'
-    title = 'Subprojects'
+    title = _('Subprojects')
     active_level1 = 'subprojects'
     breadcrumb = [
         {
@@ -33,7 +33,7 @@ class SubprojectsMapView(LoginRequiredMixin, generic.ListView):
     queryset = Subproject.objects.all()
     template_name = 'subprojects_map.html'
     context_object_name = 'subprojects'
-    title = 'Subprojects'
+    title = _('Subprojects')
     active_level1 = 'subprojects'
     breadcrumb = [
         {
@@ -73,7 +73,7 @@ class SubprojectDetailView(LoginRequiredMixin, generic.DetailView):
     model = Subproject
     template_name = 'subproject.html'
     context_object_name = 'subproject'
-    title = 'Subproject'
+    title = _('Subproject')
     active_level1 = 'subprojects'
     breadcrumb = [
         {
@@ -87,7 +87,7 @@ class SubprojectCreateView(PageMixin, LoginRequiredMixin, generic.CreateView):
     model = Subproject
     template_name = 'subproject_create.html'
     context_object_name = 'subproject'
-    title = 'Create Subproject'
+    title = _('Create Subproject')
     active_level1 = 'subprojects'
     breadcrumb = [
         {
