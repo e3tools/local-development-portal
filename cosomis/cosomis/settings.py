@@ -54,6 +54,7 @@ CREATED_APPS = [
     'subprojects',
     'administrativelevels',
     'unicorn',
+    'kobotoolbox',
 ]
 
 THIRD_PARTY_APPS = [
