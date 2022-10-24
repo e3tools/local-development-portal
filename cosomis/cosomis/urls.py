@@ -38,4 +38,5 @@ urlpatterns += i18n_patterns(
     path('subprojects/', include('subprojects.urls')),
     path('administrative-levels/', include('administrativelevels.urls')),
     path('unicorn/', include('django_unicorn.urls')),
+    path('kobotoolbox/', include('kobotoolbox.urls')),
 )
