@@ -11,7 +11,7 @@
     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         {% for language in languages %}
             {% if lang.code != language.code %}
-                <a class="dropdown-item language" data-language_code="{{ language.code }}">
+                <a class="dropdown-item language" data-language_code="{{ language.code }}" style="cursor: pointer;">
                     {% trans language.name_local|capfirst %}
                 </a>
             {% endif %}
@@ -20,7 +20,7 @@
     <div class="hidden">
         <form name="language_form" action="{% url 'set_language' %}" method="post">
             {% csrf_token %}
-            <input name="next" type="hidden" value="{{ redirect_to }}"/>
+            <input name="next" type="hidden" value="{{ request.get_full_path }}"/>
             <input name="language" type="hidden"/>
         </form>
     </div>

@@ -15,11 +15,28 @@ Including another URLconf
 from django.urls import path
 from django.conf.urls import include
 from django.contrib import admin
+from django.conf.urls.i18n import i18n_patterns
 
+from .views import set_language
+
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+#     path('', include('usermanager.urls')),
+#     path('subprojects/', include('subprojects.urls')),
+#     path('administrative-levels/', include('administrativelevels.urls')),
+#     path('unicorn/', include('django_unicorn.urls')),
+# ]
 urlpatterns = [
+    path('set-language/', 
+         set_language, 
+         name='set_language')
+]
+
+urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('usermanager.urls')),
     path('subprojects/', include('subprojects.urls')),
     path('administrative-levels/', include('administrativelevels.urls')),
     path('unicorn/', include('django_unicorn.urls')),
-]
+    path('kobotoolbox/', include('kobotoolbox.urls')),
+)

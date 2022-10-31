@@ -1,4 +1,5 @@
 from administrativelevels.models import AdministrativeLevel
+from django.utils.translation import gettext_lazy as _
 
 def save_csv_file_datas_in_db(datas_file: dict) -> str:
     """Function to save the CSV datas in database"""
@@ -58,12 +59,12 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
 
     message = ""
     if at_least_one_save and not at_least_one_error:
-        message = "Success!"
+        message = _("Success!")
     elif not at_least_one_save and not at_least_one_error:
-        message = "No items have been saved!"
+        message = _("No items have been saved!")
     elif not at_least_one_save and at_least_one_error:
-        message = "A problem is occurred!"
+        message = _("A problem has occurred!")
     elif at_least_one_save and at_least_one_error:
-        message = "Some element(s) have not been saved!"
+        message = _("Some element(s) have not been saved!")
 
     return message
