@@ -287,6 +287,7 @@ msgid "Village Development Plan"
 msgstr "Plan de Développement du Village"
 
 #: .\administrativelevels\views.py:63
+#: .\administrativelevels\views.py:100
 msgid "An error has occurred..."
 msgstr "Une erreur est survenue..."
 
@@ -541,3 +542,23 @@ msgstr "Connexion"
 #: .\usermanager\templates\login.html:45
 msgid "Log in to start your session"
 msgstr "Connectez-vous pour démarrer votre session"
+
+#: .\administrativelevels\templates\components\download.html
+msgid "Export file"
+msgstr "Exporter fichier"
+
+#: .\administrativelevels\templates\components\download.html
+msgid "Download Excel/CSV file"
+msgstr "Télécharger fichier en Excel/CSV"
+
+#: .\administrativelevels\templates\components\download.html
+msgid "By Type"
+msgstr "Par Type"
+
+#: .\administrativelevels\templates\components\download.html
+msgid "File Type"
+msgstr "Type de fichier"
+
+#: .\administrativelevels\templates\components\download.html
+msgid "download"
+msgstr "Télécharger"
