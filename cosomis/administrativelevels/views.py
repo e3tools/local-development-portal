@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.translation import gettext_lazy as _
 
 from administrativelevels.models import AdministrativeLevel
-from administrativelevels.libraries import convert_file_to_dict
+from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
 
@@ -71,6 +71,43 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         context = super(UploadCSVView, self).get(request, *args, **kwargs)
         return context
+
+
+
+class DownloadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
+    """Class to download administrativelevels under excel file"""
+
+    template_name = 'download.html'
+    context_object_name = 'Download'
+    title = _("Download")
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def post(self, request, *args, **kwargs):
+        file_path = ""
+        try:
+            file_path = administrativelevels_functions.get_administratives_levels_under_file_excel_or_csv(
+                file_type=request.POST.get("file_type"),
+                params={"type":request.POST.get("type"), "value_of_type":request.POST.get("value_of_type")}
+            )
+
+        except Exception as exc:
+            messages.info(request, _("An error has occurred..."))
+
+        if not file_path:
+            return redirect('administrativelevels:list')
+        else:
+            return download_file.download(
+                request, 
+                file_path,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+    
 
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):

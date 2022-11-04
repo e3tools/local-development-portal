@@ -16,6 +16,8 @@ from django.urls import path
 from django.conf.urls import include
 from django.contrib import admin
 from django.conf.urls.i18n import i18n_patterns
+from django.conf import settings
+from django.conf.urls.static import static
 
 from .views import set_language
 
@@ -40,3 +42,8 @@ urlpatterns += i18n_patterns(
     path('unicorn/', include('django_unicorn.urls')),
     path('kobotoolbox/', include('kobotoolbox.urls')),
 )
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
