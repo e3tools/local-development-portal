@@ -1,6 +1,7 @@
 from administrativelevels.models import AdministrativeLevel
 from django.utils.translation import gettext_lazy as _
 import os
+from sys import platform
 
 def save_csv_file_datas_in_db(datas_file: dict) -> str:
     """Function to save the CSV datas in database"""
@@ -178,5 +179,8 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
         file_path = file_type+"/administratives_levels/" + file_name + str(datetime.today().replace(microsecond=0)).replace("-", "").replace(":", "").replace(" ", "_") +".xlsx"
         pd.DataFrame(datas).to_excel("media/"+file_path)
 
-
-    return file_path.replace("/", "\\\\")
+    if platform == "win32":
+        # windows
+        return file_path.replace("/", "\\\\")
+    else:
+        return file_path
