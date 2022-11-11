@@ -12,6 +12,7 @@ class AdministrativeLevel(models.Model):
     rural = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
 
     def __str__(self):
         return self.name
