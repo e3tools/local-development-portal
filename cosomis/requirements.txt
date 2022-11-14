@@ -23,4 +23,6 @@ six==1.16.0
 soupsieve==2.3.2.post1
 sqlparse==0.4.3
 urllib3==1.26.12
-
+celery==5.2.7
+django-celery-results==2.4.0
+redis==4.3.4
