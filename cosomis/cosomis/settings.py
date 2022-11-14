@@ -33,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'pl&dkqrq0rj+#n747=@#a-0b(bgb2j#%@f7v4_vp1q84cr7r#$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', False)
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', list, ['localhost'])
 
@@ -59,7 +59,8 @@ CREATED_APPS = [
 
 THIRD_PARTY_APPS = [
     'bootstrap4',
-    'django_unicorn'
+    'django_unicorn',
+    'django_celery_results',
 ]
 
 INSTALLED_APPS += CREATED_APPS + THIRD_PARTY_APPS
@@ -157,3 +158,19 @@ DIAGNOSTIC_MAP_WS_BOUND = env('DIAGNOSTIC_MAP_WS_BOUND')
 DIAGNOSTIC_MAP_EN_BOUND = env('DIAGNOSTIC_MAP_EN_BOUND')
 
 DIAGNOSTIC_MAP_ISO_CODE = env('DIAGNOSTIC_MAP_ISO_CODE')
+
+
+# # Celery Configuration Options
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+
+CELERY_ACCEPT_CONTENT = ['json']
+
+CELERY_RESULT_BACKEND = 'django-db'
+
+CELERY_TASK_SERIALIZER = 'json'
+
+# BROKER_TRANSPORT = "redis"
+
+# CELERY_TIMEZONE = "Australia/Tasmania"
+# CELERY_TASK_TRACK_STARTED = True
+# CELERY_TASK_TIME_LIMIT = 10
