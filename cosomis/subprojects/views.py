@@ -1,10 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.views import generic
 from django.conf import settings
 from cosomis.mixins import AJAXRequestMixin, PageMixin
-from .forms import SubprojectForm
-from subprojects.models import Subproject
+from .forms import SubprojectForm, VulnerableGroupForm
+from subprojects.models import Subproject, VulnerableGroup
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -105,4 +106,31 @@ class SubprojectCreateView(PageMixin, LoginRequiredMixin, generic.CreateView):
             subproject.save()
             return redirect('subprojects:list')
         return super(SubprojectCreateView, self).get(request, *args, **kwargs)
+        
+
+#============================================Vulnerable Group=========================================================
+
+class VulnerableGroupCreateView(PageMixin, LoginRequiredMixin, generic.CreateView):
+    model = VulnerableGroup
+    template_name = 'vulnerable_group_create.html'
+    context_object_name = 'vulnerable_group'
+    title = _('Create Vulnerable Group')
+    active_level1 = 'subprojects'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+ 
+    form_class = VulnerableGroupForm # specify the class form to be displayed
+
+    def post(self, request, *args, **kwargs):
+        form = VulnerableGroupForm(request.POST)
+        if form.is_valid():
+            vulnerable_group = form.save()
+            vulnerable_group.save()
+            messages.info(request, _("Successfully created"))
+            return redirect('subprojects:vulnerable_group_create')
+        return super(VulnerableGroupCreateView, self).get(request, *args, **kwargs)
         
