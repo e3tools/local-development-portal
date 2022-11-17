@@ -562,3 +562,15 @@ msgstr "Type de fichier"
 #: .\administrativelevels\templates\components\download.html
 msgid "download"
 msgstr "Télécharger"
+
+#: .\subprojects\views.py:117
+msgid "Create Vulnerable Group"
+msgstr "Créer un Groupe Vulnérable"
+
+#: .\subprojects\views.py:123
+msgid "Successfully created"
+msgstr "Créé avec succès"
+
+#: .\subprojects\templates\vulnerable_group_create.html:11
+msgid "List Vulnerable Groups"
+msgstr "Liste des Groupes Vulnérables"
