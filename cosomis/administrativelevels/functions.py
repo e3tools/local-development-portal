@@ -1,7 +1,12 @@
 from administrativelevels.models import AdministrativeLevel
+from subprojects.models import VillagePriority, Component
 from django.utils.translation import gettext_lazy as _
 import os
 from sys import platform
+from administrativelevels.libraries import functions as libraries_functions
+from datetime import datetime
+import pandas as pd
+
 
 def save_csv_file_datas_in_db(datas_file: dict) -> str:
     """Function to save the CSV datas in database"""
@@ -93,8 +98,6 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
     if file_type not in ("csv", "excel") or _type not in ("All", "Region", "Prefecture", "Commune", "Canton", "Village"):
         return ""
 
-    from datetime import datetime
-    import pandas as pd
     datas = {
         "Région" : {}, "Id Région" : {}, "Préfecture" : {}, "Id Préfecture" : {}, 
         "Commune" : {}, "Id Commune" : {}, "Canton" : {}, "Id Canton" : {}, 
@@ -184,3 +187,166 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
         return file_path.replace("/", "\\\\")
     else:
         return file_path
+
+
+
+
+
+
+
+
+def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0) -> str:
+    """Function to save the CSV datas in database"""
+    
+    at_least_one_save = False # Variable to determine if at least one is saved
+    at_least_one_error = False # Variable to determine if at least one error is occurred
+    at_least_error_name = False # Variable to determine if the name of village is wrong
+    text_errors = ""
+    list_villages_not_found = []
+    list_villages_multi_obj_found = []
+    nbr_other_errors = 0
+    # columns = [
+    #     "Canton", "Villages", "Sous-projets prioritaire de la sous-composante 1.1 (infrastructures communautaires)", 
+    #     "Coût estimatif", "Cycle", "Sous-projets prioritaire de la sous-composante 1.3 (Besoins des jeunes)"
+    # ]
+    columns = [
+        "Sous-projets prioritaire de la sous-composante 1.1 (infrastructures communautaires)", 
+        "Sous-projets prioritaire de la sous-composante 1.3 (Besoins des jeunes)"
+    ]
+    # print(list(datas_file.keys()))
+    _components = {
+        '1': 'COMPOSANTE 1', '1.1': 'COMPOSANTE 1.1', '1.2': 'COMPOSANTE 1.2', 
+        '1.2a': 'COMPOSANTE 1.2a', '1.2b': 'COMPOSANTE 1.2b', '1.3': 'COMPOSANTE 1.3', 
+        '2': 'COMPOSANTE 2', '3': 'COMPOSANTE 3', '4': 'COMPOSANTE 4', '5': 'COMPOSANTE 5'
+    }
+    if datas_file:
+        count = 0
+        long = len(list(datas_file.values())[0])
+        while count < long:
+            for column in columns:
+                
+                try:
+                    data = datas_file[column][count]
+                    canton = datas_file["Canton"][count]
+                    _village = str(datas_file["Villages"][count])
+                    __village = str(datas_file["Villages"][count]).upper()
+                    estimated_cost = datas_file["Coût estimatif"][count]
+                    cycle = datas_file["Cycle"][count]
+                    
+                    for village in __village.split("/"):
+                        _is_object_error = False
+                        priority = VillagePriority()
+                        priority.proposed_men = 0
+                        priority.proposed_women = 0
+                        priority.meeting_id = 1
+                        priority.climate_changing_contribution = ""
+                        try:
+                            priority.administrative_level = AdministrativeLevel.objects.get(name=village, type="Village")
+                        except AdministrativeLevel.DoesNotExist as exc:
+                            try:
+                                priority.administrative_level = AdministrativeLevel.objects.get(
+                                    name=libraries_functions.strip_accents(village), type="Village"
+                                )
+                            except AdministrativeLevel.DoesNotExist as exc:
+                                try:
+                                    priority.administrative_level = AdministrativeLevel.objects.get(name=village.replace(" ", ""), type="Village")
+                                except AdministrativeLevel.DoesNotExist as exc:
+                                    try:
+                                        priority.administrative_level = AdministrativeLevel.objects.get(
+                                            name=libraries_functions.strip_accents(village.replace(" ", "")), type="Village"
+                                        )
+                                    except AdministrativeLevel.DoesNotExist as exc:
+                                        _is_object_error = True
+                                        if _village not in list_villages_not_found:
+                                            list_villages_not_found.append(_village)
+                                        text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count}: {exc.__str__()}')
+                                        at_least_error_name = True
+                                        at_least_one_error = True
+                                    except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                        raise AdministrativeLevel.MultipleObjectsReturned()
+
+                                except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                    raise AdministrativeLevel.MultipleObjectsReturned()
+
+                            except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                raise AdministrativeLevel.MultipleObjectsReturned()
+
+                        except AdministrativeLevel.MultipleObjectsReturned as exc:
+                            _is_object_error = True
+                            if _village not in list_villages_multi_obj_found:
+                                list_villages_multi_obj_found.append(_village)
+                            at_least_error_name = True
+                            at_least_one_error = True
+                            text_errors += f'\nLine N°{count} [{_village}]: {exc.__str__()}'
+                        
+                        if not _is_object_error:
+                            
+                            if administrative_level_id and int(priority.administrative_level.id) != int(administrative_level_id):
+                                continue #Continue without save the priority if the village is specific and the village current is different
+                            
+                            priority.estimated_cost = float(estimated_cost) if estimated_cost else 0.0
+                            
+                            _list_chars = column.split(" ")
+                            for char in _list_chars:
+                                if char in list(_components.keys()):
+                                    _list_data = str(data).split("-")
+                                    if _list_data[0].isdigit():
+                                        priority.ranking = int(_list_data[0])
+                                        priority.name = (str(data)[(len(_list_data[0])+1):]).lstrip()
+                                    else:
+                                        priority.name = str(data).lstrip()
+                                    try:
+                                        priority.component = Component.objects.get(name=_components[char].upper())
+                                    except Exception as exc:
+                                        priority.component = None
+
+                            if not VillagePriority.objects.filter(name=priority.name, administrative_level=priority.administrative_level, component=priority.component):
+                                priority = priority.save()
+                                at_least_one_save = True
+
+                except Exception as exc:
+                    text_errors += f'\nLine N°{count} [{_village}]: {exc.__str__()}'
+                    nbr_other_errors += 1
+                    at_least_one_error = True
+
+            count += 1
+            # if count == 1:
+            #     break
+    
+    message = ""
+    if at_least_one_save and not at_least_one_error:
+        message = _("Success!")
+    elif not at_least_one_save and not at_least_one_error:
+        message = _("No items have been saved!")
+    elif not at_least_one_save and at_least_one_error:
+        if at_least_error_name:
+            message = _("A problem has occurred! The name(s) of the village(s) is wrong.")
+        else:
+            message = _("A problem has occurred!")
+    elif at_least_one_save and at_least_one_error:
+        if at_least_error_name:
+            message = _("Some element(s) have not been saved! The name(s) of the village(s) is wrong.")
+        else:
+            message = _("Some element(s) have not been saved!")
+
+    summary_errors = "##########################################################Summary###################################################################\n"
+    summary_errors += f'\nNumber of object not found errors: {len(list_villages_not_found)} ==> {list_villages_not_found}'
+    summary_errors += f'\n\nNumber of Multiple object found errors: {len(list_villages_multi_obj_found)} ==> {list_villages_multi_obj_found}'
+    summary_errors += f'\n\nNumber of other errors: {nbr_other_errors}'
+
+    summary_errors += "\n\n\n##########################################################Messages###################################################################\n"
+    summary_errors += "\n" + message
+
+    summary_errors += "\n\n\n##########################################################Details###################################################################\n"
+    summary_errors += "\n" + text_errors
+
+    if not os.path.exists("media/logs/errors"):
+        os.makedirs("media/logs/errors")
+    file_path = "logs/errors/upload_priorities_logs_errors_" + str(datetime.today().replace(microsecond=0)).replace("-", "").replace(":", "").replace(" ", "_") + ".txt"
+    f = open("media/"+file_path, "a")
+    f.write(summary_errors)
+    f.close()
+    
+
+
+    return (message, file_path.replace("/", "\\\\") if platform == "win32" else file_path)
