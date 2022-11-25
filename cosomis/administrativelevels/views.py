@@ -61,9 +61,15 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
             """Upload priorities by csv"""
             redirect_path = "administrativelevels:priorities_priorities"
             try:
-                datas = convert_file_to_dict.conversion_file_xlsx_merger_to_dict(request.FILES.get('file'), request.POST.get('sheet_name'))
+                datas = convert_file_to_dict.conversion_file_xlsx_merger_to_dict(
+                    request.FILES.get('file'), request.POST.get('sheet_name'),
+                    columns_fillna= ["Canton", "Villages", "Sous-projets prioritaire de la sous-composante 1.3 (Besoins des jeunes)"]
+                    )
             except pd.errors.ParserError as exc:
-                datas = convert_file_to_dict.conversion_file_csv_merger_to_dict(request.FILES.get('file'), request.POST.get('sheet_name'))
+                datas = convert_file_to_dict.conversion_file_csv_merger_to_dict(
+                    request.FILES.get('file'), request.POST.get('sheet_name'),
+                    columns_fillna= ["Canton", "Villages", "Sous-projets prioritaire de la sous-composante 1.3 (Besoins des jeunes)"]
+                    )
             except Exception as exc:
                 messages.info(request, _("An error has occurred..."))
             

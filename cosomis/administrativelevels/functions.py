@@ -20,7 +20,7 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
         while count < long:
             for column in columns:
                 try:
-                    name = str(datas_file[column][count]).upper()
+                    name = str(datas_file[column][count]).upper().strip()
                     frontalier = bool(datas_file["Village frontalier (1=oui, 0= non)"][count])
                     rural = bool(datas_file["Localité (Rural=1, urbain=0)"][count])
                     latitude, longitude = None, None
@@ -231,9 +231,12 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0)
                     _village = str(datas_file["Villages"][count])
                     __village = str(datas_file["Villages"][count]).upper()
                     estimated_cost = datas_file["Coût estimatif"][count]
+                    estimated_cost = estimated_cost if not pd.isna(estimated_cost) else None
                     cycle = datas_file["Cycle"][count]
+                    cycle = cycle if not pd.isna(cycle) else None
                     
                     for village in __village.split("/"):
+                        village = village.strip()
                         _is_object_error = False
                         priority = VillagePriority()
                         priority.proposed_men = 0
@@ -292,9 +295,9 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0)
                                     _list_data = str(data).split("-")
                                     if _list_data[0].isdigit():
                                         priority.ranking = int(_list_data[0])
-                                        priority.name = (str(data)[(len(_list_data[0])+1):]).lstrip()
+                                        priority.name = (str(data)[(len(_list_data[0])+1):]).strip()
                                     else:
-                                        priority.name = str(data).lstrip()
+                                        priority.name = str(data).strip()
                                     try:
                                         priority.component = Component.objects.get(name=_components[char].upper())
                                     except Exception as exc:
