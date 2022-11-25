@@ -5,6 +5,12 @@ from no_sql_client import NoSQLClient
 from administrativelevels.models import AdministrativeLevel
 
 
+def iterate_administrative_level(adm_list, type):
+
+    for administrative_level in adm_list.filter(type=type):
+        print(administrative_level.name)
+
+
 class CddClient:
 
     def __init__(self):
@@ -25,23 +31,18 @@ class CddClient:
         self.nsc.create_document(self.adm_db, data)
         return True
 
-    def sync_administrative_levels(self):
+    def sync_administrative_levels(self) -> bool:
 
         administrative_levels = AdministrativeLevel.objects.all()
-
-        for administrative_level in administrative_levels.filter(type='Region'):
-            print(administrative_level.name)
-
-        for administrative_level in administrative_levels.filter(type='Prefecture'):
-            print(administrative_level.name)
-
-        for administrative_level in administrative_levels.filter(type='Commune'):
-            print(administrative_level.name)
-
-        for administrative_level in administrative_levels.filter(type='Canton'):
-            print(administrative_level.name)
-
-        for administrative_level in administrative_levels.filter(type='Village'):
-            print(administrative_level.name)
+        # Sync Region
+        iterate_administrative_level(administrative_levels, "Region")
+        # Sync Prefecture
+        iterate_administrative_level(administrative_levels, "Prefecture")
+        # Sync Commune
+        iterate_administrative_level(administrative_levels, "Commune")
+        # Sync Canton
+        iterate_administrative_level(administrative_levels, "Canton")
+        # Sync Village
+        iterate_administrative_level(administrative_levels, "Village")
 
         return True
