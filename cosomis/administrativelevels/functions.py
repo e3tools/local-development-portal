@@ -1,5 +1,5 @@
 from administrativelevels.models import AdministrativeLevel
-from subprojects.models import VillagePriority, Component
+from subprojects.models import VillagePriority, Component, Subproject
 from django.utils.translation import gettext_lazy as _
 import os
 from sys import platform
@@ -195,7 +195,7 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
 
 
 
-def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0) -> str:
+def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0, type_object="priority") -> str:
     """Function to save the CSV datas in database"""
     
     at_least_one_save = False # Variable to determine if at least one is saved
@@ -204,6 +204,9 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0)
     text_errors = ""
     list_villages_not_found = []
     list_villages_multi_obj_found = []
+    nbr_subproject_not_associate_to_priority = 0
+    text_subproject_not_associate_to_priority = ""
+    list_objects_exist = []
     nbr_other_errors = 0
     # columns = [
     #     "Canton", "Villages", "Sous-projets prioritaire de la sous-composante 1.1 (infrastructures communautaires)", 
@@ -234,28 +237,27 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0)
                     estimated_cost = estimated_cost if not pd.isna(estimated_cost) else None
                     cycle = datas_file["Cycle"][count]
                     cycle = cycle if not pd.isna(cycle) else None
+                    ranking = 0
+                    name_priority = None
+                    component = None
                     
                     for village in __village.split("/"):
                         village = village.strip()
                         _is_object_error = False
-                        priority = VillagePriority()
-                        priority.proposed_men = 0
-                        priority.proposed_women = 0
-                        priority.meeting_id = 1
-                        priority.climate_changing_contribution = ""
+                        administrative_level = None
                         try:
-                            priority.administrative_level = AdministrativeLevel.objects.get(name=village, type="Village")
+                            administrative_level = AdministrativeLevel.objects.get(name=village, type="Village")
                         except AdministrativeLevel.DoesNotExist as exc:
                             try:
-                                priority.administrative_level = AdministrativeLevel.objects.get(
+                                administrative_level = AdministrativeLevel.objects.get(
                                     name=libraries_functions.strip_accents(village), type="Village"
                                 )
                             except AdministrativeLevel.DoesNotExist as exc:
                                 try:
-                                    priority.administrative_level = AdministrativeLevel.objects.get(name=village.replace(" ", ""), type="Village")
+                                    administrative_level = AdministrativeLevel.objects.get(name=village.replace(" ", ""), type="Village")
                                 except AdministrativeLevel.DoesNotExist as exc:
                                     try:
-                                        priority.administrative_level = AdministrativeLevel.objects.get(
+                                        administrative_level = AdministrativeLevel.objects.get(
                                             name=libraries_functions.strip_accents(village.replace(" ", "")), type="Village"
                                         )
                                     except AdministrativeLevel.DoesNotExist as exc:
@@ -284,28 +286,70 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0)
                         
                         if not _is_object_error:
                             
-                            if administrative_level_id and int(priority.administrative_level.id) != int(administrative_level_id):
-                                continue #Continue without save the priority if the village is specific and the village current is different
+                            if administrative_level_id and int(administrative_level.id) != int(administrative_level_id):
+                                continue #Continue without save the object if the village is specific and the village current is different
                             
-                            priority.estimated_cost = float(estimated_cost) if estimated_cost else 0.0
+                            estimated_cost = float(estimated_cost) if estimated_cost else 0.0
                             
                             _list_chars = column.split(" ")
                             for char in _list_chars:
                                 if char in list(_components.keys()):
                                     _list_data = str(data).split("-")
                                     if _list_data[0].isdigit():
-                                        priority.ranking = int(_list_data[0])
-                                        priority.name = (str(data)[(len(_list_data[0])+1):]).strip()
+                                        ranking = int(_list_data[0])
+                                        name_priority = (str(data)[(len(_list_data[0])+1):]).strip()
                                     else:
-                                        priority.name = str(data).strip()
+                                        name_priority = str(data).strip()
                                     try:
-                                        priority.component = Component.objects.get(name=_components[char].upper())
+                                        component = Component.objects.get(name=_components[char].upper())
                                     except Exception as exc:
-                                        priority.component = None
-
-                            if not VillagePriority.objects.filter(name=priority.name, administrative_level=priority.administrative_level, component=priority.component):
-                                priority = priority.save()
+                                        component = None
+                            
+                            if type_object=="priority" and not VillagePriority.objects.filter(name=name_priority, administrative_level=administrative_level, component=component):
+                                priority = VillagePriority()
+                                priority.name = name_priority
+                                priority.administrative_level = administrative_level
+                                priority.estimated_cost = estimated_cost
+                                priority.component = component
+                                priority.ranking = ranking
+                                priority.proposed_men = 0
+                                priority.proposed_women = 0
+                                priority.meeting_id = 1
+                                priority.climate_changing_contribution = ""
+                                priority.save()
                                 at_least_one_save = True
+                            elif type_object == "priority":
+                                list_objects_exist.append(name_priority)
+                            elif type_object=="subproject" and not Subproject.objects.filter(short_name=name_priority, administrative_level=administrative_level, component=component):
+                                
+                                if estimated_cost and estimated_cost != 0:
+                                    villages = VillagePriority.objects.filter(administrative_level=administrative_level, component=component, estimated_cost=estimated_cost)
+                                    
+                                    subproject = Subproject()
+                                    subproject.short_name = name_priority
+                                    subproject.administrative_level = administrative_level
+                                    subproject.target_youth_beneficiaries = 0
+                                    subproject.component = component
+                                    subproject.ranking = 1
+                                    subproject.allocation = estimated_cost
+                                    if len(villages) == 0:
+                                        nbr_subproject_not_associate_to_priority += 1
+                                        text_subproject_not_associate_to_priority += f'\nN°{nbr_subproject_not_associate_to_priority} [{name_priority}] : Not found priority. Please assaociate the priority manually.'
+                                    elif len(villages) == 1:
+                                        subproject.target_female_beneficiaries = villages[0].proposed_women
+                                        subproject.target_male_beneficiaries = villages[0].proposed_men
+
+                                        subproject = subproject.save_and_return_object()
+                                        subproject.priorities.add(villages[0])
+                                        subproject.save()
+
+                                        at_least_one_save = True
+                                    elif len(villages) > 1:
+                                        nbr_subproject_not_associate_to_priority += 1
+                                        text_subproject_not_associate_to_priority += f'\nN°{nbr_subproject_not_associate_to_priority} [{name_priority}] : Found {len(villages)} priorities for this subprojects. Please assaociate the priority manually.'
+                            elif type_object == "subproject":
+                                list_objects_exist.append(name_priority)
+
 
                 except Exception as exc:
                     text_errors += f'\nLine N°{count} [{_village}]: {exc.__str__()}'
@@ -337,6 +381,16 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0)
     summary_errors += f'\n\nNumber of Multiple object found errors: {len(list_villages_multi_obj_found)} ==> {list_villages_multi_obj_found}'
     summary_errors += f'\n\nNumber of other errors: {nbr_other_errors}'
 
+    if text_subproject_not_associate_to_priority:
+        summary_errors += "\n\n\n##########################################################Object Subproject don't save###################################################################\n"
+        summary_errors += f"\nNumber of the subprojects don't save : {nbr_subproject_not_associate_to_priority}"
+        summary_errors += text_subproject_not_associate_to_priority
+
+    if list_objects_exist:
+        summary_errors += "\n\n\n##########################################################Object already exist###################################################################\n"
+        summary_errors += f"\nNumber : {len(list_objects_exist)}"
+        summary_errors += f"\n{list_objects_exist}"
+
     summary_errors += "\n\n\n##########################################################Messages###################################################################\n"
     summary_errors += "\n" + message
 
@@ -346,6 +400,10 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0)
     if not os.path.exists("media/logs/errors"):
         os.makedirs("media/logs/errors")
     file_path = "logs/errors/upload_priorities_logs_errors_" + str(datetime.today().replace(microsecond=0)).replace("-", "").replace(":", "").replace(" ", "_") + ".txt"
+    
+    if type_object=="subproject":
+        file_path = file_path.replace("upload_priorities_logs_errors_", "upload_subprojects_logs_errors_")
+
     f = open("media/"+file_path, "a")
     f.write(summary_errors)
     f.close()
