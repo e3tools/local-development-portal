@@ -15,6 +15,8 @@
                     <div class="col-md-12">
                         <div class="btn-group pull-left">
                             <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create' %}</a>
+                            &nbsp; &nbsp; &nbsp; &nbsp; 
+                            {% include 'components/modal_upload_one_sheet.html' with type_object="subproject" show_just_villages=False %}
                         </div>
                         <div class="btn-group pull-right">
                             <a class="btn btn-primary" href="{% url 'subprojects:map' %}">{% translate 'Map View' %}</a>
@@ -29,7 +31,7 @@
                             <th>{% translate 'Canton' %}</th>
                             <th>{% translate 'Region' %}</th>
                             <th>{% translate 'Project Name' %}</th>
-                            <th>{% translate 'Status' %}</th>
+                            <th>{% translate 'Allocation' %}</th>
                             <th>{% translate 'Action' %}</th>
                         </tr>
                         </thead>
@@ -40,7 +42,7 @@
                                 <td>{{ subproject.administrative_level.parent.name }}</td>
                                 <td>{{ subproject.administrative_level.parent.parent.name }}</td>
                                 <td>{{ subproject.short_name }}</td>
-                                <td>{{ subproject.short_name }}</td>
+                                <td>{{ subproject.allocation }}</td>
                                 <td>
                                     <a href="{% url 'subprojects:detail' subproject.pk %}"
                                        class="btn btn-primary btn-xs">
