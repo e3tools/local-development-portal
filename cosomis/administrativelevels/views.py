@@ -57,7 +57,7 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
         datas = {}
         redirect_path = 'administrativelevels:list'
         _type = request.POST.get('_type')
-        if _type == "priorities":
+        if _type in ("priority", "subproject"):
             """Upload priorities by csv"""
             redirect_path = "administrativelevels:priorities_priorities"
             try:
@@ -76,7 +76,7 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
 
             try:
                 administrative_level_id = request.POST["administrative_level_id"]
-                message, file_path = administrativelevels_functions.save_csv_datas_priorities_in_db(datas, administrative_level_id if bool(request.POST.get("administrative_level_id_checkbox")) else 0) # call function to save CSV datas in database
+                message, file_path = administrativelevels_functions.save_csv_datas_priorities_in_db(datas, administrative_level_id if bool(request.POST.get("administrative_level_id_checkbox")) else 0, _type) # call function to save CSV datas in database
                 
                 return download_file.download(request, file_path, "text/plain")
 
