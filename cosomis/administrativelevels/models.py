@@ -19,3 +19,7 @@ class AdministrativeLevel(models.Model):
     def get_list_priorities(self):
         """Method to get the list of the all priorities that the administrative is linked"""
         return self.villagepriority_set.get_queryset()
+    
+    def get_list_subprojects(self):
+        """Method to get the list of the all subprojects that the administrative is linked"""
+        return self.subproject_set.get_queryset()
