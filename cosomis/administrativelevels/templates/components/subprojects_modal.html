@@ -1,0 +1,21 @@
+{% load i18n %}
+
+<!-- Link modal -->
+
+<a data-toggle="modal" data-target="#subprojects-list-modal" 
+    href="#" class="font-weight-bold text-primary"><i class="fas fa-eye"></i></a>
+
+
+<!-- Modal -->
+<div class="modal fade" id="subprojects-list-modal" tabindex="-1" role="dialog"
+    aria-labelledby="UploadTitle" aria-hidden="true" style="widht: 800px !important;">
+    <div class="modal-dialog modal-xl" role="document" style="widht: 800px !important;">
+        <div class="modal-content" style="widht: 800px !important;">
+
+           {% include 'components/subprojects_list.html' %}
+            
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+

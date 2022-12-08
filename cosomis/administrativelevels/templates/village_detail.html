@@ -176,11 +176,49 @@
             <div class="card-body">
                 <div class="clearfix">
                     <div>
-                        <h5 class="font-weight-bold">{% translate 'Subprojects' %}</h5>
+                        <h5 class="font-weight-bold">{% translate 'Subprojects' %} 
+                         &nbsp; &nbsp;  <a href="{% url 'subprojects:create' %}" class="font-weight-bold"> <i
+                            class="fas fa-plus"></i></a>
+                        {% if object.get_list_subprojects %}
+                             &nbsp; &nbsp;  <span>
+                                {% with object.get_list_subprojects as subprojects %}
+                                    {% include "components/subprojects_modal.html" %}
+                                {% endwith %}
+                            </span>
+                        {% endif %}
+                        </h5>
                     </div>
                 </div>
 
-                <div class="card" style="height: 50px;">
+                {% if object.get_list_subprojects %}
+                    {% for subproject in object.get_list_subprojects %}
+                    <div class="card" style="height: 50px;">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <p class=""><i class="fas fa-cog"></i> 
+                                        {% if subproject.short_name|length > 40 %}
+                                            {{ subproject.short_name|slice:":40" }}...
+                                        {% else %}
+                                            {{ subproject.short_name }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="float-right">
+                                    <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="card-body">
+                        <div class="font-weight-bold d-flex justify-content-center text-danger" >
+                            <p>{% translate 'Empty!' %}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                {% comment %} <div class="card" style="height: 50px;">
                     <div class="card-body">
                         <div class="clearfix">
                             <div class="float-left">
@@ -203,7 +241,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> {% endcomment %}
 
             </div>
         </div>
@@ -264,13 +302,13 @@
                 </div>
                 {% endfor %}
             </div>
-            {% if object.get_list_priorities|length > 5 %}
+            {% comment %} {% if object.get_list_priorities|length > 5 %} {% endcomment %}
             <div class="card-footer d-flex justify-content-center">
                 {% with object.get_list_priorities as priorities %}
                     {% include "components/priorities_modal.html" %}
                 {% endwith %}
             </div>
-            {% endif %}
+            {% comment %} {% endif %} {% endcomment %}
             {% else %}
             <div class="card-body">
                 <div class="font-weight-bold d-flex justify-content-center text-danger" >
