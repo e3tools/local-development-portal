@@ -70,3 +70,4 @@ class NoSQLClient:
         if roles:
             members['roles'] = roles
         security_doc.save()
+

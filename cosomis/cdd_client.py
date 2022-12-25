@@ -2,8 +2,6 @@
 # To the cdd app couch db database. This depends on the
 # no_sql_client.py library
 from no_sql_client import NoSQLClient
-from administrativelevels.models import AdministrativeLevel
-
 
 def iterate_administrative_level(adm_list, type):
 
@@ -24,16 +22,25 @@ class CddClient:
             "name": adm_obj.name,
             "administrative_level": adm_obj.type,
             "type": "administrative_level",
+            "administrative_id": adm_obj.id,
             "parent_id": "",
-            "latitude": adm_obj.latitude,
-            "longitude": adm_obj.longitude,
+            "latitude": str(adm_obj.latitude),
+            "longitude": str(adm_obj.longitude),
         }
         self.nsc.create_document(self.adm_db, data)
-        return True
+        new = self.adm_db.get_query_result(
+            {
+                "type": 'administrative_level',
+                "administrative_id": adm_obj.id,
+            }
+        )
+        final = None
+        for obj in new:
+            final = obj
+        return final['_id']
 
-    def sync_administrative_levels(self) -> bool:
+    def sync_administrative_levels(self, administrative_levels) -> bool:
 
-        administrative_levels = AdministrativeLevel.objects.all()
         # Sync Region
         iterate_administrative_level(administrative_levels, "Region")
         # Sync Prefecture
@@ -46,3 +53,26 @@ class CddClient:
         iterate_administrative_level(administrative_levels, "Village")
 
         return True
+
+    def update_administrative_level(self, obj) -> bool:
+        administrative_level = self.adm_db[
+             obj.no_sql_db_id
+        ]
+        print(administrative_level)
+        parent = ""
+        if obj.parent:
+            parent = str(obj.parent.id)
+        data = {
+            "name": obj.name,
+            "administrative_level": obj.type,
+            "parent_id": parent,
+            "latitude": str(obj.latitude),
+            "longitude": str(obj.longitude),
+        }
+        for k, v in data.items():
+            if v:
+                administrative_level[k] = v
+        administrative_level.save()
+        return True
+
+

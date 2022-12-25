@@ -1,5 +1,7 @@
 from email.policy import default
 from django.db import models
+from cdd_client import CddClient
+from django.db.models.signals import post_save
 
 
 # Create your models here.
@@ -21,3 +23,18 @@ class AdministrativeLevel(models.Model):
     def get_list_priorities(self):
         """Method to get the list of the all priorities that the administrative is linked"""
         return self.villagepriority_set.get_queryset()
+
+
+def update_or_create_amd_couch(sender, instance, **kwargs):
+    print("test", instance.id, kwargs['created'])
+    client = CddClient()
+    if kwargs['created']:
+        couch_object_id = client.create_administrative_level(instance)
+        to_update = AdministrativeLevel.objects.filter(id=instance.id)
+        to_update.update(no_sql_db_id=couch_object_id)
+    else:
+        client.update_administrative_level(instance)
+
+
+
+post_save.connect(update_or_create_amd_couch, sender=AdministrativeLevel)
