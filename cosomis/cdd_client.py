@@ -26,7 +26,7 @@ class CddClient:
     def create_administrative_level(self, adm_obj):
         # TODO: You need to manage the parent id from couch.
         # TODO 2: You need to manage the administrative_id.
-        parent = None
+        parent = ""
         if adm_obj.parent:
             parent = str(adm_obj.parent.id)
         data = {
@@ -35,7 +35,7 @@ class CddClient:
             "administrative_level": adm_obj.type,
             "type": "administrative_level",
             "administrative_id": adm_obj.id,
-            "parent_id": "",
+            "parent_id": parent,
             "latitude": str(adm_obj.latitude),
             "longitude": str(adm_obj.longitude),
         }
