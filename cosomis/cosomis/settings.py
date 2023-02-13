@@ -33,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'pl&dkqrq0rj+#n747=@#a-0b(bgb2j#%@f7v4_vp1q84cr7r#$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', False)
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', list, ['localhost'])
 
@@ -59,7 +59,8 @@ CREATED_APPS = [
 
 THIRD_PARTY_APPS = [
     'bootstrap4',
-    'django_unicorn'
+    'django_unicorn',
+    'django_celery_results',
 ]
 
 INSTALLED_APPS += CREATED_APPS + THIRD_PARTY_APPS

@@ -55,18 +55,52 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         datas = {}
-        try:
-            datas = convert_file_to_dict.conversion_file_csv_to_dict(request.FILES.get('file'))
-        except pd.errors.ParserError as exc:
-            datas = convert_file_to_dict.conversion_file_xlsx_to_dict(request.FILES.get('file'))
-        except Exception as exc:
-            messages.info(request, _("An error has occurred..."))
-        
-        message = administrativelevels_functions.save_csv_file_datas_in_db(datas) # call function to save CSV datas in database
+        redirect_path = 'administrativelevels:list'
+        _type = request.POST.get('_type')
+        if _type in ("priority", "subproject"):
+            """Upload priorities by csv"""
+            redirect_path = "administrativelevels:priorities_priorities"
+            try:
+                datas = convert_file_to_dict.conversion_file_xlsx_merger_to_dict(
+                    request.FILES.get('file'), request.POST.get('sheet_name'),
+                    columns_fillna= ["Canton", "Villages", "Sous-projets prioritaire de la sous-composante 1.3 (Besoins des jeunes)"]
+                    )
+            except pd.errors.ParserError as exc:
+                datas = convert_file_to_dict.conversion_file_csv_merger_to_dict(
+                    request.FILES.get('file'), request.POST.get('sheet_name'),
+                    columns_fillna= ["Canton", "Villages", "Sous-projets prioritaire de la sous-composante 1.3 (Besoins des jeunes)"]
+                    )
+            except Exception as exc:
+                messages.info(request, _("An error has occurred..."))
+            
+
+            try:
+                administrative_level_id = request.POST["administrative_level_id"]
+                message, file_path = administrativelevels_functions.save_csv_datas_priorities_in_db(datas, administrative_level_id if bool(request.POST.get("administrative_level_id_checkbox")) else 0, _type) # call function to save CSV datas in database
+                
+                return download_file.download(request, file_path, "text/plain")
+
+                # if message:
+                #     messages.info(request, message)
+                # return redirect(redirect_path, administrative_level_id=administrative_level_id)
+            except Exception as exc:
+                raise Http404
+
+        else:
+            """Load Administrative Levels"""
+            try:
+                datas = convert_file_to_dict.conversion_file_xlsx_to_dict(request.FILES.get('file'))
+            except pd.errors.ParserError as exc:
+                datas = convert_file_to_dict.conversion_file_csv_to_dict(request.FILES.get('file'))
+            except Exception as exc:
+                messages.info(request, _("An error has occurred..."))
+            
+            message = administrativelevels_functions.save_csv_file_datas_in_db(datas) # call function to save CSV datas in database
+            
         if message:
             messages.info(request, message)
 
-        return redirect('administrativelevels:list')
+        return redirect(redirect_path)
     
     def get(self, request, *args, **kwargs):
         context = super(UploadCSVView, self).get(request, *args, **kwargs)
@@ -132,7 +166,7 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
 
 
 #Obstacles
-class ObstaclesListView(PageMixin, LoginRequiredMixin, ListView):
+class ObstaclesListView(PageMixin, LoginRequiredMixin, TemplateView):
     model = VillageObstacle
     template_name = 'priorities/obstacles.html'
     context_object_name = 'obstacles'
@@ -152,6 +186,9 @@ class ObstaclesListView(PageMixin, LoginRequiredMixin, ListView):
         ctx = super(ObstaclesListView, self).get_context_data(**kwargs)
         ctx.setdefault('administrativelevel_village', ObstaclesListView.administrativelevel_village)
         ctx.setdefault('OBSTACLES_FOCUS_GROUP', OBSTACLES_FOCUS_GROUP)
+
+        ctx.setdefault('obstacles', VillageObstacle.objects.filter(administrative_level_id=ObstaclesListView.administrative_level_id).order_by('ranking'))
+
         return ctx
 
     def get(self, request, *args, **kwargs):
@@ -159,7 +196,7 @@ class ObstaclesListView(PageMixin, LoginRequiredMixin, ListView):
             ObstaclesListView.administrative_level_id = kwargs['administrative_level_id']
             ObstaclesListView.administrativelevel_village = AdministrativeLevel.objects.get(id=ObstaclesListView.administrative_level_id, type="Village")
             context = super(ObstaclesListView, self).get(request, *args, **kwargs)
-            context['obstacles'] = VillageObstacle.objects.filter(administrative_level_id=ObstaclesListView.administrative_level_id)
+            # context['obstacles'] = VillageObstacle.objects.filter(administrative_level_id=ObstaclesListView.administrative_level_id)
         except Exception as exc:
             raise Http404
         return context
@@ -218,7 +255,7 @@ def obstacle_delete(request, obstacle_id):
 
 
 #Goals
-class GoalsListView(PageMixin, LoginRequiredMixin, ListView):
+class GoalsListView(PageMixin, LoginRequiredMixin, TemplateView):
     model = VillageGoal
     template_name = 'priorities/goals.html'
     context_object_name = 'goals'
@@ -238,6 +275,9 @@ class GoalsListView(PageMixin, LoginRequiredMixin, ListView):
         ctx = super(GoalsListView, self).get_context_data(**kwargs)
         ctx.setdefault('administrativelevel_village', GoalsListView.administrativelevel_village)
         ctx.setdefault('GOALS_FOCUS_GROUP', GOALS_FOCUS_GROUP)
+
+        ctx.setdefault('goals', VillageGoal.objects.filter(administrative_level_id=GoalsListView.administrative_level_id).order_by('ranking'))
+
         return ctx
 
     def get(self, request, *args, **kwargs):
@@ -245,7 +285,7 @@ class GoalsListView(PageMixin, LoginRequiredMixin, ListView):
             GoalsListView.administrative_level_id = kwargs['administrative_level_id']
             GoalsListView.administrativelevel_village = AdministrativeLevel.objects.get(id=GoalsListView.administrative_level_id, type="Village")
             context = super(GoalsListView, self).get(request, *args, **kwargs)
-            context['goals'] = VillageGoal.objects.filter(administrative_level_id=GoalsListView.administrative_level_id)
+            # context['goals'] = VillageGoal.objects.filter(administrative_level_id=GoalsListView.administrative_level_id)
         except Exception as exc:
             raise Http404
         return context
@@ -304,7 +344,7 @@ def goal_delete(request, goal_id):
 
 
 #Priorities
-class PrioritiesListView(PageMixin, LoginRequiredMixin, ListView):
+class PrioritiesListView(PageMixin, LoginRequiredMixin, TemplateView):
     model = VillagePriority
     template_name = 'priorities/priorities.html'
     context_object_name = 'priorities'
@@ -325,6 +365,9 @@ class PrioritiesListView(PageMixin, LoginRequiredMixin, ListView):
         ctx.setdefault('administrativelevel_village', PrioritiesListView.administrativelevel_village)
         ctx.setdefault('components', Component.objects.all())
         ctx.setdefault('goals', VillageGoal.objects.filter(administrative_level=PrioritiesListView.administrativelevel_village))
+        
+        ctx.setdefault('priorities', VillagePriority.objects.filter(administrative_level_id=PrioritiesListView.administrative_level_id).order_by('ranking'))
+        
         return ctx
 
     def get(self, request, *args, **kwargs):
@@ -332,7 +375,8 @@ class PrioritiesListView(PageMixin, LoginRequiredMixin, ListView):
             PrioritiesListView.administrative_level_id = kwargs['administrative_level_id']
             PrioritiesListView.administrativelevel_village = AdministrativeLevel.objects.get(id=PrioritiesListView.administrative_level_id, type="Village")
             context = super(PrioritiesListView, self).get(request, *args, **kwargs)
-            context['priorities'] = VillagePriority.objects.filter(administrative_level_id=PrioritiesListView.administrative_level_id)
+            # context['priorities'] = VillagePriority.objects.filter(administrative_level_id=PrioritiesListView.administrative_level_id)
+            
         except Exception as exc:
             raise Http404
         return context

@@ -1,7 +1,12 @@
 from administrativelevels.models import AdministrativeLevel
+from subprojects.models import VillagePriority, Component, Subproject
 from django.utils.translation import gettext_lazy as _
 import os
 from sys import platform
+from administrativelevels.libraries import functions as libraries_functions
+from datetime import datetime
+import pandas as pd
+
 
 def save_csv_file_datas_in_db(datas_file: dict) -> str:
     """Function to save the CSV datas in database"""
@@ -15,7 +20,7 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
         while count < long:
             for column in columns:
                 try:
-                    name = str(datas_file[column][count]).upper()
+                    name = str(datas_file[column][count]).upper().strip()
                     frontalier = bool(datas_file["Village frontalier (1=oui, 0= non)"][count])
                     rural = bool(datas_file["Localité (Rural=1, urbain=0)"][count])
                     latitude, longitude = None, None
@@ -93,8 +98,6 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
     if file_type not in ("csv", "excel") or _type not in ("All", "Region", "Prefecture", "Commune", "Canton", "Village"):
         return ""
 
-    from datetime import datetime
-    import pandas as pd
     datas = {
         "Région" : {}, "Id Région" : {}, "Préfecture" : {}, "Id Préfecture" : {}, 
         "Commune" : {}, "Id Commune" : {}, "Canton" : {}, "Id Canton" : {}, 
@@ -184,3 +187,227 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
         return file_path.replace("/", "\\\\")
     else:
         return file_path
+
+
+
+
+
+
+
+
+def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0, type_object="priority") -> str:
+    """Function to save the CSV datas in database"""
+    
+    at_least_one_save = False # Variable to determine if at least one is saved
+    at_least_one_error = False # Variable to determine if at least one error is occurred
+    at_least_error_name = False # Variable to determine if the name of village is wrong
+    text_errors = ""
+    list_villages_not_found = []
+    list_villages_multi_obj_found = []
+    nbr_subproject_not_associate_to_priority = 0
+    text_subproject_not_associate_to_priority = ""
+    list_objects_exist = []
+    nbr_other_errors = 0
+    # columns = [
+    #     "Canton", "Villages", "Sous-projets prioritaire de la sous-composante 1.1 (infrastructures communautaires)", 
+    #     "Coût estimatif", "Cycle", "Sous-projets prioritaire de la sous-composante 1.3 (Besoins des jeunes)"
+    # ]
+    columns = [
+        "Sous-projets prioritaire de la sous-composante 1.1 (infrastructures communautaires)", 
+        "Sous-projets prioritaire de la sous-composante 1.3 (Besoins des jeunes)"
+    ]
+    # print(list(datas_file.keys()))
+    _components = {
+        '1': 'COMPOSANTE 1', '1.1': 'COMPOSANTE 1.1', '1.2': 'COMPOSANTE 1.2', 
+        '1.2a': 'COMPOSANTE 1.2a', '1.2b': 'COMPOSANTE 1.2b', '1.3': 'COMPOSANTE 1.3', 
+        '2': 'COMPOSANTE 2', '3': 'COMPOSANTE 3', '4': 'COMPOSANTE 4', '5': 'COMPOSANTE 5'
+    }
+    if datas_file:
+        count = 0
+        long = len(list(datas_file.values())[0])
+        while count < long:
+            for column in columns:
+                
+                try:
+                    data = datas_file[column][count]
+                    canton = datas_file["Canton"][count]
+                    _village = str(datas_file["Villages"][count])
+                    __village = str(datas_file["Villages"][count]).upper()
+                    estimated_cost = datas_file["Coût estimatif"][count]
+                    estimated_cost = estimated_cost if not pd.isna(estimated_cost) else None
+                    cycle = datas_file["Cycle"][count]
+                    cycle = cycle if not pd.isna(cycle) else None
+                    ranking = 0
+                    name_priority = None
+                    component = None
+                    
+                    for village in __village.split("/"):
+                        village = village.strip()
+                        _is_object_error = False
+                        administrative_level = None
+                        try:
+                            administrative_level = AdministrativeLevel.objects.get(name=village, type="Village")
+                        except AdministrativeLevel.DoesNotExist as exc:
+                            try:
+                                administrative_level = AdministrativeLevel.objects.get(
+                                    name=libraries_functions.strip_accents(village), type="Village"
+                                )
+                            except AdministrativeLevel.DoesNotExist as exc:
+                                try:
+                                    administrative_level = AdministrativeLevel.objects.get(name=village.replace(" ", ""), type="Village")
+                                except AdministrativeLevel.DoesNotExist as exc:
+                                    try:
+                                        administrative_level = AdministrativeLevel.objects.get(
+                                            name=libraries_functions.strip_accents(village.replace(" ", "")), type="Village"
+                                        )
+                                    except AdministrativeLevel.DoesNotExist as exc:
+                                        _is_object_error = True
+                                        if _village not in list_villages_not_found:
+                                            list_villages_not_found.append(_village)
+                                        text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count}: {exc.__str__()}')
+                                        at_least_error_name = True
+                                        at_least_one_error = True
+                                    except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                        raise AdministrativeLevel.MultipleObjectsReturned()
+
+                                except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                    raise AdministrativeLevel.MultipleObjectsReturned()
+
+                            except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                raise AdministrativeLevel.MultipleObjectsReturned()
+
+                        except AdministrativeLevel.MultipleObjectsReturned as exc:
+                            _is_object_error = True
+                            if _village not in list_villages_multi_obj_found:
+                                list_villages_multi_obj_found.append(_village)
+                            at_least_error_name = True
+                            at_least_one_error = True
+                            text_errors += f'\nLine N°{count} [{_village}]: {exc.__str__()}'
+                        
+                        if not _is_object_error:
+                            
+                            if administrative_level_id and int(administrative_level.id) != int(administrative_level_id):
+                                continue #Continue without save the object if the village is specific and the village current is different
+                            
+                            estimated_cost = float(estimated_cost) if estimated_cost else 0.0
+                            
+                            _list_chars = column.split(" ")
+                            for char in _list_chars:
+                                if char in list(_components.keys()):
+                                    _list_data = str(data).split("-")
+                                    if _list_data[0].isdigit():
+                                        ranking = int(_list_data[0])
+                                        name_priority = (str(data)[(len(_list_data[0])+1):]).strip()
+                                    else:
+                                        name_priority = str(data).strip()
+                                    try:
+                                        component = Component.objects.get(name=_components[char].upper())
+                                    except Exception as exc:
+                                        component = None
+                            
+                            if type_object=="priority" and not VillagePriority.objects.filter(name=name_priority, administrative_level=administrative_level, component=component):
+                                priority = VillagePriority()
+                                priority.name = name_priority
+                                priority.administrative_level = administrative_level
+                                priority.estimated_cost = estimated_cost
+                                priority.component = component
+                                priority.ranking = ranking
+                                priority.proposed_men = 0
+                                priority.proposed_women = 0
+                                priority.meeting_id = 1
+                                priority.climate_changing_contribution = ""
+                                priority.save()
+                                at_least_one_save = True
+                            elif type_object == "priority":
+                                list_objects_exist.append(name_priority)
+                            elif type_object=="subproject" and not Subproject.objects.filter(short_name=name_priority, administrative_level=administrative_level, component=component):
+                                
+                                if estimated_cost and estimated_cost != 0:
+                                    villages = VillagePriority.objects.filter(administrative_level=administrative_level, component=component, estimated_cost=estimated_cost)
+                                    
+                                    subproject = Subproject()
+                                    subproject.short_name = name_priority
+                                    subproject.administrative_level = administrative_level
+                                    subproject.target_youth_beneficiaries = 0
+                                    subproject.component = component
+                                    subproject.ranking = 1
+                                    subproject.allocation = estimated_cost
+                                    if len(villages) == 0:
+                                        nbr_subproject_not_associate_to_priority += 1
+                                        text_subproject_not_associate_to_priority += f'\nN°{nbr_subproject_not_associate_to_priority} [{name_priority}] : Not found priority. Please assaociate the priority manually.'
+                                    elif len(villages) == 1:
+                                        subproject.target_female_beneficiaries = villages[0].proposed_women
+                                        subproject.target_male_beneficiaries = villages[0].proposed_men
+
+                                        subproject = subproject.save_and_return_object()
+                                        subproject.priorities.add(villages[0])
+                                        subproject.save()
+
+                                        at_least_one_save = True
+                                    elif len(villages) > 1:
+                                        nbr_subproject_not_associate_to_priority += 1
+                                        text_subproject_not_associate_to_priority += f'\nN°{nbr_subproject_not_associate_to_priority} [{name_priority}] : Found {len(villages)} priorities for this subprojects. Please assaociate the priority manually.'
+                            elif type_object == "subproject":
+                                list_objects_exist.append(name_priority)
+
+
+                except Exception as exc:
+                    text_errors += f'\nLine N°{count} [{_village}]: {exc.__str__()}'
+                    nbr_other_errors += 1
+                    at_least_one_error = True
+
+            count += 1
+            # if count == 1:
+            #     break
+    
+    message = ""
+    if at_least_one_save and not at_least_one_error:
+        message = _("Success!")
+    elif not at_least_one_save and not at_least_one_error:
+        message = _("No items have been saved!")
+    elif not at_least_one_save and at_least_one_error:
+        if at_least_error_name:
+            message = _("A problem has occurred! The name(s) of the village(s) is wrong.")
+        else:
+            message = _("A problem has occurred!")
+    elif at_least_one_save and at_least_one_error:
+        if at_least_error_name:
+            message = _("Some element(s) have not been saved! The name(s) of the village(s) is wrong.")
+        else:
+            message = _("Some element(s) have not been saved!")
+
+    summary_errors = "##########################################################Summary###################################################################\n"
+    summary_errors += f'\nNumber of object not found errors: {len(list_villages_not_found)} ==> {list_villages_not_found}'
+    summary_errors += f'\n\nNumber of Multiple object found errors: {len(list_villages_multi_obj_found)} ==> {list_villages_multi_obj_found}'
+    summary_errors += f'\n\nNumber of other errors: {nbr_other_errors}'
+
+    if text_subproject_not_associate_to_priority:
+        summary_errors += "\n\n\n##########################################################Object Subproject don't save###################################################################\n"
+        summary_errors += f"\nNumber of the subprojects don't save : {nbr_subproject_not_associate_to_priority}"
+        summary_errors += text_subproject_not_associate_to_priority
+
+    if list_objects_exist:
+        summary_errors += "\n\n\n##########################################################Object already exist###################################################################\n"
+        summary_errors += f"\nNumber : {len(list_objects_exist)}"
+        summary_errors += f"\n{list_objects_exist}"
+
+    summary_errors += "\n\n\n##########################################################Messages###################################################################\n"
+    summary_errors += "\n" + message
+
+    summary_errors += "\n\n\n##########################################################Details###################################################################\n"
+    summary_errors += "\n" + text_errors
+
+    if not os.path.exists("media/logs/errors"):
+        os.makedirs("media/logs/errors")
+    file_path = "logs/errors/upload_priorities_logs_errors_" + str(datetime.today().replace(microsecond=0)).replace("-", "").replace(":", "").replace(" ", "_") + ".txt"
+    
+    if type_object=="subproject":
+        file_path = file_path.replace("upload_priorities_logs_errors_", "upload_subprojects_logs_errors_")
+
+    f = open("media/"+file_path, "a")
+    f.write(summary_errors)
+    f.close()
+    
+
+
+    return (message, file_path.replace("/", "\\\\") if platform == "win32" else file_path)

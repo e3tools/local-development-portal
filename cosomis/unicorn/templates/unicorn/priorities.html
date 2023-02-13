@@ -9,13 +9,16 @@
                         <div class="btn-group pull-left">
                             <a class="text-primary font-weight-bold" href="#">C- {% translate 'List Of Development Priorities Eligible For Coso Project Funding' %}</a>
                         </div>
+                        <div class="btn-group pull-right">
+                            {% include 'components/modal_upload_one_sheet.html' with type_object="priority" show_just_villages=True %}
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
                     {% for object in priorities %}
                     <div>
                         <div>
-                          <span class="shadow-lg p-2 mb-5 bg-white rounded">{% translate 'Priority' %} {{ forloop.counter }}</span>
+                          <span class="shadow-lg p-2 mb-5 bg-white rounded">{% translate 'Priority' %} {{ forloop.counter }}</span> {{ object.name }}
                         </div>
                         <div>
                               <form class="" method="post">
@@ -125,7 +128,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <button unicorn:click="add" class="btn btn-primary mb-2 float-right" id="btn_form"><i class="fas fa-plus" ></i> <small>{% translate 'Add Another Goal' %}</small></button>
+                    <button unicorn:click="add" class="btn btn-primary mb-2 float-right" id="btn_form"><i class="fas fa-plus" ></i> <small>{% translate 'Add Another Priority' %}</small></button>
                     <div class="clearfix"></div>
                 </div>
                 

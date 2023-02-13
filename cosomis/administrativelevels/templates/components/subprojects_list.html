@@ -1,7 +1,6 @@
-{% extends 'layouts/base.html' %}
+
 {% load static i18n %}
 
-{% block content %}
     <div class="row">
         <div class="col-12">
             <div class="input-group mb-3 search-bar">
@@ -13,40 +12,29 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-12">
-                        <div class="btn-group pull-left">
-                            <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create' %}</a>
-                            &nbsp; &nbsp; &nbsp; &nbsp; 
-                            {% include 'components/modal_upload_one_sheet.html' with type_object="subproject" show_just_villages=False %}
-                        </div>
                         <div class="btn-group pull-right">
-                            <a class="btn btn-primary" href="{% url 'subprojects:map' %}">{% translate 'Map View' %}</a>
+                            <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create' %} {% translate 'Subproject' %}</a>
                         </div>
                     </div>
                 </div>
                 <div class="card-body table-responsive">
-                    <table id="table" class="table">
+                    <table id="table-subprojects" class="table">
                         <thead>
                         <tr>
-                            <th>{% translate 'Village' %}</th>
-                            <th>{% translate 'Canton' %}</th>
-                            <th>{% translate 'Region' %}</th>
-                            <th>{% translate 'Project Name' %}</th>
-                            <th>{% translate 'Allocation' %}</th>
+                            <th>{% translate 'Name' %}</th>
+                            <th>{% translate 'Component' %}</th>
                             <th>{% translate 'Action' %}</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for subproject in subprojects %}
                             <tr>
-                                <td>{{ subproject.administrative_level.name }}</td>
-                                <td>{{ subproject.administrative_level.parent.name }}</td>
-                                <td>{{ subproject.administrative_level.parent.parent.name }}</td>
-                                <td>{{ subproject.short_name }}</td>
-                                <td>{{ subproject.allocation }}</td>
+                                <td align="left">{{ subproject.short_name }}</td>
+                                <td>{{ subproject.component.name }}</td>
                                 <td>
-                                    <a href="{% url 'subprojects:detail' subproject.pk %}"
+                                    <a href="#"
                                        class="btn btn-primary btn-xs">
-                                        {% translate 'View subproject' %}
+                                        {% translate 'View' %}
                                     </a>
                                 </td>
                             </tr>
@@ -57,16 +45,12 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block javascript %}
-    {{ block.super }}
 
     <script type="text/javascript">
         $(document).ready(function () {
             {% get_current_language as lang %}
 
-            let table = $('#table').DataTable({
+            let table = $('#table-subprojects').DataTable({
                 language: {
                     url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
                 },
@@ -87,4 +71,4 @@
             });
         });
     </script>
-{% endblock %}
+    

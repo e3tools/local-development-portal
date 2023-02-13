@@ -30,9 +30,17 @@ msgstr "Aucun élément n'a été enregistré !"
 msgid "A problem has occurred!"
 msgstr "Un problème est survenu !"
 
+#: .\administrativelevels\functions.py
+msgid "A problem has occurred! The name(s) of the village(s) is wrong."
+msgstr "Un problème est survenu ! Les noms de certains villages sont erronés"
+
 #: .\administrativelevels\functions.py:68
 msgid "Some element(s) have not been saved!"
 msgstr "Certain(s) élément(s) n'ont pas été sauvegardé(s) !"
+
+#: .\administrativelevels\functions.py
+msgid "Some element(s) have not been saved! The name(s) of the village(s) is wrong."
+msgstr "Certain(s) élément(s) n'ont pas été sauvegardé(s) ! Les noms de certains villages sont erronés"
 
 #: .\administrativelevels\templates\administrativelevels_list.html:11
 #: .\administrativelevels\templates\components\priorities_list.html:10
@@ -194,6 +202,10 @@ msgstr "Obstacle"
 #: .\unicorn\templates\unicorn\obstacles.html:70
 msgid "Add Another Obstacle"
 msgstr "Ajouter un autre Obstacle"
+
+#: .\unicorn\templates\unicorn\priorities.html
+msgid "Add Another Priority"
+msgstr "Ajouter un autre Priorité"
 
 #: .\administrativelevels\templates\priorities\priorities.html:14
 #: .\unicorn\templates\unicorn\priorities.html:10
@@ -562,3 +574,23 @@ msgstr "Type de fichier"
 #: .\administrativelevels\templates\components\download.html
 msgid "download"
 msgstr "Télécharger"
+
+#: .\subprojects\views.py:117
+msgid "Create Vulnerable Group"
+msgstr "Créer un Groupe Vulnérable"
+
+#: .\subprojects\views.py:123
+msgid "Successfully created"
+msgstr "Créé avec succès"
+
+#: .\subprojects\templates\vulnerable_group_create.html:11
+msgid "List Vulnerable Groups"
+msgstr "Liste des Groupes Vulnérables"
+
+#: .\administrativelevels\templates\components\modal_upload_one_sheet.html
+msgid "Sheet Name"
+msgstr "Nom de la Feuille"
+
+#: .\administrativelevels\templates\components\modal_upload_one_sheet.html
+msgid "Just this village"
+msgstr "Juste ce village"

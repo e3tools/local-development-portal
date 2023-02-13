@@ -3,19 +3,32 @@ from django.db import models
 from administrativelevels.models import AdministrativeLevel
 
 
+class BaseModel(models.Model):
+    created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+    updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
+
+    class Meta:
+        abstract = True
+    
+    def save_and_return_object(self):
+        super().save()
+        return self
+
+
 # Create your models here.
-class Subproject(models.Model):
+class Subproject(BaseModel):
     short_name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     administrative_level = models.ForeignKey(AdministrativeLevel, null=False, on_delete=models.CASCADE)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+    # created_date = models.DateTimeField(auto_now_add=True)
+    # updated_date = models.DateTimeField(auto_now=True)
     target_female_beneficiaries = models.IntegerField()
     target_male_beneficiaries = models.IntegerField()
     target_youth_beneficiaries = models.IntegerField()
     component = models.ForeignKey('Component', null=True, on_delete=models.CASCADE)
     priorities = models.ManyToManyField('VillagePriority', null=True, blank=True, related_name='priorities_covered')
     ranking = models.IntegerField(default=0)
+    allocation = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.short_name
@@ -31,17 +44,6 @@ class VulnerableGroup(models.Model):
     def __str__(self):
         return self.name
 
-
-class BaseModel(models.Model):
-    created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
-    updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
-
-    class Meta:
-        abstract = True
-    
-    def save_and_return_object(self):
-        super().save()
-        return self
 
 
 class VillageObstacle(BaseModel):
