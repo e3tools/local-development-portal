@@ -594,3 +594,23 @@ msgstr "Nom de la Feuille"
 #: .\administrativelevels\templates\components\modal_upload_one_sheet.html
 msgid "Just this village"
 msgstr "Juste ce village"
+
+#: .\administrativelevels\templates\administrativelevels_list.html
+msgid "Geographical unit"
+msgstr "Unité géographique"
+
+#: .\administrativelevels\templates\geographical_unit_list.html
+msgid "Create geographical unit"
+msgstr "Créer une unité géographique"
+
+#: .\administrativelevels\views.py
+msgid "Geographical units"
+msgstr "Unités géographiques"
+
+#: .\administrativelevels\templates\geographical_unit_list.html
+msgid "Create CVD"
+msgstr "Créer CVD"
+
+#: .\administrativelevels\templates\geographical_unit_list.html
+msgid "CVD list"
+msgstr "liste CVD"
