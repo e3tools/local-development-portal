@@ -14,15 +14,12 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="btn-group pull-left">
-                            <a class="btn btn-primary" target="_blank" href="{% url 'administrativelevels:geographical_units_list' %}">{% translate 'Geographical unit' %}</a>
-                            <div> &nbsp; &nbsp; </div>
-                            <a class="btn btn-primary" target="_blank" href="{% url 'administrativelevels:cvds_list' %}">{% translate 'CVD' %}</a>
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_unit_create' %}">{% translate 'Create geographical unit' %}</a>
                         </div>
-
                         <div class="btn-group pull-right">
-                            {% include 'components/upload.html' %}
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:cvd_create' %}">{% translate 'Create CVD' %}</a>
                             <div> &nbsp; &nbsp; </div>
-                            {% include 'components/download.html' %}
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:cvds_list' %}">{% translate 'CVD list' %}</a>
                         </div>
                     </div>
                 </div>
@@ -30,7 +27,8 @@
                     <table id="table" class="table">
                         <thead>
                         <tr>
-                            <th>{% translate 'Village' %}</th>
+                            <th>{% translate 'Name' %}</th>
+                            <th>{% translate 'Code' %}</th>
                             <th>{% translate 'Canton' %}</th>
                             <th>{% translate 'Commune' %}</th>
                             <th>{% translate 'Prefecture' %}</th>
@@ -39,17 +37,22 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for administrativelevel in administrativelevels %}
+                        {% for geographicalunit in geographicalunits %}
                             <tr>
-                                <td>{{ administrativelevel.name }}</td>
-                                <td>{{ administrativelevel.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.parent.parent.name }}</td>
+                                <td>{{ geographicalunit.get_name }}</td>
+                                <td>{{ geographicalunit.unique_code }}</td>
+                                <td>{{ geographicalunit.canton.name }}</td>
+                                <td>{{ geographicalunit.canton.parent.name }}</td>
+                                <td>{{ geographicalunit.canton.parent.parent.name }}</td>
+                                <td>{{ geographicalunit.canton.parent.parent.parent.name }}</td>
                                 <td>
-                                     <a href="{% url 'administrativelevels:village_detail' administrativelevel.pk %}"
-                                       class="btn btn-primary btn-xs">
-                                        {% translate 'View details' %}
+                                     <a href="{% url 'administrativelevels:geographical_unit_detail' geographicalunit.pk %}"
+                                       class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
+                                        <span class="_mobile"><i class="fa fa-eye"></i></span>
+                                    </a>
+                                    <a href="{% url 'administrativelevels:geographical_unit_update' geographicalunit.pk %}"
+                                       class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
+                                        <span class="_mobile"><i class="fa fa-edit"></i></span>
                                     </a>
                                 </td>
                             </tr>

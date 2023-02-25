@@ -20,8 +20,8 @@
                         <div class="col-6">
                             <div class="card rounded-3" style="background-color: wheat; opacity: 75% !important;">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ object.name }}</h5>
-                                    <p class="card-text">{{ object.parent.parent.parent.parent.name|title }}</p>
+                                    <h5 class="card-title"><a href="{% url 'administrativelevels:cvd_update' object.pk %}" style="color: black;">{{ object.attributed_number_in_canton}} - {{ object.get_name }}</a></h5>
+                                    <p class="card-text">{{ object.get_canton.parent.parent.parent.name|title }}</p>
                                 </div>
                             </div>
                         </div>
@@ -89,19 +89,20 @@
                 </div>
                 <div class="card bg-light" style="height: 30px;">
                     <div class="card-body">
-                        <h5 class="font-weight-bold">
-                            <div class="clearfix">
+                        <div class="font-weight-bold">
+                             <div class="clearfix">
                                 <div class="float-left">
                                     <h5 class="font-weight-bold">{% translate 'Remaining' %} </h5>
                                 </div>
-                                <div class="float-right"><a href="#" class="font-weight-bold text-primary">6000 USD</a>
-                                </div>
+                                <div class="float-right"><a href="#" class="font-weight-bold text-primary">6000 USD</a></div>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="clearfix">
+
+                 <div class="clearfix">
                     <div class="float-left">
                         <h6 class="font-weight-bold text-danger">- 550 USD</h6>
                     </div>
@@ -110,62 +111,39 @@
                     </div>
                 </div>
                 <hr>
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h6 class="font-weight-bold text-danger">- 550 USD</h6>
-                    </div>
-                    <div class="float-right">
-                        <span href="#">{% translate 'Lorem ipsum' %} </span>
-                    </div>
-                </div>
-                <hr>
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h6 class="font-weight-bold text-danger">- 550 USD</h6>
-                    </div>
-                    <div class="float-right">
-                        <span href="#">{% translate 'Lorem ipsum' %} </span>
-                    </div>
-                </div>
-                <hr>
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h6 class="font-weight-bold text-danger">- 550 USD</h6>
-                    </div>
-                    <div class="float-right">
-                        <span href="#">{% translate 'Lorem ipsum' %} </span>
-                    </div>
-                </div>
+
             </div>
             <div class="card-footer d-flex justify-content-center">
                 <h6><a href="#" class="font-weight-bold text-primary">{% translate 'View All Movements' %}</a></h6>
             </div>
         </div>
     </div>
+    
     <div class="col-4">
         <div class="card">
             <div class="card-body">
                 <div class="clearfix">
-                    <div class="float-left">
-                        <h5 class="font-weight-bold">{% translate 'Activities' %}</h5>
-                    </div>
-                    <div class="float-right">
-                        <div class="">
-                            <!-- <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked> -->
-                            <label class="form-check-label font-weight-bold" for="flexSwitchCheckChecked">{% translate 'Calendar' %}</label>
-                        </div>
+                    <div class="">
+                        <h5 class="font-weight-bold">{% translate 'Villages' %}</h5>
                     </div>
                 </div>
 
-                <!-- white_card card_height_100 mb_30 
-                date_picker_wrapper 
-            default-datepicker-->
-                <div class="">
-                    <div class="">
-                        <div class="">
-                            <div class="datepicker-here" data-language='en'></div>
+                <div class="card-body">
+                    {% for village in object.get_villages %}
+                    <div class="clearfix">
+                        <div class="float-left">
+                            <h6 class="font-weight-bold text-danger">{{ village.name }} <span style="font-size: 9px;">({{ village.cvd.attributed_number_in_canton }} - {{ village.cvd.get_name }})</span></h6>
+                        </div>
+                        <div class="float-right">
+                            <a target="_blank" href="{% url 'administrativelevels:village_detail' village.pk %}">{% translate 'Detail' %} </a>
                         </div>
                     </div>
+                    <hr>
+                    {% empty %}
+                        <div class="font-weight-bold d-flex justify-content-center text-danger" >
+                            <p>{% translate 'Empty!' %}</p>
+                        </div>
+                    {% endfor %}
                 </div>
 
             </div>
@@ -176,17 +154,14 @@
             <div class="card-body">
                 <div class="clearfix">
                     <div>
-                        {% if object.geographical_unit or object.cvd %}
+
+                        {% if object.geographical_unit %}
                         <div>
-                            {% if object.cvd %}
-                            <h5 class="font-weight-bold" style="font-size: 12;">CVD : {{ object.cvd.attributed_number_in_canton }} - {{ object.cvd.get_name }}</h5>
-                            {% endif %}
-                            {% if object.geographical_unit %}
                             <h5 class="font-weight-bold" style="font-size: 12;">Unit : {{ object.geographical_unit.attributed_number_in_canton }} - {{ object.geographical_unit.get_name }}</h5>
-                            {% endif %}
                         </div>
                         <hr />
                         {% endif %}
+
                         <h5 class="font-weight-bold">{% translate 'Subprojects' %} 
                          &nbsp; &nbsp;  <a href="{% url 'subprojects:create' %}" class="font-weight-bold"> <i
                             class="fas fa-plus"></i></a>
@@ -208,8 +183,8 @@
                             <div class="clearfix">
                                 <div class="float-left">
                                     <p class=""><i class="fas fa-cog"></i> 
-                                        {% if subproject.short_name|length > 30 %}
-                                            {{ subproject.short_name|slice:":30" }}...
+                                        {% if subproject.short_name|length > 40 %}
+                                            {{ subproject.short_name|slice:":40" }}...
                                         {% else %}
                                             {{ subproject.short_name }}
                                         {% endif %}
@@ -229,36 +204,13 @@
                         </div>
                     </div>
                 {% endif %}
-                {% comment %} <div class="card" style="height: 50px;">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div class="float-left">
-                                <p class=""><i class="fas fa-cog"></i> Rural Marked Expansion</p>
-                            </div>
-                            <div class="float-right">
-                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="height: 50px;">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div class="float-left">
-                                <p class=""><i class="fas fa-cog"></i> School Rehabilitation</p>
-                            </div>
-                            <div class="float-right">
-                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div> {% endcomment %}
 
             </div>
         </div>
     </div>
 </div>
 
+{% comment %} 
 <div style="height: 15px;"></div>
 
 <div class="row">
@@ -278,7 +230,7 @@
         <div class="card">
             {% if object.get_list_priorities %}
             <div class="card-body">
-                {% for priority in object.get_list_priorities|slice:":5" %}<!-- limit to 5 -->
+                {% for priority in object.get_list_priorities|slice:":5" %}
                 <div class="card">
                     <div class="card-body">
                         <div class="clearfix">
@@ -287,8 +239,8 @@
                                     {% with priority.name|add:" ("|add:priority.component.name|add:")" as namepriority_with_component %}
                                     <p class="" title="{{ namepriority_with_component }}">
                                         <i class="fas fa-project-diagram"></i> &nbsp; 
-                                        {% if namepriority_with_component|length > 30 %}
-                                            {{ namepriority_with_component|slice:":30" }}...
+                                        {% if namepriority_with_component|length > 40 %}
+                                            {{ namepriority_with_component|slice:":40" }}...
                                         {% else %}
                                             {{ namepriority_with_component }}
                                         {% endif %}
@@ -297,8 +249,8 @@
                                 {% else %}
                                 <p class="" title="{{ priority.name }}">
                                     <i class="fas fa-project-diagram"></i> &nbsp; 
-                                    {% if priority.name|length > 30 %}
-                                        {{ priority.name|slice:":30" }}...
+                                    {% if priority.name|length > 40 %}
+                                        {{ priority.name|slice:":40" }}...
                                     {% else %}
                                         {{ priority.name }}
                                     {% endif %}
@@ -313,13 +265,12 @@
                 </div>
                 {% endfor %}
             </div>
-            {% comment %} {% if object.get_list_priorities|length > 5 %} {% endcomment %}
+            
             <div class="card-footer d-flex justify-content-center">
                 {% with object.get_list_priorities as priorities %}
                     {% include "components/priorities_modal.html" %}
                 {% endwith %}
             </div>
-            {% comment %} {% endif %} {% endcomment %}
             {% else %}
             <div class="card-body">
                 <div class="font-weight-bold d-flex justify-content-center text-danger" >
@@ -337,7 +288,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
 
 
 
