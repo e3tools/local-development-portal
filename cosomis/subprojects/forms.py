@@ -1,6 +1,6 @@
 from django import forms
 from .models import Subproject, VulnerableGroup
-from administrativelevels.models import AdministrativeLevel
+from administrativelevels.models import AdministrativeLevel, CVD
 
 class SubprojectForm(forms.ModelForm):
 
@@ -8,10 +8,13 @@ class SubprojectForm(forms.ModelForm):
         super(SubprojectForm, self).__init__(*args, **kwargs)
         for label, field in self.fields.items():
             self.fields[label].widget.attrs.update({'class' : 'form-control'})
-            if label == "administrative_level":
-                self.fields[label].queryset = AdministrativeLevel.objects.filter(type="Village")
-                self.fields[label].label = "Village"
-
+            # if label == "administrative_level":
+            #     self.fields[label].queryset = AdministrativeLevel.objects.filter(type="Village")
+            #     self.fields[label].label = "Village"
+            #(type__in=['Village','Canton'])
+            if label == "cvds":
+                self.fields[label].queryset = CVD.objects.filter()
+                self.fields[label].label = "CVD"
 
     class Meta:
         model = Subproject
