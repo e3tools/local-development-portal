@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.contrib import messages
-from django.views.generic import DetailView, TemplateView, ListView
+from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from cosomis.constants import OBSTACLES_FOCUS_GROUP, GOALS_FOCUS_GROUP
 from cosomis.mixins import PageMixin
@@ -9,10 +10,11 @@ import pandas as pd
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.translation import gettext_lazy as _
 
-from administrativelevels.models import AdministrativeLevel
+from administrativelevels.models import AdministrativeLevel, GeographicalUnit, CVD
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
+from .forms import GeographicalUnitForm, CVDForm
 
 
 class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
@@ -447,3 +449,261 @@ def priority_delete(request, priority_id):
 
 
 
+#====================== Geographical unit=========================================
+class GeographicalUnitListView(PageMixin, LoginRequiredMixin, ListView):
+    """Display geographical unit list"""
+
+    model = GeographicalUnit
+    queryset = GeographicalUnit.objects.filter()
+    template_name = 'geographical_unit_list.html'
+    context_object_name = 'geographicalunits'
+    title = _('Geographical units')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, CreateView):
+    model = GeographicalUnit
+    template_name = 'geographical_unit_create.html'
+    context_object_name = 'geographicalunit'
+    title = _('Create geographical unit')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+ 
+    form_class = GeographicalUnitForm # specify the class form to be displayed
+
+    def post(self, request, *args, **kwargs):
+        form = GeographicalUnitForm(request.POST)
+        if form.is_valid():
+            # cvds = form.cleaned_data['cvds']
+            villages = form.cleaned_data['villages']
+            
+            unit = form.save(commit=False)
+            length_str = str(len(GeographicalUnit.objects.all())+1)
+            # import zlib
+            # unit.unique_code = str(zlib.adler32(str(('0'*(9-len(length_str)))+length_str).encode('utf-8')))[:6]
+            unit.unique_code = ('0'*(9-len(length_str))) + length_str
+            unit = unit.save_and_return_object()
+
+            for village_id in villages:
+                try:
+                    village = AdministrativeLevel.objects.get(id=int(village_id))
+                    village.geographical_unit = unit
+                    village.save()
+                except Exception as exc:
+                    print(exc)
+
+            return redirect('administrativelevels:geographical_units_list')
+        return super(GeographicalUnitCreateView, self).get(request, *args, **kwargs)
+    
+class GeographicalUnitUpdateView(PageMixin, LoginRequiredMixin, UpdateView):
+    model = GeographicalUnit
+    template_name = 'geographical_unit_create.html'
+    context_object_name = 'geographicalunit'
+    title = _('Create geographical unit')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+ 
+    form_class = GeographicalUnitForm # specify the class form to be displayed
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = GeographicalUnitForm(initial={
+            "villages": [
+                cat for cat in self.get_object().get_villages().values_list("id", flat=True)
+            ]
+        }, instance=self.get_object())
+
+        # context['villages'] = self.get_object().geographical_unit.get_villages()
+
+        return context
+    def post(self, request, *args, **kwargs):
+        form = GeographicalUnitForm(request.POST, instance=self.get_object())
+        if form.is_valid():
+            # cvds = form.cleaned_data['cvds']
+            villages = form.cleaned_data['villages']
+            
+            unit = form.save(commit=False)
+            unit = unit.save_and_return_object()
+            unit.administrativelevel_set.clear()
+            unit = unit.save_and_return_object()
+
+            for village_id in villages:
+                try:
+                    village = AdministrativeLevel.objects.get(id=int(village_id))
+                    village.geographical_unit = unit
+                    village.save()
+                except Exception as exc:
+                    print(exc)
+
+            # for cvd_id in cvds:
+            #     try:
+            #         cvd = CVD.objects.get(id=int(cvd_id))
+            #         cvd.geographical_unit = unit
+            #         cvd.save()
+            #     except Exception as exc:
+            #         print(exc)
+
+            return redirect('administrativelevels:geographical_units_list')
+        return super(GeographicalUnitUpdateView, self).get(request, *args, **kwargs)
+
+class GeographicalUnitDetailView(PageMixin, LoginRequiredMixin, DetailView):
+    """Class to present the detail page of one geographical unit"""
+    model = GeographicalUnit
+    template_name = 'geographical_unit_detail.html'
+    context_object_name = 'geographicalunit'
+    title = _('Geographical unit')
+    active_level1 = 'financial'
+    breadcrumb = [
+        {
+            'url': reverse_lazy('administrativelevels:geographical_units_list'),
+            'title': _('Geographical units')
+        },
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+    
+
+
+
+#======================================CVD==============================================
+
+class CVDListView(PageMixin, LoginRequiredMixin, ListView):
+    """Display geographical unit list"""
+
+    model = CVD
+    queryset = CVD.objects.filter()
+    template_name = 'cvds_list.html'
+    context_object_name = 'cvds'
+    title = _('CVD')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+class CVDCreateView(PageMixin, LoginRequiredMixin, CreateView):
+    model = CVD
+    template_name = 'cvd_create.html'
+    context_object_name = 'cvd'
+    title = _('Create CVD')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+ 
+    form_class = CVDForm # specify the class form to be displayed
+    
+    def post(self, request, *args, **kwargs):
+        form = CVDForm(request.POST)
+        if form.is_valid():
+            villages = form.cleaned_data['villages']
+
+            cvd = form.save(commit=False)
+            length_str = str(len(GeographicalUnit.objects.all())+1)
+            cvd.unique_code = ('0'*(9-len(length_str))) + length_str
+            cvd = cvd.save_and_return_object()
+
+            for village_id in villages:
+                try:
+                    village = AdministrativeLevel.objects.get(id=int(village_id))
+                    village.cvd = cvd
+                    village.save()
+                except Exception as exc:
+                    print(exc)
+
+            return redirect('administrativelevels:cvds_list')
+        return super(CVDCreateView, self).get(request, *args, **kwargs)
+
+
+class CVDUpdateView(PageMixin, LoginRequiredMixin, UpdateView):
+    model = CVD
+    template_name = 'cvd_create.html'
+    context_object_name = 'cvd'
+    title = _('Update CVD')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+ 
+    form_class = CVDForm # specify the class form to be displayed
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CVDForm(initial={
+            "villages": [
+                cat for cat in self.get_object().get_villages().values_list("id", flat=True)
+            ]
+        }, instance=self.get_object())
+
+        # context['villages'] = self.get_object().geographical_unit.get_villages()
+
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = CVDForm(request.POST, instance=self.get_object())
+        if form.is_valid():
+            villages = form.cleaned_data['villages']
+
+            cvd = form.save(commit=False)
+            cvd = cvd.save_and_return_object()
+            cvd.administrativelevel_set.clear()
+            cvd = cvd.save_and_return_object()
+
+            for village_id in villages:
+                try:
+                    village = AdministrativeLevel.objects.get(id=int(village_id))
+                    village.cvd = cvd
+                    village.save()
+                except Exception as exc:
+                    print(exc)
+
+            return redirect('administrativelevels:cvds_list')
+        return super(CVDUpdateView, self).get(request, *args, **kwargs)
+    
+class CVDDetailView(PageMixin, LoginRequiredMixin, DetailView):
+    """Class to present the detail page of one CVD"""
+    model = CVD
+    template_name = 'cvd_detail.html'
+    context_object_name = 'cvd'
+    title = _('CVD')
+    active_level1 = 'financial'
+    breadcrumb = [
+        {
+            'url': reverse_lazy('administrativelevels:cvds_list'),
+            'title': _('CVD')
+        },
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+    

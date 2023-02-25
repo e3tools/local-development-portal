@@ -1,4 +1,5 @@
 from django.urls import path
+from django.conf.urls import include
 
 from administrativelevels import views
 
@@ -15,6 +16,19 @@ urlpatterns = [
     path('village/goals/<int:goal_id>/delete', views.goal_delete, name='goal_delete'), #The path to delete goal
     path('village/<int:administrative_level_id>/priorities', views.PrioritiesListView.as_view(), name='priorities_priorities'),
     path('village/priorities/<int:priority_id>/delete', views.priority_delete, name='priority_delete'), #The path to delete priority
+
+    path('geographical-units', views.GeographicalUnitListView.as_view(), name='geographical_units_list'), # Geographical units list path    
+    path('geographical-unit/create', views.GeographicalUnitCreateView.as_view(), name='geographical_unit_create'), #The path to create Geographical unit
+    path('geographical-unit-detail/<int:pk>/', views.GeographicalUnitDetailView.as_view(), name='geographical_unit_detail'), #The path of the detail of Geographical unit
+    path('geographical-unit-update/<int:pk>/', views.GeographicalUnitUpdateView.as_view(), name='geographical_unit_update'), #The path of to update Geographical unit
+
+    path('cvds', views.CVDListView.as_view(), name='cvds_list'), # CVD list path    
+    path('cvd/create', views.CVDCreateView.as_view(), name='cvd_create'), #The path to create cvd
+    path('cvd-detail/<int:pk>/', views.CVDDetailView.as_view(), name='cvd_detail'), #The path of the detail of cvd
+    path('cvd-update/<int:pk>/', views.CVDUpdateView.as_view(), name='cvd_update'), #The path to update cvd
+
+    path('utils/', include('administrativelevels.utils.urls')),
+
 ]
 
 
