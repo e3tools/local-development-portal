@@ -6,7 +6,7 @@ class GeographicalUnitForm(forms.ModelForm):
     
     # cvds = forms.MultipleChoiceField(required=False, label="CVD")
     villages = forms.MultipleChoiceField(required=False, label="Villages")
-    def __init__(self, Village_objects, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(GeographicalUnitForm, self).__init__(*args, **kwargs)
         for label, field in self.fields.items():
             self.fields[label].widget.attrs.update({'class' : 'form-control'})
@@ -37,7 +37,7 @@ class GeographicalUnitForm(forms.ModelForm):
 
 class CVDForm(forms.ModelForm):
     villages = forms.MultipleChoiceField(required=False, label="Villages")
-    def __init__(self, Village_objects, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(CVDForm, self).__init__(*args, **kwargs)
         for label, field in self.fields.items():
             self.fields[label].widget.attrs.update({'class' : 'form-control'})
