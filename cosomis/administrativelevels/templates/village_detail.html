@@ -179,10 +179,10 @@
                         {% if object.geographical_unit or object.cvd %}
                         <div>
                             {% if object.cvd %}
-                            <h5 class="font-weight-bold" style="font-size: 12;">CVD : {{ object.cvd.attributed_number_in_canton }} - {{ object.cvd.get_name }}</h5>
+                            <h6 class="font-weight-bold" style="font-size: 12px;">CVD : {{ object.cvd.attributed_number_in_canton }} - {{ object.cvd.get_name }}</h6>
                             {% endif %}
                             {% if object.geographical_unit %}
-                            <h5 class="font-weight-bold" style="font-size: 12;">Unit : {{ object.geographical_unit.attributed_number_in_canton }} - {{ object.geographical_unit.get_name }}</h5>
+                            <h6 class="font-weight-bold" style="font-size: 12px;">Unit : {{ object.geographical_unit.attributed_number_in_canton }} - {{ object.geographical_unit.get_name }}</h6>
                             {% endif %}
                         </div>
                         <hr />

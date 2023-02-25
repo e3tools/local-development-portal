@@ -187,7 +187,7 @@
                     {% for village in object.get_villages %}
                     <div class="clearfix">
                         <div class="float-left">
-                            <h6 class="font-weight-bold text-danger">{{ village.name }} <span style="font-size: 9px;">({{ village.cvd.attributed_number_in_canton }} - {{ village.cvd.get_name }})</span></h6>
+                            <h6 class="font-weight-bold text-danger">{{ village.name }} {% if village.cvd %}<span style="font-size: 9px;">({{ village.cvd.attributed_number_in_canton }} - {{ village.cvd.get_name }})</span>{% endif %}</h6>
                         </div>
                         <div class="float-right">
                             <a target="_blank" href="{% url 'administrativelevels:village_detail' village.pk %}">{% translate 'Detail' %} </a>

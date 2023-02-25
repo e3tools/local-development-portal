@@ -52,3 +52,19 @@ class CVDForm(forms.ModelForm):
         if not villages:
             raise forms.ValidationError("Au moins un village doit être sélectionné.")
         return super().clean()
+    
+
+
+class AdministrativeLevelForm(forms.ModelForm):
+    def __init__(self, parent: str = None, *args, **kwargs):
+        super(AdministrativeLevelForm, self).__init__(*args, **kwargs)
+        for label, field in self.fields.items():
+            self.fields[label].widget.attrs.update({'class' : 'form-control'})
+            if label == "parent":
+                print(parent)
+                self.fields[label].queryset = AdministrativeLevel.objects.filter(type=parent)
+                self.fields[label].label = parent
+
+    class Meta:
+        model = AdministrativeLevel
+        exclude  = ['no_sql_db_id'] # specify the fields to be hid

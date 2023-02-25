@@ -81,7 +81,13 @@
         $(document).ready(function () {
             {% get_current_language as lang %}
             let child = $("#id_villages");
-            {% comment %} child.html(''); {% endcomment %}
+            let geographical_unit_id = null;
+            
+            {% if object or geographicalunit %}
+            geographical_unit_id = "{{ object.id }}";
+            {% else %}
+            child.html('');
+            {% endif %}
 
             $(document).on("change", "#id_canton", function () {
                 $(this).attr('disabled', true);
@@ -90,6 +96,7 @@
                     url: "{% url 'administrativelevels:utils:get_choices_for_next_administrative_level' %}",
                     data: {
                         parent_id: $(this).val(),
+                        geographical_unit_id: geographical_unit_id
                     },
                     success: function (data) {
                         if (data.length > 0) {

@@ -603,6 +603,10 @@ msgstr "Unité géographique"
 msgid "Create geographical unit"
 msgstr "Créer une unité géographique"
 
+#: .\administrativelevels\templates\geographical_unit_list.html
+msgid "Update geographical unit"
+msgstr "Mise à jour d'unité géographique"
+
 #: .\administrativelevels\views.py
 msgid "Geographical units"
 msgstr "Unités géographiques"
@@ -612,5 +616,21 @@ msgid "Create CVD"
 msgstr "Créer CVD"
 
 #: .\administrativelevels\templates\geographical_unit_list.html
+msgid "Update CVD"
+msgstr "Mise à jour du CVD"
+
+#: .\administrativelevels\templates\geographical_unit_list.html
 msgid "CVD list"
 msgstr "liste CVD"
+
+#: .\administrativelevels\templates\geographical_unit_list.html
+msgid "Edit"
+msgstr "Modifier"
+
+#: .\administrativelevels\views.py
+msgid "Create Administrative level"
+msgstr "Créer niveau administratif"
+
+#: .\administrativelevels\views.py
+msgid "Update Administrative level"
+msgstr "Modifier niveau administratif"

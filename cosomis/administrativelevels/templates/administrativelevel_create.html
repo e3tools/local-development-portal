@@ -8,12 +8,12 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="btn-group pull-left">
-                            <a class="btn btn-primary" href="{% url 'administrativelevels:cvds_list' %}">{% translate 'CVD list' %}</a>
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:list' %}">{% translate 'Administrative levels' %}</a>
                         </div>
                         <div class="btn-group pull-right">
-                            <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_unit_create' %}">{% translate 'Create geographical unit' %}</a>
+                            {% include 'components/upload.html' %}
                             <div> &nbsp; &nbsp; </div>
-                            <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_units_list' %}">{% translate 'Geographical units' %}</a>
+                            {% include 'components/download.html' %}
                         </div>
                     </div>
                 </div>
@@ -83,10 +83,9 @@
             {% get_current_language as lang %}
             let headquarters_village = $("#id_headquarters_village");
             let villages = $("#id_villages");
-            let cvd_id = null;
 
             {% if object or cvd %}
-            cvd_id = "{{ object.id }}";
+
             {% else %}
             headquarters_village.html('');
             villages.html('');
@@ -100,7 +99,6 @@
                     url: "{% url 'administrativelevels:utils:get_choices_for_next_administrative_level_by_geographical_unit' %}",
                     data: {
                         geographical_unit_id: $(this).val(),
-                        cvd_id: cvd_id
                     },
                     success: function (data) {
                         if (data.length > 0) {

@@ -30,6 +30,10 @@ class AdministrativeLevel(BaseModel):
     updated_date = models.DateTimeField(auto_now=True)
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
 
+    
+    class Meta:
+        unique_together = ['name', 'parent', 'type']
+
     def __str__(self):
         return self.name
 

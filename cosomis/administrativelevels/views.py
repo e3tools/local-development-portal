@@ -14,7 +14,7 @@ from administrativelevels.models import AdministrativeLevel, GeographicalUnit, C
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
-from .forms import GeographicalUnitForm, CVDForm
+from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm
 
 
 class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
@@ -39,7 +39,82 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
             return context
         raise Http404
         
+class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, CreateView):
+    model = AdministrativeLevel
+    template_name = 'administrativelevel_create.html'
+    context_object_name = 'administrativelevel'
+    title = _('Create Administrative level')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+    def get_parent(self, type: str):
+        parent = None
+        if type == "Prefecture":
+            parent = "Region"
+        elif type == "Commune":
+            parent = "Prefecture"
+        elif type == "Canton":
+            parent = "Commune"
+        elif type == "Village":
+            parent = "Canton"
+        return parent
 
+    form_class = AdministrativeLevelForm # specify the class form to be displayed
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")))
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")), request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('administrativelevels:list')
+        return super(AdministrativeLevelCreateView, self).get(request, *args, **kwargs)
+
+
+class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, UpdateView):
+    model = AdministrativeLevel
+    template_name = 'administrativelevel_create.html'
+    context_object_name = 'administrativelevel'
+    title = _('Update Administrative level')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+    def get_parent(self, type: str):
+        parent = None
+        if type == "Prefecture":
+            parent = "Region"
+        elif type == "Commune":
+            parent = "Prefecture"
+        elif type == "Canton":
+            parent = "Commune"
+        elif type == "Village":
+            parent = "Canton"
+        return parent
+
+    form_class = AdministrativeLevelForm # specify the class form to be displayed
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(self.request.GET.get("type"))
+        context['form'] = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")), instance=self.get_object())
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")), request.POST, instance=self.get_object())
+        if form.is_valid():
+            form.save()
+            return redirect('administrativelevels:list')
+        return super(AdministrativeLevelUpdateView, self).get(request, *args, **kwargs)
+    
 
 class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
     """Class to upload and save the administrativelevels"""
@@ -512,7 +587,7 @@ class GeographicalUnitUpdateView(PageMixin, LoginRequiredMixin, UpdateView):
     model = GeographicalUnit
     template_name = 'geographical_unit_create.html'
     context_object_name = 'geographicalunit'
-    title = _('Create geographical unit')
+    title = _('Update geographical unit')
     active_level1 = 'administrative_levels'
     breadcrumb = [
         {
@@ -626,7 +701,7 @@ class CVDCreateView(PageMixin, LoginRequiredMixin, CreateView):
             villages = form.cleaned_data['villages']
 
             cvd = form.save(commit=False)
-            length_str = str(len(GeographicalUnit.objects.all())+1)
+            length_str = str(len(CVD.objects.all())+1)
             cvd.unique_code = ('0'*(9-len(length_str))) + length_str
             cvd = cvd.save_and_return_object()
 
