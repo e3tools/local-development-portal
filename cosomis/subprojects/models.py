@@ -17,31 +17,126 @@ class BaseModel(models.Model):
 
 # Create your models here.
 class Subproject(BaseModel):
-    short_name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
-    # administrative_level = models.ForeignKey(AdministrativeLevel, null=False, on_delete=models.CASCADE)
-    cvds = models.ManyToManyField(CVD, default=[], blank=True, related_name='cvds_subprojects')
-    # created_date = models.DateTimeField(auto_now_add=True)
-    # updated_date = models.DateTimeField(auto_now=True)
-    target_female_beneficiaries = models.IntegerField()
-    target_male_beneficiaries = models.IntegerField()
-    target_youth_beneficiaries = models.IntegerField()
+    cvd = models.ForeignKey(CVD, null=True, blank=True, on_delete=models.CASCADE)
+    location_subproject_realized = models.ForeignKey(AdministrativeLevel, null=True, blank=True, on_delete=models.CASCADE, related_name='location_subproject_realized')
+    canton = models.ForeignKey(AdministrativeLevel, null=True, blank=True, on_delete=models.CASCADE) #canton subprojects (rural track)
+    link_to_subproject = models.ForeignKey('Subproject', null=True, blank=True, on_delete=models.CASCADE) #To link the subprojects that the cantons or CVD link to make
+
+    number = models.IntegerField(null=True, blank=True)
+    intervention_unit = models.IntegerField(null=True, blank=True)
+    facilitator_name = models.CharField(max_length=255, null=True, blank=True)
+    wave = models.CharField(max_length=2, null=True, blank=True)
+    lot = models.CharField(max_length=2, null=True, blank=True)
+    subproject_sector = models.CharField(max_length=100)
+    type_of_subproject = models.CharField(max_length=100)
+    full_title_of_approved_subproject = models.CharField(max_length=255)
+    works_type = models.CharField(max_length=100, null=True, blank=True)
+    estimated_cost = models.FloatField(null=True, blank=True)
+    level_of_achievement_donation_certificate = models.CharField(max_length=50, null=True, blank=True)
+    approval_date_cora = models.DateField(null=True, blank=True)
+    date_of_signature_of_contract_for_construction_supervisors = models.DateField(null=True, blank=True)
+    amount_of_the_contract_for_construction_supervisors = models.FloatField(null=True, blank=True)
+    date_signature_contract_controllers_in_SES = models.DateField(null=True, blank=True)
+    amount_of_the_controllers_contract_in_SES = models.FloatField(null=True, blank=True)
+    convention = models.CharField(max_length=255, null=True, blank=True)
+    contract_number_of_work_companies = models.CharField(max_length=15, null=True, blank=True)
+    name_of_the_awarded_company_works_companies = models.CharField(max_length=255, null=True, blank=True)
+    date_signature_contract_work_companies = models.DateField(null=True, blank=True)
+    contract_amount_work_companies = models.FloatField(null=True, blank=True)
+    name_of_the_winning_company_enterprises_of_supply_of_furniture_and_equipment = models.CharField(max_length=255, null=True, blank=True)
+    date_signature_contract_companies_supply_of_furniture_and_equipment = models.DateField(null=True, blank=True)
+    amount_of_the_contract_companies_for_the_supply_of_furniture_and_equipment = models.DateField(null=True, blank=True)
+    date_signature_contract_facilitator = models.DateField(null=True, blank=True)
+    amount_of_the_facilitator_contract = models.FloatField(null=True, blank=True)
+    launch_date_of_the_construction_site_in_the_village = models.DateField(null=True, blank=True)
+    current_level_of_physical_realization_of_the_work = models.CharField(max_length=100, null=True, blank=True)
+    length_of_the_track = models.FloatField(null=True, blank=True)
+    depth_of_drilling = models.FloatField(null=True, blank=True)
+    drilling_flow_rate = models.FloatField(null=True, blank=True)
+    current_status_of_the_site = models.CharField(max_length=100, null=True, blank=True)
+    expected_duration_of_the_work = models.FloatField(null=True, blank=True)
+    expected_end_date_of_the_contract = models.DateField(null=True, blank=True)
+    total_contract_amount_paid = models.FloatField(null=True, blank=True)
+    amount_of_the_care_and_maintenance_fund_expected_to_be_mobilized = models.FloatField(null=True, blank=True)
+    amount_of_care_and_maintenance_fund_raised_and_deposited_in_the_village_account = models.FloatField(null=True, blank=True)
+    existence_of_a_maintenance_and_upkeep_plan_developed_by_the_Community = models.BooleanField(default=False)
+    date_of_technical_acceptance_of_work_contracts = models.DateField(null=True, blank=True)
+    technical_acceptance_date_for_furniture_and_equipment_supply_contracts = models.DateField(null=True, blank=True)
+    date_of_provisional_acceptance_of_work_contracts = models.DateField(null=True, blank=True)
+    provisional_acceptance_date_for_furniture_and_equipment_supply_contracts = models.DateField(null=True, blank=True)
+    official_handover_date_of_the_microproject_to_the_community = models.DateField(null=True, blank=True)
+    official_handover_date_of_the_microproject_to_the_sector = models.DateField(null=True, blank=True)
+    comments = models.TextField(null=True, blank=True)
+    
+    target_female_beneficiaries = models.IntegerField(null=True, blank=True)
+    target_male_beneficiaries = models.IntegerField(null=True, blank=True)
+    target_youth_beneficiaries = models.IntegerField(null=True, blank=True)
+
     component = models.ForeignKey('Component', null=True, on_delete=models.CASCADE)
     priorities = models.ManyToManyField('VillagePriority', default=[], blank=True, related_name='priorities_covered')
-    ranking = models.IntegerField(default=0)
-    allocation = models.FloatField(null=True, blank=True)
+    ranking = models.IntegerField(null=True, blank=True)
+
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
 
+
+    def get_cantons_names(self):
+        if self.location_subproject_realized:
+            return self.location_subproject_realized.parent.name
+        elif self.canton: 
+            cantons = self.canton.name
+            subprojects_link_objects = self.subproject_set.get_queryset()
+            if subprojects_link_objects:
+                cantons += "/"
+            for i in range(len(subprojects_link_objects)):
+                cantons += subprojects_link_objects[i].canton.name
+                if i+1 < len(subprojects_link_objects):
+                    cantons += "/"
+            return cantons
+        return None
+
+    def get_canton(self):
+        if self.location_subproject_realized:
+            return self.location_subproject_realized.parent
+        elif self.canton:
+            return self.canton
+
+        return None
+    
+    def get_village(self):
+        if self.location_subproject_realized:
+            return self.location_subproject_realized
+        elif self.canton:
+            a = AdministrativeLevel()
+            a.name = "CCD"
+            return a
+
+        return None
+    
+    def get_estimated_cost(self):
+        estimated_cost = self.estimated_cost
+        for o in self.subproject_set.get_queryset():
+            estimated_cost += o.estimated_cost
+        return estimated_cost
+
+    def get_estimated_cost_str(self):
+        estimated_cost_str = ""
+        estimated_cost_str += str(self.estimated_cost)
+        subproject_link_objects = self.subproject_set.get_queryset()
+        if subproject_link_objects:
+            for o in self.subproject_set.get_queryset():
+                estimated_cost_str += " + " + str(o.estimated_cost)
+            return str(self.get_estimated_cost()) + f' ({estimated_cost_str})'
+        
+        return estimated_cost_str
+
     def __str__(self):
-        return self.short_name
+        return self.full_title_of_approved_subproject
 
 
-class VulnerableGroup(models.Model):
+class VulnerableGroup(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
     administrative_level = models.ForeignKey(AdministrativeLevel, null=False, on_delete=models.CASCADE)
 
     def __str__(self):
