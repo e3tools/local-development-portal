@@ -8,5 +8,8 @@ urlpatterns = [
     path('map', views.SubprojectsMapView.as_view(), name='map'),
     path('<int:pk>', views.SubprojectDetailView.as_view(), name='detail'),
     path('create', views.SubprojectCreateView.as_view(), name='create'),
+    path('update/<int:pk>/', views.SubprojectUpdateView.as_view(), name='update'),
     path('vulnerable-group/create', views.VulnerableGroupCreateView.as_view(), name='vulnerable_group_create'),
+
+    path('download/', views.DownloadCSVView.as_view(), name='download'), #The path to upload CSV file and save in db
 ]
