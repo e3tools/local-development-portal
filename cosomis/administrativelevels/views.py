@@ -150,7 +150,6 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
             except Exception as exc:
                 messages.info(request, _("An error has occurred..."))
             
-
             try:
                 administrative_level_id = request.POST["administrative_level_id"]
                 message, file_path = administrativelevels_functions.save_csv_datas_priorities_in_db(datas, administrative_level_id if bool(request.POST.get("administrative_level_id_checkbox")) else 0, _type) # call function to save CSV datas in database
@@ -162,7 +161,22 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
                 # return redirect(redirect_path, administrative_level_id=administrative_level_id)
             except Exception as exc:
                 raise Http404
-
+        elif _type == "subproject_new":
+            """Load Administrative Levels"""
+            try:
+                datas = convert_file_to_dict.conversion_file_xlsx_to_dict(request.FILES.get('file'), request.POST.get('sheet_name'))
+            except pd.errors.ParserError as exc:
+                datas = convert_file_to_dict.conversion_file_csv_to_dict(request.FILES.get('file'), request.POST.get('sheet_name'))
+            except Exception as exc:
+                messages.info(request, _("An error has occurred..."))
+            try:
+                message, file_path = administrativelevels_functions.save_csv_datas_priorities_in_db(datas, 0, _type) # call function to save CSV datas in database
+                
+                return download_file.download(request, file_path, "text/plain")
+            
+            except Exception as exc:
+                raise Http404
+            
         else:
             """Load Administrative Levels"""
             try:
@@ -188,7 +202,7 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
 class DownloadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
     """Class to download administrativelevels under excel file"""
 
-    template_name = 'download.html'
+    template_name = 'components/download.html'
     context_object_name = 'Download'
     title = _("Download")
     active_level1 = 'administrative_levels'

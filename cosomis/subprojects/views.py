@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views import generic
 from django.conf import settings
@@ -8,6 +9,8 @@ from .forms import SubprojectForm, VulnerableGroupForm
 from subprojects.models import Subproject, VulnerableGroup
 from django.utils.translation import gettext_lazy as _
 from django import forms
+from subprojects import functions as subprojects_functions
+from administrativelevels.libraries import download_file
 
 # Create your views here.
 
@@ -92,6 +95,10 @@ class SubprojectCreateView(PageMixin, LoginRequiredMixin, generic.CreateView):
     active_level1 = 'subprojects'
     breadcrumb = [
         {
+            'url': reverse_lazy('subprojects:list'),
+            'title': _('subprojects')
+        },
+        {
             'url': '',
             'title': title
         },
@@ -106,6 +113,38 @@ class SubprojectCreateView(PageMixin, LoginRequiredMixin, generic.CreateView):
             subproject.save()
             return redirect('subprojects:list')
         return super(SubprojectCreateView, self).get(request, *args, **kwargs)
+    
+
+class SubprojectUpdateView(PageMixin, LoginRequiredMixin, generic.UpdateView):
+    model = Subproject
+    template_name = 'subproject_create.html'
+    context_object_name = 'subproject'
+    title = _('Update Subproject')
+    active_level1 = 'subprojects'
+    breadcrumb = [
+        {
+            'url': reverse_lazy('subprojects:list'),
+            'title': _('subprojects')
+        },
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+ 
+    form_class = SubprojectForm # specify the class form to be displayed
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SubprojectForm(instance=self.get_object())
+        return context
+    def post(self, request, *args, **kwargs):
+        form = SubprojectForm(request.POST, instance=self.get_object())
+        if form.is_valid():
+            subproject = form.save()
+            subproject.save()
+            return redirect('subprojects:list')
+        return super(SubprojectCreateView, self).get(request, *args, **kwargs)
+    
         
 
 #============================================Vulnerable Group=========================================================
@@ -133,4 +172,43 @@ class VulnerableGroupCreateView(PageMixin, LoginRequiredMixin, generic.CreateVie
             messages.info(request, _("Successfully created"))
             return redirect('subprojects:vulnerable_group_create')
         return super(VulnerableGroupCreateView, self).get(request, *args, **kwargs)
-        
+
+
+
+#============================================Download CSV=========================================================
+
+class DownloadCSVView(PageMixin, LoginRequiredMixin, generic.TemplateView):
+    """Class to download subprojects under excel file"""
+
+    template_name = 'components/download_subprojects.html'
+    context_object_name = 'Download'
+    title = _("Download")
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def post(self, request, *args, **kwargs):
+        file_path = ""
+        try:
+            file_path = subprojects_functions.get_subprojects_under_file_excel_or_csv(
+                file_type=request.POST.get("file_type"),
+                params={"type":request.POST.get("type"), "value_of_type":request.POST.get("value_of_type"),
+                        "sector":request.POST.get("sector"), "subproject_type":request.POST.get("subproject_type")}
+            )
+
+        except Exception as exc:
+            messages.info(request, _("An error has occurred..."))
+
+        if not file_path:
+            return redirect('administrativelevels:list')
+        else:
+            return download_file.download(
+                request, 
+                file_path,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+    
