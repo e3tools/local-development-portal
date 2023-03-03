@@ -1,11 +1,27 @@
-from administrativelevels.models import AdministrativeLevel
+from administrativelevels.models import AdministrativeLevel, CVD
 from subprojects.models import VillagePriority, Component, Subproject
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
+from subprojects.functions import save_csv_datas_subprojects_in_db
+
 import os
 from sys import platform
 from administrativelevels.libraries import functions as libraries_functions
 from datetime import datetime
 import pandas as pd
+import copy
+
+
+
+
+def get_value(elt):
+    return elt if not pd.isna(elt) else None
+
+def exists_id(liste, id):
+    for o in liste:
+        if o.id == id:
+            return True
+    return False
 
 
 def save_csv_file_datas_in_db(datas_file: dict) -> str:
@@ -25,8 +41,8 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
                     rural = bool(datas_file["Localité (Rural=1, urbain=0)"][count])
                     latitude, longitude = None, None
                     try:
-                        latitude = float(datas_file["Latitude"][count])
-                        longitude = float(datas_file["Longitude"][count])
+                        latitude = float(get_value(datas_file["Latitude"][count]))
+                        longitude = float(get_value(datas_file["Longitude"][count]))
                     except Exception as exc:
                         pass
 
@@ -195,7 +211,7 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
 
 
 
-def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0, type_object="priority") -> str:
+def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0, type_object="priority", cvd_ids=[], canton_ids=[]) -> str:
     """Function to save the CSV datas in database"""
     
     at_least_one_save = False # Variable to determine if at least one is saved
@@ -222,7 +238,8 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0,
         '1.2a': 'COMPOSANTE 1.2a', '1.2b': 'COMPOSANTE 1.2b', '1.3': 'COMPOSANTE 1.3', 
         '2': 'COMPOSANTE 2', '3': 'COMPOSANTE 3', '4': 'COMPOSANTE 4', '5': 'COMPOSANTE 5'
     }
-    if datas_file:
+    
+    if datas_file and type_object != "subproject_new":
         count = 0
         long = len(list(datas_file.values())[0])
         while count < long:
@@ -347,6 +364,7 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0,
                                     elif len(villages) > 1:
                                         nbr_subproject_not_associate_to_priority += 1
                                         text_subproject_not_associate_to_priority += f'\nN°{nbr_subproject_not_associate_to_priority} [{name_priority}] : Found {len(villages)} priorities for this subprojects. Please assaociate the priority manually.'
+                            
                             elif type_object == "subproject":
                                 list_objects_exist.append(name_priority)
 
@@ -359,6 +377,9 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0,
             count += 1
             # if count == 1:
             #     break
+            
+    elif type_object == "subproject_new":
+        return save_csv_datas_subprojects_in_db(datas_file, cvd_ids, canton_ids)
     
     message = ""
     if at_least_one_save and not at_least_one_error:
@@ -411,3 +432,4 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0,
 
 
     return (message, file_path.replace("/", "\\\\") if platform == "win32" else file_path)
+
