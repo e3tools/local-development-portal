@@ -34,16 +34,15 @@ class CddClient:
             "name": adm_obj.name,
             "administrative_level": adm_obj.type,
             "type": "administrative_level",
-            "administrative_id": adm_obj.id,
             "parent_id": parent,
-            "latitude": str(adm_obj.latitude),
-            "longitude": str(adm_obj.longitude),
+            "latitude": adm_obj.latitude,
+            "longitude": adm_obj.longitude,
         }
         self.nsc.create_document(self.adm_db, data)
         new = self.adm_db.get_query_result(
             {
                 "type": 'administrative_level',
-                "administrative_id": adm_obj.id,
+                "administrative_id": str(adm_obj.id),
             }
         )
         final = None
