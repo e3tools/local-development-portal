@@ -634,3 +634,95 @@ msgstr "Créer niveau administratif"
 #: .\administrativelevels\views.py
 msgid "Update Administrative level"
 msgstr "Modifier niveau administratif"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Sector"
+msgstr "Secteur"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Subproject Type"
+msgstr "Type de sous-project"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "WATER-HYDRAULICS"
+msgstr "EAU–HYDRAULIQUE"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "GRASSROOTS-DEVELOPMENT"
+msgstr "DEVELOPPEMENT–A–LA–BASE"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "ENERGY"
+msgstr "ENERGIE"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "HEALTH"
+msgstr "SANTE"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "EDUCATION"
+msgstr "EDUCATION"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "TRACKS"
+msgstr "PISTES"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "SANITATION"
+msgstr "ASSAINISSEMENT"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "SPORT-LEISURE"
+msgstr "SPORT–LOISIR"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Storage Warehouse"
+msgstr "Magasin De Stockage"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Photovoltaic drilling (Boisson)"
+msgstr "Forage Photovoltaïque (Boisson)"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Photovoltaic drilling (Maraichage)"
+msgstr "Forage Photovoltaïque (Maraichage)"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Community Center"
+msgstr "Centre Communautaire"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Electrification"
+msgstr "Electrification"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Health Center"
+msgstr "Centre De Santé"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "School building at the College"
+msgstr "Batiment Scolaire au CEG"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Track + Bridge"
+msgstr "Piste + Pont"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "School building at the primary level"
+msgstr "Batiment Scolaire au Primaire"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "School building at the Lycée"
+msgstr "Batiment Scolaire au Lycée"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Water retention"
+msgstr "Retenue d'eau"
+
+#: .\subprojects\templates\components\download_subprojects.html
+msgid "Soccer field"
+msgstr "Terrain de Foot"
+
+#: .\subprojects\views.py
+msgid "Update Subproject"
+msgstr "Mise à jour du sous-projet"
