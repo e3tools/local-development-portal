@@ -16,9 +16,11 @@
                         <div class="btn-group pull-left">
                             <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create' %}</a>
                             &nbsp; &nbsp; &nbsp; &nbsp; 
-                            {% include 'components/modal_upload_one_sheet.html' with type_object="subproject" show_just_villages=False %}
+                            {% include 'components/modal_upload_one_sheet.html' with type_object="subproject_new" show_just_villages=False %}
                         </div>
                         <div class="btn-group pull-right">
+                            {% include 'components/download_subprojects.html' %}
+                            <div> &nbsp; &nbsp; </div>
                             <a class="btn btn-primary" href="{% url 'subprojects:map' %}">{% translate 'Map View' %}</a>
                         </div>
                     </div>
@@ -31,22 +33,26 @@
                             <th>{% translate 'Canton' %}</th>
                             <th>{% translate 'Region' %}</th>
                             <th>{% translate 'Project Name' %}</th>
-                            <th>{% translate 'Allocation' %}</th>
-                            <th>{% translate 'Action' %}</th>
+                            <th>{% translate 'Allocation' %} CFA</th>
+                            <th width="12%">{% translate 'Action' %}</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for subproject in subprojects %}
                             <tr>
                                 <td>{{ subproject.administrative_level.name }}</td>
-                                <td>{{ subproject.administrative_level.parent.name }}</td>
+                                <td>{{ subproject.get_cantons_names }}</td>
                                 <td>{{ subproject.administrative_level.parent.parent.name }}</td>
-                                <td>{{ subproject.short_name }}</td>
-                                <td>{{ subproject.allocation }}</td>
+                                <td>{{ subproject.full_title_of_approved_subproject }}</td>
+                                <td>{{ subproject.get_estimated_cost_str }}</td>
                                 <td>
-                                    <a href="{% url 'subprojects:detail' subproject.pk %}"
-                                       class="btn btn-primary btn-xs">
-                                        {% translate 'View subproject' %}
+                                    <a href="{% url 'subprojects:detail' subproject.pk %}" style="font-size: 9px !important;"
+                                       class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'subprojects:update' subproject.pk %}" style="font-size: 9px !important;"
+                                       class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
+                                        <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                             </tr>

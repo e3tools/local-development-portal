@@ -183,10 +183,10 @@
                             <div class="clearfix">
                                 <div class="float-left">
                                     <p class=""><i class="fas fa-cog"></i> 
-                                        {% if subproject.short_name|length > 40 %}
-                                            {{ subproject.short_name|slice:":40" }}...
+                                        {% if subproject.full_title_of_approved_subproject|length > 40 %}
+                                            {{ subproject.full_title_of_approved_subproject|slice:":40" }}...
                                         {% else %}
-                                            {{ subproject.short_name }}
+                                            {{ subproject.full_title_of_approved_subproject }}
                                         {% endif %}
                                     </p>
                                 </div>
