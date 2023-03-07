@@ -1,0 +1,183 @@
+{% load static i18n %}
+
+<!-- modal -->
+<a href="#!" style="color: black;"  data-toggle="modal" data-target="#upload-image-file" >
+    <i class="fa fa-picture-o" style="font-size: 25px !important; margin-left: -10px !important;"></i>
+</a>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="upload-image-file" tabindex="-1" role="dialog"
+    aria-labelledby="UploadTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <form method="post" enctype="multipart/form-data"
+                action="{% url 'subprojects:utils:upload_image_to_aws3' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        {% translate 'Upload Image file' %}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" name="object_id" value="{{ object.id }}" id="object_id" />
+
+                    <div class="form-group" id="name_content">
+                        <label for="name">{% translate 'Name' %}</label>
+                        <input type="text" name="name" id="name" class="form-control" required />
+                    </div>
+
+                    <div class="form-group" id="order_content">
+                        <label for="order">{% translate 'Order' %}</label>
+                        <input type="number" name="order" id="order" class="form-control" required />
+                    </div>
+
+                    <div class="form-group" id="date_taken_content">
+                        <label for="date_taken">{% translate 'Date taken' %}</label>
+                        <input type="date" name="date_taken" id="date_taken" class="form-control" required />
+                    </div>
+
+                    <div class="form-check" id="principal_content" style="margin-bottom: 30px !important; margin-left: 30px !important;">
+                        <input type="checkbox" name="principal" id="principal" class="form-check-input" />
+                        <label class="form-check-label" for="principal">{% translate 'Principal Image' %}</label>
+                    </div>
+
+                    <div class="file-field big">
+                        <a class="btn-floating btn-lg amber darken-2 mt-0 float-left">
+                            <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+                            <input type="file" name="file" required id="file" 
+                            accept="image/*" />
+                        </a>
+                    </div>
+                    
+                    <br/>
+                        <img id="image-preview" src="" alt="Aperçu de l'image" width="400" height="400">
+                    <br/>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" style="display: inline-block !important;" id="submit_btn_upload">
+                        {% translate 'Upload' %}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+<!-- End Modal -->
+
+<script src="{% static 'AdminLTE/plugins/jquery/jquery.min.js' %}"></script>
+<script type="text/javascript">
+
+    {% comment %} $(".messageModalImage").modal("hide"); {% endcomment %}
+
+    const inputImage = document.getElementById('file');
+    const previewImage = document.getElementById('image-preview');
+    previewImage.style.display = "none";
+
+    inputImage.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.addEventListener('load', function() {
+        previewImage.src = reader.result;
+        previewImage.style.display = "block";
+        });
+        reader.readAsDataURL(file);
+    }
+    });
+
+
+
+
+
+    $(document).ready(function () {
+            
+            $(document).on("click", "#submit_btn_upload", function (event) {
+                event.preventDefault();
+                const object_id = $('#object_id').val();
+                const date_taken = $('#date_taken').val();
+                const order = $('#order').val();
+                const name = $('#name').val();
+                if(order && order == 0){
+                    alert(`{% translate "The order field must have a value greater than 0" %}`);
+                    $("#submit_btn_upload").attr('disabled', false);
+                }else if(object_id && date_taken && order && order != 0 && name){
+                    $(this).attr('disabled', true);
+                    $(this).text('Registration in progress...');
+
+                    var file = document.getElementById("file");
+                    try{
+                        datafile = file.files[0];
+                        var data =  new FormData();
+                        data.append("file", datafile);
+                        data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                        data.append("object_id", $('#object_id').val());
+                        data.append("date_taken", $('#date_taken').val());
+                        data.append("order", $('#order').val());
+                        data.append("name", $('#name').val());
+
+                        var principal = document.getElementById("principal");
+                        if (principal.checked == true){
+                            principal_value = 1;
+                        } else {
+                            principal_value = 0;
+                        }
+                        data.append("principal",principal_value);
+
+                        fetch("{% url 'subprojects:utils:upload_image_to_aws3' %}", {
+                            method: 'POST',
+                            body: data
+                        }).then(
+                            response => response.json() 
+                        ).then(datas => {
+
+                            if(datas.ok){
+                                location.reload();
+                            }else{
+                                $(".messageModalImage").modal("show");
+                                $("#messageModalImage").text(datas.message);
+                                window.setTimeout(function () {
+                                    $(".messageModalImage").modal("hide");
+                                    $("#messageModalImage").text("");
+                                }, 4000);
+                                $("#submit_btn_upload").attr('disabled', false);
+                            }
+
+                        }).catch(
+                            error => {
+                                console.log(error);
+                                alert(error);
+                                $("#submit_btn_upload").attr('disabled', false);
+                            }
+                        );
+                    }catch(e){
+                        alert(`{% translate "Please fill in all fields" %}`);
+                        $("#submit_btn_upload").attr('disabled', false);
+                    }
+                    
+
+                }else{
+                    alert(`{% translate "Please fill in all fields" %}`);
+                    $("#submit_btn_upload").attr('disabled', false);
+                }
+                
+                
+
+            });
+
+
+            
+        });
+
+
+</script>

@@ -130,6 +130,18 @@ class Subproject(BaseModel):
         
         return estimated_cost_str
 
+
+    def get_all_images(self, order=False):
+        if order:
+            return sorted(self.subprojectimage_set.get_queryset(), key=lambda o: o.order)
+        return self.subprojectimage_set.get_queryset()
+    
+    def get_principal_image(self):
+        for img in self.get_all_images():
+            if img.principal:
+                return img
+        return None
+
     def __str__(self):
         return self.full_title_of_approved_subproject
 
@@ -212,3 +224,15 @@ class Component(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class SubprojectImage(BaseModel):
+    subproject = models.ForeignKey(Subproject, null=True, blank=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
+    order = models.IntegerField(default=0)
+    principal = models.BooleanField(default=False)
+    date_taken = models.DateField()
+
+
+

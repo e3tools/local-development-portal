@@ -726,3 +726,51 @@ msgstr "Terrain de Foot"
 #: .\subprojects\views.py
 msgid "Update Subproject"
 msgstr "Mise à jour du sous-projet"
+
+#: .\subprojects\templates\subproject.html
+msgid "Approval date CORA"
+msgstr "DATE D'APPROBATION CORA"
+
+#: .\subprojects\templates\components\image_add.html
+msgid "Upload Image file"
+msgstr "Téléversez le fichier Image"
+
+#: .\subprojects\templates\components\image_add.html
+msgid "Principal Image"
+msgstr "Image Principale"
+
+#: .\subprojects\templates\components\image_add.html
+msgid "Date taken"
+msgstr "Date de la prise"
+
+#: .\subprojects\utils\views.py
+msgid "We can't find the sub-projects"
+msgstr "Nous arrivons pas à trouver le sous-projects"
+
+#: .\subprojects\utils\views.py
+msgid "Please fill in all fields"
+msgstr "Veuillez remplir tous les champs"
+
+#: .\subprojects\utils\views.py
+msgid "There is already an image that has this order"
+msgstr "Il n'y a déjà une image qui a cet ordre"
+
+#: .\subprojects\utils\views.py
+msgid "We can't save the image"
+msgstr "Nous n'arrivons pas à enregistrer l'image"
+
+#: .\subprojects\utils\views.py
+msgid "Registered"
+msgstr "Enregistré(e)"
+
+#: .\subprojects\views.py
+msgid "Image delete successfully"
+msgstr "Image supprimée avec succès"
+
+#: .\subprojects\templates\components\image_add.html
+msgid "The order field must have a value greater than 0"
+msgstr "Le champ de l'ordre doit avoir une valeur grande que 0"
+
+#: .\subprojects\templates\components\image_add.html
+msgid "Registration in progress..."
+msgstr "Enregistrement en cours..."

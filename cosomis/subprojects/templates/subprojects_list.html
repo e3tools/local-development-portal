@@ -40,7 +40,7 @@
                         <tbody>
                         {% for subproject in subprojects %}
                             <tr>
-                                <td>{{ subproject.administrative_level.name }}</td>
+                                <td>{{ subproject.get_village.name }}</td>
                                 <td>{{ subproject.get_cantons_names }}</td>
                                 <td>{{ subproject.administrative_level.parent.parent.name }}</td>
                                 <td>{{ subproject.full_title_of_approved_subproject }}</td>

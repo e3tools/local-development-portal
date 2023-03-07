@@ -167,3 +167,13 @@ NO_SQL_USER = env('NO_SQL_USER')
 NO_SQL_PASS = env('NO_SQL_PASS')
 
 NO_SQL_URL = env('NO_SQL_URL')
+
+
+# S3
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_STORAGE_BUCKET_NAME = env('S3_BUCKET')
+
+AWS_ACCESS_KEY_ID = env('S3_ACCESS')
+
+AWS_SECRET_ACCESS_KEY = env('S3_SECRET')

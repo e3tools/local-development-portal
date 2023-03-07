@@ -1,12 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
+from django.http import Http404
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views import generic
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from storages.backends.s3boto3 import S3Boto3Storage
 from cosomis.mixins import AJAXRequestMixin, PageMixin
 from .forms import SubprojectForm, VulnerableGroupForm
-from subprojects.models import Subproject, VulnerableGroup
+from subprojects.models import Subproject, VulnerableGroup, SubprojectImage
 from django.utils.translation import gettext_lazy as _
 from django import forms
 from subprojects import functions as subprojects_functions
@@ -29,7 +32,8 @@ class SubprojectsListView(PageMixin, LoginRequiredMixin, generic.ListView):
     ]
 
     def get_queryset(self):
-        return super().get_queryset()
+        # return super().get_queryset()
+        return Subproject.objects.filter(link_to_subproject=None)
 
 class SubprojectsMapView(LoginRequiredMixin, generic.ListView):
 
@@ -145,7 +149,9 @@ class SubprojectUpdateView(PageMixin, LoginRequiredMixin, generic.UpdateView):
             return redirect('subprojects:list')
         return super(SubprojectCreateView, self).get(request, *args, **kwargs)
     
-        
+
+    
+
 
 #============================================Vulnerable Group=========================================================
 
@@ -174,6 +180,26 @@ class VulnerableGroupCreateView(PageMixin, LoginRequiredMixin, generic.CreateVie
         return super(VulnerableGroupCreateView, self).get(request, *args, **kwargs)
 
 
+@login_required
+def subprojectimage_delete(request, image_id):
+    """Function to delete one subprojectImage"""
+    try:
+        img = SubprojectImage.objects.get(id=image_id)
+        subproject = img.subproject
+        if img.principal:
+            for image in subproject.get_all_images():
+                if image.id != image_id:
+                    image.principal = True
+                    image.save()
+                    break
+
+        img.delete()
+        
+        messages.info(request, _("Image delete successfully"))
+    except Exception as exc:
+        raise Http404
+    
+    return redirect('subprojects:detail', subproject.id)
 
 #============================================Download CSV=========================================================
 
