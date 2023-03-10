@@ -35,8 +35,8 @@ class CddClient:
             "administrative_level": adm_obj.type,
             "type": "administrative_level",
             "parent_id": parent,
-            "latitude": adm_obj.latitude,
-            "longitude": adm_obj.longitude,
+            "latitude": float(adm_obj.latitude),
+            "longitude": float(adm_obj.longitude),
         }
         self.nsc.create_document(self.adm_db, data)
         new = self.adm_db.get_query_result(
@@ -77,8 +77,8 @@ class CddClient:
             "name": obj.name,
             "administrative_level": obj.type,
             "parent_id": parent,
-            "latitude": str(obj.latitude),
-            "longitude": str(obj.longitude),
+            "latitude": float(obj.latitude),
+            "longitude": float(obj.longitude),
         }
         for k, v in data.items():
             if v:
