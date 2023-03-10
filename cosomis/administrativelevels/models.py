@@ -83,6 +83,7 @@ class GeographicalUnit(BaseModel):
     
 
 class CVD(BaseModel):
+    name = models.CharField(max_length=255)
     geographical_unit = models.ForeignKey('GeographicalUnit', on_delete=models.CASCADE)
     headquarters_village = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, related_name='headquarters_village_of_the_cvd')
     attributed_number_in_canton = models.IntegerField(null=True, blank=True)
@@ -97,6 +98,9 @@ class CVD(BaseModel):
 
     def get_name(self):
         administrativelevels = self.get_villages()
+        if self.name:
+            return self.name
+        
         name = ""
         count = 1
         length = len(administrativelevels)
