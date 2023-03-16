@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n %}
+{% load static i18n custom_tags %}
 
 {% block content %}
     <div class="row">
@@ -13,11 +13,13 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-12">
+                        {% if user.is_superuser or user|has_group:"Admin" %}
                         <div class="btn-group pull-left">
                             <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create' %}</a>
                             &nbsp; &nbsp; &nbsp; &nbsp; 
                             {% include 'components/modal_upload_one_sheet.html' with type_object="subproject_new" show_just_villages=False %}
                         </div>
+                        {% endif %}
                         <div class="btn-group pull-right">
                             {% include 'components/download_subprojects.html' %}
                             <div> &nbsp; &nbsp; </div>
@@ -50,10 +52,12 @@
                                        class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
                                         <i class="fa fa-eye"></i>
                                     </a>
+                                    {% if user.is_superuser or user|has_group:"Admin" %}
                                     <a href="{% url 'subprojects:update' subproject.pk %}" style="font-size: 9px !important;"
                                        class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
                                         <i class="fa fa-edit"></i>
                                     </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

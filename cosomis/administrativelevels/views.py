@@ -15,7 +15,10 @@ from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
 from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm
-
+from usermanager.permissions import (
+    CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
+    AdminPermissionRequiredMixin
+    )
 
 class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     """Class to present the detail page of one village"""
@@ -39,7 +42,7 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
             return context
         raise Http404
         
-class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, CreateView):
+class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = AdministrativeLevel
     template_name = 'administrativelevel_create.html'
     context_object_name = 'administrativelevel'
@@ -77,7 +80,7 @@ class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, CreateView):
         return super(AdministrativeLevelCreateView, self).get(request, *args, **kwargs)
 
 
-class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, UpdateView):
+class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, UpdateView):
     model = AdministrativeLevel
     template_name = 'administrativelevel_create.html'
     context_object_name = 'administrativelevel'
@@ -116,7 +119,7 @@ class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, UpdateView):
         return super(AdministrativeLevelUpdateView, self).get(request, *args, **kwargs)
     
 
-class UploadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
+class UploadCSVView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, TemplateView):
     """Class to upload and save the administrativelevels"""
 
     template_name = 'upload.html'
@@ -558,7 +561,7 @@ class GeographicalUnitListView(PageMixin, LoginRequiredMixin, ListView):
     def get_queryset(self):
         return super().get_queryset()
 
-class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, CreateView):
+class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = GeographicalUnit
     template_name = 'geographical_unit_create.html'
     context_object_name = 'geographicalunit'
@@ -597,7 +600,7 @@ class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, CreateView):
             return redirect('administrativelevels:geographical_units_list')
         return super(GeographicalUnitCreateView, self).get(request, *args, **kwargs)
     
-class GeographicalUnitUpdateView(PageMixin, LoginRequiredMixin, UpdateView):
+class GeographicalUnitUpdateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, UpdateView):
     model = GeographicalUnit
     template_name = 'geographical_unit_create.html'
     context_object_name = 'geographicalunit'
@@ -694,7 +697,7 @@ class CVDListView(PageMixin, LoginRequiredMixin, ListView):
     def get_queryset(self):
         return super().get_queryset()
 
-class CVDCreateView(PageMixin, LoginRequiredMixin, CreateView):
+class CVDCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = CVD
     template_name = 'cvd_create.html'
     context_object_name = 'cvd'
@@ -731,7 +734,7 @@ class CVDCreateView(PageMixin, LoginRequiredMixin, CreateView):
         return super(CVDCreateView, self).get(request, *args, **kwargs)
 
 
-class CVDUpdateView(PageMixin, LoginRequiredMixin, UpdateView):
+class CVDUpdateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, UpdateView):
     model = CVD
     template_name = 'cvd_create.html'
     context_object_name = 'cvd'

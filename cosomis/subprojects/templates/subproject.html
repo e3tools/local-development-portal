@@ -25,7 +25,7 @@
                         <div class="col-12">
                             <div class="card rounded-3" style="background-color: wheat; opacity: 60% !important;">
                                 <div class="card-body">
-                                    <p class="card-title"><a href="{% url 'subprojects:update' object.pk %}" style="color: black;">{{ object.full_title_of_approved_subproject}}</a></p>
+                                    <p class="card-title"><a href="{% if user.is_superuser or user|has_group:'Admin' %}{% url 'subprojects:update' object.pk %}{% else %}#!{% endif %}" style="color: black;">{{ object.full_title_of_approved_subproject}}</a></p>
                                     <hr />
                                     <p class="card-text">{{ object.get_village.name }}</p>
                                 </div>

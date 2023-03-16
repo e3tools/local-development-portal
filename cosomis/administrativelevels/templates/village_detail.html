@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n %}
+{% load static i18n custom_tags %}
 
 {% block extracss %}
 {{ block.super }}
@@ -83,8 +83,11 @@
                         <h5 class="font-weight-bold">{% translate 'Financial' %}</h5>
                     </div>
                     <div class="float-right">
-                        <a href="#" class="font-weight-bold">{% translate 'Add Movement' %} <i
+                        <a href="#" class="font-weight-bold">{% translate 'Add Movement' %} 
+                        {% if user.is_superuser or user|has_group:"Admin" %}
+                        <i
                                 class="fas fa-plus"></i></a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="card bg-light" style="height: 30px;">
@@ -188,15 +191,18 @@
                         <hr />
                         {% endif %}
                         <h5 class="font-weight-bold">{% translate 'Subprojects' %} 
-                         &nbsp; &nbsp;  <a href="{% url 'subprojects:create' %}" class="font-weight-bold"> <i
-                            class="fas fa-plus"></i></a>
-                        {% if object.get_list_subprojects %}
-                             &nbsp; &nbsp;  <span>
-                                {% with object.get_list_subprojects as subprojects %}
-                                    {% include "components/subprojects_modal.html" %}
-                                {% endwith %}
-                            </span>
-                        {% endif %}
+                            {% if user.is_superuser or user|has_group:"Admin" %}
+                            &nbsp; &nbsp;  <a href="{% url 'subprojects:create' %}" class="font-weight-bold"> <i
+                                class="fas fa-plus"></i></a>
+                            {% endif %}
+
+                            {% if object.get_list_subprojects %}
+                                &nbsp; &nbsp;  <span>
+                                    {% with object.get_list_subprojects as subprojects %}
+                                        {% include "components/subprojects_modal.html" %}
+                                    {% endwith %}
+                                </span>
+                            {% endif %}
                         </h5>
                     </div>
                 </div>
@@ -272,8 +278,13 @@
     </div>
     <div class="col-4">
         <h4 class="font-weight-bold d-flex justify-content-center" style="margin-bottom: 25px;">{% translate 'Village Priorities' %}
+            {% if user.is_superuser or user|has_group:"Admin" %}
             &nbsp; <a href="{% url 'administrativelevels:priorities_priorities' object.id %}" class="font-weight-bold"> <i
                 class="fas fa-plus"></i></a>
+            {% else %}
+            &nbsp; <a href="{% url 'administrativelevels:priorities_priorities' object.id %}" class="font-weight-bold"> <i
+                class="fas fa-list"></i></a>
+            {% endif %}
         </h4>
         <div class="card">
             {% if object.get_list_priorities %}

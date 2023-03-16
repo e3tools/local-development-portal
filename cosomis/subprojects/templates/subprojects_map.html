@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n %}
+{% load static i18n custom_tags %}
 {% block extracss %}
     <link href="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.css' %}" rel="stylesheet">
     <style>
@@ -15,9 +15,11 @@
             <div class="card transparent">
                 <div class="card-header">
                     <div class="col-md-12">
+                        {% if user.is_superuser or user|has_group:"Admin" %}
                         <div class="btn-group pull-left">
                             <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create Subproject' %}</a>
                         </div>
+                        {% endif %}
                         <div class="btn-group pull-right">
                             <a class="btn btn-primary" href="{% url 'subprojects:list' %}">{% translate 'List Subprojects' %}</a>
                         </div>

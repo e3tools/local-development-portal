@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n %}
+{% load static i18n custom_tags %}
 
 {% block content %}
     <div class="row">
@@ -11,8 +11,10 @@
                             <a class="btn btn-primary" href="{% url 'administrativelevels:cvds_list' %}">{% translate 'CVD list' %}</a>
                         </div>
                         <div class="btn-group pull-right">
-                            <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_unit_create' %}">{% translate 'Create geographical unit' %}</a>
-                            <div> &nbsp; &nbsp; </div>
+                            {% if user.is_superuser or user|has_group:"Admin" %}
+                                <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_unit_create' %}">{% translate 'Create geographical unit' %}</a>
+                                <div> &nbsp; &nbsp; </div>
+                            {% endif %}
                             <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_units_list' %}">{% translate 'Geographical units' %}</a>
                         </div>
                     </div>

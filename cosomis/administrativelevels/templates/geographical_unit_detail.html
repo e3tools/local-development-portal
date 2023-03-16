@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n %}
+{% load static i18n custom_tags %}
 
 {% block extracss %}
 {{ block.super }}
@@ -20,7 +20,7 @@
                         <div class="col-6">
                             <div class="card rounded-3" style="background-color: wheat; opacity: 75% !important;">
                                 <div class="card-body">
-                                    <h5 class="card-title"><a href="{% url 'administrativelevels:geographical_unit_update' geographicalunit.pk %}" style="color: black;">{{ object.attributed_number_in_canton}} - {{ object.get_name }}</a></h5>
+                                    <h5 class="card-title"><a href="{% if user.is_superuser or user|has_group:'Admin' %}{% url 'administrativelevels:geographical_unit_update' geographicalunit.pk %}{% else %}#!{% endif %}" style="color: black;">{{ object.attributed_number_in_canton}} - {{ object.get_name }}</a></h5>
                                     <p class="card-text">{{ object.canton.parent.parent.parent.name|title }}</p>
                                 </div>
                             </div>

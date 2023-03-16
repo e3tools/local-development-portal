@@ -774,3 +774,27 @@ msgstr "Le champ de l'ordre doit avoir une valeur grande que 0"
 #: .\subprojects\templates\components\image_add.html
 msgid "Registration in progress..."
 msgstr "Enregistrement en cours..."
+
+#: .\usermanager\permissions.py
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+#: .\subprojects\templatetags\custom_tags.py
+msgid "Principal Administrator"
+msgstr "Administrateur principal"
+
+#: .\subprojects\templatetags\custom_tags.py
+msgid "Administrator"
+msgstr "Administrateur"
+
+#: .\subprojects\templatetags\custom_tags.py
+msgid "CDD Specialist"
+msgstr "Spécialiste DCC"
+
+#: .\subprojects\templatetags\custom_tags.py
+msgid "Evaluator"
+msgstr "Évaluateur"
+
+#: .\subprojects\templatetags\custom_tags.py
+msgid "Accountant"
+msgstr "Comptable"

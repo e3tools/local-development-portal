@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n %}
+{% load static i18n custom_tags %}
 
 {% block content %}
     <div class="row">
@@ -14,7 +14,7 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="btn-group pull-left">
-
+                            {% if user.is_superuser or user|has_group:"Admin" %}
                             <div class="" style="display: inline-block;">
                                 <button class="btn btn-primary" style="display: inline-block;" 
                                     type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -39,6 +39,7 @@
                                     </a>
                                 </div>
                             </div>
+                            {% endif %}
 
                             <div> &nbsp; &nbsp; </div>
                             <a class="btn btn-primary" target="_blank" href="{% url 'administrativelevels:geographical_units_list' %}">{% translate 'Geographical unit' %}</a>
@@ -47,8 +48,10 @@
                         </div>
 
                         <div class="btn-group pull-right">
-                            {% include 'components/upload.html' %}
-                            <div> &nbsp; &nbsp; </div>
+                            {% if user.is_superuser or user|has_group:"Admin" %}
+                                {% include 'components/upload.html' %}
+                                <div> &nbsp; &nbsp; </div>
+                            {% endif %}
                             {% include 'components/download.html' %}
                         </div>
                     </div>
@@ -82,10 +85,12 @@
                                        class="btn btn-primary btn-xs" title="{% translate 'View details' %}" target="_blank" >
                                         <span class="_mobile"><i class="fa fa-eye"></i></span>
                                     </a>
+                                    {% if user.is_superuser or user|has_group:"Admin" %}
                                     <a href="{% url 'administrativelevels:update' administrativelevel.pk %}?type=Village"
                                        class="btn btn-primary btn-xs" title="{% translate 'Edit' %}" target="_blank" >
                                         <span class="_mobile"><i class="fa fa-edit"></i></span>
                                     </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

@@ -1,5 +1,5 @@
 
-{% load static i18n unicorn %}
+{% load static i18n unicorn custom_tags %}
 <div>
     <div class="row">
         <div class="col-12">
@@ -81,7 +81,10 @@
                                   </div>
                                   <div class="col-2">
                                     <button type="submit" class="btn btn-primary mb-2"><small><i class="fas fa-edit" ></i></small></button> &nbsp; 
+                                    {% if user.is_superuser or user|has_group:"Admin" %}
                                     <span data-toggle="modal" data-target="#modal-{{ object.pk }}" class="btn btn-danger mb-2"><small><i class="fas fa-times" ></i></small></span>
+                                    {% endif %}
+                                    
                                     <!-- Modal -->
                                   <div class="modal fade" id="modal-{{ object.pk }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">

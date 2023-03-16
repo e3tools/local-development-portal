@@ -1,5 +1,5 @@
 
-{% load static i18n %}
+{% load static i18n custom_tags %}
 
     <div class="row">
         <div class="col-12">
@@ -12,9 +12,11 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-12">
+                        {% if user.is_superuser or user|has_group:"Admin" %}
                         <div class="btn-group pull-right">
                             <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create' %} {% translate 'Subproject' %}</a>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="card-body table-responsive">
@@ -32,7 +34,7 @@
                                 <td align="left">{{ subproject.full_title_of_approved_subproject }}</td>
                                 <td>{{ subproject.component.name }}</td>
                                 <td>
-                                    <a href="#"
+                                    <a href="{% url 'subprojects:detail' subproject.pk %}"
                                        class="btn btn-primary btn-xs">
                                         {% translate 'View' %}
                                     </a>
