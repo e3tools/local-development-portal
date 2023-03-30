@@ -21,6 +21,7 @@ class Subproject(BaseModel):
     location_subproject_realized = models.ForeignKey(AdministrativeLevel, null=True, blank=True, on_delete=models.CASCADE, related_name='location_subproject_realized')
     canton = models.ForeignKey(AdministrativeLevel, null=True, blank=True, on_delete=models.CASCADE) #canton subprojects (rural track)
     link_to_subproject = models.ForeignKey('Subproject', null=True, blank=True, on_delete=models.CASCADE) #To link the subprojects that the cantons or CVD link to make
+    list_of_villages_crossed_by_the_track_or_electrification = models.ManyToManyField(AdministrativeLevel, default=[], blank=True, related_name="cantonal_subprojects")
 
     number = models.IntegerField(null=True, blank=True)
     intervention_unit = models.IntegerField(null=True, blank=True)
@@ -71,6 +72,12 @@ class Subproject(BaseModel):
     target_female_beneficiaries = models.IntegerField(null=True, blank=True)
     target_male_beneficiaries = models.IntegerField(null=True, blank=True)
     target_youth_beneficiaries = models.IntegerField(null=True, blank=True)
+
+    population = models.IntegerField(null=True, blank=True)
+    direct_beneficiaries_men = models.IntegerField(null=True, blank=True)
+    direct_beneficiaries_women = models.IntegerField(null=True, blank=True)
+    indirect_beneficiaries_men = models.IntegerField(null=True, blank=True)
+    indirect_beneficiaries_women = models.IntegerField(null=True, blank=True)
 
     component = models.ForeignKey('Component', null=True, on_delete=models.CASCADE)
     priorities = models.ManyToManyField('VillagePriority', default=[], blank=True, related_name='priorities_covered')

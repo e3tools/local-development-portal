@@ -15,6 +15,46 @@ import copy
 def get_value(elt):
     return elt if not pd.isna(elt) else None
 
+def get_adminstrative_level_by_name(ad_name, ad_type):
+    try:
+        return AdministrativeLevel.objects.get(name=ad_name, type=ad_type)
+    except AdministrativeLevel.DoesNotExist as exc:
+        try:
+            return AdministrativeLevel.objects.get(
+                name=libraries_functions.strip_accents(ad_name), type=ad_type
+            )
+        except AdministrativeLevel.DoesNotExist as exc:
+            try:
+                return AdministrativeLevel.objects.get(name=ad_name.replace(" ", ""), type=ad_type)
+            except AdministrativeLevel.DoesNotExist as exc:
+                try:
+                    return AdministrativeLevel.objects.get(
+                        name=libraries_functions.strip_accents(ad_name.replace(" ", "")), type=ad_type
+                    )
+                except AdministrativeLevel.DoesNotExist as exc:
+                    try:
+                        return AdministrativeLevel.objects.get(
+                            name=libraries_functions.strip_accents(ad_name.replace("-", " ")), type=ad_type
+                        )
+                    except AdministrativeLevel.DoesNotExist as exc:
+                        return None
+                    except AdministrativeLevel.MultipleObjectsReturned as exc:
+                        return None
+                
+                except AdministrativeLevel.MultipleObjectsReturned as exc:
+                    return None
+
+            except AdministrativeLevel.MultipleObjectsReturned as exc:
+                return None
+
+        except AdministrativeLevel.MultipleObjectsReturned as exc:
+            return None
+
+    except AdministrativeLevel.MultipleObjectsReturned as exc:
+        return None
+    
+
+
 def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]) -> str:
     """Function to save the CSV datas in database"""
     
@@ -96,7 +136,14 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                 comments = get_value(datas_file["COMMENTAIRES"][count])
                 longitude = get_value(datas_file["Longitude (x)"][count])
                 latitude = get_value(datas_file["Latitude (y)"][count])
-
+                
+                population = get_value(datas_file["POPULATION"][count])
+                direct_beneficiaries_men = get_value(datas_file["H (BENEFICIAIRES DIRECTS)"][count])
+                direct_beneficiaries_women = get_value(datas_file["F (BENEFICIAIRES DIRECTS)"][count])
+                indirect_beneficiaries_men = get_value(datas_file["H (BENEFICIAIRES INDIRECTS)"][count])
+                indirect_beneficiaries_women = get_value(datas_file["F (BENEFICIAIRES INDIRECTS)"][count])
+                list_of_villages_crossed_by_the_track_or_electrification = get_value(datas_file["LISTE DE VILLAGES TRAVERSÉ PAR LA PISTE OU L'ÉLECTRIFICATION"][count])
+                
                 
                 for village in __village.split("/"):
                     village = village.strip()
@@ -176,7 +223,7 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                         #         except Exception as exc:
                         #             component = None
 
-                        if village == "CCD":
+                        if village == "CCD" or not administrative_level:
                             subprojects = Subproject.objects.filter(
                                 full_title_of_approved_subproject=full_title_of_approved_subproject
                                 )
@@ -306,12 +353,25 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                         subproject.comments = comments
                         subproject.latitude = latitude
                         subproject.longitude = longitude
+                        
+                        subproject.population = population
+                        subproject.direct_beneficiaries_men = direct_beneficiaries_men
+                        subproject.direct_beneficiaries_women = direct_beneficiaries_women
+                        subproject.indirect_beneficiaries_men = indirect_beneficiaries_men
+                        subproject.indirect_beneficiaries_women = indirect_beneficiaries_women
 
                         subproject = subproject.save_and_return_object()
                         
                         if village == "CCD" and administrative_level_canton:
                             subproject.canton = administrative_level_canton
 
+                            if list_of_villages_crossed_by_the_track_or_electrification:
+                                liste = str(list_of_villages_crossed_by_the_track_or_electrification).split(";")
+                                for ad_name in liste:
+                                    ad = get_adminstrative_level_by_name(ad_name.strip(), "Village")
+                                    if ad:
+                                        subproject.list_of_villages_crossed_by_the_track_or_electrification.add(ad)
+                            
                         elif administrative_level and administrative_level.cvd:
                             subproject.cvd  = administrative_level.cvd
                         
@@ -399,11 +459,22 @@ def get_subprojects_under_file_excel_or_csv(file_type="excel", params={"type":"A
         "CANTON": {},
         "VILLAGE": {},
         "UNITE D'INTERVENTION": {},
+        "POPULATION": {},
+        "H (BENEFICIAIRES DIRECTS)": {},
+        "F (BENEFICIAIRES DIRECTS)": {},
+        "T (BENEFICIAIRES DIRECTS)": {},
+        "H (BENEFICIAIRES INDIRECTS)": {},
+        "F (BENEFICIAIRES INDIRECTS)": {},
+        "T (BENEFICIAIRES INDIRECTS)": {},
+        "T_Benef_H": {},
+        "T_Benef_F": {},
+        "TOTAL (Bénéficiaires)": {},
         "NOM DE L'AC": {},
         "VAGUE": {},
         "LOT": {},
         "SECTEUR–SP": {},
         "TYPE DE SOUS-PROJET": {},
+        "LISTE DE VILLAGES TRAVERSÉ PAR LA PISTE OU L'ÉLECTRIFICATION": {},
         "INTITULE COMPLET DU SOUS-PROJET APPROUVES (Description)": {},
         "TYPE DE TRAVAUX": {},
         "COUT ESTIMATIF": {},
@@ -519,11 +590,34 @@ def get_subprojects_under_file_excel_or_csv(file_type="excel", params={"type":"A
         datas["Longitude (x)"][count] = elt.longitude
         datas["Latitude (y)"][count] = elt.latitude
         datas["UNITE D'INTERVENTION"][count] = elt.intervention_unit
+        datas["POPULATION"][count] = elt.population
+        datas["H (BENEFICIAIRES DIRECTS)"][count] = elt.direct_beneficiaries_men
+        datas["F (BENEFICIAIRES DIRECTS)"][count] = elt.direct_beneficiaries_women
+        datas["T (BENEFICIAIRES DIRECTS)"][count] = (elt.direct_beneficiaries_men if elt.direct_beneficiaries_men else 0) + (elt.direct_beneficiaries_women if elt.direct_beneficiaries_women else 0)
+        datas["H (BENEFICIAIRES INDIRECTS)"][count] = elt.indirect_beneficiaries_men
+        datas["F (BENEFICIAIRES INDIRECTS)"][count] = elt.indirect_beneficiaries_women
+        datas["T (BENEFICIAIRES INDIRECTS)"][count] = (elt.indirect_beneficiaries_men if elt.indirect_beneficiaries_men else 0) + (elt.indirect_beneficiaries_women if elt.indirect_beneficiaries_women else 0)
+        datas["T_Benef_H"][count] = (elt.direct_beneficiaries_men if elt.direct_beneficiaries_men else 0) + (elt.indirect_beneficiaries_men if elt.indirect_beneficiaries_men else 0)
+        datas["T_Benef_F"][count] = (elt.direct_beneficiaries_women if elt.direct_beneficiaries_women else 0) + (elt.indirect_beneficiaries_women if elt.indirect_beneficiaries_women else 0)
+        datas["TOTAL (Bénéficiaires)"][count] = datas["T_Benef_H"][count] + datas["T_Benef_F"][count]
+
         datas["NOM DE L'AC"][count] = elt.facilitator_name
         datas["VAGUE"][count] = elt.wave
         datas["LOT"][count] = elt.lot
         datas["SECTEUR–SP"][count] = elt.subproject_sector
         datas["TYPE DE SOUS-PROJET"][count] = elt.type_of_subproject
+
+        list_of_villages_crossed_by_the_track_or_electrification_str = ""
+        list_of_villages_crossed_by_the_track_or_electrification = elt.list_of_villages_crossed_by_the_track_or_electrification.all()
+        count = 0
+        length = len(list_of_villages_crossed_by_the_track_or_electrification)
+        for v in elt.list_of_villages_crossed_by_the_track_or_electrification.all():
+            count += 1
+            list_of_villages_crossed_by_the_track_or_electrification_str += v.name
+            if length != count:
+                list_of_villages_crossed_by_the_track_or_electrification_str += " ; "
+        datas["LISTE DE VILLAGES TRAVERSÉ PAR LA PISTE OU L'ÉLECTRIFICATION"][count] = list_of_villages_crossed_by_the_track_or_electrification_str
+
         datas["INTITULE COMPLET DU SOUS-PROJET APPROUVES (Description)"][count] = elt.full_title_of_approved_subproject
         datas["TYPE DE TRAVAUX"][count] = elt.works_type
         datas["COUT ESTIMATIF"][count] = elt.estimated_cost

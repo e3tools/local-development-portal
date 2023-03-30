@@ -14,6 +14,10 @@ from django.utils.translation import gettext_lazy as _
 from django import forms
 from subprojects import functions as subprojects_functions
 from administrativelevels.libraries import download_file
+from usermanager.permissions import (
+    CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
+    AdminPermissionRequiredMixin
+    )
 
 # Create your views here.
 
@@ -91,7 +95,7 @@ class SubprojectDetailView(LoginRequiredMixin, generic.DetailView):
     ]
 
 
-class SubprojectCreateView(PageMixin, LoginRequiredMixin, generic.CreateView):
+class SubprojectCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, generic.CreateView):
     model = Subproject
     template_name = 'subproject_create.html'
     context_object_name = 'subproject'
@@ -119,7 +123,7 @@ class SubprojectCreateView(PageMixin, LoginRequiredMixin, generic.CreateView):
         return super(SubprojectCreateView, self).get(request, *args, **kwargs)
     
 
-class SubprojectUpdateView(PageMixin, LoginRequiredMixin, generic.UpdateView):
+class SubprojectUpdateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, generic.UpdateView):
     model = Subproject
     template_name = 'subproject_create.html'
     context_object_name = 'subproject'
