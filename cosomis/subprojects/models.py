@@ -30,7 +30,7 @@ class Subproject(BaseModel):
     lot = models.CharField(max_length=2, null=True, blank=True)
     subproject_sector = models.CharField(max_length=100)
     type_of_subproject = models.CharField(max_length=100)
-    full_title_of_approved_subproject = models.CharField(max_length=255)
+    full_title_of_approved_subproject = models.TextField()
     works_type = models.CharField(max_length=100, null=True, blank=True)
     estimated_cost = models.FloatField(null=True, blank=True)
     level_of_achievement_donation_certificate = models.CharField(max_length=50, null=True, blank=True)

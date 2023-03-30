@@ -145,49 +145,48 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                 list_of_villages_crossed_by_the_track_or_electrification = get_value(datas_file["LISTE DE VILLAGES TRAVERSÉ PAR LA PISTE OU L'ÉLECTRIFICATION"][count])
                 
                 
-                for village in __village.split("/"):
-                    village = village.strip()
-                    _is_object_error = False
-                    is_link_to_subproject = False
-                    subproject_to_link = None
-                    administrative_level = None
-                    administrative_level_canton = None
-                    if village == "CCD":
-                        pass
-                    else:
+                # for village in __village.split("/"):
+                # village = village.strip()
+                village = __village.strip()
+                _is_object_error = False
+                is_link_to_subproject = False
+                subproject_to_link = None
+                administrative_level = None
+                administrative_level_canton = None
+                subproject = None
+                if village == "CCD":
+                    pass
+                else:
+                    try:
+                        administrative_level = AdministrativeLevel.objects.get(name=village, type="Village")
+                    except AdministrativeLevel.DoesNotExist as exc:
                         try:
-                            administrative_level = AdministrativeLevel.objects.get(name=village, type="Village")
+                            administrative_level = AdministrativeLevel.objects.get(
+                                name=libraries_functions.strip_accents(village), type="Village"
+                            )
                         except AdministrativeLevel.DoesNotExist as exc:
                             try:
-                                administrative_level = AdministrativeLevel.objects.get(
-                                    name=libraries_functions.strip_accents(village), type="Village"
-                                )
+                                administrative_level = AdministrativeLevel.objects.get(name=village.replace(" ", ""), type="Village")
                             except AdministrativeLevel.DoesNotExist as exc:
                                 try:
-                                    administrative_level = AdministrativeLevel.objects.get(name=village.replace(" ", ""), type="Village")
+                                    administrative_level = AdministrativeLevel.objects.get(
+                                        name=libraries_functions.strip_accents(village.replace(" ", "")), type="Village"
+                                    )
                                 except AdministrativeLevel.DoesNotExist as exc:
                                     try:
                                         administrative_level = AdministrativeLevel.objects.get(
-                                            name=libraries_functions.strip_accents(village.replace(" ", "")), type="Village"
+                                            name=libraries_functions.strip_accents(village.replace("-", " ")), type="Village"
                                         )
                                     except AdministrativeLevel.DoesNotExist as exc:
-                                        try:
-                                            administrative_level = AdministrativeLevel.objects.get(
-                                                name=libraries_functions.strip_accents(village.replace("-", " ")), type="Village"
-                                            )
-                                        except AdministrativeLevel.DoesNotExist as exc:
-                                            _is_object_error = True
-                                            if _village not in list_villages_not_found:
-                                                list_villages_not_found.append(_village)
-                                            text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{_village}]: {exc.__str__()}')
-                                            at_least_error_name = True
-                                            at_least_one_error = True
-                                        except AdministrativeLevel.MultipleObjectsReturned as exc:
-                                            raise AdministrativeLevel.MultipleObjectsReturned()
-                                    
+                                        _is_object_error = True
+                                        if _village not in list_villages_not_found:
+                                            list_villages_not_found.append(_village)
+                                        text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{_village}]: {exc.__str__()}')
+                                        at_least_error_name = True
+                                        at_least_one_error = True
                                     except AdministrativeLevel.MultipleObjectsReturned as exc:
                                         raise AdministrativeLevel.MultipleObjectsReturned()
-
+                                
                                 except AdministrativeLevel.MultipleObjectsReturned as exc:
                                     raise AdministrativeLevel.MultipleObjectsReturned()
 
@@ -195,75 +194,75 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                                 raise AdministrativeLevel.MultipleObjectsReturned()
 
                         except AdministrativeLevel.MultipleObjectsReturned as exc:
-                            _is_object_error = True
-                            if _village not in list_villages_multi_obj_found:
-                                list_villages_multi_obj_found.append(_village)
-                            at_least_error_name = True
-                            at_least_one_error = True
-                            text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{_village}]: {exc.__str__()}')
-                        
+                            raise AdministrativeLevel.MultipleObjectsReturned()
 
-                    if not _is_object_error:
-                        
-                        if administrative_level and ((cvd_ids and administrative_level.cvd_id not in cvd_ids) or (canton_ids and administrative_level.cvd_id not in canton_ids)):
-                            continue #Continue without save the object if the cvd ids or the cantan ids are specific and their village current is different
-                        
-                        estimated_cost = float(estimated_cost) if estimated_cost else 0.0
-                        
-                        # _list_chars = column.split(" ")
-                        # for char in _list_chars:
-                        #     if char in list(_components.keys()):
-                        #         _list_data = str(data).split("-")
-                        #         if _list_data[0].isdigit():
-                        #             name_priority = (str(data)[(len(_list_data[0])+1):]).strip()
-                        #         else:
-                        #             name_priority = str(data).strip()
-                        #         try:
-                        #             component = Component.objects.get(name=_components[char].upper())
-                        #         except Exception as exc:
-                        #             component = None
+                    except AdministrativeLevel.MultipleObjectsReturned as exc:
+                        _is_object_error = True
+                        if _village not in list_villages_multi_obj_found:
+                            list_villages_multi_obj_found.append(_village)
+                        at_least_error_name = True
+                        at_least_one_error = True
+                        text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{_village}]: {exc.__str__()}')
+                    
 
-                        if village == "CCD" or not administrative_level:
-                            subprojects = Subproject.objects.filter(
-                                full_title_of_approved_subproject=full_title_of_approved_subproject
-                                )
-                            canton = get_value(datas_file["CANTON"][count])
-                            
-                            if canton:
-                                canton = canton.upper()
+                if not _is_object_error:
+                    
+                    if administrative_level and ((cvd_ids and administrative_level.cvd_id not in cvd_ids) or (canton_ids and administrative_level.cvd_id not in canton_ids)):
+                        continue #Continue without save the object if the cvd ids or the cantan ids are specific and their village current is different
+                    
+                    estimated_cost = float(estimated_cost) if estimated_cost else 0.0
+                    
+                    # _list_chars = column.split(" ")
+                    # for char in _list_chars:
+                    #     if char in list(_components.keys()):
+                    #         _list_data = str(data).split("-")
+                    #         if _list_data[0].isdigit():
+                    #             name_priority = (str(data)[(len(_list_data[0])+1):]).strip()
+                    #         else:
+                    #             name_priority = str(data).strip()
+                    #         try:
+                    #             component = Component.objects.get(name=_components[char].upper())
+                    #         except Exception as exc:
+                    #             component = None
+
+                    if village == "CCD":
+                        subprojects = Subproject.objects.filter(
+                            full_title_of_approved_subproject=full_title_of_approved_subproject
+                            )
+                        canton = get_value(datas_file["CANTON"][count])
+                        
+                        if canton:
+                            canton = canton.upper()
+                            try:
+                                administrative_level_canton = AdministrativeLevel.objects.get(name=canton, type="Canton")
+                            except AdministrativeLevel.DoesNotExist as exc:
                                 try:
-                                    administrative_level_canton = AdministrativeLevel.objects.get(name=canton, type="Canton")
+                                    administrative_level_canton = AdministrativeLevel.objects.get(
+                                        name=libraries_functions.strip_accents(canton), type="Canton"
+                                    )
                                 except AdministrativeLevel.DoesNotExist as exc:
                                     try:
-                                        administrative_level_canton = AdministrativeLevel.objects.get(
-                                            name=libraries_functions.strip_accents(canton), type="Canton"
-                                        )
+                                        administrative_level_canton = AdministrativeLevel.objects.get(name=canton.replace(" ", ""), type="Canton")
                                     except AdministrativeLevel.DoesNotExist as exc:
                                         try:
-                                            administrative_level_canton = AdministrativeLevel.objects.get(name=canton.replace(" ", ""), type="Canton")
+                                            administrative_level_canton = AdministrativeLevel.objects.get(
+                                                name=libraries_functions.strip_accents(canton.replace(" ", "")), type="Canton"
+                                            )
                                         except AdministrativeLevel.DoesNotExist as exc:
                                             try:
                                                 administrative_level_canton = AdministrativeLevel.objects.get(
-                                                    name=libraries_functions.strip_accents(canton.replace(" ", "")), type="Canton"
+                                                    name=libraries_functions.strip_accents(canton.replace("-", " ")), type="Canton"
                                                 )
                                             except AdministrativeLevel.DoesNotExist as exc:
-                                                try:
-                                                    administrative_level_canton = AdministrativeLevel.objects.get(
-                                                        name=libraries_functions.strip_accents(canton.replace("-", " ")), type="Canton"
-                                                    )
-                                                except AdministrativeLevel.DoesNotExist as exc:
-                                                    _is_object_error = True
-                                                    if canton not in list_villages_not_found:
-                                                        list_villages_not_found.append(canton)
-                                                    text_errors += (f'\nLine N°{count} [{canton}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{canton}]: {exc.__str__()}')
-                                                    at_least_error_name = True
-                                                    at_least_one_error = True
-                                                except AdministrativeLevel.MultipleObjectsReturned as exc:
-                                                    raise AdministrativeLevel.MultipleObjectsReturned()
-                                                
+                                                _is_object_error = True
+                                                if canton not in list_villages_not_found:
+                                                    list_villages_not_found.append(canton)
+                                                text_errors += (f'\nLine N°{count} [{canton}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{canton}]: {exc.__str__()}')
+                                                at_least_error_name = True
+                                                at_least_one_error = True
                                             except AdministrativeLevel.MultipleObjectsReturned as exc:
                                                 raise AdministrativeLevel.MultipleObjectsReturned()
-
+                                            
                                         except AdministrativeLevel.MultipleObjectsReturned as exc:
                                             raise AdministrativeLevel.MultipleObjectsReturned()
 
@@ -271,116 +270,118 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                                         raise AdministrativeLevel.MultipleObjectsReturned()
 
                                 except AdministrativeLevel.MultipleObjectsReturned as exc:
-                                    _is_object_error = True
-                                    if canton not in list_villages_multi_obj_found:
-                                        list_villages_multi_obj_found.append(canton)
-                                    at_least_error_name = True
-                                    at_least_one_error = True
-                                    text_errors += (f'\nLine N°{count} [{canton}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{canton}]: {exc.__str__()}')
-                            
-                            for sub in subprojects:
-                                if administrative_level_canton and not subproject.link_to_subproject:
-                                    is_link_to_subproject = True
-                                    subproject = sub
-                                if administrative_level_canton and sub.canton and sub.canton.id == administrative_level_canton.id:
-                                    subproject = sub
-                                    is_link_to_subproject = False
-                                    break
+                                    raise AdministrativeLevel.MultipleObjectsReturned()
 
-                        else:
-                            subproject = Subproject.objects.filter(
-                                full_title_of_approved_subproject=full_title_of_approved_subproject,
-                                location_subproject_realized=administrative_level
-                                )
-                            if subproject:
-                                subproject = list(subproject)[0]
-
-                        if is_link_to_subproject:
-                            subproject_to_link = copy.copy(subproject)
-                            subproject = None
-
-                        if not subproject:
-                            subproject = Subproject()
-                            subproject.ranking = 1
-                            subproject.link_to_subproject = subproject_to_link
-
-
-                        subproject.location_subproject_realized = administrative_level
-                        subproject.number = number
-                        subproject.intervention_unit = intervention_unit
-                        subproject.facilitator_name = facilitator_name
-                        subproject.wave = wave
-                        subproject.lot = lot
-                        subproject.subproject_sector = subproject_sector
-                        subproject.type_of_subproject = type_of_subproject
-                        subproject.full_title_of_approved_subproject = full_title_of_approved_subproject
-                        subproject.works_type = works_type
-                        subproject.estimated_cost = estimated_cost
-                        subproject.level_of_achievement_donation_certificate = level_of_achievement_donation_certificate
-                        subproject.approval_date_cora = approval_date_cora
-                        subproject.date_of_signature_of_contract_for_construction_supervisors = date_of_signature_of_contract_for_construction_supervisors
-                        subproject.amount_of_the_contract_for_construction_supervisors = amount_of_the_contract_for_construction_supervisors
-                        subproject.date_signature_contract_controllers_in_SES = date_signature_contract_controllers_in_SES
-                        subproject.amount_of_the_controllers_contract_in_SES = amount_of_the_controllers_contract_in_SES
-                        subproject.convention = convention
-                        subproject.contract_number_of_work_companies = contract_number_of_work_companies
-                        subproject.name_of_the_awarded_company_works_companies = name_of_the_awarded_company_works_companies
-                        subproject.date_signature_contract_work_companies = date_signature_contract_work_companies
-                        subproject.contract_amount_work_companies = contract_amount_work_companies
-                        subproject.name_of_company_awarded_efme = name_of_company_awarded_efme
-                        subproject.date_signature_contract_efme = date_signature_contract_efme
-                        subproject.contract_companies_amount_for_efme = contract_companies_amount_for_efme
-                        subproject.date_signature_contract_facilitator = date_signature_contract_facilitator
-                        subproject.amount_of_the_facilitator_contract = amount_of_the_facilitator_contract
-                        subproject.launch_date_of_the_construction_site_in_the_village = launch_date_of_the_construction_site_in_the_village
-                        subproject.current_level_of_physical_realization_of_the_work = current_level_of_physical_realization_of_the_work
-                        subproject.length_of_the_track = length_of_the_track
-                        subproject.depth_of_drilling = depth_of_drilling
-                        subproject.drilling_flow_rate = drilling_flow_rate
-                        subproject.current_status_of_the_site = current_status_of_the_site
-                        subproject.expected_duration_of_the_work = expected_duration_of_the_work
-                        subproject.expected_end_date_of_the_contract = expected_end_date_of_the_contract
-                        subproject.total_contract_amount_paid = total_contract_amount_paid
-                        subproject.amount_of_the_care_and_maintenance_fund_expected_to_be_mobilized = amount_of_the_care_and_maintenance_fund_expected_to_be_mobilized
-                        subproject.care_and_maintenance_amount_on_village_account = care_and_maintenance_amount_on_village_account
-                        subproject.existence_of_maintenance_and_upkeep_plan_developed_by_community = bool(existence_of_maintenance_and_upkeep_plan_developed_by_community) if existence_of_maintenance_and_upkeep_plan_developed_by_community else False
-                        subproject.date_of_technical_acceptance_of_work_contracts = date_of_technical_acceptance_of_work_contracts
-                        subproject.technical_acceptance_date_for_efme_contracts = technical_acceptance_date_for_efme_contracts
-                        subproject.date_of_provisional_acceptance_of_work_contracts = date_of_provisional_acceptance_of_work_contracts
-                        subproject.provisional_acceptance_date_for_efme_contracts = provisional_acceptance_date_for_efme_contracts
-                        subproject.official_handover_date_of_the_microproject_to_the_community = official_handover_date_of_the_microproject_to_the_community
-                        subproject.official_handover_date_of_the_microproject_to_the_sector = official_handover_date_of_the_microproject_to_the_sector
-                        subproject.comments = comments
-                        subproject.latitude = latitude
-                        subproject.longitude = longitude
+                            except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                _is_object_error = True
+                                if canton not in list_villages_multi_obj_found:
+                                    list_villages_multi_obj_found.append(canton)
+                                at_least_error_name = True
+                                at_least_one_error = True
+                                text_errors += (f'\nLine N°{count} [{canton}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{canton}]: {exc.__str__()}')
                         
-                        subproject.population = population
-                        subproject.direct_beneficiaries_men = direct_beneficiaries_men
-                        subproject.direct_beneficiaries_women = direct_beneficiaries_women
-                        subproject.indirect_beneficiaries_men = indirect_beneficiaries_men
-                        subproject.indirect_beneficiaries_women = indirect_beneficiaries_women
+                        for sub in subprojects:
+                            if administrative_level_canton and not sub.link_to_subproject:
+                                is_link_to_subproject = True
+                                subproject = sub
+                            if administrative_level_canton and sub.canton and sub.canton.id == administrative_level_canton.id:
+                                subproject = sub
+                                is_link_to_subproject = False
+                                break
 
-                        subproject = subproject.save_and_return_object()
-                        
-                        if village == "CCD" and administrative_level_canton:
-                            subproject.canton = administrative_level_canton
+                    else:
+                        subproject = Subproject.objects.filter(
+                            full_title_of_approved_subproject=full_title_of_approved_subproject,
+                            location_subproject_realized=administrative_level
+                            )
+                        if subproject:
+                            subproject = list(subproject)[0]
 
-                            if list_of_villages_crossed_by_the_track_or_electrification:
-                                liste = str(list_of_villages_crossed_by_the_track_or_electrification).split(";")
-                                for ad_name in liste:
-                                    ad = get_adminstrative_level_by_name(ad_name.strip(), "Village")
-                                    if ad:
-                                        subproject.list_of_villages_crossed_by_the_track_or_electrification.add(ad)
-                            
-                        elif administrative_level and administrative_level.cvd:
-                            subproject.cvd  = administrative_level.cvd
-                        
-                        # if administrative_level.cvd:
-                        #     if not exists_id(subproject.cvds, administrative_level.id):
-                        #         subproject.cvds.add(administrative_level.cvd)
-                        
+                    if is_link_to_subproject:
+                        subproject_to_link = copy.copy(subproject)
+                        subproject = None
 
-                        subproject.save()
+                    if not subproject:
+                        subproject = Subproject()
+                        subproject.ranking = 1
+                        subproject.link_to_subproject = subproject_to_link
+
+                    subproject.location_subproject_realized = administrative_level
+                    subproject.number = number
+                    subproject.intervention_unit = intervention_unit
+                    subproject.facilitator_name = facilitator_name
+                    subproject.wave = wave
+                    subproject.lot = lot
+                    subproject.subproject_sector = subproject_sector
+                    subproject.type_of_subproject = type_of_subproject
+                    subproject.full_title_of_approved_subproject = full_title_of_approved_subproject
+                    subproject.works_type = works_type
+                    subproject.estimated_cost = estimated_cost
+                    subproject.level_of_achievement_donation_certificate = level_of_achievement_donation_certificate
+                    subproject.approval_date_cora = approval_date_cora
+                    subproject.date_of_signature_of_contract_for_construction_supervisors = date_of_signature_of_contract_for_construction_supervisors
+                    subproject.amount_of_the_contract_for_construction_supervisors = amount_of_the_contract_for_construction_supervisors
+                    subproject.date_signature_contract_controllers_in_SES = date_signature_contract_controllers_in_SES
+                    subproject.amount_of_the_controllers_contract_in_SES = amount_of_the_controllers_contract_in_SES
+                    subproject.convention = convention
+                    subproject.contract_number_of_work_companies = contract_number_of_work_companies
+                    subproject.name_of_the_awarded_company_works_companies = name_of_the_awarded_company_works_companies
+                    subproject.date_signature_contract_work_companies = date_signature_contract_work_companies
+                    subproject.contract_amount_work_companies = contract_amount_work_companies
+                    subproject.name_of_company_awarded_efme = name_of_company_awarded_efme
+                    subproject.date_signature_contract_efme = date_signature_contract_efme
+                    subproject.contract_companies_amount_for_efme = contract_companies_amount_for_efme
+                    subproject.date_signature_contract_facilitator = date_signature_contract_facilitator
+                    subproject.amount_of_the_facilitator_contract = amount_of_the_facilitator_contract
+                    subproject.launch_date_of_the_construction_site_in_the_village = launch_date_of_the_construction_site_in_the_village
+                    subproject.current_level_of_physical_realization_of_the_work = current_level_of_physical_realization_of_the_work
+                    subproject.length_of_the_track = length_of_the_track
+                    subproject.depth_of_drilling = depth_of_drilling
+                    subproject.drilling_flow_rate = drilling_flow_rate
+                    subproject.current_status_of_the_site = current_status_of_the_site
+                    subproject.expected_duration_of_the_work = expected_duration_of_the_work
+                    subproject.expected_end_date_of_the_contract = expected_end_date_of_the_contract
+                    subproject.total_contract_amount_paid = total_contract_amount_paid
+                    subproject.amount_of_the_care_and_maintenance_fund_expected_to_be_mobilized = amount_of_the_care_and_maintenance_fund_expected_to_be_mobilized
+                    subproject.care_and_maintenance_amount_on_village_account = care_and_maintenance_amount_on_village_account
+                    subproject.existence_of_maintenance_and_upkeep_plan_developed_by_community = bool(existence_of_maintenance_and_upkeep_plan_developed_by_community) if existence_of_maintenance_and_upkeep_plan_developed_by_community else False
+                    subproject.date_of_technical_acceptance_of_work_contracts = date_of_technical_acceptance_of_work_contracts
+                    subproject.technical_acceptance_date_for_efme_contracts = technical_acceptance_date_for_efme_contracts
+                    subproject.date_of_provisional_acceptance_of_work_contracts = date_of_provisional_acceptance_of_work_contracts
+                    subproject.provisional_acceptance_date_for_efme_contracts = provisional_acceptance_date_for_efme_contracts
+                    subproject.official_handover_date_of_the_microproject_to_the_community = official_handover_date_of_the_microproject_to_the_community
+                    subproject.official_handover_date_of_the_microproject_to_the_sector = official_handover_date_of_the_microproject_to_the_sector
+                    subproject.comments = comments
+                    subproject.latitude = latitude
+                    subproject.longitude = longitude
+                    
+                    subproject.population = population
+                    subproject.direct_beneficiaries_men = direct_beneficiaries_men
+                    subproject.direct_beneficiaries_women = direct_beneficiaries_women
+                    subproject.indirect_beneficiaries_men = indirect_beneficiaries_men
+                    subproject.indirect_beneficiaries_women = indirect_beneficiaries_women
+
+                    subproject = subproject.save_and_return_object()
+                    
+                    if village == "CCD" and administrative_level_canton:
+                        subproject.canton = administrative_level_canton
+
+                        if list_of_villages_crossed_by_the_track_or_electrification:
+                            liste = str(list_of_villages_crossed_by_the_track_or_electrification).split(";")
+                            for ad_name in liste:
+                                ad = get_adminstrative_level_by_name(ad_name.strip(), "Village")
+                                if ad:
+                                    subproject.list_of_villages_crossed_by_the_track_or_electrification.add(ad)
+                        
+                    elif administrative_level and administrative_level.cvd:
+                        subproject.cvd  = administrative_level.cvd
+                    
+                    # if administrative_level.cvd:
+                    #     if not exists_id(subproject.cvds, administrative_level.id):
+                    #         subproject.cvds.add(administrative_level.cvd)
+                    
+
+                    subproject.save()
 
 
             except Exception as exc:

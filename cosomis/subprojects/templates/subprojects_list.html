@@ -44,7 +44,7 @@
                             <tr>
                                 <td>{{ subproject.get_village.name }}</td>
                                 <td>{{ subproject.get_cantons_names }}</td>
-                                <td>{{ subproject.administrative_level.parent.parent.name }}</td>
+                                <td>{{ subproject.get_canton.parent.parent.parent.name }}</td>
                                 <td>{{ subproject.full_title_of_approved_subproject }}</td>
                                 <td>{{ subproject.get_estimated_cost_str }}</td>
                                 <td>
