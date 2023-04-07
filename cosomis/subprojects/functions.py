@@ -1,4 +1,4 @@
-from administrativelevels.models import AdministrativeLevel
+from administrativelevels.models import AdministrativeLevel, CVD
 from subprojects.models import Subproject
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
@@ -14,6 +14,13 @@ import copy
 
 def get_value(elt):
     return elt if not pd.isna(elt) else None
+
+def exists_id(liste, id):
+    for o in liste:
+        if o.id == id:
+            return True
+    return False
+
 
 def get_adminstrative_level_by_name(ad_name, ad_type):
     try:
@@ -518,48 +525,102 @@ def get_subprojects_under_file_excel_or_csv(file_type="excel", params={"type":"A
         "COMMENTAIRES": {}
     }
 
-    administratives_levels = []
+    # administratives_levels = []
+    # value_of_type = params.get("value_of_type").upper() if params.get("value_of_type") else ""
+    # if _type == "All":
+    #     administratives_levels = AdministrativeLevel.objects.filter(type="Village")
+    # elif _type == "Region":
+    #     for region in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
+    #         for prefecture in AdministrativeLevel.objects.filter(parent=region):
+    #             for commune in AdministrativeLevel.objects.filter(parent=prefecture):
+    #                 for canton in AdministrativeLevel.objects.filter(parent=commune):
+    #                     [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+    # elif _type == "Prefecture":
+    #     for prefecture in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
+    #         for commune in AdministrativeLevel.objects.filter(parent=prefecture):
+    #             for canton in AdministrativeLevel.objects.filter(parent=commune):
+    #                 [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+    # elif _type == "Commune":
+    #     for commune in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
+    #         for canton in AdministrativeLevel.objects.filter(parent=commune):
+    #             [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+    # elif _type == "Canton":
+    #     for canton in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
+    #         [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+    # elif _type == "Village":
+    #     administratives_levels = AdministrativeLevel.objects.filter(type=_type, name=value_of_type)
+
+    # Subprojects = []
+    # sector = params.get("sector")
+    # subproject_type = params.get("subproject_type")
+    # for adm_level in administratives_levels:
+    #     if sector != "All" and subproject_type != "All":
+    #         [Subprojects.append(o) for o in Subproject.objects.filter(Q(cvd=adm_level.cvd, subproject_sector=sector, type_of_subproject=subproject_type) | Q(canton=adm_level.parent, subproject_sector=sector, type_of_subproject=subproject_type))]
+    #     elif sector != "All" and subproject_type == "All":
+    #         [Subprojects.append(o) for o in Subproject.objects.filter(Q(cvd=adm_level.cvd, subproject_sector=sector) | Q(canton=adm_level.parent, subproject_sector=sector))]
+    #     elif sector == "All" and subproject_type != "All":
+    #         [Subprojects.append(o) for o in Subproject.objects.filter(Q(cvd=adm_level.cvd, type_of_subproject=subproject_type) | Q(canton=adm_level.parent, type_of_subproject=subproject_type))]
+    #     else:
+    #         if not Subprojects:
+    #             [Subprojects.append(o) for o in Subproject.objects.filter(Q(location_subproject_realized_id=adm_level.id) | Q(canton_id=adm_level.parent_id))]
+    #         for s in Subprojects:
+    #             [Subprojects.append(o) for o in Subproject.objects.filter(Q(location_subproject_realized_id=adm_level.id) | Q(canton_id=adm_level.parent_id)) if s.id != o.id]
+
+
+    cvds = []
     value_of_type = params.get("value_of_type").upper() if params.get("value_of_type") else ""
     if _type == "All":
-        administratives_levels = AdministrativeLevel.objects.filter(type="Village")
+        cvds = CVD.objects.all()
     elif _type == "Region":
         for region in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
             for prefecture in AdministrativeLevel.objects.filter(parent=region):
                 for commune in AdministrativeLevel.objects.filter(parent=prefecture):
                     for canton in AdministrativeLevel.objects.filter(parent=commune):
-                        [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+                        for g in canton.geographicalunit_set.get_queryset():
+                            [cvds.append(c) for c in g.cvd_set.get_queryset()]
     elif _type == "Prefecture":
         for prefecture in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
             for commune in AdministrativeLevel.objects.filter(parent=prefecture):
                 for canton in AdministrativeLevel.objects.filter(parent=commune):
-                    [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+                    for g in canton.geographicalunit_set.get_queryset():
+                        [cvds.append(c) for c in g.cvd_set.get_queryset()]
     elif _type == "Commune":
         for commune in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
             for canton in AdministrativeLevel.objects.filter(parent=commune):
-                [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+                for g in canton.geographicalunit_set.get_queryset():
+                    [cvds.append(c) for c in g.cvd_set.get_queryset()]
     elif _type == "Canton":
         for canton in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
-            [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+            for g in canton.geographicalunit_set.get_queryset():
+                [cvds.append(c) for c in g.cvd_set.get_queryset()]
     elif _type == "Village":
-        administratives_levels = AdministrativeLevel.objects.filter(type=_type, name=value_of_type)
+        ads = AdministrativeLevel.objects.filter(type=_type, name=value_of_type)
+        [cvds.append(ad.cvd) for ad in ads]
 
-
-    Subprojects = []
+    
+    _subprojects = []
     sector = params.get("sector")
     subproject_type = params.get("subproject_type")
-    for adm_level in administratives_levels:
+    for cvd in cvds:
         if sector != "All" and subproject_type != "All":
-            Subprojects = Subproject.objects.filter(Q(cvd=adm_level.cvd, subproject_sector=sector, type_of_subproject=subproject_type) | Q(canton=adm_level.parent, subproject_sector=sector, type_of_subproject=subproject_type)).values()
+            [_subprojects.append(o) for o in Subproject.objects.filter(Q(cvd=cvd, subproject_sector=sector, type_of_subproject=subproject_type) | Q(location_subproject_realized=cvd.headquarters_village, subproject_sector=sector, type_of_subproject=subproject_type) | Q(canton=cvd.get_canton(), subproject_sector=sector, type_of_subproject=subproject_type))]
         elif sector != "All" and subproject_type == "All":
-            Subprojects = Subproject.objects.filter(Q(cvd=adm_level.cvd, subproject_sector=sector) | Q(canton=adm_level.parent, subproject_sector=sector)).values()
+            [_subprojects.append(o) for o in Subproject.objects.filter(Q(cvd=cvd, subproject_sector=sector) | Q(location_subproject_realized=cvd.headquarters_village, subproject_sector=sector) | Q(canton=cvd.get_canton(), subproject_sector=sector))]
         elif sector == "All" and subproject_type != "All":
-            Subprojects = Subproject.objects.filter(Q(cvd=adm_level.cvd, type_of_subproject=subproject_type) | Q(canton=adm_level.parent, type_of_subproject=subproject_type)).values()
+            [_subprojects.append(o) for o in Subproject.objects.filter(Q(cvd=cvd, type_of_subproject=subproject_type) | Q(location_subproject_realized=cvd.headquarters_village, type_of_subproject=subproject_type) | Q(canton=cvd.get_canton(), type_of_subproject=subproject_type))]
         else:
-            Subprojects = Subproject.objects.filter(Q(cvd=adm_level.cvd) | Q(canton=adm_level.parent))
+            [_subprojects.append(o) for o in Subproject.objects.filter(Q(cvd=cvd) | Q(location_subproject_realized=cvd.headquarters_village) | Q(canton_id=cvd.get_canton()))]
 
+    subprojects = []
+    for s in _subprojects:
+        if not exists_id(subprojects, s.id):
+            subprojects.append(s)
+            
+    subprojects = sorted(subprojects, key=lambda o: o.number)
+    
 
     count = 0
-    for elt in Subprojects:
+    for elt in subprojects:
         
         try:
             datas["REGION"][count] = elt.get_canton().parent.parent.parent.name
@@ -610,12 +671,12 @@ def get_subprojects_under_file_excel_or_csv(file_type="excel", params={"type":"A
 
         list_of_villages_crossed_by_the_track_or_electrification_str = ""
         list_of_villages_crossed_by_the_track_or_electrification = elt.list_of_villages_crossed_by_the_track_or_electrification.all()
-        count = 0
+        _count = 0
         length = len(list_of_villages_crossed_by_the_track_or_electrification)
         for v in elt.list_of_villages_crossed_by_the_track_or_electrification.all():
-            count += 1
+            _count += 1
             list_of_villages_crossed_by_the_track_or_electrification_str += v.name
-            if length != count:
+            if length != _count:
                 list_of_villages_crossed_by_the_track_or_electrification_str += " ; "
         datas["LISTE DE VILLAGES TRAVERSÉ PAR LA PISTE OU L'ÉLECTRIFICATION"][count] = list_of_villages_crossed_by_the_track_or_electrification_str
 

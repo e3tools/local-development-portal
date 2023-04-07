@@ -94,6 +94,12 @@ class SubprojectDetailView(LoginRequiredMixin, generic.DetailView):
         },
     ]
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['preview_page'] = reverse_lazy('subprojects:list')
+        context['object_tile'] = _('Subproject Detail').__str__()
+        return context
+
 
 class SubprojectCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, generic.CreateView):
     model = Subproject

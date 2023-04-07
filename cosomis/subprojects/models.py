@@ -119,7 +119,29 @@ class Subproject(BaseModel):
             return a
 
         return None
-    
+
+    def get_location(self):
+        cantons_names = self.get_cantons_names()
+        canton = self.get_canton()
+        location = ""
+        if canton:
+            location = canton.parent.parent.parent.name + ", " + canton.parent.parent.name + ", " + canton.parent.name
+        if cantons_names:
+            location += ", " + cantons_names
+        if self.location_subproject_realized:
+            location += ", " + self.location_subproject_realized.name
+        return location
+
+    def get_location_commune(self):
+        cantons_names = self.get_cantons_names()
+        canton = self.get_canton()
+        location = ""
+        if canton:
+            location = canton.parent.parent.parent.name + ", " + canton.parent.parent.name + ", " + canton.parent.name
+        
+        return location
+
+
     def get_estimated_cost(self):
         estimated_cost = self.estimated_cost
         for o in self.subproject_set.get_queryset():

@@ -9,56 +9,138 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-7">
+    <div class="col-12">
+        <div class="clearfix">
+            <div class="float-left">
+                <h6 class="text-danger">{% translate 'Last Updated' %} {{ object.updated_date|date:"d/m/Y" }}</h6>
+            </div>
+            <div class="float-right">
+                <span href="#" class="font-weight-bold" style="background-color: #ffac67; color: white; padding: 7px; border-radius: 5px;">
+                    {% if object.current_level_of_physical_realization_of_the_work %}
+                        {{ object.current_level_of_physical_realization_of_the_work }}
+                    {% else %}
+                        {% translate 'No start' %}
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-9">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="clearfix">
+                    <div class="float-left">
+                        <h5 class="font-weight-bold text-sm">{% translate 'Subproject Description' %}</h5>
+                    </div>
+                    <div class="float-right">
+                        <a href="#" class="font-weight-bold">{% translate 'Update' %}</a>
+                    </div>
+                </div>
+
+                <div class="clearfix pb-1" >
+                    <span class="font-weight-bold">{% translate 'Location' %}: </span>
+                    {% if object.location_subproject_realized %}
+                        <a style="color: #599cf7 !important;" target="_blank" 
+                            href="{% url 'administrativelevels:village_detail' object.location_subproject_realized.pk %}" >
+                            {{ object.get_location }}
+                        </a>
+                    {% else %}
+                        <span style="color: #599cf7 !important;">
+                            {{ object.get_location_commune }}, 
+                            <a style="color: #599cf7 !important;" target="_blank" 
+                                href="{% url 'administrativelevels:village_detail' object.canton.pk %}" >
+                                {{ object.canton.name }}
+                            </a>
+                            {% for sp in object.subproject_set.get_queryset %}
+                                <a style="color: #599cf7 !important;" target="_blank" 
+                                    href="{% url 'administrativelevels:village_detail' sp.canton.pk %}" >
+                                    {{ sp.canton.name }}
+                                </a>
+                            {% endfor %}
+                        </span>
+                    {% endif %}
+                </div>
+
+                {% if object.location_subproject_realized %}
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'CVD' %}: </span>
+                    <span>
+                        {{ object.cvd.name }} (
+                            {% for vg in object.cvd.get_villages %}
+                                <a style="color: #599cf7 !important;" target="_blank" 
+                                    href="{% url 'administrativelevels:village_detail' vg.pk %}" >
+                                    {{ vg.name }}
+                                </a>
+                                {% if not forloop.last %}
+                                    / 
+                                {% endif %}
+                            {% endfor %}
+                        )
+                    </span>
+                </div>
+                {% endif %}
+
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Sector' %}: </span><span>{{ object.subproject_sector }}</span>
+                </div>
+
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Type' %}: </span><span>{{ object.type_of_subproject }}</span>
+                </div>
+
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Description' %}: </span><span>{{ object.full_title_of_approved_subproject }}</span>
+                </div>
+
+                {% if drilling_flow_rate %}
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Boring Flow' %} (m3): </span><span>{{ object.drilling_flow_rate }}</span>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
         <div class="card">
             {% if object.get_principal_image %}
-            <img class="card-img rounded" src="{{ object.get_principal_image.url|imgAWSS3Filter }}" width="733" height="500"
+            <img class="card-img rounded" src="{{ object.get_principal_image.url|imgAWSS3Filter }}" width="333" height="200"
                 alt="Card image" data-toggle="modal" data-target="#show-images-update" >
             {% else %}
-            <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}" width="733" height="400"
+            <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}" width="333" height="200"
                 alt="Card image"  data-toggle="modal" data-target="#show-images-update">
             {% endif %}
-
-            <div class="card-img-overlay d-flex flex-column">
-                <div class="mt-auto">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card rounded-3" style="background-color: wheat; opacity: 60% !important;">
-                                <div class="card-body">
-                                    <p class="card-title"><a href="{% if user.is_superuser or user|has_group:'Admin' %}{% url 'subprojects:update' object.pk %}{% else %}#!{% endif %}" style="color: black;">{{ object.full_title_of_approved_subproject}}</a></p>
-                                    <hr />
-                                    <p class="card-text">{{ object.get_village.name }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
 
             <div style="clear; both;"></div>
             <div class="card-img-overlay flex-column">
                 <div class="mt-auto">
-                    <div class="row">
-                        <div class="col-1">
-                            <div class="card rounded-1" style="background-color: wheat; opacity: 250% !important;">
-                                <div class="card-body">
-                                    {% include 'components/image_add.html' %}
-                                </div>
-                            </div>
+                    <div class="card-img-overlay d-flex flex-column">
+                        <div style="display: block;">
+                            {% include 'components/image_add.html' %}
                         </div>
                         {% if object.get_principal_image %}
-                        <div class="col-2"></div>
+                        {% comment %} <div class="col-2"></div>
                         <div class="col-8">
                             <div class="card rounded-1" style="background-color: wheat; opacity: 250% !important;">
                                 <div class="card-body">
                                     {{ object.get_principal_image.name }}    
                                 </div>
                             </div>
+                        </div> {% endcomment %}
+                        <div style="display: block;" >
+                            <span
+                                style="color: black; background-color: wheat; opacity: 250% !important; margin-left: -10px !important;" >
+                                {{ object.get_principal_image.name }}
+                            </span>
                         </div>
                         {% endif %}
                         {% if object.get_all_images %}
-                        <div class="col-1">
+                        {% comment %} <div class="col-1">
                             <div class="card rounded-1" style="background-color: wheat; opacity: 250% !important;">
                                 <div class="card-body">
                                     <a href="#!" style="color: black;"  data-toggle="modal" data-target="#show-images-update" >
@@ -66,6 +148,11 @@
                                     </a>
                                 </div>
                             </div>
+                        </div> {% endcomment %}
+                        <div style="display: block;" class="mt-auto">
+                            <a href="#!" style="color: black;"  data-toggle="modal" data-target="#show-images-update" >
+                                <i class="fas fa-bars" style="font-size: 25px !important; margin-left: -7px !important; background-color: wheat; opacity: 250% !important; padding: 10px; bottom: 0px !important;"></i>
+                            </a>
                         </div>
                         {% endif %}
                     </div>
@@ -74,55 +161,60 @@
 
         </div>
     </div>
-    <div class="col-5">
-        <div class="card">
-            <div class="card-body">
+</div>
 
-                {% if object.facilitator_name %}
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div class="float-left">
-                                <h5 class="font-weight-bold">{% translate 'Facilitator' %}</h5>
-                            </div>
-                            <div class="float-right">
-                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                            </div>
-                        </div>
-                        <div class="card bg-light" style="height: 30px;">
-                            <div class="card-body">
-                                <h5 class="font-weight-bold">{{ object.facilitator_name }}</h5>
-                            </div>
-                        </div>
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-4">
+        <div class="card" >
+            <div class="card-header">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <h5 class="font-weight-bold">{% translate 'Facilitator' %}</h5>
                     </div>
+                    <div class="float-right">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                
+                 <div class="clearfix">
+                    <a href="#" class="font-weight-bold">
+                        {% if object.facilitator_name %}
+                            {{ object.facilitator_name }}
+                        {% else %}
+                            {% translate 'Name not defined' %}
+                        {% endif %}
+                    </a>
+                </div>
+
+                {% if object.wave %}
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Wave' %}: </span><span>{{ object.wave }}</span>
                 </div>
                 {% endif %}
 
-                {% if object.approval_date_cora %}
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div>
-                                <h5 class="font-weight-bold">{% translate 'Approval date CORA' %}</h5>
-                            </div>
-                        </div>
-                        <div class="card bg-light" style="height: 30px;">
-                            <div class="card-body">
-                                <h5 class="font-weight-bold">{{ object.approval_date_cora }}</h5>
-                            </div>
-                        </div>
-                    </div>
+                {% if object.lot %}
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Lot' %}: </span><span>{{ object.lot }}</span>
                 </div>
                 {% endif %}
 
             </div>
+
+                 
         </div>
     </div>
-</div>
-
-<div class="row">
     <div class="col-4">
-        <div class="card">
+       <div class="card">
             <div class="card-header">
                 <div class="clearfix">
                     <div class="float-left">
@@ -164,97 +256,36 @@
             </div>
         </div>
     </div>
-    
     <div class="col-4">
         <div class="card">
-            <div class="card-body">
+            <div class="card-header">
                 <div class="clearfix">
-                    <div class="">
-                        <h5 class="font-weight-bold">{% translate 'Villages' %}</h5>
+                    <div class="float-left">
+                        <h5 class="font-weight-bold">{% translate 'Timeline' %}</h5>
+                    </div>
+                    <div class="float-right">
+                        <a href="#" class="font-weight-bold">{% translate 'Update' %}</a>
                     </div>
                 </div>
+            </div>
+            <div class="card-body">
 
-                <div class="card-body">
-                    {% for village in object.get_villages %}
-                    <div class="clearfix">
-                        <div class="float-left">
-                            <h6 class="font-weight-bold text-danger">{{ village.name }} <span style="font-size: 9px;">({{ village.cvd.attributed_number_in_canton }} - {{ village.cvd.get_name }})</span></h6>
-                        </div>
-                        <div class="float-right">
-                            <a target="_blank" href="{% url 'administrativelevels:village_detail' village.pk %}">{% translate 'Detail' %} </a>
-                        </div>
-                    </div>
-                    <hr>
-                    {% empty %}
-                        <div class="font-weight-bold d-flex justify-content-center text-danger" >
-                            <p>{% translate 'Empty!' %}</p>
-                        </div>
-                    {% endfor %}
-                </div>
+                 
 
             </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="clearfix">
-                    <div>
-
-                        {% if object.geographical_unit %}
-                        <div>
-                            <h6 class="font-weight-bold" style="font-size: 12px;">Unit : {{ object.geographical_unit.attributed_number_in_canton }} - {{ object.geographical_unit.get_name }}</h6>
-                        </div>
-                        <hr />
-                        {% endif %}
-
-                        <h5 class="font-weight-bold">{% translate 'Subprojects' %} 
-                         &nbsp; &nbsp;  <a href="{% url 'subprojects:create' %}" class="font-weight-bold"> <i
-                            class="fas fa-plus"></i></a>
-                        {% if object.get_list_subprojects %}
-                             &nbsp; &nbsp;  <span>
-                                {% with object.get_list_subprojects as subprojects %}
-                                    {% include "components/subprojects_modal.html" %}
-                                {% endwith %}
-                            </span>
-                        {% endif %}
-                        </h5>
-                    </div>
-                </div>
-
-                {% if object.get_list_subprojects %}
-                    {% for subproject in object.get_list_subprojects %}
-                    <div class="card" style="height: 50px;">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <div class="float-left">
-                                    <p class=""><i class="fas fa-cog"></i> 
-                                        {% if subproject.full_title_of_approved_subproject|length > 40 %}
-                                            {{ subproject.full_title_of_approved_subproject|slice:":40" }}...
-                                        {% else %}
-                                            {{ subproject.full_title_of_approved_subproject }}
-                                        {% endif %}
-                                    </p>
-                                </div>
-                                <div class="float-right">
-                                    <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="card-body">
-                        <div class="font-weight-bold d-flex justify-content-center text-danger" >
-                            <p>{% translate 'Empty!' %}</p>
-                        </div>
-                    </div>
-                {% endif %}
-
+            <div class="card-footer d-flex justify-content-center">
+                
             </div>
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
 
 {% comment %} 
 <div style="height: 15px;"></div>

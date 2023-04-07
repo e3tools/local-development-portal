@@ -238,7 +238,7 @@ msgstr "Budget"
 
 #: .\administrativelevels\templates\village_detail.html:43
 msgid "Facilitator"
-msgstr "Facilitateur(trice)"
+msgstr "Animateur(trice)"
 
 #: .\administrativelevels\templates\village_detail.html:61
 msgid "Last Updated"
@@ -473,7 +473,7 @@ msgstr "Approvisionnement"
 
 #: .\cosomis\templates\layouts\sidebar.html:58
 msgid "Facilitators"
-msgstr "Facilitateurs"
+msgstr "Animateurs"
 
 #: .\cosomis\templates\layouts\sidebar.html:65
 msgid "Results Framework"
@@ -798,3 +798,45 @@ msgstr "Évaluateur"
 #: .\subprojects\templatetags\custom_tags.py
 msgid "Accountant"
 msgstr "Comptable"
+
+#: .\subprojects\templates\subproject.html
+msgid "No start"
+msgstr "Non démarrer"
+
+#: .\subprojects\views.py
+msgid "Subproject Detail"
+msgstr "Détail du sous-projet"
+
+#: .\subprojects\templates\subproject.html
+msgid "Subproject Description"
+msgstr "Description du sous-projet"
+
+#: .\subprojects\templates\subproject.html
+msgid "Location"
+msgstr "Localisation"
+
+#: .\subprojects\templates\subproject.html
+msgid "Boring Flow"
+msgstr "Débit du Forage"
+
+#: .\subprojects\templates\subproject.html
+msgid "Name not defined"
+msgstr "Nom non défini"
+
+#: .\subprojects\templates\subproject.html
+msgid "Wave"
+msgstr "Vague"
+
+#: .\subprojects\templates\subproject.html
+msgid "Lot"
+msgstr "Lot"
+
+#: .\subprojects\templates\subproject.html
+msgid "Update"
+msgstr "Mise à jour"
+
+#: .\subprojects\templates\subproject.html
+msgid "Timeline"
+msgstr "Chronologie"
+
+
