@@ -65,6 +65,9 @@ class SubprojectsListView(PageMixin, LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         ctx = super(SubprojectsListView, self).get_context_data(**kwargs)
         ctx['search'] = self.request.GET.get("search", None)
+        all = Subproject.objects.all()
+        ctx['total'] = all.count()
+        ctx['total_without_link'] = all.filter(link_to_subproject=None).count()
         return ctx
 
 class SubprojectsMapView(LoginRequiredMixin, generic.ListView):
