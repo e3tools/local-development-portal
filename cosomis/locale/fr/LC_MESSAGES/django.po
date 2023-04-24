@@ -839,4 +839,30 @@ msgstr "Mise à jour"
 msgid "Timeline"
 msgstr "Chronologie"
 
+#: .\administrativelevels\templates\administrativelevels_list.html
+msgid "Search in table"
+msgstr "Recherche dans le tableau"
+
+#: .\administrativelevels\templates\administrativelevels_list.html
+msgid "Search in database"
+msgstr "Recherche dans la base de données"
+
+#: .\administrativelevels\templates\administrativelevels_list.html
+msgid "of"
+msgstr "de"
+
+#: .\administrativelevels\templates\administrativelevels_list.html
+msgid "Page"
+msgstr "Page"
+
+#: .\subprojects\templatetags\custom_tags.py
+msgid "Regional Coordinator"
+msgstr "Coordonnateur Regional"
+
+#: .\subprojects\templatetags\custom_tags.py
+msgid "National Coordinator"
+msgstr "Coordonnateur National"
+
+
+
 

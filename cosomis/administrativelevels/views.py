@@ -9,6 +9,8 @@ from django.http import Http404
 import pandas as pd
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.translation import gettext_lazy as _
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from administrativelevels.models import AdministrativeLevel, GeographicalUnit, CVD
 from administrativelevels.libraries import convert_file_to_dict, download_file
@@ -242,7 +244,7 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
     """Display administrative level list"""
 
     model = AdministrativeLevel
-    queryset = AdministrativeLevel.objects.filter(type="Village")
+    queryset = [] # AdministrativeLevel.objects.filter(type="Village")
     template_name = 'administrativelevels_list.html'
     context_object_name = 'administrativelevels'
     title = _('Administrative levels')
@@ -255,8 +257,23 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
     ]
 
     def get_queryset(self):
-        return super().get_queryset()
+        search = self.request.GET.get("search", None)
+        page_number = self.request.GET.get("page", None)
+        if search:
+            if search == "All":
+                ads = AdministrativeLevel.objects.filter(type="Village")
+                return Paginator(ads, ads.count()).get_page(page_number)
+            search = search.upper()
+            return Paginator(AdministrativeLevel.objects.filter(type="Village", name__icontains=search), 100).get_page(page_number)
+        else:
+            return Paginator(AdministrativeLevel.objects.filter(type="Village"), 100).get_page(page_number)
 
+        # return super().get_queryset()
+    def get_context_data(self, **kwargs):
+        ctx = super(AdministrativeLevelsListView, self).get_context_data(**kwargs)
+        ctx['search'] = self.request.GET.get("search", None)
+        return ctx
+    
 
 
 #Obstacles
@@ -546,7 +563,7 @@ class GeographicalUnitListView(PageMixin, LoginRequiredMixin, ListView):
     """Display geographical unit list"""
 
     model = GeographicalUnit
-    queryset = GeographicalUnit.objects.filter()
+    queryset = [] #GeographicalUnit.objects.all()
     template_name = 'geographical_unit_list.html'
     context_object_name = 'geographicalunits'
     title = _('Geographical units')
@@ -558,8 +575,28 @@ class GeographicalUnitListView(PageMixin, LoginRequiredMixin, ListView):
         },
     ]
 
+    # def get_queryset(self):
+    #     return super().get_queryset()
     def get_queryset(self):
-        return super().get_queryset()
+        search = self.request.GET.get("search", None)
+        page_number = self.request.GET.get("page", None)
+        if search:
+            gs = GeographicalUnit.objects.all()
+            if search == "All":
+                return Paginator(gs, gs.count()).get_page(page_number)
+            search = search.upper()
+            _gs = []
+            for g in gs:
+                if search in g.get_name():
+                    _gs.append(g)
+            return Paginator(_gs, 100).get_page(page_number)
+        else:
+            return Paginator(GeographicalUnit.objects.all(), 100).get_page(page_number)
+        
+    def get_context_data(self, **kwargs):
+        ctx = super(GeographicalUnitListView, self).get_context_data(**kwargs)
+        ctx['search'] = self.request.GET.get("search", None)
+        return ctx
 
 class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = GeographicalUnit
@@ -682,7 +719,7 @@ class CVDListView(PageMixin, LoginRequiredMixin, ListView):
     """Display geographical unit list"""
 
     model = CVD
-    queryset = CVD.objects.filter()
+    queryset = [] #CVD.objects.filter()
     template_name = 'cvds_list.html'
     context_object_name = 'cvds'
     title = _('CVD')
@@ -694,8 +731,25 @@ class CVDListView(PageMixin, LoginRequiredMixin, ListView):
         },
     ]
 
+    # def get_queryset(self):
+    #     return super().get_queryset()
     def get_queryset(self):
-        return super().get_queryset()
+        search = self.request.GET.get("search", None)
+        page_number = self.request.GET.get("page", None)
+        if search:
+            if search == "All":
+                cs = CVD.objects.all()
+                return Paginator(cs, cs.count()).get_page(page_number)
+            search = search.upper()
+            return Paginator(CVD.objects.filter(name__icontains=search), 100).get_page(page_number)
+        else:
+            return Paginator(CVD.objects.all(), 100).get_page(page_number)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(CVDListView, self).get_context_data(**kwargs)
+        ctx['search'] = self.request.GET.get("search", None)
+        return ctx
+
 
 class CVDCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = CVD

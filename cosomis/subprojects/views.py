@@ -11,6 +11,9 @@ from cosomis.mixins import AJAXRequestMixin, PageMixin
 from .forms import SubprojectForm, VulnerableGroupForm
 from subprojects.models import Subproject, VulnerableGroup, SubprojectImage
 from django.utils.translation import gettext_lazy as _
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 from django import forms
 from subprojects import functions as subprojects_functions
 from administrativelevels.libraries import download_file
@@ -23,7 +26,7 @@ from usermanager.permissions import (
 
 class SubprojectsListView(PageMixin, LoginRequiredMixin, generic.ListView):
     model = Subproject
-    queryset = Subproject.objects.all()
+    queryset = [] #Subproject.objects.all()
     template_name = 'subprojects_list.html'
     context_object_name = 'subprojects'
     title = _('Subprojects')
@@ -35,9 +38,34 @@ class SubprojectsListView(PageMixin, LoginRequiredMixin, generic.ListView):
         },
     ]
 
+    # def get_queryset(self):
+    #     # return super().get_queryset()
+    #     return Subproject.objects.filter(link_to_subproject=None)
     def get_queryset(self):
-        # return super().get_queryset()
-        return Subproject.objects.filter(link_to_subproject=None)
+        search = self.request.GET.get("search", None)
+        page_number = self.request.GET.get("page", None)
+        if search:
+            if search == "All":
+                gs = Subproject.objects.filter(link_to_subproject=None)
+                return Paginator(gs, gs.count()).get_page(page_number)
+            search = search.upper()
+            return Paginator(
+                Subproject.objects.filter(
+                    Q(link_to_subproject=None, full_title_of_approved_subproject__icontains=search) | 
+                    Q(link_to_subproject=None, location_subproject_realized__name__icontains=search) | 
+                    Q(link_to_subproject=None, subproject_sector__icontains=search) | 
+                    Q(link_to_subproject=None, type_of_subproject__icontains=search) | 
+                    Q(link_to_subproject=None, works_type__icontains=search) | 
+                    Q(link_to_subproject=None, cvd__name__icontains=search) | 
+                    Q(link_to_subproject=None, facilitator_name__icontains=search)
+                ), 100).get_page(page_number)
+        else:
+            return Paginator(Subproject.objects.filter(link_to_subproject=None), 100).get_page(page_number)
+        
+    def get_context_data(self, **kwargs):
+        ctx = super(SubprojectsListView, self).get_context_data(**kwargs)
+        ctx['search'] = self.request.GET.get("search", None)
+        return ctx
 
 class SubprojectsMapView(LoginRequiredMixin, generic.ListView):
 
