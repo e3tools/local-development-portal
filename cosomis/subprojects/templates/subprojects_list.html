@@ -85,6 +85,35 @@
                         </tbody>
                     </table>
                     <b>{{ total_without_link }}/{{ total }} {% translate 'Subprojects' %}</b>
+
+                    
+
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            {% if subprojects.has_previous %}
+                                <li>
+                                    <a class="page-link" href="?page={{ subprojects.previous_page_number }}">
+                                        {% comment %} <span aria-hiden="true">&laquo;</span> {% endcomment %}
+                                        <i class="fa fa-arrow-left text-bold"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="page-item">
+                                <p class="page-link text-bold">
+                                    {% translate 'Page' %} {{ subprojects.number }} {% translate 'of' %} {{ subprojects.paginator.num_pages }}
+                                </p>
+                            </li>
+                            {% if subprojects.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ subprojects.next_page_number }}">
+                                        {% comment %} <span aria-hidden="true">&laquo;</span> {% endcomment %}
+                                        <i class="fa fa-arrow-right text-bold"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
                 </div>
             </div>
         </div>
