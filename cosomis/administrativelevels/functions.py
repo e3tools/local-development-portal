@@ -37,11 +37,20 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
             for column in columns:
                 try:
                     name = str(datas_file[column][count]).upper().strip()
-                    frontalier = bool(datas_file["Village frontalier (1=oui, 0= non)"][count])
-                    rural = bool(datas_file["Localité (Rural=1, urbain=0)"][count])
-                    latitude, longitude = None, None
+                    frontalier, rural, latitude, longitude = False, False, None, None
+                    try:
+                        frontalier = bool(get_value(datas_file["Village frontalier (1=oui, 0= non)"][count]))
+                    except Exception as exc:
+                        pass
+                    try:
+                        rural = bool(get_value(datas_file["Localité (Rural=1, urbain=0)"][count]))
+                    except Exception as exc:
+                        pass
                     try:
                         latitude = float(get_value(datas_file["Latitude"][count]))
+                    except Exception as exc:
+                        pass
+                    try:
                         longitude = float(get_value(datas_file["Longitude"][count]))
                     except Exception as exc:
                         pass
@@ -66,28 +75,29 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
                     parent = None
                     try:
                         if _type not in ("Region", "Unknow"):
-                            parent = AdministrativeLevel.objects.get(name=str(datas_file[parent_type[0]][count]).upper(), type=parent_type[1]) # Get the parent object of the administrative level
+                            parent = AdministrativeLevel.objects.filter(name=str(datas_file[parent_type[0]][count]).upper(), type=parent_type[1]).first() # Get the parent object of the administrative level
                     except Exception as exc:
                         pass
                     
-                    administratives_levels = AdministrativeLevel.objects.filter(name=name, type=_type, parent=parent)
-                    if not administratives_levels: # If the administrative level is not already save
-                        administrative_level = AdministrativeLevel()
-                        administrative_level.name = name
-                        administrative_level.type = _type
-                        administrative_level.parent = parent
-                        # administrative_level.frontalier = frontalier
-                        # administrative_level.rural = rural
-                        # administrative_level.save()
-                        at_least_one_save = True
-                    else: #If the administrative level is already save
-                        administrative_level = administratives_levels.first()
+                    if (_type not in ("Region", "Unknow") and parent) or _type == "Region":
+                        administratives_levels = AdministrativeLevel.objects.filter(name=name, type=_type, parent=parent)
+                        if not administratives_levels: # If the administrative level is not already save
+                            administrative_level = AdministrativeLevel()
+                            administrative_level.name = name
+                            administrative_level.type = _type
+                            administrative_level.parent = parent
+                            # administrative_level.frontalier = frontalier
+                            # administrative_level.rural = rural
+                            # administrative_level.save()
+                            at_least_one_save = True
+                        else: #If the administrative level is already save
+                            administrative_level = administratives_levels.first()
 
-                    administrative_level.frontalier = frontalier
-                    administrative_level.rural = rural
-                    administrative_level.latitude = latitude
-                    administrative_level.longitude = longitude
-                    administrative_level.save()
+                        administrative_level.frontalier = frontalier
+                        administrative_level.rural = rural
+                        administrative_level.latitude = latitude
+                        administrative_level.longitude = longitude
+                        administrative_level.save()
                     
                 except Exception as exc:
                     at_least_one_error = True

@@ -772,7 +772,11 @@ class CVDCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin,
             villages = form.cleaned_data['villages']
 
             cvd = form.save(commit=False)
-            length_str = str(len(CVD.objects.all())+1)
+            # length_str = str(len(CVD.objects.all())+1)
+            try:
+                length_str = str(CVD.objects.all().last().pk + 1)
+            except Exception as exc:
+                length_str = "1"
             cvd.unique_code = ('0'*(9-len(length_str))) + length_str
             cvd = cvd.save_and_return_object()
 
