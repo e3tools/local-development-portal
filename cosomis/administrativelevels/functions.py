@@ -75,7 +75,7 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
                     parent = None
                     try:
                         if _type not in ("Region", "Unknow"):
-                            parent = AdministrativeLevel.objects.filter(name=str(datas_file[parent_type[0]][count]).upper(), type=parent_type[1]).first() # Get the parent object of the administrative level
+                            parent = AdministrativeLevel.objects.filter(name=str(datas_file[parent_type[0]][count]).upper().strip(), type=parent_type[1]).first() # Get the parent object of the administrative level
                     except Exception as exc:
                         pass
                     
@@ -92,6 +92,7 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
                             at_least_one_save = True
                         else: #If the administrative level is already save
                             administrative_level = administratives_levels.first()
+                            
 
                         administrative_level.frontalier = frontalier
                         administrative_level.rural = rural

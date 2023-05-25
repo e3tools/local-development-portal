@@ -35,7 +35,32 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="btn-group pull-left">
+                            <div class="" style="display: inline-block;">
+                                <button class="btn btn-primary" style="display: inline-block;" 
+                                    type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% translate 'Others' %}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                
+                                    <a class="dropdown-item" href="?type=Village">
+                                    Village
+                                    </a>
+                                    <a class="dropdown-item" href="?type=Canton">
+                                    Canton
+                                    </a>
+                                    <a class="dropdown-item" href="?type=Commune">
+                                    Commune
+                                    </a>
+                                    <a class="dropdown-item" href="?type=Prefecture">
+                                    Prefecture
+                                    </a>
+                                    <a class="dropdown-item" href="?type=Region">
+                                    Region
+                                    </a>
+                                </div>
+                            </div>
                             {% if user.is_superuser or user|has_group:"Admin" %}
+                            <div> &nbsp; &nbsp; </div>
                             <div class="" style="display: inline-block;">
                                 <button class="btn btn-primary" style="display: inline-block;" 
                                     type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -43,19 +68,19 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 
-                                    <a class="dropdown-item" target="_blank" href="{% url 'administrativelevels:create' %}?type=Village">
+                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Village">
                                     Village
                                     </a>
-                                    <a class="dropdown-item" target="_blank" href="{% url 'administrativelevels:create' %}?type=Canton">
+                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Canton">
                                     Canton
                                     </a>
-                                    <a class="dropdown-item" target="_blank" href="{% url 'administrativelevels:create' %}?type=Commune">
+                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Commune">
                                     Commune
                                     </a>
-                                    <a class="dropdown-item" target="_blank" href="{% url 'administrativelevels:create' %}?type=Prefecture">
+                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Prefecture">
                                     Prefecture
                                     </a>
-                                    <a class="dropdown-item" target="_blank" href="{% url 'administrativelevels:create' %}?type=Region">
+                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Region">
                                     Region
                                     </a>
                                 </div>
@@ -63,9 +88,9 @@
                             {% endif %}
 
                             <div> &nbsp; &nbsp; </div>
-                            <a class="btn btn-primary" target="_blank" href="{% url 'administrativelevels:geographical_units_list' %}">{% translate 'Geographical unit' %}</a>
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_units_list' %}">{% translate 'Geographical unit' %}</a>
                             <div> &nbsp; &nbsp; </div>
-                            <a class="btn btn-primary" target="_blank" href="{% url 'administrativelevels:cvds_list' %}">{% translate 'CVD' %}</a>
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:cvds_list' %}">{% translate 'CVD' %}</a>
                         </div>
 
                         <div class="btn-group pull-right">
@@ -78,13 +103,18 @@
                     </div>
                 </div>
                 <div class="card-body table-responsive">
+                    {% make_list "Village" as begin_village %}
+                    {% make_list "Village" "Canton" as begin_canton %}
+                    {% make_list "Village" "Canton" "Commune" as begin_commune %}
+                    {% make_list "Village" "Canton" "Commune" "Prefecture" as begin_prefecture %}
+                    {% make_list "Village" "Canton" "Commune" "Prefecture" "Region" as begin_region %}
                     <table id="table" class="table">
                         <thead>
                         <tr>
-                            <th>{% translate 'Village' %}</th>
-                            <th>{% translate 'Canton' %}</th>
-                            <th>{% translate 'Commune' %}</th>
-                            <th>{% translate 'Prefecture' %}</th>
+                            {% if type in begin_village %}<th>{% translate 'Village' %}</th>{% endif %}
+                            {% if type in begin_canton %}<th>{% translate 'Canton' %}</th>{% endif %}
+                            {% if type in begin_commune %}<th>{% translate 'Commune' %}</th>{% endif %}
+                            {% if type in begin_prefecture %}<th>{% translate 'Prefecture' %}</th>{% endif %}
                             <th>{% translate 'Region' %}</th>
                             <th>{% translate 'Action' %}</th>
                         </tr>
@@ -93,22 +123,22 @@
                         {% for administrativelevel in administrativelevels %}
                             <tr>
                                 <td>{{ administrativelevel.name }}</td>
-                                <td>{{ administrativelevel.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.parent.name }}</td>
-                                <td>{{ administrativelevel.parent.parent.parent.parent.name }}</td>
+                                {% if type in begin_prefecture %}<td>{{ administrativelevel.parent.name }}</td>{% endif %}
+                                {% if type in begin_commune %}<td>{{ administrativelevel.parent.parent.name }}</td>{% endif %}
+                                {% if type in begin_canton %}<td>{{ administrativelevel.parent.parent.parent.name }}</td>{% endif %}
+                                {% if type in begin_village %}<td>{{ administrativelevel.parent.parent.parent.parent.name }}</td>{% endif %}
                                 <td>
                                      {% comment %} <a href="{% url 'administrativelevels:village_detail' administrativelevel.pk %}"
                                        class="btn btn-primary btn-xs">
                                         {% translate 'View details' %}
                                     </a> {% endcomment %}
-                                    <a href="{% url 'administrativelevels:village_detail' administrativelevel.pk %}"
-                                       class="btn btn-primary btn-xs" title="{% translate 'View details' %}" target="_blank" >
+                                    <a href="{% url 'administrativelevels:detail' administrativelevel.pk %}?type={{ type }}"
+                                       class="btn btn-primary btn-xs" title="{% translate 'View details' %}" >
                                         <span class="_mobile"><i class="fa fa-eye"></i></span>
                                     </a>
                                     {% if user.is_superuser or user|has_group:"Admin" %}
-                                    <a href="{% url 'administrativelevels:update' administrativelevel.pk %}?type=Village"
-                                       class="btn btn-primary btn-xs" title="{% translate 'Edit' %}" target="_blank" >
+                                    <a href="{% url 'administrativelevels:update' administrativelevel.pk %}?type={{ type }}"
+                                       class="btn btn-primary btn-xs" title="{% translate 'Edit' %}" >
                                         <span class="_mobile"><i class="fa fa-edit"></i></span>
                                     </a>
                                     {% endif %}

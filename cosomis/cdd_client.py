@@ -20,7 +20,11 @@ class CddClient:
 
         for administrative_level in adm_list.filter(type=type):
             print("CREATING", administrative_level.name)
-            self.create_administrative_level(administrative_level)
+            couch_object_id = self.create_administrative_level(administrative_level)
+            
+            to_update = adm_list.filter(id=administrative_level.id)
+            to_update.update(no_sql_db_id=couch_object_id)
+
             print("DONE", administrative_level.name)
 
     def create_administrative_level(self, adm_obj):
@@ -35,8 +39,8 @@ class CddClient:
             "administrative_level": adm_obj.type,
             "type": "administrative_level",
             "parent_id": parent,
-            "latitude": float(adm_obj.latitude),
-            "longitude": float(adm_obj.longitude),
+            "latitude": float(adm_obj.latitude) if adm_obj.latitude else None,
+            "longitude": float(adm_obj.longitude) if adm_obj.longitude else None,
         }
         self.nsc.create_document(self.adm_db, data)
         new = self.adm_db.get_query_result(
@@ -77,8 +81,8 @@ class CddClient:
             "name": obj.name,
             "administrative_level": obj.type,
             "parent_id": parent,
-            "latitude": float(obj.latitude),
-            "longitude": float(obj.longitude),
+            "latitude": float(obj.latitude) if obj.latitude else None,
+            "longitude": float(obj.longitude) if obj.longitude else None,
         }
         for k, v in data.items():
             if v:

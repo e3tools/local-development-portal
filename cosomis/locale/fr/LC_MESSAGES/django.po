@@ -863,6 +863,8 @@ msgstr "Coordonnateur Regional"
 msgid "National Coordinator"
 msgstr "Coordonnateur National"
 
-
+#: .\administrativelevels\templates\administrativelevels_list.html
+msgid "Others"
+msgstr "Autres"
 
 

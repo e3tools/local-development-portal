@@ -39,10 +39,39 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
-
         if context.get("object") and context.get("object").type == "Village" : # Verify if the administrativeLevel type is Village
             return context
         raise Http404
+
+
+class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, DetailView):
+    """Class to present the detail page of one village"""
+
+    model = AdministrativeLevel
+    template_name = 'village_detail.html'
+    context_object_name = 'village'
+    title = _('Village')
+    active_level1 = 'financial'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+    
+    def get_context_data(self, **kwargs):
+        context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
+        _type = self.request.GET.get("type", "Village")
+        context['context_object_name'] = _type
+        context['title'] = _type
+        context['breadcrumb'] = [
+            {
+                'url': '',
+                'title': _type
+            },
+        ]
+        return context
+
         
 class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = AdministrativeLevel
@@ -259,19 +288,21 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
     def get_queryset(self):
         search = self.request.GET.get("search", None)
         page_number = self.request.GET.get("page", None)
+        _type = self.request.GET.get("type", "Village")
         if search:
             if search == "All":
-                ads = AdministrativeLevel.objects.filter(type="Village")
+                ads = AdministrativeLevel.objects.filter(type=_type)
                 return Paginator(ads, ads.count()).get_page(page_number)
             search = search.upper()
-            return Paginator(AdministrativeLevel.objects.filter(type="Village", name__icontains=search), 100).get_page(page_number)
+            return Paginator(AdministrativeLevel.objects.filter(type=_type, name__icontains=search), 100).get_page(page_number)
         else:
-            return Paginator(AdministrativeLevel.objects.filter(type="Village"), 100).get_page(page_number)
+            return Paginator(AdministrativeLevel.objects.filter(type=_type), 100).get_page(page_number)
 
         # return super().get_queryset()
     def get_context_data(self, **kwargs):
         ctx = super(AdministrativeLevelsListView, self).get_context_data(**kwargs)
         ctx['search'] = self.request.GET.get("search", None)
+        ctx['type'] = self.request.GET.get("type", "Village")
         return ctx
     
 
@@ -620,7 +651,11 @@ class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, AdminPermissionR
             villages = form.cleaned_data['villages']
             
             unit = form.save(commit=False)
-            length_str = str(len(GeographicalUnit.objects.all())+1)
+            # length_str = str(len(GeographicalUnit.objects.all())+1)
+            try:
+                length_str = str(GeographicalUnit.objects.all().last().pk + 1)
+            except Exception as exc:
+                length_str = "1"
             # import zlib
             # unit.unique_code = str(zlib.adler32(str(('0'*(9-len(length_str)))+length_str).encode('utf-8')))[:6]
             unit.unique_code = ('0'*(9-len(length_str))) + length_str
