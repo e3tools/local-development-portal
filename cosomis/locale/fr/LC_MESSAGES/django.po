@@ -424,7 +424,7 @@ msgstr ""
 
 #: .\cosomis\templates\common\progress_bar.html:6
 msgid "Completed"
-msgstr "Complété"
+msgstr "Achevé"
 
 #: .\cosomis\templates\common\under_construction.html:7
 #: .\cosomis\templates\common\under_construction_col.html:5
@@ -867,4 +867,18 @@ msgstr "Coordonnateur National"
 msgid "Others"
 msgstr "Autres"
 
+#: .\subprojects\templates\subprojects_list.html:11
+msgid "Identified"
+msgstr "Identifié"
 
+#: .\subprojects\templates\subprojects_list.html:11
+msgid "No approve"
+msgstr "Non approuvé"
+
+#: .\subprojects\templates\subprojects_list.html:11
+msgid "In progress"
+msgstr "En cours"
+
+#: .\subprojects\templates\subprojects_list.html:11
+msgid "Interrupted"
+msgstr "Interrompu"
