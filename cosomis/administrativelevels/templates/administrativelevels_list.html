@@ -19,6 +19,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
                             </div>
+                            <input type="hidden" name="type" value="{{ type }}">
                             <input class="form-control" name="search" placeholder="{% translate 'Search in database' %}...">
                             <input class="btn btn-primary" type="submit" value="{% translate 'Search' %}">
                         </form>
@@ -26,6 +27,7 @@
                     <div class="col-1" class="input-group mb-3 search-bar">
                         <form method="get" class="d-flex">
                             <input type="hidden" name="search" value="All">
+                            <input type="hidden" name="type" value="{{ type }}">
                             <input class="btn btn-primary" type="submit" value="{% translate 'All' %}">
                         </form>
                     </div>

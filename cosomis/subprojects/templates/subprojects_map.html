@@ -6,7 +6,10 @@
         #map {
             height: 1253px;
         }
-
+        .carte-legend p {
+            font-weight: bold;
+            margin-top: 17px;
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -28,10 +31,120 @@
                 <div class="card-body">
                     <div class="overlay-wrapper">
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row carte-legend">
+                                                    <div class="col-4">
+                                                        <img src="{% static 'images/identified.png' %}" width="50" height="60" />
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <p>{% translate 'Identified' %}</p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span>Savenes: - </span><br />
+                                                        <span>Kara: - </span><br />
+                                                        <span>Centrale: - </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row carte-legend">
+                                                    <div class="col-4">
+                                                        <img src="{% static 'images/no_approve.png' %}" width="50" height="60" />
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <p>{% translate 'No approve' %}
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span>Savenes: - </span><br />
+                                                        <span>Kara: - </span><br />
+                                                        <span>Centrale: - </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row carte-legend">
+                                                    <div class="col-4">
+                                                        <img src="{% static 'images/in_progress.png' %}" width="50" height="60" />
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <p>{% translate 'In progress' %}</p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span>Savenes: - </span><br />
+                                                        <span>Kara: - </span><br />
+                                                        <span>Centrale: - </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row carte-legend">
+                                                    <div class="col-4">
+                                                        <img src="{% static 'images/interrupted.png' %}" width="50" height="60" />
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <p>{% translate 'Interrupted' %}</p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span>Savenes: - </span><br />
+                                                        <span>Kara: - </span><br />
+                                                        <span>Centrale: - </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row carte-legend">
+                                                    <div class="col-4">
+                                                        <img src="{% static 'images/completed.png' %}" width="50" height="60" />
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <p>{% translate 'Completed' %}</p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <span>Savenes: - </span><br />
+                                                        <span>Kara: - </span><br />
+                                                        <span>Centrale: - </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row carte-legend">
+                                                    <div class="col-12">
+                                                        <span><b>Savenes: - </b></span><br />
+                                                        <span><b>Kara: - </b></span><br />
+                                                        <span><b>Centrale: - </b></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-8">
                                 <div class="card">
                                     <div class="card-body" style="height: 1300px;">
-                                        <div id="map"></div>
+                                        <div id="map" style="height: 1700px !important;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -54,6 +167,7 @@
     <script>
         let statistics_spin = $('#statistics-spin');
         let markers = [];
+        let marker;
 
         mapboxgl.accessToken = '{{ access_token }}';
         if (!mapboxgl.supported()) {
@@ -101,12 +215,53 @@
                 statistics_spin.hide();
             }, 1000);
         });
-
+        //#ffa500
+        //#ff0000 #b40219
+        //#0000ff
+        //#000000
+        //#008200
+        {% comment %} marker = new mapboxgl.Marker({ "color": "#ffa500" })
+                    .setLngLat([1.176201, 9.547689])
+                    .setPopup( // add pop out to map
+      new mapboxgl.Popup({ offset: 25 }).setHTML(
+        `<br />
+        <p><b>${"hhhhhhhhhhh"}</b></p>
+        <a href="#!"><b>${"hhhhhhhhhhh"}</b></a>
+        `
+      )
+    )
+                    .addTo(map);
+                markers.push(marker);  {% endcomment %}
         {% for subproject in subprojects %}
-            let marker = new mapboxgl.Marker()
-                .setLngLat([{{ subproject.administrative_level.longitude }}, {{ subproject.administrative_level.latitude }}])
-                .addTo(map);
-            markers.push(marker);
+            {% if subproject.latitude and subproject.longitude %}
+                {% if subproject.location_subproject_realized %}
+                    marker = new mapboxgl.Marker()
+                        .setLngLat([{{ subproject.longitude }}, {{ subproject.latitude }}])
+                        .setPopup(
+                            new mapboxgl.Popup({ offset: 25 }).setHTML(
+                                `<br />
+                                <a target="_blank" href="{% url 'administrativelevels:detail' subproject.location_subproject_realized.pk %}?type=Village"><b>{{ subproject.location_subproject_realized.name }}</b></a>
+                                <a target="_blank" href="{% url 'subprojects:detail' subproject.pk %}"><b>{{ subproject.full_title_of_approved_subproject }}</b></a>
+                                `
+                            )
+                        )
+                        .addTo(map);
+                    markers.push(marker);
+                {% elif subproject.canton %}
+                    marker = new mapboxgl.Marker()
+                        .setLngLat([{{ subproject.longitude }}, {{ subproject.latitude }}])
+                        .setPopup(
+                            new mapboxgl.Popup({ offset: 25 }).setHTML(
+                                `<br />
+                                <a target="_blank" href="{% url 'administrativelevels:detail' subproject.canton.pk %}?type={{ subproject.canton.type }}"><b>{{ subproject.canton.name }}</b></a>
+                                <a target="_blank" href="{% url 'subprojects:detail' subproject.pk %}"><b>{{ subproject.full_title_of_approved_subproject }}</b></a>
+                                `
+                            )
+                        )
+                        .addTo(map);
+                    markers.push(marker);
+                {% endif %}
+            {% endif %}
         {% endfor %}
     </script>
 {% endblock %}

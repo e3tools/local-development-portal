@@ -53,12 +53,12 @@
                         <span style="color: #599cf7 !important;">
                             {{ object.get_location_commune }}, 
                             <a style="color: #599cf7 !important;" target="_blank" 
-                                href="{% url 'administrativelevels:village_detail' object.canton.pk %}" >
+                                href="{% url 'administrativelevels:detail' object.canton.pk %}" >
                                 {{ object.canton.name }}
                             </a>
                             {% for sp in object.subproject_set.get_queryset %}
-                                <a style="color: #599cf7 !important;" target="_blank" 
-                                    href="{% url 'administrativelevels:village_detail' sp.canton.pk %}" >
+                                / <a style="color: #599cf7 !important;" target="_blank" 
+                                    href="{% url 'administrativelevels:detail' sp.canton.pk %}" >
                                     {{ sp.canton.name }}
                                 </a>
                             {% endfor %}
