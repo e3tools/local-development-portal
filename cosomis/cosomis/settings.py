@@ -61,6 +61,8 @@ THIRD_PARTY_APPS = [
     'bootstrap4',
     'django_unicorn',
     'django_celery_results',
+    'drf_spectacular',
+    'rest_framework',
 ]
 
 INSTALLED_APPS += CREATED_APPS + THIRD_PARTY_APPS
@@ -177,3 +179,9 @@ AWS_STORAGE_BUCKET_NAME = env('S3_BUCKET')
 AWS_ACCESS_KEY_ID = env('S3_ACCESS')
 
 AWS_SECRET_ACCESS_KEY = env('S3_SECRET')
+
+#REST API
+REST_FRAMEWORK = {
+    # https://github.com/tfranzel/drf-spectacular
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}

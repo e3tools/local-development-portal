@@ -37,7 +37,9 @@
                     </div>
                     <div class="form-group" id="value_of_type_content">
                         <label for="value_of_type">{% translate 'Name' %} "<span id="type_name"></span>"</label>
-                        <input type="text" class="form-control" id="value_of_type" name="value_of_type" value="">
+                        {% comment %} <input type="text" class="form-control" id="value_of_type" name="value_of_type" value=""> {% endcomment %}
+                        <select class="form-control" id="value_of_type" name="value_of_type" style="width: 100%;">
+                        </select>
                     </div>
 
                     <div class="form-group" id="type_content">
@@ -85,7 +87,7 @@
         };
         
         type.change = function(event){
-            console.log("passe")
+            value_of_type_elt.innerHTML = "";
             if(this.value == "All"){
                 value_of_type_content.style.display = "none";
                 value_of_type_elt.value = ""
@@ -93,6 +95,29 @@
                 value_of_type_content.style.display = "block";
                 value_of_type_elt.value = value_of_type;
                 document.getElementById("type_name").innerText = this.value;
+                
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'administrativelevels:get_administrative_level_by_type' %}",
+                    data: {
+                        type: this.value
+                    },
+                    success: function (data) {
+                        for(let i=0; i < data.length; i++){
+                            value_of_type_elt.innerHTML += `
+                            <option value="`+ data[i].name +`">`+ data[i].name +`</option>
+                            `;
+                        }
+                        
+                    },
+                    error: function (data) {
+                        alert(error_server_message + "Error " + data.status);
+                    }
+                }).done(function () {
+                    
+                    }
+                );
+
             }
         };
 

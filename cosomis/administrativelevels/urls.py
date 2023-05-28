@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import include
 
-from administrativelevels import views
+from administrativelevels import views, views_json
 
 app_name = 'administrativelevels'
 
@@ -31,6 +31,9 @@ urlpatterns = [
     path('cvd-update/<int:pk>/', views.CVDUpdateView.as_view(), name='cvd_update'), #The path to update cvd
 
     path('utils/', include('administrativelevels.utils.urls')),
+
+
+    path('get-administrative-level-by-type-view/', views_json.GetAdministrativeLevelByTypeView.as_view(), name='get_administrative_level_by_type'), #Get AdministrativeLevel by type
 
 ]
 
