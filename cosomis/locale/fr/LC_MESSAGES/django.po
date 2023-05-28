@@ -882,3 +882,19 @@ msgstr "En cours"
 #: .\subprojects\templates\subprojects_list.html:11
 msgid "Interrupted"
 msgstr "Interrompu"
+
+#: .\dashboard\templatetags\custom_tags.py
+msgid "General Manager"
+msgstr "Directeur(trice) Général(e)"
+
+#: .\dashboard\templatetags\custom_tags.py
+msgid "Director"
+msgstr "Directeur(trice)"
+
+#: .\dashboard\templatetags\custom_tags.py
+msgid "Advisor"
+msgstr "Conseillé"
+
+#: .\dashboard\templatetags\custom_tags.py
+msgid "Minister"
+msgstr "Ministre"
