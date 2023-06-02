@@ -1,7 +1,7 @@
 from email.policy import default
 from django.db import models
 from cdd_client import CddClient
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 
 
 # Create your models here.
@@ -140,6 +140,12 @@ def update_or_create_amd_couch(sender, instance, **kwargs):
     else:
         client.update_administrative_level(instance)
 
+def delete_amd_couch(sender, instance, **kwargs):
+    client = CddClient()
+    client.delete_administrative_level(instance)
+
 
 
 post_save.connect(update_or_create_amd_couch, sender=AdministrativeLevel)
+post_delete.connect(delete_amd_couch, sender=AdministrativeLevel) # POST-DELETE method to delete the administrativelevel in the couchdb
+
