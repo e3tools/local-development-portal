@@ -90,4 +90,14 @@ class CddClient:
         administrative_level.save()
         return True
 
+    def delete_administrative_level(self, obj) -> bool:
+        try:
+            administrative_level = self.adm_db[
+                obj.no_sql_db_id
+            ]
+            print(administrative_level)
 
+            administrative_level.delete()
+            return True
+        except Exception as exc:
+            return False
