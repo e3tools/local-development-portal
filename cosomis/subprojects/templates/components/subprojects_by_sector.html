@@ -1,0 +1,20 @@
+{% load static i18n custom_tags %}
+
+<table class="table table-review">
+    <thead>
+        <tr>
+            <th>{% translate 'Sector' %}</th>
+            <th># {% translate 'Subprojects' %}</th>
+            <th>% {% translate 'Total' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for key, value in subprojects_by_sector.items %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ value.number }}</td>
+            <td>{{ value.percent|get_to_percent_str }}</td>
+        </tr>
+    {% endfor %}
+</tbody>
+</table>

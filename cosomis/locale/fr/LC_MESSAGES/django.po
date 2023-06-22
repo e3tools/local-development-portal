@@ -898,3 +898,119 @@ msgstr "Conseillé"
 #: .\dashboard\templatetags\custom_tags.py
 msgid "Minister"
 msgstr "Ministre"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Canton overview"
+msgstr "Vue d'ensemble du canton"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Total population"
+msgstr "Population totale"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Villages"
+msgstr "Villages"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Men"
+msgstr "Hommes"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Women"
+msgstr "Femmes"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Young"
+msgstr "Jeunes"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Elderly"
+msgstr "Personnes agées"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Handicap"
+msgstr "Handicapé"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Farmers"
+msgstr "Agriculteurs"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Breeders"
+msgstr "Eleveurs"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Ethnic minorities"
+msgstr "Minorités ethniques"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Minorities"
+msgstr "Minorités"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Number of households"
+msgstr "Nombre de Ménages"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Priorities"
+msgstr "Priorités"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Overview of the canton"
+msgstr "Aperçu du canton"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Villages overview"
+msgstr "Résumé des villages"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Financial informations"
+msgstr "Informations Financières"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "GRM"
+msgstr "MGP"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Diagnostics"
+msgstr "Diagnostics"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Total"
+msgstr "Total"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Priorities by Sector"
+msgstr "Priorités par Secteur"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Subprojects by Sector"
+msgstr "Sous-projets par Secteur"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Summary of the canton's sub-projects"
+msgstr "Résumé des sous-projets du canton"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Title"
+msgstr "Intitulé"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Beneficiaries"
+msgstr "Bénéficiaires"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Estimated unit cost"
+msgstr "Coût unitaire estimé"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Estimated total cost"
+msgstr "Coût total estimé"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Financed by"
+msgstr "Financé par"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "In construction"
+msgstr "En construction"

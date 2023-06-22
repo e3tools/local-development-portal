@@ -119,6 +119,17 @@ class Subproject(BaseModel):
             return a
 
         return None
+    
+    def get_villages(self):
+        if self.location_subproject_realized:
+            return self.location_subproject_realized.cvd.administrativelevel_set.get_queryset()
+        elif self.canton:
+            return self.list_of_villages_crossed_by_the_track_or_electrification.all()
+
+        return []
+    
+    def get_villages_str(self):
+        return ", ".join([o.name for o in self.get_villages()])
 
     def get_location(self):
         cantons_names = self.get_cantons_names()

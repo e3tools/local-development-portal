@@ -1,0 +1,90 @@
+{% load static i18n %}
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Total population" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.population }}</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Number of households" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.nbr_menages }}</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Villages" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.nbr_villages }}</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Men" %}/{% translate "Women" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.nbr_men }}/{{ datas.nbr_women }}</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Young" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>###</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Elderly" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>###</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Handicap" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>###</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Farmers" %}/{% translate "Breeders" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>###</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Ethnic minorities" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.nbr_ethnic_minorities }}</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Minorities" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.minorities }}</span><br/>
+    </div>
+</div>

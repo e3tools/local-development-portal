@@ -55,6 +55,7 @@ CREATED_APPS = [
     'administrativelevels',
     'unicorn',
     'kobotoolbox',
+    'authentication',
 ]
 
 THIRD_PARTY_APPS = [
@@ -104,8 +105,11 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+EXTERNAL_DATABASE_NAME = 'cdd'
+
 DATABASES = {
-    'default': env.db()
+    'default': env.db(),
+    EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
 }
 
 
@@ -185,3 +189,9 @@ REST_FRAMEWORK = {
     # https://github.com/tfranzel/drf-spectacular
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

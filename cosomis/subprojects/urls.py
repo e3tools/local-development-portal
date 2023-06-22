@@ -16,4 +16,5 @@ urlpatterns = [
     path('download/', views.DownloadCSVView.as_view(), name='download'), #The path to upload CSV file and save in db
 
     path('utils/', include('subprojects.utils.urls')),
+    path('components/', include('subprojects.urls_component')),
 ]

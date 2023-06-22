@@ -14,7 +14,8 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        {% if not object_tile %}
+        {% if hide_content_header %}
+        {% elif not object_tile %}
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">

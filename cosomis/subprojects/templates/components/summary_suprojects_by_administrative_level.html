@@ -1,0 +1,80 @@
+{% load static i18n custom_tags %}
+<table class="table" id="table-review">
+    <thead>
+        <tr>
+            <th>{% translate 'Title' %}</th>
+            <th># {% translate 'CVD' %}/{% translate 'Villages' %}</th>
+            <th>{% translate 'Beneficiaries' %}</th>
+            <th>{% translate 'Estimated unit cost' %}</th>
+            <th>{% translate 'Estimated total cost' %}</th>
+            <th>{% translate 'Financed by' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in datas.summary_subprojects.items %}
+        <tr>
+            <td><a data-toggle="modal" data-target="#priorities-list-modal" class="summary_subprojects" 
+                href="{% url 'subprojects:components:common' value.pk datas.canton_id %}"> {{ key }}</a></td>
+            <td>
+                {% if value.cvds and value.cvds|length != 0 %}
+                    {{ value.cvds|length }}/
+                {% endif %}
+                {% if value.number_villages %}
+                    {{ value.number_villages }}
+                {% else %}
+                    ###
+                {% endif %}
+            </td>
+            <td>{{ value.beneficiaries }}</td>
+            <td>{{ value.cost_unit }}</td>
+            <td>{{ value.cost_total }} </td>
+            <td>COSO</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<!-- Modal  modal-dialog-centered -->
+<div class="modal fade" id="priorities-list-modal" tabindex="-1" role="dialog"
+    aria-labelledby="UploadTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+           <div id="body_summary_subprojects"></div>
+
+            <div class="overlay" id="spin-summary-subprojects">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+
+<script>
+$('.summary_subprojects').click(function(event){
+    event.preventDefault();
+    let spin_summary_subprojects = $('#spin-summary-subprojects');
+    spin_summary_subprojects.show();
+    $.ajax({
+        type: 'GET',
+        url: this.href,
+        data: {
+
+        },
+        success: function (data_summary) {
+            spin_summary_subprojects.hide();
+            $('#body_summary_subprojects').html(data_summary);
+        },
+        error: function (data_summary) {
+            spin_summary_subprojects.hide();
+            alert(error_server_message + "Error " + data_summary.status);
+        }
+        }).done(function () {
+                spin_summary_subprojects.hide();
+            }
+        );
+}); 
+</script>

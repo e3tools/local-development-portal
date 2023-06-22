@@ -1,0 +1,509 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block extracss %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'plugins/datepicker/date-picker.css' %}" />
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}" 
+                alt="Card image">
+
+            <div class="card-img-overlay d-flex flex-column">
+                <div class="mt-auto">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card rounded-3" style="background-color: wheat; opacity: 75% !important;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ object.name }}</h5>
+                                    <p class="card-text">{{ object.parent.parent.name|title }}/{{ object.parent.parent.parent.name|title }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-4">
+        {% comment %} <div class="card">
+            <div class="card-body"> {% endcomment %}
+
+                {% comment %} <table width="100%">
+                    <thead>
+                        <tr>
+                            <th width="70%">{% translate "Canton overview" %}</th>
+                            <th width="5%"></th>
+                            <th width="25%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td align="right">{% translate "Total population" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                        <tr>
+                            <td align="right">{% translate "Villages" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                        <tr>
+                            <td align="right">{% translate "Men" %}/{% translate "Women" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                        <tr>
+                            <td align="right">{% translate "Young" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                        <tr>
+                            <td align="right">{% translate "Elderly" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                        <tr>
+                            <td align="right">{% translate "Handicap" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                        <tr>
+                            <td align="right">{% translate "Farmers" %}/{% translate "Breeders" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                        <tr>
+                            <td align="right">{% translate "Ethnic minorities" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                        <tr>
+                            <td align="right">{% translate "Minorities" %}</td>
+                            <td>:</td>
+                            <td align="left">5</td>
+                        </tr>
+                    </tbody>
+                </table> {% endcomment %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="font-weight-bold">{% translate "Canton overview" %}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="clearfix" id="overview">
+                            
+                            
+                        </div>
+
+                        <div class="overlay spin">
+                            <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                        </div>
+
+                    </div>
+                </div>
+                
+            {% comment %} </div>
+        </div> {% endcomment %}
+    </div>
+
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <h5 class="font-weight-bold">{% translate 'Facilitator' %}</h5>
+                            </div>
+                            <div class="float-right">
+                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
+                            </div>
+                        </div>
+                        <div class="card bg-light" style="height: 30px;">
+                            <div class="card-body">
+                                <h5 class="font-weight-bold">DJOLOUGUE Kanfiaguin</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="clearfix">
+                            <div>
+                                <h5 class="font-weight-bold">{% translate 'Last Updated' %}</h5>
+                            </div>
+                        </div>
+                        <div class="card bg-light" style="height: 30px;">
+                            <div class="card-body">
+                                <h5 class="font-weight-bold">20/08/2022</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <style>
+                .nav-tabs .nav-item a {
+                    font-size: 12px !important;
+                }
+            </style>
+            <div class="card-body table-responsive">
+                <div class="container">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item btn"><a class="nav-link active" data-toggle="tab" href="#priorities">{% translate "Priorities" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#overview_canton">{% translate "Overview of the canton" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#villages_overview">{% translate "Villages overview" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#financial_informations">{% translate "Financial informations" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#grm">{% translate "GRM" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#subprojects">{% translate "Subprojects" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#diagnostics">{% translate "Diagnostics" %}</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="priorities" class="tab-pane active">
+                            <div class="row">
+                                <div class="col-12"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <h5 class="text-center">{% translate "Priorities by Sector" %}</h5>
+                                    <div id="priorities_by_sector"></div>
+                                </div>
+                                <div class="col-2"></div>
+                                <div class="col-4"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="text-center">{% translate "Summary of the canton's sub-projects" %}</h5>
+                                    <div id="summary_subprojects"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="overview_canton" class="tab-pane fade">
+                            <h3>Menu 1</h3>
+                            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        </div>
+                        <div id="villages_overview" class="tab-pane fade">
+                            <h3>Menu 2</h3>
+                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                        </div>
+                        <div id="financial_informations" class="tab-pane fade">
+                            <h3>Menu 3</h3>
+                            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        </div>
+                        <div id="grm" class="tab-pane fade">
+                            <h3>Menu 3</h3>
+                            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        </div>
+                        <div id="subprojects" class="tab-pane fade">
+                            <h3>Menu 3</h3>
+                            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        </div>
+                        <div id="diagnostics" class="tab-pane fade">
+                            <h3>Menu 3</h3>
+                            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overlay spin-mis">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% comment %} <!-- Link modal -->
+<h6>
+    <a data-toggle="modal" data-target="#priorities-list-modal" 
+        href="#" class="font-weight-bold text-primary">
+        Detail
+        </a>
+</h6> {% endcomment %}
+
+<!-- Modal  modal-dialog-centered -->
+<div class="modal fade" id="priorities-list-modal" tabindex="-1" role="dialog"
+    aria-labelledby="UploadTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+           <div id="body_summary_subprojects"></div>
+
+            <div class="overlay" id="spin-summary-subprojects">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+{{ block.super }}
+
+
+<script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
+<script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
+<script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        {% get_current_language as lang %}
+        
+        let spin = $('.spin');
+        let spin_mis = $('.spin-mis');
+
+        spin.show();
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'administrativelevels:components:overview' object.pk %}",
+            data: {
+
+            },
+            success: function (data) {
+                spin.hide();
+
+                $("#overview").html(`
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Total population" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>`+data.population+`</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Number of households" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>`+data.nbr_menages+`</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Villages" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>`+data.nbr_villages+`</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Men" %}/{% translate "Women" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>`+data.nbr_men+`/`+data.nbr_women+`</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Young" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>###</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Elderly" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>###</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Handicap" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>###</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Farmers" %}/{% translate "Breeders" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>###</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Ethnic minorities" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>`+data.nbr_ethnic_minorities+`</span><br/>
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="border-bottom: 2px solid black;">
+                        <div class="col-6">
+                            <span class="font-weight-bold">{% translate "Minorities" %}</span><br/>
+                        </div>
+                        <div class="col-6">
+                            <span>`+data.minorities+`</span><br/>
+                        </div>
+                    </div>
+                `);
+            },
+            error: function (data) {
+                alert(error_server_message + "Error " + data.status);
+            }
+        }).done(function () {
+                spin.hide();
+            }
+        );
+
+
+        //Priorities
+        spin_mis.show();
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'administrativelevels:components:priorities' object.pk %}",
+            data: {
+
+            },
+            success: function (data) {
+                spin_mis.hide();
+                //Priorities by Sector
+                let priorities_by_sector = `
+                    <table class="table table-review">
+                        <thead>
+                            <tr>
+                                <th>{% translate 'Sector' %}</th>
+                                <th># {% translate 'Subprojects' %}</th>
+                                <th>{% translate 'Total' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                for(let [key, value] of Object.entries(data.priorities_by_sector)){
+                    priorities_by_sector += `
+                        <tr>
+                            <td>`+key+`</td>
+                            <td>`+value.number+`</td>
+                            <td>`+value.percent.toFixed(2)+`%</td>
+                        </tr>
+                    `;
+                }
+                priorities_by_sector += `
+                    </tbody>
+                </table>
+                `;
+                $('#priorities_by_sector').html(priorities_by_sector);
+
+                //Summary Subprojects
+                let summary_subprojects = `
+                    <table class="table" id="table-review">
+                        <thead>
+                            <tr>
+                                <th>{% translate 'Title' %}</th>
+                                <th># {% translate 'CVD' %}/{% translate 'Villages' %}</th>
+                                <th>{% translate 'Beneficiaries' %}</th>
+                                <th>{% translate 'Estimated unit cost' %}</th>
+                                <th>{% translate 'Estimated total cost' %}</th>
+                                <th>{% translate 'Financed by' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                let url = "";
+                for(let [key, value] of Object.entries(data.summary_subprojects)){
+                    url = "{% url 'subprojects:components:common' 1 0 %}".replace("1", value.pk).replace("/0/", "/{{ object.pk }}/");
+                    url[url.length]
+                    summary_subprojects += `
+                        <tr>
+                            <td><a data-toggle="modal" data-target="#priorities-list-modal" class="summary_subprojects" href="`+url+`">`+key+`</a></td>
+                            <td>`+((value.cvds && value.cvds.length != 0) ? `${value.cvds.length}/` : '')+(value.number_villages ? value.number_villages : "###")+`</td>
+                            <td>`+value.beneficiaries+`</td>
+                            <td>`+value.cost_unit+`</td>
+                            <td>`+value.cost_total+`</td>
+                            <td>COSO</td>
+                        </tr>
+                    `;
+                }
+                summary_subprojects += `
+                    </tbody>
+                </table>
+                `;
+
+                $('#summary_subprojects').html(summary_subprojects);
+                $('.summary_subprojects').click(function(event){
+                    event.preventDefault();
+                    let spin_summary_subprojects = $('#spin-summary-subprojects');
+                    spin_summary_subprojects.show();
+                    $.ajax({
+                        type: 'GET',
+                        url: this.href,
+                        data: {
+
+                        },
+                        success: function (data_summary) {
+                            spin_summary_subprojects.hide();
+                            $('#body_summary_subprojects').html(data_summary);
+                        },
+                        error: function (data_summary) {
+                            spin_summary_subprojects.hide();
+                            alert(error_server_message + "Error " + data.status);
+                        }
+                        }).done(function () {
+                                spin_summary_subprojects.hide();
+                                console.log("done");
+                            }
+                        );
+                });
+
+            },
+            error: function (data) {
+                spin_mis.hide();
+                alert(error_server_message + "Error " + data.status);
+            }
+        }).done(function () {
+                spin_mis.hide();
+                console.log("done");
+            }
+        );
+
+
+        
+
+    });
+</script>
+{% endblock %}
