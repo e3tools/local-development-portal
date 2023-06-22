@@ -444,3 +444,44 @@ def save_csv_datas_priorities_in_db(datas_file: dict, administrative_level_id=0,
 
     return (message, file_path.replace("/", "\\\\") if platform == "win32" else file_path)
 
+
+
+
+def get_cvds(facilitator):
+    administrative_levels = facilitator['administrative_levels']
+    geographical_units = facilitator.get('geographical_units')
+
+    CVDs = []
+    if geographical_units:
+        for index in range(len(geographical_units)) :
+            element = geographical_units[index]
+            for i in range(len(element["cvd_groups"])):
+                elt = element["cvd_groups"][i]
+                villages = []
+                for _index in range(len(administrative_levels)):
+                    if elt.get('villages') and administrative_levels[_index]['id'] in elt['villages']:
+                        
+                        _in_list = False
+                        for v in villages:
+                            if administrative_levels[_index]['id'] == v['id']:
+                                _in_list = True
+                        if not _in_list:
+                            villages.append(administrative_levels[_index])
+
+                            if administrative_levels[_index].get('is_headquarters_village'):
+                                elt['village'] = administrative_levels[_index]
+                                elt['village_id'] = administrative_levels[_index]['id']
+                
+                elt['villages'] = villages
+                elt['unit'] = element['name']
+                CVDs.append(elt)
+
+    return CVDs
+
+def get_datas_dict(reponses_datas, key, level: int = 1):
+    for i in range(len(reponses_datas)):
+        elt = reponses_datas[i]
+        if level == 1:
+            for k,v in elt.items():
+                if k == key:
+                    return v
