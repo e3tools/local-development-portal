@@ -79,3 +79,7 @@ def make_list(parser, token):
         return MakeListNode(items, varname)
     else:
         raise template.TemplateSyntaxError("%r expected format is 'item [item ...] as varname'" % bits[0])
+    
+@register.filter(name='get_to_percent_str') 
+def get_to_percent_str(number):
+    return str(number if number >= 10 else "0"+str(number)) + " %"
