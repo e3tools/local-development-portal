@@ -1124,10 +1124,6 @@ msgid "Village population"
 msgstr "Population du Village"
 
 #: .\administrativelevels\templates\village_detail.html
-msgid "Infrastructure and Services"
-msgstr "Infrastructure et Services"
-
-#: .\administrativelevels\templates\village_detail.html
 msgid "Planning Cycle"
 msgstr "Cycle de Planification"
 
