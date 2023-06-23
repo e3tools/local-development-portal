@@ -38,8 +38,17 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
         fermers_breeders, nbr_ethnic_minorities = 0, 0
         average_distance_from_nearest_town = None
         liste_minorities, languages, religions, climate_datas, infras  = [], [], [], [], []
+        attachments = []
+        attachment_image_principal = {}
         minorities = ""
         cvds_infos = []
+        facilitator, date_identified_priorities, date_submission = None, None, None
+        last_task_completed = {
+            "phase_name": "VISITES PREALABLES",
+            "activity_name": "Réunion cantonale",
+            "name": "Introduction et présentation de l'AC par l'AADB lors de la première réunion cantonale",
+            "task_order": 1
+        }
 
         villages = []
         if self.administrative_level.type == "Canton":
@@ -68,6 +77,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                     facilitator_doc = doc
                     break
             if facilitator_doc:
+                facilitator = facilitator_doc
                 cvds = get_cvds(facilitator_doc)
                 for cvd in cvds:
                     cvd_infos = {'cvd': cvd}
@@ -77,6 +87,33 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                             _task = _task.get('doc')
                             if _task.get('type') == 'task' and village_id == _task.get('administrative_level_id'):
                                 form_response = _task.get("form_response")
+
+                                if ((not last_task_completed and _task.get('completed')) or (
+                                        last_task_completed and _task.get('completed') and _task.get('task_order') > last_task_completed.get('task_order') 
+                                    )):
+                                    last_task_completed = _task
+
+                                _attachments = [i for i in (_task.get("attachments") if _task.get("attachments") else []) if i.get("attachment")]
+                                for i_attr in range(len(_attachments)):
+                                    try:
+                                        _attachments[i_attr]["date_de_la_reunion"] = form_response[0]["dateDeLaReunion"]
+                                    except:
+                                        try:
+                                            _attachments[i_attr]["date_de_la_reunion"] = form_response[0]["DateDeLaFormation"]
+                                        except:
+                                            try:
+                                                _attachments[i_attr]["date_de_la_reunion"] = form_response[0]["dateDeSeance"]
+                                            except:
+                                                try:
+                                                    _attachments[i_attr]["date_de_la_reunion"] = form_response[0]["dateDeSoumission"]
+                                                except:
+                                                    try:
+                                                        _attachments[i_attr]["date_de_la_reunion"] = form_response[0]["dateDeSensibilisation"]
+                                                    except:
+                                                        try:
+                                                            _attachments[i_attr]["date_de_la_reunion"] = get_datas_dict(form_response, "dateDeLaReunion", 1)
+                                                        except:
+                                                            _attachments[i_attr]["date_de_la_reunion"] = None
                                 if form_response:
                                     if _task.get('sql_id') == 20: #Etablissement du profil du village
                                         try:
@@ -105,7 +142,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                             _ = get_datas_dict(form_response, "population", 1)["populationEthniqueMinoritaire"]
                                             if _:
                                                 _copy = (strip_accents(_).strip()).title().replace('-', ' ')
-                                                if _copy and _copy not in liste_minorities and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
+                                                if _copy and _copy not in liste_minorities and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite'):
                                                     liste_minorities += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                         except Exception as exc:
                                             pass
@@ -117,7 +154,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                                 for ethnic in ethnicite:
                                                     if ethnic and ethnic.get("NomEthnicité"):
                                                         _copy = (strip_accents(ethnic["NomEthnicité"]).strip()).title().replace('-', ' ')
-                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
+                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite'):
                                                             _l += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                             languages += _l
                                             if 'Autres' in _l:
@@ -134,7 +171,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                                 for religion in _religions:
                                                     if religion and religion.get("NomReligion"):
                                                         _copy = (strip_accents(religion["NomReligion"]).strip()).title().replace('-', ' ')
-                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
+                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite'):
                                                             _l += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                             religions += _l
                                             if 'Autres' in _l:
@@ -150,7 +187,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                                 for climatique in climatiques:
                                                     if climatique and climatique.get("aléas"):
                                                         _copy = (strip_accents(climatique["aléas"]).strip()).title().replace('-', ' ')
-                                                        if _copy and _copy not in climatiques and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
+                                                        if _copy and _copy not in climatiques and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite'):
                                                             climate_datas += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                         except Exception as exc:
                                             pass
@@ -176,12 +213,22 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                                                     infras.append(_copy)
                                                             elif v != "Non":
                                                                 _copy = (strip_accents(v).strip()).title().replace('-', ' ')
-                                                                if _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-') and _copy not in infras:
-                                                                    print(_copy)
+                                                                if _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite') and _copy not in infras:
                                                                     infras += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                         except Exception as exc:
                                             pass
-                                              
+                                    if _task.get('sql_id') == 41: #Présenter les activités de la journée
+                                        try:
+                                            date_identified_priorities = form_response[0]["dateDeLaReunion"]
+                                        except:
+                                            pass
+                                    if _task.get('sql_id') == 51: #Présenter les activités de la journée
+                                        try:
+                                            date_submission = form_response[0]["dateDeSoumission"]
+                                        except:
+                                            pass
+
+                                    attachments += _attachments   
                         count_villages_cvds += 1
                         cvds_infos.append(cvd_infos)
 
@@ -211,6 +258,10 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             climate_datas.remove('Autres')
             climate_datas.append('Autres')
         
+        for attach in attachments:
+            if attach and attach.get("type") and "image" in attach.get("type") and attach.get("attachment"):
+                attachment_image_principal = attach
+
         return {
             "population": population, "nbr_menages": nbr_menages,
             "nbr_men": nbr_men, "nbr_women": nbr_women,
@@ -220,7 +271,11 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             "nbr_villages": len(villages),
             "languages": languages, "religions": religions, "climate_datas": climate_datas,
             "average_distance_from_nearest_town": average_distance_from_nearest_town, "infras": infras,
-            "cvds_infos": cvds_infos
+            "cvds_infos": cvds_infos, "attachment_image_principal": attachment_image_principal,
+            "attachments": attachments, "exists_at_least_attachment": len(attachments) != 0,
+            "object": self.administrative_level, "last_task_completed": last_task_completed,
+            "facilitator": facilitator, "date_identified_priorities": date_identified_priorities,
+            "date_submission": date_submission
         }
     
     def get_queryset(self):

@@ -9,73 +9,51 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-7">
+    <div class="col-4">
         <div class="card">
-            <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}" width="733" height="300"
-                alt="Card image">
-
-            <div class="card-img-overlay d-flex flex-column">
-                <div class="mt-auto">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="card rounded-3" style="background-color: wheat; opacity: 75% !important;">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ object.name }}</h5>
-                                    <p class="card-text">{{ object.parent.parent.parent.parent.name|title }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <div class="col-5">
-        <div class="card">
+            
             <div class="card-body">
+                <div class="clearfix"  id="attachments_images"></div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div class="float-left">
-                                <h5 class="font-weight-bold">{% translate 'Facilitator' %}</h5>
-                            </div>
-                            <div class="float-right">
-                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                            </div>
-                        </div>
-                        <div class="card bg-light" style="height: 30px;">
-                            <div class="card-body">
-                                <h5 class="font-weight-bold">DJOLOUGUE Kanfiaguin</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div>
-                                <h5 class="font-weight-bold">{% translate 'Last Updated' %}</h5>
-                            </div>
-                        </div>
-                        <div class="card bg-light" style="height: 30px;">
-                            <div class="card-body">
-                                <h5 class="font-weight-bold">20/08/2022</h5>
-                            </div>
-                        </div>
-                    </div>
+                <div class="overlay" id="spin-attachments-images">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                 </div>
 
             </div>
         </div>
     </div>
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="font-weight-bold">{% translate "Planning status" %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="clearfix" id="planning_status"></div>
+
+                <div class="overlay" id="spin-spin-planning-status">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="font-weight-bold">{% translate "Population" %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="clearfix" id="overview"></div>
+
+                <div class="overlay spin">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
 </div>
-
-
-
 
 <div class="row">
     <div class="col-12">
@@ -84,16 +62,19 @@
                 .nav-tabs .nav-item a {
                     font-size: 12px !important;
                 }
+                .nav-tabs .nav-item {
+                    width: 14% !important;
+                }
             </style>
             <div class="card-body table-responsive">
                 <div class="container">
                     <ul class="nav nav-tabs">
                         <li class="nav-item btn"><a class="nav-link active" data-toggle="tab" href="#priorities">{% translate "Priorities" %}</a></li>
-                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#overview_canton">{% translate "Overview of the canton" %}</a></li>
-                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#villages_overview">{% translate "Villages overview" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#village_population">{% translate "Village population" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#infrastructure_services">{% translate "Infrastructure and Services" %}</a></li>
+                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#planning_cycle">{% translate "Planning Cycle" %}</a></li>
                         <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#financial_informations">{% translate "Financial informations" %}</a></li>
                         <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#grm">{% translate "GRM" %}</a></li>
-                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#subprojects">{% translate "Subprojects" %}</a></li>
                         <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#diagnostics">{% translate "Diagnostics" %}</a></li>
                     </ul>
 
@@ -108,20 +89,45 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-12">
                                             <div class="card">
                                                 <div class="card-body">
-                                                    <h5 class="text-center">{% translate "Subprojects by Sector" %}</h5>
-                                                    <div id="priorities_by_sector"></div>
+                                                    <h5 class="text-center">{% translate "Priority needs" %}</h5>
+                                                    <div id="priority_needs"></div>
+                                                    <span>{% translate "In construction" %}</span>
                                                 </div>
                                                 
-                                                <div class="overlay" id="spin-sector-priorities">
+                                                <div class="overlay" id="spin-priority-needs">
                                                     <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-2"></div>
-                                        <div class="col-4"></div>
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5 class="text-center">{% translate "Sub-component priorities" %}</h5>
+                                                    <div id="priority_needs"></div>
+                                                    <span>{% translate "In construction" %}</span>
+                                                </div>
+                                                
+                                                <div class="overlay" id="spin-Subcomponent-priorities">
+                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5 class="text-center">{% translate "Vision and Obstacles" %}</h5>
+                                                    <div id="priority_needs"></div>
+                                                    <span>{% translate "In construction" %}</span>
+                                                </div>
+                                                
+                                                <div class="overlay" id="spin-vision-obstacles">
+                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         
                                     </div>
@@ -131,7 +137,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12">
-                                            <h5 class="text-center">{% translate "Summary of the canton's sub-projects" %}</h5>
+                                            <h5 class="text-center">{% translate "Subprojects" %}</h5>
                                             <div id="summary_subprojects"></div>
                                         </div>
                                     </div>
@@ -142,19 +148,57 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="overview_canton" class="tab-pane fade">
+                        <div id="village_population" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-12"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5>{% translate "Population and community details" %}</h5>
+                                                    <div id="population_and_community_details"></div>
+                                                </div>
+                                                
+                                                <div class="overlay" id="spin-population-community-details">
+                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5>{% translate "Infrastructure and Services" %}</h5>
+                                                    <div id="infrastructure_and_services"></div>
+                                                </div>
+                                                
+                                                <div class="overlay" id="spin-infrastructure-services">
+                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="infrastructure_services" class="tab-pane fade">
                             <h3>{% translate "In construction" %}</h3>
                         </div>
-                        <div id="villages_overview" class="tab-pane fade">
+                        <div id="planning_cycle" class="tab-pane fade">
                             <h3>{% translate "In construction" %}</h3>
                         </div>
                         <div id="financial_informations" class="tab-pane fade">
                             <h3>{% translate "In construction" %}</h3>
                         </div>
                         <div id="grm" class="tab-pane fade">
-                            <h3>{% translate "In construction" %}</h3>
-                        </div>
-                        <div id="subprojects" class="tab-pane fade">
                             <h3>{% translate "In construction" %}</h3>
                         </div>
                         <div id="diagnostics" class="tab-pane fade">
@@ -167,287 +211,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-<div class="row">
-    <div class="col-4">
-        <div class="card">
-            <div class="card-header">
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h5 class="font-weight-bold">{% translate 'Financial' %}</h5>
-                    </div>
-                    <div class="float-right">
-                        <a href="#" class="font-weight-bold">{% translate 'Add Movement' %} 
-                        {% if user.is_superuser or user|has_group:"Admin" %}
-                        <i
-                                class="fas fa-plus"></i></a>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="card bg-light" style="height: 30px;">
-                    <div class="card-body">
-                        <h5 class="font-weight-bold">
-                            <div class="clearfix">
-                                <div class="float-left">
-                                    <h5 class="font-weight-bold">{% translate 'Remaining' %} </h5>
-                                </div>
-                                <div class="float-right"><a href="#" class="font-weight-bold text-primary">6000 USD</a>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h6 class="font-weight-bold text-danger">- 550 USD</h6>
-                    </div>
-                    <div class="float-right">
-                        <span href="#">{% translate 'Lorem ipsum' %} </span>
-                    </div>
-                </div>
-                <hr>
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h6 class="font-weight-bold text-danger">- 550 USD</h6>
-                    </div>
-                    <div class="float-right">
-                        <span href="#">{% translate 'Lorem ipsum' %} </span>
-                    </div>
-                </div>
-                <hr>
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h6 class="font-weight-bold text-danger">- 550 USD</h6>
-                    </div>
-                    <div class="float-right">
-                        <span href="#">{% translate 'Lorem ipsum' %} </span>
-                    </div>
-                </div>
-                <hr>
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h6 class="font-weight-bold text-danger">- 550 USD</h6>
-                    </div>
-                    <div class="float-right">
-                        <span href="#">{% translate 'Lorem ipsum' %} </span>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer d-flex justify-content-center">
-                <h6><a href="#" class="font-weight-bold text-primary">{% translate 'View All Movements' %}</a></h6>
-            </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h5 class="font-weight-bold">{% translate 'Activities' %}</h5>
-                    </div>
-                    <div class="float-right">
-                        <div class="">
-                            <!-- <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked> -->
-                            <label class="form-check-label font-weight-bold" for="flexSwitchCheckChecked">{% translate 'Calendar' %}</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- white_card card_height_100 mb_30 
-                date_picker_wrapper 
-            default-datepicker-->
-                <div class="">
-                    <div class="">
-                        <div class="">
-                            <div class="datepicker-here" data-language='en'></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="clearfix">
-                    <div>
-                        {% if object.geographical_unit or object.cvd %}
-                        <div>
-                            {% if object.cvd %}
-                            <h6 class="font-weight-bold" style="font-size: 12px;">CVD : {{ object.cvd.attributed_number_in_canton }} - {{ object.cvd.get_name }}</h6>
-                            {% endif %}
-                            {% if object.geographical_unit %}
-                            <h6 class="font-weight-bold" style="font-size: 12px;">Unit : {{ object.geographical_unit.attributed_number_in_canton }} - {{ object.geographical_unit.get_name }}</h6>
-                            {% endif %}
-                        </div>
-                        <hr />
-                        {% endif %}
-                        <h5 class="font-weight-bold">{% translate 'Subprojects' %} 
-                            {% if user.is_superuser or user|has_group:"Admin" %}
-                            &nbsp; &nbsp;  <a href="{% url 'subprojects:create' %}" class="font-weight-bold"> <i
-                                class="fas fa-plus"></i></a>
-                            {% endif %}
-
-                            {% if object.get_list_subprojects %}
-                                &nbsp; &nbsp;  <span>
-                                    {% with object.get_list_subprojects as subprojects %}
-                                        {% include "components/subprojects_modal.html" %}
-                                    {% endwith %}
-                                </span>
-                            {% endif %}
-                        </h5>
-                    </div>
-                </div>
-
-                {% if object.get_list_subprojects %}
-                    {% for subproject in object.get_list_subprojects %}
-                    <div class="card" style="height: 50px;">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <div class="float-left">
-                                    <p class=""><i class="fas fa-cog"></i> 
-                                        {% if subproject.full_title_of_approved_subproject|length > 30 %}
-                                            {{ subproject.full_title_of_approved_subproject|slice:":30" }}...
-                                        {% else %}
-                                            {{ subproject.full_title_of_approved_subproject }}
-                                        {% endif %}
-                                    </p>
-                                </div>
-                                <div class="float-right">
-                                    <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="card-body">
-                        <div class="font-weight-bold d-flex justify-content-center text-danger" >
-                            <p>{% translate 'Empty!' %}</p>
-                        </div>
-                    </div>
-                {% endif %}
-                {% comment %} <div class="card" style="height: 50px;">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div class="float-left">
-                                <p class=""><i class="fas fa-cog"></i> Rural Marked Expansion</p>
-                            </div>
-                            <div class="float-right">
-                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="height: 50px;">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div class="float-left">
-                                <p class=""><i class="fas fa-cog"></i> School Rehabilitation</p>
-                            </div>
-                            <div class="float-right">
-                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div> {% endcomment %}
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<div style="height: 15px;"></div>
-
-<div class="row">
-    <div class="col-4">
-        <h4 class="font-weight-bold d-flex justify-content-center" style="margin-bottom: 25px;">{% translate 'Village Mapping' %}</h4>
-        <div class="card">
-            <div class="card-body" style="height: 300px;">
-
-            </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <h4 class="font-weight-bold d-flex justify-content-center" style="margin-bottom: 25px;">{% translate 'Village Priorities' %}
-            {% if user.is_superuser or user|has_group:"Admin" %}
-            &nbsp; <a href="{% url 'administrativelevels:priorities_priorities' object.id %}" class="font-weight-bold"> <i
-                class="fas fa-plus"></i></a>
-            {% else %}
-            &nbsp; <a href="{% url 'administrativelevels:priorities_priorities' object.id %}" class="font-weight-bold"> <i
-                class="fas fa-list"></i></a>
-            {% endif %}
-        </h4>
-        <div class="card">
-            {% if object.get_list_priorities %}
-            <div class="card-body">
-                {% for priority in object.get_list_priorities|slice:":5" %}<!-- limit to 5 -->
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <div class="float-left">
-                                {% if priority.component %}
-                                    {% with priority.name|add:" ("|add:priority.component.name|add:")" as namepriority_with_component %}
-                                    <p class="" title="{{ namepriority_with_component }}">
-                                        <i class="fas fa-project-diagram"></i> &nbsp; 
-                                        {% if namepriority_with_component|length > 30 %}
-                                            {{ namepriority_with_component|slice:":30" }}...
-                                        {% else %}
-                                            {{ namepriority_with_component }}
-                                        {% endif %}
-                                    </p>
-                                    {% endwith %}
-                                {% else %}
-                                <p class="" title="{{ priority.name }}">
-                                    <i class="fas fa-project-diagram"></i> &nbsp; 
-                                    {% if priority.name|length > 30 %}
-                                        {{ priority.name|slice:":30" }}...
-                                    {% else %}
-                                        {{ priority.name }}
-                                    {% endif %}
-                                </p>
-                                {% endif %}
-                            </div>
-                            <div class="float-right">
-                                <a href="#" class="font-weight-bold">{% translate 'View' %}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% comment %} {% if object.get_list_priorities|length > 5 %} {% endcomment %}
-            <div class="card-footer d-flex justify-content-center">
-                {% with object.get_list_priorities as priorities %}
-                    {% include "components/priorities_modal.html" %}
-                {% endwith %}
-            </div>
-            {% comment %} {% endif %} {% endcomment %}
-            {% else %}
-            <div class="card-body">
-                <div class="font-weight-bold d-flex justify-content-center text-danger" >
-                    <p>{% translate 'Empty!' %}</p>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    <div class="col-4">
-        <h4 class="font-weight-bold d-flex justify-content-center" style="margin-bottom: 25px;">{% translate 'Village Development Plan' %}</h4>
-        <div class="card">
-            <div class="card-body" style="height: 300px;">
-
-            </div>
-        </div>
-    </div>
-</div>
-
 
 
 {% endblock %}
@@ -464,7 +227,80 @@
 <script type="text/javascript">
     $(document).ready(function () {
         {% get_current_language as lang %}
+        let spin_suprojects_financing = $('#spin-suprojects-financing');
+        spin_suprojects_financing.show();
 
+        let spin = $('.spin');
+
+        spin.show();
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'administrativelevels:components:overview' object.pk %}",
+            data: {
+
+            },
+            success: function (data) {
+                spin.hide();
+                $("#overview").html(data);
+            },
+            error: function (data) {
+                alert(error_server_message + "Error " + data.status);
+            }
+        }).done(function () {
+                spin.hide();
+            }
+        );
+
+
+        //Priorities Sector
+        let spin_sector_priorities = $('#spin-sector-priorities');
+        spin_sector_priorities.show();
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'subprojects:components:by_sector_and_administrative_level' object.pk %}",
+            data: {
+
+            },
+            success: function (data) {
+                spin_sector_priorities.hide();
+                $('#priorities_by_sector').html(data);
+            },
+            error: function (data) {
+                spin_sector_priorities.hide();
+                alert(error_server_message + "Error " + data.status);
+            }
+        }).done(function () {
+                spin_sector_priorities.hide();
+            }
+        );
+        //End priorities Sector
+
+
+        //Summary Subprojects
+        let spin_summary_subprojects = $('#spin-summary-subprojects');
+        spin_summary_subprojects.show();
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'subprojects:components:by_administrative_level' object.pk %}",
+            data: {
+
+            },
+            success: function (data_summary) {
+                spin_summary_subprojects.hide();
+                $('#summary_subprojects').html(data_summary);
+            },
+            error: function (data_summary) {
+                spin_summary_subprojects.hide();
+                alert(error_server_message + "Error " + data_summary.status);
+            }
+            }).done(function () {
+                    spin_summary_subprojects.hide();
+                }
+            );
+        //End Summary Subprojects
+
+
+        
 
     });
 </script>

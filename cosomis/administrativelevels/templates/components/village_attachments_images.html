@@ -1,0 +1,77 @@
+{% load static i18n custom_tags %}
+<script type="text/javascript">
+    let spin_attachments_images = $("#spin-attachments-images");
+    let attachments_images = $("#attachments_images");
+    spin_attachments_images.show();
+    attachments_images.html(`
+    {% if datas.exists_at_least_attachment %}
+
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                {% for attachment in datas.attachments %}{% if attachment.attachment and "image" in attachment.type %}
+                <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}" {% if attachment.attachment.uri == datas.attachment_image_principal.attachment.uri %}class="active"{% endif %} ></li>
+                {% endif %}{% endfor %}
+            </ol>
+            <div class="carousel-inner">
+                
+                {% for attachment in datas.attachments %}{% if attachment.attachment and "image" in attachment.type %}
+                 
+                    <div class="carousel-item {% if attachment.attachment.uri == datas.attachment_image_principal.attachment.uri %}active{% endif %}">
+                        
+                        <a target="_blank" href="{{ attachment.attachment.uri|imgAWSS3Filter }}">
+                            <img class="d-block w-100" src="{{ attachment.attachment.uri|imgAWSS3Filter }}" 
+                            style="height: 225px !important;"
+                            alt="{{ attachment.name }}">
+                        </a>
+                        <div class="carousel-caption d-none d-md-block">
+                            <p class="card rounded-3" style="margin-bottom: -10px !important; background-color: wheat; opacity: 50% !important;">
+                                <a target="_blank" href="{{ attachment.attachment.uri|imgAWSS3Filter }}" style="color: black;">
+                                    {{ attachment.name }}<br />
+                                    {% if attachment.date_de_la_reunion %}
+                                        {{ attachment.date_de_la_reunion }}
+                                    {% endif %}
+                                </a>
+                            </p>
+                        </div>
+
+                    </div>
+                    
+
+                {% endif %}{% endfor %}
+
+
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+    {% else %}
+        <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}" 
+                alt="Card image" style="height: 225px !important;">
+
+            <div class="card-img-overlay d-flex flex-column">
+                <div class="mt-auto">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card rounded-3" style="background-color: wheat; opacity: 75% !important;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ datas.object.name }}</h5>
+                                    <p class="card-text">{{ datas.object.parent.parent.parent.parent.name|title }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+    {% endif %}
+    `);
+    spin_attachments_images.hide();
+
+</script>

@@ -42,6 +42,8 @@ class SubprojectsByAdministrativeLevelMixin(AdministrativeLevelMixin):
     canton_id = None
     def dispatch(self, request, pk: int, *args, **kwargs):
         super().dispatch(request, pk, *args, **kwargs)
+        self.subprojects = []
+        self.villages = []
         if self.administrative_level.type == "Canton":
             self.villages = self.administrative_level.administrativelevel_set.get_queryset()
             self.subprojects = list(Subproject.objects.filter(canton_id=self.administrative_level.id))
@@ -49,9 +51,10 @@ class SubprojectsByAdministrativeLevelMixin(AdministrativeLevelMixin):
         elif self.administrative_level.type == "Village":
             self.villages = [self.administrative_level]
             self.canton_id = self.administrative_level.parent.id
-
+            
         for v in self.villages:
             self.subprojects += list(Subproject.objects.filter(location_subproject_realized_id=v.id))
+            
         return super().dispatch(request, pk, *args, **kwargs)
     
 
@@ -124,11 +127,6 @@ class SummarySubprojectsByAdministrativeLevelComponent(SubprojectsByAdministrati
                     summary_subprojects[subp.full_title_of_approved_subproject]['cvds'].append(subp.cvd.id if subp.cvd else 0)
                     summary_subprojects[subp.full_title_of_approved_subproject]['number_villages'] += (subp.location_subproject_realized.cvd.administrativelevel_set.get_queryset().count() if subp.location_subproject_realized.cvd else 0)
 
-
-        print({
-            "summary_subprojects": summary_subprojects,
-            "canton_id": self.canton_id
-        })
         return {
             "summary_subprojects": summary_subprojects,
             "canton_id": self.canton_id

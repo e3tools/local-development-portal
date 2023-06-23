@@ -1119,6 +1119,63 @@ msgstr "Religions"
 msgid "Ethnic"
 msgstr "Ethnies"
 
+#: .\administrativelevels\templates\village_detail.html
+msgid "Village population"
+msgstr "Population du Village"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Infrastructure and Services"
+msgstr "Infrastructure et Services"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Planning Cycle"
+msgstr "Cycle de Planification"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Priority needs"
+msgstr "Besoins prioritaires"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Phase"
+msgstr "Phase"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Activity"
+msgstr "Activité"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Task"
+msgstr "Tâche"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Completed "
+msgstr "Achevée"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Yes"
+msgstr "Oui"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "No"
+msgstr "Non"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Identified priorities"
+msgstr "Priorités identifiées"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "VDP Submission"
+msgstr "VDP Soumission"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Sub-component priorities"
+msgstr "Priorités des Sous-composantes"
+
+#: .\administrativelevels\templates\village_detail.html
+msgid "Vision and Obstacles"
+msgstr "Vision et Obstacles"
+
+
 
 
 

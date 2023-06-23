@@ -1,0 +1,92 @@
+{% load static i18n custom_tags %}
+<script type="text/javascript">
+    let spin_planning_status = $("#spin-spin-planning-status");
+    let planning_status = $("#planning_status");
+    spin_planning_status.show();
+    planning_status.html(`
+    <div class="row" style="border-bottom: 2px solid black;">
+        <div class="col-3">
+            <span class="font-weight-bold">{% translate "Phase" %}</span><br/>
+        </div>
+        <div class="col-9">
+            <span title="{{ datas.last_task_completed.phase_name|title }}">{{ datas.last_task_completed.phase_name|title|truncatechars:40 }}</span><br/>
+        </div>
+    </div>
+
+    <div class="row" style="border-bottom: 2px solid black;">
+        <div class="col-3">
+            <span class="font-weight-bold">{% translate "Activity" %}</span><br/>
+        </div>
+        <div class="col-9">
+            <span title="{{ datas.last_task_completed.activity_name|title }}">{{ datas.last_task_completed.activity_name|title|truncatechars:40 }}</span><br/>
+        </div>
+    </div>
+    
+    <div class="row" style="border-bottom: 2px solid black;">
+        <div class="col-3">
+            <span class="font-weight-bold">{% translate "Task" %}</span><br/>
+        </div>
+        <div class="col-9">
+            <span title="{{ datas.last_task_completed.name }}">{{ datas.last_task_completed.name|truncatechars:40 }}</span><br/>
+        </div>
+    </div>
+
+    <div class="row" style="border-bottom: 2px solid black;">
+        <div class="col-5">
+            <span class="font-weight-bold">{% translate "Completed " %}</span><br/>
+        </div>
+        <div class="col-7">
+            <span>
+                {% if datas.last_task_completed.completed %}
+                    {% translate "Yes" %}
+                {% else %}
+                    {% translate "No" %}
+                {% endif %}
+            </span><br/>
+        </div>
+    </div>
+
+    <div class="row" style="border-bottom: 2px solid black;">
+        <div class="col-5">
+            <span class="font-weight-bold">{% translate "Identified priorities" %}</span><br/>
+        </div>
+        <div class="col-7">
+            <span>
+                {% if datas.date_identified_priorities %}
+                    {% translate "Yes" %}, {{ datas.date_identified_priorities }}
+                {% else %}
+                    {% translate "No" %}
+                {% endif %}
+            </span><br/>
+        </div>
+    </div>
+
+    <div class="row" style="border-bottom: 2px solid black;">
+        <div class="col-5">
+            <span class="font-weight-bold">{% translate "VDP Submission" %}</span><br/>
+        </div>
+        <div class="col-7">
+            <span>
+                {% if datas.date_submission %}
+                    {% translate "Yes" %}, {{ datas.date_submission }}
+                {% else %}
+                    {% translate "No" %}
+                {% endif %}
+            </span><br/>
+        </div>
+    </div>
+
+    <div class="row" style="border-bottom: 2px solid black;">
+        <div class="col-5">
+            <span class="font-weight-bold">{% translate "Facilitator" %}</span><br/>
+        </div>
+        <div class="col-7">
+            <span> {{ datas.facilitator.name }} </span><br/>
+        </div>
+    </div>
+    `);
+
+
+    spin_planning_status.hide();
+
+</script>

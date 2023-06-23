@@ -61,11 +61,12 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
-        _type = self.request.GET.get("type", "Village")
-        self.template_name = (_type.lower() if _type.lower() in ('village', 'canton') else "village") + "_detail.html"
+        _type = self.request.GET.get("type", context['object'].type)
+        self.template_name = (_type.lower() if _type.lower() in ('village', 'canton') else "administrativelevel") + "_detail.html"
         context['context_object_name'] = _type
         context['title'] = _type
         context['hide_content_header'] = True
+        context['administrativelevel_profile'] = context['object']
         # context['breadcrumb'] = [
         #     {
         #         'url': '',
