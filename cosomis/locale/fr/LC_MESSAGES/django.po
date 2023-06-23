@@ -1014,3 +1014,111 @@ msgstr "Financé par"
 #: .\administrativelevels\templates\canton_detail.html
 msgid "In construction"
 msgstr "En construction"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Population and community details"
+msgstr "Détail de la population et communauté"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Infrastructure and Services"
+msgstr "L'infrastructure et Services"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Households added last year"
+msgstr "Menages ajoutés l'année dernière"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Added due to conflict"
+msgstr "Ajoutés en raison d'un conflit"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Demographic trends"
+msgstr "Tendance Démographique"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Main languages"
+msgstr "Langues principales"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Main religions"
+msgstr "Religions principales"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Ethnies"
+msgstr "Ethnies"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Topography in the canton"
+msgstr "Topographies dans le canton"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Motorized or waterborne public transport"
+msgstr "Transport public motorisé ou par voie d'eau"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Main means of transport"
+msgstr "Principal moyen de transport"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Main business activities"
+msgstr "Activités économiques principales"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Access water network"
+msgstr "Reseau d'eau access"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Average distance from nearest town"
+msgstr "Distance moyenne de la ville la plus proche"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Frequency of main means of transport"
+msgstr "Fréquence du principal moyen de transport"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Accessible public transport"
+msgstr "Moyens de transport public et accessibles"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Climate data"
+msgstr "Données climatiques"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Available cell phone networks"
+msgstr "Réseaux de téléphone cellulaire disponibles"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Social services available and accessible"
+msgstr "Services sociaux disponibles et accessibles"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Subprojects as % of Total Financing"
+msgstr "Sous-projets en % du Financement Total"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "CVDs in the canton"
+msgstr "CVDs dans le canton"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Population"
+msgstr "Population"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Household growth"
+msgstr "Croissance des ménages"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Languages"
+msgstr "Langues"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Religions"
+msgstr "Religions"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Ethnic"
+msgstr "Ethnies"
+
+
+
+

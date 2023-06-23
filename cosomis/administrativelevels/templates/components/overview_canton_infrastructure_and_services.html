@@ -1,0 +1,119 @@
+{% load static i18n %}
+<script type="text/javascript">
+    let spin_infrastructure_services = $("#spin-infrastructure-services");
+    let infrastructure_and_services = $("#infrastructure_and_services");
+    spin_infrastructure_services.show();
+    infrastructure_and_services.html(`
+    <br />
+    <div class="row">
+        <div class="col-4">
+            <div class="row">
+                <div class="col-6">
+                    <b>{% translate "Topography in the canton" %}:</b>
+                </div>
+                <div class="col-6">###</div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <b>{% translate "Motorized or waterborne public transport" %}:</b>
+                </div>
+                <div class="col-6">###</div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <b>{% translate "Main means of transport" %}:</b>
+                </div>
+                <div class="col-6">###</div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="row">
+                <div class="col-6">
+                    <b>{% translate "Main business activities" %}:</b>
+                </div>
+                <div class="col-6">###</div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <b>{% translate "Climate data" %}:</b>
+                </div>
+                <div class="col-6">
+                    {% for climate in datas.climate_datas %}
+                        <span>{% if forloop.counter != 1 %}, {% endif %}{{ climate }}{% if forloop.last %}.{% endif %}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="row">
+                <div class="col-6">
+                    <b>{% translate "Access water network" %}:</b>
+                </div>
+                <div class="col-6">###</div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin: auto; background-color: #dafefe; padding: 11px;">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <b>{% translate "Average distance from nearest town" %}:</b>
+                        </div>
+                        <div class="col-6">
+                            <span>{{ datas.average_distance_from_nearest_town }} Km</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <b>{% translate "Frequency of main means of transport" %}:</b>
+                        </div>
+                        <div class="col-6">###</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <b>{% translate "Accessible public transport" %}:</b>
+                        </div>
+                        <div class="col-6">###</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-4">
+            <div class="row">
+                <div class="col-6">
+                    <b>{% translate "Available cell phone networks" %}:</b>
+                </div>
+                <div class="col-6">###</div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <div class="col-3">
+                    <b>{% translate "Social services available and accessible" %}:</b>
+                </div>
+                <div class="col-9">
+                    <div class="row">
+                    {% for infra in datas.infras %}
+                        {% comment %} {% if forloop.counter|divisibleby:7 or forloop.counter == 1 %} {% endcomment %}
+                        <div class="col-3">
+                        {% comment %} {% endif %} {% endcomment %}
+                        <span style="border-bottom: 2px solid black;">{{ infra }}</span><br />
+                        {% comment %} {% if forloop.counter|divisibleby:7 or forloop.counter == 1 %} {% endcomment %}
+                        </div>
+                        {% comment %} {% endif %} {% endcomment %}
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `);
+    spin_infrastructure_services.hide();
+</script>

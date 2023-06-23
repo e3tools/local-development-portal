@@ -88,3 +88,9 @@
         <span>{{ datas.minorities }}</span><br/>
     </div>
 </div>
+
+
+
+{% include 'components/overview_canton_community_details.html' with datas=datas %}
+{% include 'components/overview_canton_infrastructure_and_services.html' with datas=datas %}
+{% include 'components/villages_overview_under_canton.html' with datas=datas %}

@@ -1,5 +1,13 @@
 {% load static i18n custom_tags %}
-<table class="table" id="table-review">
+<div class="col-12" class="input-group mb-3 search-bar">
+    <div method="get" class="d-flex">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+        </div>
+        <input class="form-control" id="search_table_summary_suprojects" placeholder="{% translate 'Search in table' %}...">
+    </div>
+</div>
+<table class="table" id="table_summary_suprojects">
     <thead>
         <tr>
             <th>{% translate 'Title' %}</th>
@@ -77,4 +85,30 @@ $('.summary_subprojects').click(function(event){
             }
         );
 }); 
+
+
+$(document).ready(function () {
+    {% get_current_language as lang %}
+
+    let table_summary_suprojects = $('#table_summary_suprojects').DataTable({
+        language: {
+            url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
+        },
+        dom: "ltipr",
+        columnDefs: [
+            {
+                targets: 1,
+                orderable: false,
+                searchable: false,
+            }
+        ],
+        lengthMenu: [10, 50, 100],
+        pageLength: 10,
+        order: [[0, 'desc']]
+    });
+    $('#search_table_summary_suprojects').on('keyup', function () {
+        table_summary_suprojects.search($(this).val()).draw();
+    });
+});
+
 </script>

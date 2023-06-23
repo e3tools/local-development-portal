@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import generic
 from django.http import Http404
 from functools import reduce
+import re as re_module
 
 from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin
 from no_sql_client import NoSQLClient
@@ -35,8 +36,10 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
 
         population, nbr_menages, nbr_men, nbr_women, young, elderly, handicap = 0, 0, 0, 0, 0, 0, 0
         fermers_breeders, nbr_ethnic_minorities = 0, 0
-        liste_minorities = []
+        average_distance_from_nearest_town = None
+        liste_minorities, languages, religions, climate_datas, infras  = [], [], [], [], []
         minorities = ""
+        cvds_infos = []
 
         villages = []
         if self.administrative_level.type == "Canton":
@@ -67,46 +70,146 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             if facilitator_doc:
                 cvds = get_cvds(facilitator_doc)
                 for cvd in cvds:
+                    cvd_infos = {'cvd': cvd}
                     village_id = cvd['village_id']
                     if village_id in villages_cvds_ids:
                         for _task in docs:
                             _task = _task.get('doc')
                             if _task.get('type') == 'task' and village_id == _task.get('administrative_level_id'):
                                 form_response = _task.get("form_response")
-                                if _task.get('sql_id') == 20 and form_response: #Etablissement du profil du village
-                                    try:
-                                        population += get_datas_dict(form_response, "population", 1)["populationTotaleDuVillage"]
-                                    except Exception as exc:
-                                        population = population
-                                    
-                                    try:
-                                        nbr_menages += get_datas_dict(form_response, "generalitiesSurVillage", 1)["totalHouseHolds"]
-                                    except Exception as exc:
-                                        nbr_menages = nbr_menages
-                                    
-                                    try:
-                                        nbr_men += get_datas_dict(form_response, "population", 1)["populationNombreDeHommes"]
-                                    except Exception as exc:
-                                        nbr_men = nbr_men
-                                    
-                                    try:
-                                        nbr_women += get_datas_dict(form_response, "population", 1)["populationNombreDeFemmes"]
-                                    except Exception as exc:
-                                        nbr_women = nbr_women
-                                    
-                                    try:
-                                        _ = get_datas_dict(form_response, "population", 1)["populationEthniqueMinoritaire"]
-                                        _copy = (strip_accents(_).strip()).title()
-                                        if _copy and _copy not in liste_minorities and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
-                                            liste_minorities.append(_copy)
-                                    except Exception as exc:
-                                        _ = None
-                        
+                                if form_response:
+                                    if _task.get('sql_id') == 20: #Etablissement du profil du village
+                                        try:
+                                            _ = get_datas_dict(form_response, "population", 1)["populationTotaleDuVillage"]
+                                            population += _
+                                            cvd_infos['population'] = _
+                                        except Exception as exc:
+                                            population = population
+                                        
+                                        try:
+                                            nbr_menages += get_datas_dict(form_response, "generalitiesSurVillage", 1)["totalHouseHolds"]
+                                        except Exception as exc:
+                                            nbr_menages = nbr_menages
+                                        
+                                        try:
+                                            nbr_men += get_datas_dict(form_response, "population", 1)["populationNombreDeHommes"]
+                                        except Exception as exc:
+                                            nbr_men = nbr_men
+                                        
+                                        try:
+                                            nbr_women += get_datas_dict(form_response, "population", 1)["populationNombreDeFemmes"]
+                                        except Exception as exc:
+                                            nbr_women = nbr_women
+                                        
+                                        try:
+                                            _ = get_datas_dict(form_response, "population", 1)["populationEthniqueMinoritaire"]
+                                            if _:
+                                                _copy = (strip_accents(_).strip()).title().replace('-', ' ')
+                                                if _copy and _copy not in liste_minorities and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
+                                                    liste_minorities += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
+                                        except Exception as exc:
+                                            pass
+                                        
+                                        try:
+                                            ethnicite = get_datas_dict(form_response, "Ethnicité", 1)
+                                            _l = []
+                                            if ethnicite:
+                                                for ethnic in ethnicite:
+                                                    if ethnic and ethnic.get("NomEthnicité"):
+                                                        _copy = (strip_accents(ethnic["NomEthnicité"]).strip()).title().replace('-', ' ')
+                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
+                                                            _l += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
+                                            languages += _l
+                                            if 'Autres' in _l:
+                                                _l.remove('Autres')
+                                                _l.append('Autres')
+                                            cvd_infos['languages'] = _l
+                                        except Exception as exc:
+                                            pass
+
+                                        try:
+                                            _religions = get_datas_dict(form_response, "Religion", 1)
+                                            _l = []
+                                            if _religions:
+                                                for religion in _religions:
+                                                    if religion and religion.get("NomReligion"):
+                                                        _copy = (strip_accents(religion["NomReligion"]).strip()).title().replace('-', ' ')
+                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
+                                                            _l += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
+                                            religions += _l
+                                            if 'Autres' in _l:
+                                                _l.remove('Autres')
+                                                _l.append('Autres')
+                                            cvd_infos['religions'] = _l
+                                        except Exception as exc:
+                                            pass
+
+                                        try:
+                                            climatiques = get_datas_dict(form_response, "climatiques", 1)
+                                            if climatiques:
+                                                for climatique in climatiques:
+                                                    if climatique and climatique.get("aléas"):
+                                                        _copy = (strip_accents(climatique["aléas"]).strip()).title().replace('-', ' ')
+                                                        if _copy and _copy not in climatiques and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-'):
+                                                            climate_datas += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
+                                        except Exception as exc:
+                                            pass
+
+                                        try:
+                                            _ = get_datas_dict(form_response, "distanceAgglomeration", 1)
+                                            if average_distance_from_nearest_town == None:
+                                                average_distance_from_nearest_town = _
+                                            elif _ and _ < average_distance_from_nearest_town:
+                                                average_distance_from_nearest_town = _
+                                        except Exception as exc:
+                                            pass
+                                        
+                                        try:
+                                            _ = get_datas_dict(form_response, "equipementEtInfrastructures", 1)
+                                            if _:
+                                                for key, value in _.items():
+                                                    for k, v in value.items():
+                                                        if v:
+                                                            if v == "Oui":
+                                                                _copy = _task['form'][7]['options']['fields']['equipementEtInfrastructures']['fields'][key]['fields'][k]['label']
+                                                                if _copy not in infras:
+                                                                    infras.append(_copy)
+                                                            elif v != "Non":
+                                                                _copy = (strip_accents(v).strip()).title().replace('-', ' ')
+                                                                if _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-') and _copy not in infras:
+                                                                    print(_copy)
+                                                                    infras += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
+                                        except Exception as exc:
+                                            pass
+                                              
                         count_villages_cvds += 1
-                        
+                        cvds_infos.append(cvd_infos)
+
+
             if count_villages_cvds >= length_villages_cvds_ids:
                 break
-        liste_minorities = list(set(reduce(lambda a, b : a + ['Peuhl'] if b in ('Peulh', 'Peuhl', 'Paulh', 'Pauhl') else a + [b], liste_minorities , [])))
+        peuls = ('Peulh', 'Peuhl', 'Paulh', 'Pauhl', 'Peuls', 'Peul', 'Peul...', 'Peul.')
+        liste_minorities = list(set(reduce(lambda a, b : a + ['Peuhl'] if b in peuls else a + [b], liste_minorities , [])))
+        languages = list(set(reduce(lambda a, b : a + ['Peuhl'] if b in peuls else a + [b], languages , [])))
+        religions = list(set(reduce(lambda a, b : (a + ['Christianisme'] if 'Chr' in b else (
+            a + ['Musulmane'] if 'Musulm' in b else (a + ['Animisme'] if 'Animis' in b else (
+                a + ['Islam'] if 'Islam' in b else a + [b]
+            ))
+        )), religions , [])))
+        climate_datas = list(set(climate_datas))
+
+        if 'Autres' in liste_minorities:
+            liste_minorities.remove('Autres')
+            liste_minorities.append('Autres')
+        if 'Autres' in languages:
+            languages.remove('Autres')
+            languages.append('Autres')
+        if 'Autres' in religions:
+            religions.remove('Autres')
+            religions.append('Autres')
+        if 'Autres' in climate_datas:
+            climate_datas.remove('Autres')
+            climate_datas.append('Autres')
         
         return {
             "population": population, "nbr_menages": nbr_menages,
@@ -114,7 +217,10 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             "minorities": ', '.join(liste_minorities), 
             "nbr_ethnic_minorities": len(liste_minorities),
             "young": 0, "elderly": 0, "handicap": 0, "fermers_breeders": 0,
-            "nbr_villages": len(villages)
+            "nbr_villages": len(villages),
+            "languages": languages, "religions": religions, "climate_datas": climate_datas,
+            "average_distance_from_nearest_town": average_distance_from_nearest_town, "infras": infras,
+            "cvds_infos": cvds_infos
         }
     
     def get_queryset(self):

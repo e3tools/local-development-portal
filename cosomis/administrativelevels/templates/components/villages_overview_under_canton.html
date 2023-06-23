@@ -1,0 +1,126 @@
+{% load static i18n custom_tags %}
+<script type="text/javascript">
+    let spin_cvds_canton = $("#spin-cvds-canton");
+    let cvds_canton = $("#cvds_canton");
+    spin_cvds_canton.show();
+    cvds_canton.html(`
+    <br />
+    <div class="row">
+        <div class="col-12">
+
+            <div class="col-12" class="input-group mb-3 search-bar">
+                <div method="get" class="d-flex">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input class="form-control" id="search_villages_overview_under_canton" placeholder="{% translate 'Search in table' %}...">
+                </div>
+            </div>
+
+            <table id="table_villages_overview_under_canton" class="table">
+                <thead>
+                <tr>
+                    <th>{% translate 'CVD' %}</th>
+                    <th>{% translate 'Village' %}(s)</th>
+                    <th>{% translate 'Population' %}</th>
+                    <th>{% translate 'Household growth' %} CFA</th>
+                    <th>{% translate 'Languages' %}</th>
+                    <th>{% translate 'Religions' %}</th>
+                    <th>{% translate 'Ethnic' %}</th>
+                    <th width="12%">{% translate 'Action' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for cvd_infos in datas.cvds_infos %}
+                    <tr>
+                        <td>
+                            {{ cvd_infos.cvd.name }}
+                        </td>
+                        <td>
+                            {% for village in cvd_infos.cvd.villages %}
+                                <span>{% if forloop.counter != 1 %}, {% endif %}{{ village.name }}{% if forloop.last %}.{% endif %}</span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% if cvd_infos.population %}
+                                {{ cvd_infos.population }}
+                            {% else %}
+                                ###
+                            {% endif %}
+                        </td>
+                        <td>
+                            ###
+                        </td>
+                        <td>
+                            {% if cvd_infos.languages %}
+                                {% for language in cvd_infos.languages %}
+                                    <span>{% if forloop.counter != 1 %}, {% endif %}{{ language }}{% if forloop.last %}.{% endif %}</span>
+                                {% endfor %}
+                            {% else %}
+                                ###
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if cvd_infos.religions %}
+                                {% for religion in cvd_infos.religions %}
+                                    <span>{% if forloop.counter != 1 %}, {% endif %}{{ religion }}{% if forloop.last %}.{% endif %}</span>
+                                {% endfor %}
+                            {% else %}
+                                ###
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if cvd_infos.languages %}
+                                {% for ethnic in cvd_infos.languages %}
+                                    <span>{% if forloop.counter != 1 %}, {% endif %}{{ ethnic }}{% if ethnic != "Autres" %}s{% endif %}{% if forloop.last %}.{% endif %}</span>
+                                {% endfor %}
+                            {% else %}
+                                ###
+                            {% endif %}
+                        </td>
+                        <td>
+                                <a href="{% url 'administrativelevels:cvd_detail' cvd_infos.cvd.sql_id %}"
+                                class="btn btn-primary btn-xs" title="{% translate 'View details' %}" target="_blank">
+                                <span class="_mobile"><i class="fa fa-eye"></i></span>
+                            </a>
+                            {% if user.is_superuser or user|has_group:"Admin" %}
+                            <a href="{% url 'administrativelevels:cvd_update' cvd_infos.cvd.sql_id %}"
+                                class="btn btn-primary btn-xs" title="{% translate 'Edit' %}" target="_blank">
+                                <span class="_mobile"><i class="fa fa-edit"></i></span>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    `);
+    spin_cvds_canton.hide();
+
+    {% get_current_language as lang %}
+    $(document).ready(function () {
+        let table_villages_overview_under_canton = $('#table_villages_overview_under_canton').DataTable({
+            language: {
+                url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
+            },
+            dom: "ltipr",
+            columnDefs: [
+                {
+                    targets: 1,
+                    orderable: false,
+                    searchable: false,
+                }
+            ],
+            lengthMenu: [10, 50, 100],
+            pageLength: 10,
+            order: [[0, 'desc']]
+        });
+        $('#search_villages_overview_under_canton').on('keyup', function () {
+            table_villages_overview_under_canton.search($(this).val()).draw();
+        });
+    });
+</script>

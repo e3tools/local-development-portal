@@ -32,16 +32,13 @@
 
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-8">
         <div class="card">
             <div class="card-header">
                 <h5 class="font-weight-bold">{% translate "Canton overview" %}</h5>
             </div>
             <div class="card-body">
-                <div class="clearfix" id="overview">
-                    
-                    
-                </div>
+                <div class="clearfix" id="overview"></div>
 
                 <div class="overlay spin">
                     <i class="fas fa-2x fa-sync-alt fa-spin"></i>
@@ -51,7 +48,7 @@
         </div>
     </div>
 
-    <div class="col-4">
+    {% comment %} <div class="col-4">
         <div class="card">
             <div class="card-body">
 
@@ -90,7 +87,7 @@
 
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
 </div>
 
 <div class="row">
@@ -109,7 +106,7 @@
                         <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#villages_overview">{% translate "Villages overview" %}</a></li>
                         <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#financial_informations">{% translate "Financial informations" %}</a></li>
                         <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#grm">{% translate "GRM" %}</a></li>
-                        <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#subprojects">{% translate "Subprojects" %}</a></li>
+                        {% comment %} <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#subprojects">{% translate "Subprojects" %}</a></li> {% endcomment %}
                         <li class="nav-item btn"><a class="nav-link" data-toggle="tab" href="#diagnostics">{% translate "Diagnostics" %}</a></li>
                     </ul>
 
@@ -136,8 +133,19 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-2"></div>
-                                        <div class="col-4"></div>
+                                        <div class="col-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5 class="text-center">{% translate "Subprojects as % of Total Financing" %}</h5>
+                                                    <div id="suprojects_financing"></div>
+                                                    <span>{% translate "In construction" %}</span>
+                                                </div>
+                                                
+                                                <div class="overlay" id="spin-suprojects-financing">
+                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         
                                     </div>
@@ -159,10 +167,68 @@
                             </div>
                         </div>
                         <div id="overview_canton" class="tab-pane fade">
-                            <h3>{% translate "In construction" %}</h3>
+                            <div class="row">
+                                <div class="col-12"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5>{% translate "Population and community details" %}</h5>
+                                                    <div id="population_and_community_details"></div>
+                                                </div>
+                                                
+                                                <div class="overlay" id="spin-population-community-details">
+                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5>{% translate "Infrastructure and Services" %}</h5>
+                                                    <div id="infrastructure_and_services"></div>
+                                                </div>
+                                                
+                                                <div class="overlay" id="spin-infrastructure-services">
+                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div id="villages_overview" class="tab-pane fade">
-                            <h3>{% translate "In construction" %}</h3>
+                            <div class="row">
+                                <div class="col-12"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5>{% translate "CVDs in the canton" %}</h5>
+                                                    <div id="cvds_canton"></div>
+                                                </div>
+                                                
+                                                <div class="overlay" id="spin-cvds-canton">
+                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div id="financial_informations" class="tab-pane fade">
                             <h3>{% translate "In construction" %}</h3>
@@ -170,9 +236,9 @@
                         <div id="grm" class="tab-pane fade">
                             <h3>{% translate "In construction" %}</h3>
                         </div>
-                        <div id="subprojects" class="tab-pane fade">
+                        {% comment %} <div id="subprojects" class="tab-pane fade">
                             <h3>{% translate "In construction" %}</h3>
-                        </div>
+                        </div> {% endcomment %}
                         <div id="diagnostics" class="tab-pane fade">
                             <h3>{% translate "In construction" %}</h3>
                         </div>
@@ -199,7 +265,9 @@
 <script type="text/javascript">
     $(document).ready(function () {
         {% get_current_language as lang %}
-        
+        let spin_suprojects_financing = $('#spin-suprojects-financing');
+        spin_suprojects_financing.show();
+
         let spin = $('.spin');
 
         spin.show();
