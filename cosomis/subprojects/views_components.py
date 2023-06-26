@@ -126,10 +126,11 @@ class SummarySubprojectsByAdministrativeLevelComponent(SubprojectsByAdministrati
                 else:
                     summary_subprojects[subp.full_title_of_approved_subproject]['cvds'].append(subp.cvd.id if subp.cvd else 0)
                     summary_subprojects[subp.full_title_of_approved_subproject]['number_villages'] += (subp.location_subproject_realized.cvd.administrativelevel_set.get_queryset().count() if subp.location_subproject_realized.cvd else 0)
-
+        
         return {
             "summary_subprojects": summary_subprojects,
-            "canton_id": self.canton_id
+            "canton_id": self.canton_id,
+            "object": self.administrative_level
         }
     
     def get_queryset(self):

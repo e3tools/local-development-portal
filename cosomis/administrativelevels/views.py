@@ -29,7 +29,7 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
-    active_level1 = 'financial'
+    active_level1 = 'administrative_levels'
     breadcrumb = [
         {
             'url': '',
@@ -51,7 +51,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, DetailView):
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
-    active_level1 = 'financial'
+    active_level1 = 'administrative_levels'
     # breadcrumb = [
     #     {
     #         'url': '',
@@ -736,7 +736,7 @@ class GeographicalUnitDetailView(PageMixin, LoginRequiredMixin, DetailView):
     template_name = 'geographical_unit_detail.html'
     context_object_name = 'geographicalunit'
     title = _('Geographical unit')
-    active_level1 = 'financial'
+    active_level1 = 'administrative_levels'
     breadcrumb = [
         {
             'url': reverse_lazy('administrativelevels:geographical_units_list'),
@@ -883,7 +883,7 @@ class CVDDetailView(PageMixin, LoginRequiredMixin, DetailView):
     template_name = 'cvd_detail.html'
     context_object_name = 'cvd'
     title = _('CVD')
-    active_level1 = 'financial'
+    active_level1 = 'administrative_levels'
     breadcrumb = [
         {
             'url': reverse_lazy('administrativelevels:cvds_list'),

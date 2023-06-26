@@ -83,3 +83,14 @@ def delete_administrative_levels_who_are_not_id_in_sql_db():
                 administrative_level.delete()
                 count += 1
     print(count)
+
+
+
+def attribute_project_to_subprojects(subprojects, project):
+    print("Start !")
+    for subproject in subprojects:
+        print(subproject.full_title_of_approved_subproject)
+        subproject.project = project
+        subproject.save()
+    print()
+    print("Done !")

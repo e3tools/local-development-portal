@@ -485,3 +485,34 @@ def get_datas_dict(reponses_datas, key, level: int = 1):
             for k,v in elt.items():
                 if k == key:
                     return v
+                
+def verifiy_if_element_has_a_key_who_has_a_value(liste, key, value):
+    for i in range(len(liste)):
+        elt = liste[i]
+        for k, v in elt.items():
+            if k == key and v == value:
+                return elt, i
+    return None, None
+
+def get_priorities_group_combine(old_liste, new_liste, group):
+    for _priority in new_liste:
+        d, i = verifiy_if_element_has_a_key_who_has_a_value(old_liste, "besoinSelectionne", _priority.get("besoinSelectionne"))
+        if d:
+            priority = d
+            priority['score'] += _priority['score'] if _priority.get('score') else 0
+        else:
+            priority = {
+                "besoinSelectionne": _priority.get('besoinSelectionne'), 
+                "score": _priority.get('score') if _priority.get('score') else 0,
+                "rang": _priority.get('rang') if _priority.get('rang') else 0
+            }
+        priority[group] = {
+            "score": _priority.get('score'),
+            "rang": _priority.get('rang')
+        }
+
+        if d:
+            old_liste[i] = priority
+        else:
+            old_liste.append(priority)
+    return old_liste

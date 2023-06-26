@@ -83,3 +83,7 @@ def make_list(parser, token):
 @register.filter(name='get_to_percent_str') 
 def get_to_percent_str(number):
     return str(number if number >= 10 else "0"+str(number)) + " %"
+
+@register.filter
+def get(dictionary, key):
+    return dictionary.get(key, None)

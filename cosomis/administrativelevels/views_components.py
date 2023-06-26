@@ -9,7 +9,10 @@ from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin
 from no_sql_client import NoSQLClient
 from authentication.models import Facilitator
 from administrativelevels.models import AdministrativeLevel
-from administrativelevels.functions import get_cvds, get_datas_dict
+from administrativelevels.functions import (
+    get_cvds, get_datas_dict, verifiy_if_element_has_a_key_who_has_a_value,
+    get_priorities_group_combine
+)
 from administrativelevels.libraries.functions import strip_accents
 from subprojects.models import Subproject
 from subprojects.serializers import SubprojectSerializer
@@ -49,6 +52,9 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             "name": "Introduction et présentation de l'AC par l'AADB lors de la première réunion cantonale",
             "task_order": 1
         }
+        priorities_1_1 = []
+        priorities_group_farmers_breeders, priorities_group_women, priorities_group_young = [], [], []
+        priorites_village, priorities_group_ethnic_minorities = [], []
 
         villages = []
         if self.administrative_level.type == "Canton":
@@ -142,7 +148,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                             _ = get_datas_dict(form_response, "population", 1)["populationEthniqueMinoritaire"]
                                             if _:
                                                 _copy = (strip_accents(_).strip()).title().replace('-', ' ')
-                                                if _copy and _copy not in liste_minorities and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite'):
+                                                if _copy and _copy not in liste_minorities and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0') and 'Pas De ' not in _copy:
                                                     liste_minorities += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                         except Exception as exc:
                                             pass
@@ -154,7 +160,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                                 for ethnic in ethnicite:
                                                     if ethnic and ethnic.get("NomEthnicité"):
                                                         _copy = (strip_accents(ethnic["NomEthnicité"]).strip()).title().replace('-', ' ')
-                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite'):
+                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0') and 'Pas De ' not in _copy:
                                                             _l += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                             languages += _l
                                             if 'Autres' in _l:
@@ -171,7 +177,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                                 for religion in _religions:
                                                     if religion and religion.get("NomReligion"):
                                                         _copy = (strip_accents(religion["NomReligion"]).strip()).title().replace('-', ' ')
-                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite'):
+                                                        if _copy and _copy not in _l and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0') and 'Pas De ' not in _copy:
                                                             _l += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                             religions += _l
                                             if 'Autres' in _l:
@@ -187,7 +193,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                                 for climatique in climatiques:
                                                     if climatique and climatique.get("aléas"):
                                                         _copy = (strip_accents(climatique["aléas"]).strip()).title().replace('-', ' ')
-                                                        if _copy and _copy not in climatiques and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0', 'Pas De Minorite'):
+                                                        if _copy and _copy not in climatiques and _copy not in ('Nean', 'Neant', 'Oo', 'X', 'Non', '-', '0') and 'Pas De ' not in _copy:
                                                             climate_datas += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                         except Exception as exc:
                                             pass
@@ -227,6 +233,28 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                             date_submission = form_response[0]["dateDeSoumission"]
                                         except:
                                             pass
+                                    if _task.get('sql_id') == 44: #Identification et établissement de la liste des besoins prioritaires pour la composante 1.1  par groupe
+                                        try:
+                                            priorities_group_farmers_breeders = list(get_datas_dict(form_response, "agriculteursEtEleveurs", 1)["besoinsPrioritairesDuGroupe"])
+                                        except:
+                                            pass
+                                        try:
+                                            priorities_group_women = list(get_datas_dict(form_response, "groupeDesFemmes", 1)["besoinsPrioritairesDuGroupe"])
+                                        except:
+                                            pass
+                                        try:
+                                            priorities_group_young = list(get_datas_dict(form_response, "groupeDesJeunes", 1)["besoinsPrioritairesDuGroupe"])
+                                        except:
+                                            pass
+                                        try:
+                                            priorities_group_ethnic_minorities = list(get_datas_dict(form_response, "groupeEthniqueMinoritaires", 1)["besoinsPrioritairesDuGroupe"])
+                                        except:
+                                            pass
+                                    if _task.get('sql_id') == 59: #Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage
+                                        try:
+                                            priorites_village = list(get_datas_dict(form_response, "sousComposante11", 1)["prioritesDuVillage"])
+                                        except:
+                                            pass
 
                                     attachments += _attachments   
                         count_villages_cvds += 1
@@ -262,6 +290,60 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             if attach and attach.get("type") and "image" in attach.get("type") and attach.get("attachment"):
                 attachment_image_principal = attach
 
+        liste_combine_priorities = priorities_group_farmers_breeders + priorities_group_women + priorities_group_young + priorities_group_ethnic_minorities
+        for priority in priorites_village:
+            priority['score'] = 0
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_group_farmers_breeders, "besoinSelectionne", priority.get("priorite"))
+            if d:
+                priority['farmers_breeders'] = {
+                    'score' : d['score'], 'rang' : d['rang']
+                }
+                priority['score'] += d['score'] if d.get('score') else 0
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_group_women, "besoinSelectionne", priority.get("priorite"))
+            if d:
+                priority['women'] = {
+                    'score' : d['score'], 'rang' : d['rang']
+                }
+                priority['score'] += d['score'] if d.get('score') else 0
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_group_young, "besoinSelectionne", priority.get("priorite"))
+            if d:
+                priority['young'] = {
+                    'score' : d['score'], 'rang' : d['rang']
+                }
+                priority['score'] += d['score'] if d.get('score') else 0
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_group_ethnic_minorities, "besoinSelectionne", priority.get("priorite"))
+            if d:
+                priority['ethnic_minorities'] = {
+                    'score' : d['score'], 'rang' : d['rang']
+                }
+                priority['score'] += d['score'] if d.get('score') else 0
+            priorities_1_1.append(priority)
+        #############
+        others_priorities_1_1 = []
+        for _priority in priorities_group_farmers_breeders:
+            priority = {
+                "besoinSelectionne": _priority.get('besoinSelectionne'), 
+                "score": _priority.get('score') if _priority.get('score') else 0,
+                "rang": _priority.get('rang') if _priority.get('rang') else 0
+            }
+            priority['farmers_breeders'] = {
+                "score": _priority.get('score'),
+                "rang": _priority.get('rang')
+            }
+            others_priorities_1_1.append(priority)
+
+        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, priorities_group_women, "women")
+        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, priorities_group_young, "young")
+        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, priorities_group_ethnic_minorities, "ethnic_minorities")
+        #############
+        others_priorities_1_1 = sorted(others_priorities_1_1, key=lambda obj: obj.get('score'), reverse=True)
+        for priority in others_priorities_1_1:
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_1_1, "priorite", priority.get("besoinSelectionne"))
+            if not d:
+                priority["priorite"] = priority["besoinSelectionne"]
+                del priority["besoinSelectionne"]
+                priorities_1_1.append(priority)
+
         return {
             "population": population, "nbr_menages": nbr_menages,
             "nbr_men": nbr_men, "nbr_women": nbr_women,
@@ -275,7 +357,8 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             "attachments": attachments, "exists_at_least_attachment": len(attachments) != 0,
             "object": self.administrative_level, "last_task_completed": last_task_completed,
             "facilitator": facilitator, "date_identified_priorities": date_identified_priorities,
-            "date_submission": date_submission
+            "date_submission": date_submission,
+            "priorities_1_1": priorities_1_1
         }
     
     def get_queryset(self):

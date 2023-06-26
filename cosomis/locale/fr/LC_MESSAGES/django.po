@@ -1171,7 +1171,21 @@ msgstr "Priorités des Sous-composantes"
 msgid "Vision and Obstacles"
 msgstr "Vision et Obstacles"
 
+#: .\administrativelevels\templates\village_detail.html
+msgid "And"
+msgstr "Et"
 
+#: .\administrativelevels\templates\village_detail.html
+msgid "and"
+msgstr "et"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Estimated cost"
+msgstr "Coût estimé"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Rank"
+msgstr "Rang"
 
 
 

@@ -1,4 +1,4 @@
-{% load static i18n custom_tags %}
+{% load static i18n custom_tags humanize %}
 <div class="col-12" class="input-group mb-3 search-bar">
     <div method="get" class="d-flex">
         <div class="input-group-prepend">
@@ -14,15 +14,21 @@
             <th># {% translate 'CVD' %}/{% translate 'Villages' %}</th>
             <th>{% translate 'Beneficiaries' %}</th>
             <th>{% translate 'Estimated unit cost' %}</th>
-            <th>{% translate 'Estimated total cost' %}</th>
+            {% if datas.object.type != "Village" %}<th>{% translate 'Estimated total cost' %}</th>{% endif %}
             <th>{% translate 'Financed by' %}</th>
         </tr>
     </thead>
     <tbody>
         {% for key, value in datas.summary_subprojects.items %}
         <tr>
-            <td><a data-toggle="modal" data-target="#priorities-list-modal" class="summary_subprojects" 
-                href="{% url 'subprojects:components:common' value.pk datas.canton_id %}"> {{ key }}</a></td>
+            <td>
+                {% if datas.object.type != "Village" %}
+                <a data-toggle="modal" data-target="#priorities-list-modal" class="summary_subprojects" 
+                href="{% url 'subprojects:components:common' value.pk datas.canton_id %}"> {{ key }}</a>
+                {% else %}
+                {{ key }}
+                {% endif %}
+            </td>
             <td>
                 {% if value.cvds and value.cvds|length != 0 %}
                     {{ value.cvds|length }}/
@@ -34,9 +40,24 @@
                 {% endif %}
             </td>
             <td>{{ value.beneficiaries }}</td>
-            <td>{{ value.cost_unit }}</td>
-            <td>{{ value.cost_total }} </td>
-            <td>COSO</td>
+            <td>{% if value.cost_unit %}{{ value.cost_unit|intcomma }}{% endif %}</td>
+            {% if datas.object.type != "Village" %}<td>{% if value.cost_total %}{{ value.cost_total|intcomma }}{% endif %}</td>{% endif %}
+            <td>
+                {% if value.get_all_projects %}
+                    {% for project in value.get_all_projects %}
+                        {{ project.name }}
+                        {% if project.financier %}
+                            ({{ project.financier.name }})
+                        {% endif %}
+                    {% endfor %}
+                {% elif value.get_all_financiers %}
+                    {% for financier in value.get_all_financiers %}
+                        {{ financier.name }}
+                    {% endfor %}
+                {% else %}
+                    ###
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>

@@ -86,6 +86,9 @@ class Subproject(BaseModel):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
 
+    projects = models.ManyToManyField('Project', default=[], blank=True) #In Which projects that we finance the subproject
+    financiers = models.ManyToManyField('Financier', default=[], blank=True) #Which Financiers finance this subproject (when its project is define, we don't need to specialize this attribute)
+
 
     def get_cantons_names(self):
         if self.location_subproject_realized:
@@ -182,6 +185,14 @@ class Subproject(BaseModel):
                 return img
         return None
 
+    @property
+    def get_all_projects(self):
+        self.projects.all()
+
+    @property
+    def get_all_financiers(self):
+        self.financiers.all()
+
     def __str__(self):
         return self.full_title_of_approved_subproject
 
@@ -275,4 +286,18 @@ class SubprojectImage(BaseModel):
     date_taken = models.DateField()
 
 
+class Financier(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
 
+    def __str__(self):
+        return self.name
+    
+
+class Project(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    financier = models.ForeignKey('Financier', null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
