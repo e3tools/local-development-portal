@@ -23,26 +23,63 @@ def get_facilitators_village_liste(develop_mode=False, training_mode=False, no_s
                         administrative_levels.append(ad.get('id'))
                     else:
                         administrative_levels.append(ad)
+    return administrative_levels
 
 def attribute_component_to_subprojects(subprojects, component):
     print("Start !")
     for subproject in subprojects:
-        print(subproject.name)
+        print(subproject.full_title_of_approved_subproject)
         subproject.component = component
         subproject.save()
     print()
     print("Done !")
 
+def delete_administrative_levels_who_are_not_children(ads, _type):
+    if _type != "Village":
+        for ad in ads.filter(type=_type):
+            if len(list(ad.administrativelevel_set.get_queryset())) == 0:
+                ad.delete()
 
 def delete_administrative_levels_who_are_not_attribute_to_facilitator():
     facilitators_village_liste = get_facilitators_village_liste()
 
     print("Start")
-    for ad in AdministrativeLevel.objects.all():
+    print()
+    ads = AdministrativeLevel.objects.all()
+
+    print("Village")
+    for ad in ads.filter(type="Village"):
         if str(ad.id) not in facilitators_village_liste:
             ad.delete()
+
+    print("Canton")
+    delete_administrative_levels_who_are_not_children(ads, "Canton")
+
+    print("Commune")
+    delete_administrative_levels_who_are_not_children(ads, "Commune")
+
+    print("Prefecture")
+    delete_administrative_levels_who_are_not_children(ads, "Prefecture")
+
+    print("Region")
+    delete_administrative_levels_who_are_not_children(ads, "Region")
 
     print()
     print("Done !")
 
-    
+def delete_administrative_levels_who_are_not_id_in_sql_db():
+    nsc = NoSQLClient()
+    adm_db = nsc.get_db("administrative_levels")
+    docs = adm_db.all_docs(include_docs=True)['rows']
+    count = 0
+    for _doc in docs:
+        doc = _doc.get('doc')
+        if doc.get('type') == 'administrative_level' and doc.get('administrative_id') and doc.get('administrative_id') != "1":
+            try:
+                AdministrativeLevel.objects.get(id=int(doc.get('administrative_id')))
+            except AdministrativeLevel.DoesNotExist:
+                administrative_level = adm_db[doc.get('_id')]
+                print(administrative_level)
+                administrative_level.delete()
+                count += 1
+    print(count)
