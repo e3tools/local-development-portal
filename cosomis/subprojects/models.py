@@ -165,7 +165,7 @@ class Subproject(BaseModel):
         return estimated_cost
 
     def get_estimated_cost_str(self):
-        locale.setlocale( locale.LC_ALL, '' )
+        locale.setlocale( locale.LC_ALL, 'French_Togo.1252')
         estimated_cost_str = ""
         estimated_cost_str += locale.currency(self.estimated_cost, grouping=True).__str__()
         subproject_link_objects = self.subproject_set.get_queryset()
