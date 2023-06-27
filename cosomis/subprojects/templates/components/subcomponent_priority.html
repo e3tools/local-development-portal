@@ -1,0 +1,76 @@
+{% load static i18n custom_tags humanize %}
+
+<div class="col-12" class="input-group mb-3 search-bar">
+    <div method="get" class="d-flex">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+        </div>
+        <input class="form-control" id="search_{{ group_priorities }}" placeholder="{% translate 'Search in table' %}...">
+    </div>
+</div>
+<div class="table-responsive-sm">
+<table class="table table-sm" id="{{ group_priorities }}">
+    <thead>
+        <tr>
+            <th style="width:5% !important" scope="col-1">{% translate 'Rank' %}</th>
+            <th style="width:45% !important" scope="col-3">{% translate 'Priority' %}</th>
+            <th style="width:5% !important" scope="col-1">{% translate 'Score' %}</th>
+            <th style="width:10% !important" scope="col-1">{% translate 'Financed by' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for priority in datas.priorities_group_farmers_breeders %}
+        <tr>
+            <td>
+                {{ priority|get:"rang" }}
+            </td>
+            <td style="" align="left">
+                {% if "Autre" in priority|get:"besoinSelectionne" %}
+                    {{ priority|get:"besoinSelectionne" }}
+                {% else %}
+                    {{ priority|get:"besoinSelectionne" }}
+                {% endif %}
+            </td>
+            <td>
+                {{ priority|get:"score" }}
+            </td>
+            <td>
+                {% if forloop.counter == 1 %}
+                    COSO
+                {% else %}
+                    ###
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script type="text/javascript">
+
+
+$(document).ready(function () {
+    {% get_current_language as lang %}
+
+    let {{ group_priorities }} = $('#{{ group_priorities }}').DataTable({
+        language: {
+            url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
+        },
+        dom: "ltipr",
+        {% comment %} columnDefs: [
+            { width: "25px", targets: 0 },
+            { width: "450px", targets: 1 },
+            { width: "25px", targets: 2 },
+            { width: "25px", targets: 3 },
+        ], {% endcomment %}
+        lengthMenu: [10, 50, 100],
+        pageLength: 10,
+        order: [[0, 'asc']]
+    });
+    $('#search_{{ group_priorities }}').on('keyup', function () {
+        {{ group_priorities }}.search($(this).val()).draw();
+    });
+});
+
+</script>

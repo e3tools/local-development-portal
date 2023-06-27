@@ -4,6 +4,7 @@
     let priority_needs = $("#priority_needs");
     spin_priority_needs.show();
 priority_needs.html(`
+<h4>{% translate 'Subcomponent' %} 1.1</h4>
 <div class="col-12" class="input-group mb-3 search-bar">
     <div method="get" class="d-flex">
         <div class="input-group-prepend">
@@ -94,37 +95,32 @@ priority_needs.html(`
         </tr>
         {% endfor %}
     </tbody>
+    <tfoot>
+        <tr>
+            <th rowspan="1" colspan="1">
+            </th>
+            <th rowspan="1" colspan="1">
+            </th>
+            <th rowspan="1" colspan="1">
+            </th>
+            <th rowspan="1" colspan="1">
+            </th>
+            <th rowspan="1" colspan="1">
+            </th>
+            <th rowspan="1" colspan="1">
+            </th>
+            <th rowspan="1" colspan="1">
+            </th>
+            <th rowspan="1" colspan="1">
+            </th>
+            <th rowspan="1" colspan="1">
+            </th>
+        </tr>
+    </tfoot>
 </table>
 </div>
 
 `);
-
-
-
-
-$('.summary_subprojects').click(function(event){
-    event.preventDefault();
-    let spin_summary_subprojects = $('#spin-summary-subprojects');
-    spin_summary_subprojects.show();
-    $.ajax({
-        type: 'GET',
-        url: this.href,
-        data: {
-
-        },
-        success: function (data_summary) {
-            spin_summary_subprojects.hide();
-            $('#body_summary_subprojects').html(data_summary);
-        },
-        error: function (data_summary) {
-            spin_summary_subprojects.hide();
-            alert(error_server_message + "Error " + data_summary.status);
-        }
-        }).done(function () {
-                spin_summary_subprojects.hide();
-            }
-        );
-}); 
 
 
 $(document).ready(function () {
@@ -135,17 +131,31 @@ $(document).ready(function () {
             url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
         },
         dom: "ltipr",
-        {% comment %} columnDefs: [
-            { width: "25px", targets: 0 },
-            { width: "450px", targets: 1 },
-            { width: "25px", targets: 2 },
-            { width: "25px", targets: 3 },
-            { width: "25px", targets: 4 },
-            { width: "25px", targets: 5 },
-            { width: "25px", targets: 6 },
-            { width: "50px", targets: 7 },
-            { width: "25px", targets: 8 }
-        ], {% endcomment %}
+        initComplete: function () {
+            this.api()
+                .columns()
+                .every(function () {
+                    var column = this;
+                    
+                    // Create select element and listener
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $('#table_subcomponent_priorities').DataTable.util.escapeRegex($(this).val());
+    
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+    
+                    // Add list of options
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                });
+        }, 
         lengthMenu: [10, 50, 100],
         pageLength: 10,
         order: [[0, 'asc']]

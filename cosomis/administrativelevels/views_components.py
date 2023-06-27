@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy
 from django.views import generic
 from django.http import Http404
 from functools import reduce
@@ -52,9 +52,11 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             "name": "Introduction et présentation de l'AC par l'AADB lors de la première réunion cantonale",
             "task_order": 1
         }
-        priorities_1_1 = []
-        priorities_group_farmers_breeders, priorities_group_women, priorities_group_young = [], [], []
-        priorites_village, priorities_group_ethnic_minorities = [], []
+        priorities_1_1, priorities_1_2_a, priorities_1_2_b, priorities_1_3 = [], {}, {}, []
+        p_g_farmers_breeders_1_1, p_g_women_1_1, p_g_young_1_1, p_g_ethnic_minorities_1_1 = [], [], [], []
+        priorites_village = []
+        p_g_farmers_breeders_1_2_a, p_g_women_1_2_a, p_g_young_1_2_a, p_g_ethnic_minorities_1_2_a = {}, {}, {}, {}
+        p_g_farmers_breeders_1_2_b, p_g_women_1_2_b, p_g_young_1_2_b, p_g_ethnic_minorities_1_2_b = {}, {}, {}, {}
 
         villages = []
         if self.administrative_level.type == "Canton":
@@ -223,36 +225,88 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                                                     infras += [i.strip() for i in re_module.split('[,;/]|Et', _copy)]
                                         except Exception as exc:
                                             pass
+
                                     if _task.get('sql_id') == 41: #Présenter les activités de la journée
                                         try:
                                             date_identified_priorities = form_response[0]["dateDeLaReunion"]
                                         except:
                                             pass
+
                                     if _task.get('sql_id') == 51: #Présenter les activités de la journée
                                         try:
                                             date_submission = form_response[0]["dateDeSoumission"]
                                         except:
                                             pass
+
                                     if _task.get('sql_id') == 44: #Identification et établissement de la liste des besoins prioritaires pour la composante 1.1  par groupe
                                         try:
-                                            priorities_group_farmers_breeders = list(get_datas_dict(form_response, "agriculteursEtEleveurs", 1)["besoinsPrioritairesDuGroupe"])
+                                            p_g_farmers_breeders_1_1 = list(get_datas_dict(form_response, "agriculteursEtEleveurs", 1)["besoinsPrioritairesDuGroupe"])
                                         except:
                                             pass
                                         try:
-                                            priorities_group_women = list(get_datas_dict(form_response, "groupeDesFemmes", 1)["besoinsPrioritairesDuGroupe"])
+                                            p_g_women_1_1 = list(get_datas_dict(form_response, "groupeDesFemmes", 1)["besoinsPrioritairesDuGroupe"])
                                         except:
                                             pass
                                         try:
-                                            priorities_group_young = list(get_datas_dict(form_response, "groupeDesJeunes", 1)["besoinsPrioritairesDuGroupe"])
+                                            p_g_young_1_1 = list(get_datas_dict(form_response, "groupeDesJeunes", 1)["besoinsPrioritairesDuGroupe"])
                                         except:
                                             pass
                                         try:
-                                            priorities_group_ethnic_minorities = list(get_datas_dict(form_response, "groupeEthniqueMinoritaires", 1)["besoinsPrioritairesDuGroupe"])
+                                            p_g_ethnic_minorities_1_1 = list(get_datas_dict(form_response, "groupeEthniqueMinoritaires", 1)["besoinsPrioritairesDuGroupe"])
                                         except:
                                             pass
+
+                                    if _task.get('sql_id') == 57: #Identification et établissement de la liste des besoins prioritaires pour la sous - composante 1.2a  par groupe
+                                        try:
+                                            p_g_farmers_breeders_1_2_a = dict(get_datas_dict(form_response, "agriculteursEtEleveurs", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_women_1_2_a = dict(get_datas_dict(form_response, "groupeDesFemmes", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_young_1_2_a = dict(get_datas_dict(form_response, "groupeDesJeunes", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_ethnic_minorities_1_2_a = dict(get_datas_dict(form_response, "groupeEthniqueMinoritaires", 1))
+                                        except:
+                                            pass
+
+                                    if _task.get('sql_id') == 58: #Identification et établissement de la liste des besoins prioritaires pour la composante 1.2b  par groupe
+                                        try:
+                                            p_g_farmers_breeders_1_2_b = dict(get_datas_dict(form_response, "agriculteursEtEleveurs", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_women_1_2_b = dict(get_datas_dict(form_response, "groupeDesFemmes", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_young_1_2_b = dict(get_datas_dict(form_response, "groupeDesJeunes", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_ethnic_minorities_1_2_b = dict(get_datas_dict(form_response, "groupeEthniqueMinoritaires", 1))
+                                        except:
+                                            pass
+
                                     if _task.get('sql_id') == 59: #Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage
                                         try:
                                             priorites_village = list(get_datas_dict(form_response, "sousComposante11", 1)["prioritesDuVillage"])
+                                        except:
+                                            pass
+                                        try:
+                                            priorities_1_2_a = dict(get_datas_dict(form_response, "sousComposante12a", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            priorities_1_2_b = dict(get_datas_dict(form_response, "sousComposante12b", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            priorities_1_3 = list(get_datas_dict(form_response, "sousComposante13", 1)["classement"])
                                         except:
                                             pass
 
@@ -290,28 +344,28 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             if attach and attach.get("type") and "image" in attach.get("type") and attach.get("attachment"):
                 attachment_image_principal = attach
 
-        liste_combine_priorities = priorities_group_farmers_breeders + priorities_group_women + priorities_group_young + priorities_group_ethnic_minorities
+        liste_combine_priorities = p_g_farmers_breeders_1_1 + p_g_women_1_1 + p_g_young_1_1 + p_g_ethnic_minorities_1_1
         for priority in priorites_village:
             priority['score'] = 0
-            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_group_farmers_breeders, "besoinSelectionne", priority.get("priorite"))
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(p_g_farmers_breeders_1_1, "besoinSelectionne", priority.get("priorite"))
             if d:
                 priority['farmers_breeders'] = {
                     'score' : d['score'], 'rang' : d['rang']
                 }
                 priority['score'] += d['score'] if d.get('score') else 0
-            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_group_women, "besoinSelectionne", priority.get("priorite"))
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(p_g_women_1_1, "besoinSelectionne", priority.get("priorite"))
             if d:
                 priority['women'] = {
                     'score' : d['score'], 'rang' : d['rang']
                 }
                 priority['score'] += d['score'] if d.get('score') else 0
-            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_group_young, "besoinSelectionne", priority.get("priorite"))
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(p_g_young_1_1, "besoinSelectionne", priority.get("priorite"))
             if d:
                 priority['young'] = {
                     'score' : d['score'], 'rang' : d['rang']
                 }
                 priority['score'] += d['score'] if d.get('score') else 0
-            d, i = verifiy_if_element_has_a_key_who_has_a_value(priorities_group_ethnic_minorities, "besoinSelectionne", priority.get("priorite"))
+            d, i = verifiy_if_element_has_a_key_who_has_a_value(p_g_ethnic_minorities_1_1, "besoinSelectionne", priority.get("priorite"))
             if d:
                 priority['ethnic_minorities'] = {
                     'score' : d['score'], 'rang' : d['rang']
@@ -320,7 +374,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             priorities_1_1.append(priority)
         #############
         others_priorities_1_1 = []
-        for _priority in priorities_group_farmers_breeders:
+        for _priority in p_g_farmers_breeders_1_1:
             priority = {
                 "besoinSelectionne": _priority.get('besoinSelectionne'), 
                 "score": _priority.get('score') if _priority.get('score') else 0,
@@ -332,9 +386,9 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             }
             others_priorities_1_1.append(priority)
 
-        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, priorities_group_women, "women")
-        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, priorities_group_young, "young")
-        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, priorities_group_ethnic_minorities, "ethnic_minorities")
+        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, p_g_women_1_1, "women")
+        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, p_g_young_1_1, "young")
+        others_priorities_1_1 = get_priorities_group_combine(others_priorities_1_1, p_g_ethnic_minorities_1_1, "ethnic_minorities")
         #############
         others_priorities_1_1 = sorted(others_priorities_1_1, key=lambda obj: obj.get('score'), reverse=True)
         for priority in others_priorities_1_1:
@@ -357,8 +411,27 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             "attachments": attachments, "exists_at_least_attachment": len(attachments) != 0,
             "object": self.administrative_level, "last_task_completed": last_task_completed,
             "facilitator": facilitator, "date_identified_priorities": date_identified_priorities,
-            "date_submission": date_submission,
-            "priorities_1_1": priorities_1_1
+            "date_submission": date_submission, "priorities_1_1": priorities_1_1,
+            "groups_priorities_1_1": {
+                (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_1_1,
+                gettext_lazy("Women"): p_g_women_1_1,
+                gettext_lazy("Young"): p_g_young_1_1,
+                gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_1_1
+            },
+            "groups_priorities_1_2_a": {
+                (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_1_2_a,
+                gettext_lazy("Women"): p_g_women_1_2_a,
+                gettext_lazy("Young"): p_g_young_1_2_a,
+                gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_1_2_a
+
+            },
+            "groups_priorities_1_2_b": {
+                (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_1_2_b,
+                gettext_lazy("Women"): p_g_women_1_2_b,
+                gettext_lazy("Young"): p_g_young_1_2_b,
+                gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_1_2_b
+
+            }
         }
     
     def get_queryset(self):

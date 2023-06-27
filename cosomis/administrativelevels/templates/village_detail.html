@@ -133,7 +133,7 @@
                                                 <div class="card-header" id="headingOne">
                                                 <h5 class="mb-0">
                                                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                        {% translate "Priority needs" %}
+                                                        {% translate "Priority needs" %} ({% translate "Priorities by sub-component (1.1, 1.2 and 1.3) for CCD discussion at cantonal arbitration meeting" %})
                                                     </button>
                                                 </h5>
                                                 </div>
@@ -141,7 +141,6 @@
                                                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                                                 <div class="card-body">
                                                     <div id="priority_needs"></div>
-                                                    <span>{% translate "In construction" %}</span>
                                                 </div>
                                                 </div>
                                                 
@@ -159,7 +158,7 @@
                                                 </div>
                                                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                                                 <div class="card-body">
-                                                    <span>{% translate "In construction" %}</span>
+                                                    <div id="subcomponent_priorities"></div>
                                                 </div>
                                                 </div>
                                                 
@@ -285,7 +284,6 @@
 <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
-
 <script type="text/javascript">
     $(document).ready(function () {
         {% get_current_language as lang %}

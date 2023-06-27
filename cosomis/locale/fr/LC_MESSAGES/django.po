@@ -1187,5 +1187,39 @@ msgstr "Coût estimé"
 msgid "Rank"
 msgstr "Rang"
 
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Proposed by"
+msgstr "Pproposé par"
 
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Subcomponent"
+msgstr "Sous-compsante"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Name of the most important market in the canton for the group"
+msgstr "Nom du marché le plus important du canton pour le groupe"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Location of the canton's most important market for the group"
+msgstr "Lieu du marché le plus important du canton pour le groupe"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Types of infrastructure/equipment developments the Group would like to see on the market"
+msgstr "Types de développements d'infrastructures/équipements le groupe souhaite voir sur le marché"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "The main socio-economic groups in the village are linked to the market identified in 1.2a"
+msgstr "Les principaux groupes socioéconomiques du village qui sont liées au marche identifiée en 1.2a"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "The main needs of these social and economic (SE) groups in the village are"
+msgstr "Les principaux besoins de ces groupes sociaux économiques (SE) du village"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Main capacity-building and restructuring support needs (RCAR)"
+msgstr "Principaux besoins en renforcement de capacités et appuis à le restructuration (RCAR)"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Priorities by sub-component (1.1, 1.2 and 1.3) for CCD discussion at cantonal arbitration meeting"
+msgstr "Priorités par sous-composante (1.1, 1.2 et 1.3) soumise à la discussion du CCD lors de la réunion cantonale d'arbitrage"
 

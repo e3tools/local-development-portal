@@ -1,5 +1,7 @@
 from email.policy import default
 from django.db import models
+import locale
+
 from administrativelevels.models import AdministrativeLevel, CVD
 
 
@@ -163,13 +165,14 @@ class Subproject(BaseModel):
         return estimated_cost
 
     def get_estimated_cost_str(self):
+        locale.setlocale( locale.LC_ALL, '' )
         estimated_cost_str = ""
-        estimated_cost_str += str(self.estimated_cost)
+        estimated_cost_str += locale.currency(self.estimated_cost, grouping=True).__str__()
         subproject_link_objects = self.subproject_set.get_queryset()
         if subproject_link_objects:
             for o in self.subproject_set.get_queryset():
-                estimated_cost_str += " + " + str(o.estimated_cost)
-            return str(self.get_estimated_cost()) + f' ({estimated_cost_str})'
+                estimated_cost_str += " + " + locale.currency(o.estimated_cost, grouping=True).__str__()
+            return locale.currency(self.get_estimated_cost(), grouping=True).__str__() + f' ({estimated_cost_str})'
         
         return estimated_cost_str
 
