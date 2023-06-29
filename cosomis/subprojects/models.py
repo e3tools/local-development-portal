@@ -165,7 +165,7 @@ class Subproject(BaseModel):
         return estimated_cost
 
     def get_estimated_cost_str(self):
-        locale.setlocale( locale.LC_ALL, 'French_Togo.1252')
+        locale.setlocale( locale.LC_ALL, '' )
         estimated_cost_str = ""
         estimated_cost_str += locale.currency(self.estimated_cost, grouping=True).__str__()
         subproject_link_objects = self.subproject_set.get_queryset()
@@ -174,7 +174,7 @@ class Subproject(BaseModel):
                 estimated_cost_str += " + " + locale.currency(o.estimated_cost, grouping=True).__str__()
             return locale.currency(self.get_estimated_cost(), grouping=True).__str__() + f' ({estimated_cost_str})'
         
-        return estimated_cost_str
+        return estimated_cost_str.replace("$", "")
 
 
     def get_all_images(self, order=False):
@@ -190,11 +190,13 @@ class Subproject(BaseModel):
 
     @property
     def get_all_projects(self):
-        self.projects.all()
+        print(self.projects.all())
+        return self.projects.all()
 
     @property
     def get_all_financiers(self):
-        self.financiers.all()
+        print(self.financiers.all())
+        return self.financiers.all()
 
     def __str__(self):
         return self.full_title_of_approved_subproject

@@ -107,7 +107,8 @@ class SummarySubprojectsByAdministrativeLevelComponent(SubprojectsByAdministrati
                     (subp.indirect_beneficiaries_men if subp.indirect_beneficiaries_men else 0)+ \
                     (subp.indirect_beneficiaries_women if subp.indirect_beneficiaries_women else 0),
                     'cost_unit': subp.estimated_cost, 'cost_total': subp.estimated_cost if subp.estimated_cost else 0,
-                    'pk': subp.pk
+                    'pk': subp.pk, 'projects_ids': [o.id for o in subp.get_all_projects],
+                    'financiers_ids': [o.id for o in subp.get_all_financiers]
                 }
                 if subp.canton:
                     summary_subprojects[subp.full_title_of_approved_subproject]['number_villages'] = (len(subp.list_of_villages_crossed_by_the_track_or_electrification.all()) if subp.list_of_villages_crossed_by_the_track_or_electrification else 0)
@@ -120,7 +121,9 @@ class SummarySubprojectsByAdministrativeLevelComponent(SubprojectsByAdministrati
                     (subp.indirect_beneficiaries_men if subp.indirect_beneficiaries_men else 0)+ \
                     (subp.indirect_beneficiaries_women if subp.indirect_beneficiaries_women else 0)
                 summary_subprojects[subp.full_title_of_approved_subproject]['cost_total'] += subp.estimated_cost if subp.estimated_cost else 0
-                
+                summary_subprojects[subp.full_title_of_approved_subproject]['projects_ids'] = list(set(summary_subprojects[subp.full_title_of_approved_subproject]['projects_ids']+[o.id for o in subp.get_all_projects]))
+                summary_subprojects[subp.full_title_of_approved_subproject]['financiers_ids'] = list(set(summary_subprojects[subp.full_title_of_approved_subproject]['financiers_ids']+[o.id for o in subp.get_all_financiers]))
+
                 if subp.canton:
                     summary_subprojects[subp.full_title_of_approved_subproject]['number_villages'] += (len(subp.list_of_villages_crossed_by_the_track_or_electrification.all()) if subp.list_of_villages_crossed_by_the_track_or_electrification else 0)
                 else:

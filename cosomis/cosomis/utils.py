@@ -90,7 +90,7 @@ def attribute_project_to_subprojects(subprojects, project):
     print("Start !")
     for subproject in subprojects:
         print(subproject.full_title_of_approved_subproject)
-        subproject.project = project
+        subproject.projects.add(project)
         subproject.save()
     print()
     print("Done !")

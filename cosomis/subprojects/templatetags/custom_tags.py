@@ -1,5 +1,6 @@
 from django import template
 from django.utils.translation import gettext_lazy
+from subprojects.models import Project, Financier
 
 register = template.Library()
 
@@ -87,3 +88,11 @@ def get_to_percent_str(number):
 @register.filter
 def get(dictionary, key):
     return dictionary.get(key, None)
+
+@register.filter
+def get_project_by_id(pk):
+    return Project.objects.get(pk=pk)
+
+@register.filter
+def get_financier_by_id(pk):
+    return Financier.objects.get(pk=pk)

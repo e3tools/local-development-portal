@@ -43,16 +43,21 @@
             <td>{% if value.cost_unit %}{{ value.cost_unit|intcomma }}{% endif %}</td>
             {% if datas.object.type != "Village" %}<td>{% if value.cost_total %}{{ value.cost_total|intcomma }}{% endif %}</td>{% endif %}
             <td>
-                {% if value.get_all_projects %}
-                    {% for project in value.get_all_projects %}
-                        {{ project.name }}
-                        {% if project.financier %}
-                            ({{ project.financier.name }})
-                        {% endif %}
+                {{ value.projects_ids }}
+                {% if value.projects_ids %}
+                    {% for project_pk in value.projects_ids %}
+                        {% with project_pk|get_project_by_id as project %}
+                            {{ project.name }}
+                            {% if project.financier %}
+                                ({{ project.financier.name }})
+                            {% endif %}
+                        {% endwith %}
                     {% endfor %}
-                {% elif value.get_all_financiers %}
-                    {% for financier in value.get_all_financiers %}
-                        {{ financier.name }}
+                {% elif value.financiers_ids %}
+                    {% for financier_pk in value.financiers_ids %}
+                        {% with financier_pk|get_financier_by_id as financier %}
+                            {{ financier.name }}
+                        {% endwith %}
                     {% endfor %}
                 {% else %}
                     ###
