@@ -1223,3 +1223,47 @@ msgstr "Principaux besoins en renforcement de capacités et appuis à le restruc
 msgid "Priorities by sub-component (1.1, 1.2 and 1.3) for CCD discussion at cantonal arbitration meeting"
 msgstr "Priorités par sous-composante (1.1, 1.2 et 1.3) soumise à la discussion du CCD lors de la réunion cantonale d'arbitrage"
 
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Civil servants and associations in the village"
+msgstr "Fonctionnaires et associations dans le village"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Village/canton/neighborhood chief"
+msgstr "Chef du village/canton/quartier"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Village Development Committee"
+msgstr "Comité de développement villageois"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "School Committee"
+msgstr "Comité d'école"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Health Committee"
+msgstr "Comité de santé"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Agricultural cooperative"
+msgstr "Coopérative agricole"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Agricultural supervisor"
+msgstr "Agent d'encadrement agricole"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "National or international NGO"
+msgstr "ONG nationale ou internationale"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Municipal agent"
+msgstr "Agent municipal"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Regional or departmental civil servant"
+msgstr "Fonctionnaire au niveau régional ou départemental"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Women's Group"
+msgstr "Groupement Féminin"
+

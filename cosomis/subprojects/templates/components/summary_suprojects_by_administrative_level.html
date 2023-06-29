@@ -11,7 +11,7 @@
     <thead>
         <tr>
             <th>{% translate 'Title' %}</th>
-            <th># {% translate 'CVD' %}/{% translate 'Villages' %}</th>
+            {% if datas.object.type != "Village" %}<th># {% translate 'CVD' %}/{% translate 'Villages' %}</th>{% endif %}
             <th>{% translate 'Beneficiaries' %}</th>
             <th>{% translate 'Estimated unit cost' %} CFA</th>
             {% if datas.object.type != "Village" %}<th>{% translate 'Estimated total cost' %} CFA</th>{% endif %}
@@ -29,7 +29,7 @@
                 {{ key }}
                 {% endif %}
             </td>
-            <td>
+            {% if datas.object.type != "Village" %}<td>
                 {% if value.cvds and value.cvds|length != 0 %}
                     {{ value.cvds|length }}/
                 {% endif %}
@@ -38,7 +38,7 @@
                 {% else %}
                     ###
                 {% endif %}
-            </td>
+            </td>{% endif %}
             <td>{{ value.beneficiaries }}</td>
             <td>{% if value.cost_unit %}{{ value.cost_unit|intcomma }}{% endif %}</td>
             {% if datas.object.type != "Village" %}<td>{% if value.cost_total %}{{ value.cost_total|intcomma }}{% endif %}</td>{% endif %}

@@ -1,0 +1,24 @@
+{% load static i18n %}
+<script type="text/javascript">
+    let spin_civil_servants_associations = $("#spin-civil-servants-associations");
+    let civil_servants_associations = $("#civil_servants_associations");
+    spin_civil_servants_associations.show();
+    civil_servants_associations.html(`
+    <br />
+    <div class="row" style="margin: auto;">
+        <div class="col-6" style="margin: auto;">
+            <p><b><i class="fa fa-check" aria-hidden="true"></i></b> {% translate "Village/canton/neighborhood chief" %}</p>
+            <p><b></b> {% translate "Village/canton/neighborhood chief" %}</p>
+            <p><b></b> {% translate "School Committee" %}</p>
+            <p><b></b> {% translate "Health Committee" %}</p>
+            <p><b></b> {% translate "Agricultural cooperative" %}</p>
+            <p><b></b> {% translate "Agricultural supervisor" %}</p>
+            <p><b></b> {% translate "National or international NGO" %}</p>
+            <p><b></b> {% translate "Municipal agent" %}</p>
+            <p><b></b> {% translate "Regional or departmental civil servant" %}</p>
+            <p><b></b> {% translate "Women's Group" %}</p>
+        </div>
+    </div>
+    `);
+    spin_civil_servants_associations.hide();
+</script>
