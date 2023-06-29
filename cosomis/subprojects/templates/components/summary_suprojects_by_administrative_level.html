@@ -13,8 +13,8 @@
             <th>{% translate 'Title' %}</th>
             <th># {% translate 'CVD' %}/{% translate 'Villages' %}</th>
             <th>{% translate 'Beneficiaries' %}</th>
-            <th>{% translate 'Estimated unit cost' %}</th>
-            {% if datas.object.type != "Village" %}<th>{% translate 'Estimated total cost' %}</th>{% endif %}
+            <th>{% translate 'Estimated unit cost' %} CFA</th>
+            {% if datas.object.type != "Village" %}<th>{% translate 'Estimated total cost' %} CFA</th>{% endif %}
             <th>{% translate 'Financed by' %}</th>
         </tr>
     </thead>
@@ -43,7 +43,6 @@
             <td>{% if value.cost_unit %}{{ value.cost_unit|intcomma }}{% endif %}</td>
             {% if datas.object.type != "Village" %}<td>{% if value.cost_total %}{{ value.cost_total|intcomma }}{% endif %}</td>{% endif %}
             <td>
-                {{ value.projects_ids }}
                 {% if value.projects_ids %}
                     {% for project_pk in value.projects_ids %}
                         {% with project_pk|get_project_by_id as project %}

@@ -141,7 +141,6 @@ class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, AdminPermissi
     form_class = AdministrativeLevelForm # specify the class form to be displayed
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(self.request.GET.get("type"))
         context['form'] = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")), instance=self.get_object())
         return context
     

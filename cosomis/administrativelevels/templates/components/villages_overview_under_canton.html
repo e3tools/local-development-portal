@@ -23,7 +23,7 @@
                     <th>{% translate 'CVD' %}</th>
                     <th>{% translate 'Village' %}(s)</th>
                     <th>{% translate 'Population' %}</th>
-                    <th>{% translate 'Household growth' %} CFA</th>
+                    <th>{% translate 'Household growth' %}</th>
                     <th>{% translate 'Languages' %}</th>
                     <th>{% translate 'Religions' %}</th>
                     <th>{% translate 'Ethnic' %}</th>
@@ -33,10 +33,10 @@
                 <tbody>
                 {% for cvd_infos in datas.cvds_infos %}
                     <tr>
-                        <td>
+                        <td align="left">
                             {{ cvd_infos.cvd.name }}
                         </td>
-                        <td>
+                        <td align="left">
                             {% for village in cvd_infos.cvd.villages %}
                                 <span>{% if forloop.counter != 1 %}, {% endif %}{{ village.name }}{% if forloop.last %}.{% endif %}</span>
                             {% endfor %}

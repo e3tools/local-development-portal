@@ -96,3 +96,19 @@ def get_project_by_id(pk):
 @register.filter
 def get_financier_by_id(pk):
     return Financier.objects.get(pk=pk)
+
+@register.filter
+def join_with_commas(obj_list):
+    """Takes a list of objects and returns their string representations,
+    separated by commas and with 'and' between the penultimate and final items
+    For example, for a list of fruit objects:
+    [<Fruit: apples>, <Fruit: oranges>, <Fruit: pears>] -> 'apples, oranges and pears'
+    """
+    if not obj_list:
+        return ""
+    l=len(obj_list)
+    if l==1:
+        return u"%s" % obj_list[0]
+    else:    
+        return ", ".join(str(obj) for obj in obj_list[:l-1]) \
+                + " " + gettext_lazy("and").__str__() + " " + str(obj_list[l-1])

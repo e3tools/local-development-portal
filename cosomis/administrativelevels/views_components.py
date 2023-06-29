@@ -54,6 +54,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
         }
         priorities_1_1, priorities_1_2_a, priorities_1_2_b, priorities_1_3 = [], {}, {}, []
         p_g_farmers_breeders_1_1, p_g_women_1_1, p_g_young_1_1, p_g_ethnic_minorities_1_1 = [], [], [], []
+        p_g_farmers_breeders_vision_obstacles, p_g_women_vision_obstacles, p_g_young_vision_obstacles, p_g_ethnic_minorities_vision_obstacles = [], [], [], []
         priorites_village = []
         p_g_farmers_breeders_1_2_a, p_g_women_1_2_a, p_g_young_1_2_a, p_g_ethnic_minorities_1_2_a = {}, {}, {}, {}
         p_g_farmers_breeders_1_2_b, p_g_women_1_2_b, p_g_young_1_2_b, p_g_ethnic_minorities_1_2_b = {}, {}, {}, {}
@@ -238,6 +239,24 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                         except:
                                             pass
 
+                                    if _task.get('sql_id') == 60: #Aidez les groupes du village à identifier la liste des obstacles et leur vision du développement pour leur village
+                                        try:
+                                            p_g_farmers_breeders_vision_obstacles = dict(get_datas_dict(form_response, "agriculteursEtEleveurs", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_women_vision_obstacles = dict(get_datas_dict(form_response, "groupeDesFemmes", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_young_vision_obstacles = dict(get_datas_dict(form_response, "groupeDesJeunes", 1))
+                                        except:
+                                            pass
+                                        try:
+                                            p_g_ethnic_minorities_vision_obstacles = dict(get_datas_dict(form_response, "groupeEthniqueMinoritaires", 1))
+                                        except:
+                                            pass
+
                                     if _task.get('sql_id') == 44: #Identification et établissement de la liste des besoins prioritaires pour la composante 1.1  par groupe
                                         try:
                                             p_g_farmers_breeders_1_1 = list(get_datas_dict(form_response, "agriculteursEtEleveurs", 1)["besoinsPrioritairesDuGroupe"])
@@ -397,6 +416,37 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                 priority["priorite"] = priority["besoinSelectionne"]
                 del priority["besoinSelectionne"]
                 priorities_1_1.append(priority)
+        #1.2 a
+        groups_priorities_1_2_a = {
+            (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_1_2_a,
+            gettext_lazy("Women"): p_g_women_1_2_a,
+            gettext_lazy("Young"): p_g_young_1_2_a,
+            gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_1_2_a
+        }
+        priorities_1_2_a["propose_by"] = []
+        for key, value in groups_priorities_1_2_a.items():
+            if (strip_accents(priorities_1_2_a.get("nomDuMarcheLePlusImportant")).strip()).title().replace('-', ' ') == (strip_accents(value.get("nomDuMarcheLePlusImportant")).strip()).title().replace('-', ' ') and \
+            (strip_accents(priorities_1_2_a.get("lieuDuMarcheLePlusImportant")).strip()).title().replace('-', ' ') == (strip_accents(value.get("lieuDuMarcheLePlusImportant")).strip()).title().replace('-', ' '):
+                priorities_1_2_a["propose_by"].append(key)
+        priorities_1_2_a["propose_by"] = list(set(priorities_1_2_a["propose_by"]))
+        #End 1.2 a
+
+        #1.2 b
+        groups_priorities_1_2_b = {
+            (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_1_2_b,
+            gettext_lazy("Women"): p_g_women_1_2_b,
+            gettext_lazy("Young"): p_g_young_1_2_b,
+            gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_1_2_b
+        }
+        priorities_1_2_b["propose_by"] = []
+        p_principauxGroupesSocioeconomiques = list([(strip_accents(elt.get("principalGroupeSocioeconomique")).strip()).title().replace('-', ' ') for elt in priorities_1_2_b.get("principauxGroupesSocioeconomiques")] if priorities_1_2_b.get("principauxGroupesSocioeconomiques") else [])
+        for key, value in groups_priorities_1_2_b.items():
+            principauxGroupesSocioeconomiques = list([(strip_accents(elt.get("principalGroupeSocioeconomique")).strip()).title().replace('-', ' ') for elt in value.get("principauxGroupesSocioeconomiques")] if value.get("principauxGroupesSocioeconomiques") else [])
+            for elt in p_principauxGroupesSocioeconomiques:
+                if elt in principauxGroupesSocioeconomiques:
+                    priorities_1_2_b["propose_by"].append(key)
+        priorities_1_2_b["propose_by"] = list(set(priorities_1_2_b["propose_by"]))
+        #End 1.2 b
 
         return {
             "population": population, "nbr_menages": nbr_menages,
@@ -412,26 +462,22 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             "object": self.administrative_level, "last_task_completed": last_task_completed,
             "facilitator": facilitator, "date_identified_priorities": date_identified_priorities,
             "date_submission": date_submission, "priorities_1_1": priorities_1_1,
+            "priorities_1_2_a": priorities_1_2_a, "priorities_1_2_b": priorities_1_2_b,
+            "priorities_1_3": priorities_1_3,
             "groups_priorities_1_1": {
                 (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_1_1,
                 gettext_lazy("Women"): p_g_women_1_1,
                 gettext_lazy("Young"): p_g_young_1_1,
                 gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_1_1
             },
-            "groups_priorities_1_2_a": {
-                (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_1_2_a,
-                gettext_lazy("Women"): p_g_women_1_2_a,
-                gettext_lazy("Young"): p_g_young_1_2_a,
-                gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_1_2_a
-
+            "groups_vision_obstacles": {
+                (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_vision_obstacles,
+                gettext_lazy("Women"): p_g_women_vision_obstacles,
+                gettext_lazy("Young"): p_g_young_vision_obstacles,
+                gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_vision_obstacles
             },
-            "groups_priorities_1_2_b": {
-                (gettext_lazy("Farmers")+"/"+gettext_lazy("Breeders")): p_g_farmers_breeders_1_2_b,
-                gettext_lazy("Women"): p_g_women_1_2_b,
-                gettext_lazy("Young"): p_g_young_1_2_b,
-                gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_1_2_b
-
-            }
+            "groups_priorities_1_2_a": groups_priorities_1_2_a,
+            "groups_priorities_1_2_b": groups_priorities_1_2_b
         }
     
     def get_queryset(self):

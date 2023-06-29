@@ -190,12 +190,10 @@ class Subproject(BaseModel):
 
     @property
     def get_all_projects(self):
-        print(self.projects.all())
         return self.projects.all()
 
     @property
     def get_all_financiers(self):
-        print(self.financiers.all())
         return self.financiers.all()
 
     def __str__(self):

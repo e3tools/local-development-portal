@@ -1,0 +1,134 @@
+{% load static i18n custom_tags humanize %}
+<script type="text/javascript">
+    let spin_vision_obstacles = $("#spin-vision-obstacles");
+    let vision_obstacles = $("#vision_obstacles");
+    spin_vision_obstacles.show();
+vision_obstacles.html(`
+
+{% for k, v in datas.groups_vision_obstacles.items %}
+    {% if forloop.counter != 1 %}<hr />{% endif %}
+    <h4>{{ k }}</h4>
+
+    <div class="row" style="margin: auto; background-color: #dafefe; padding: 11px;">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-3">
+                    <b>{% translate "Vision" %}:</b>
+                </div>
+                <div class="col-9">{{ v|get:"vision" }}</div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-3">
+                    <b>{% translate "Description" %}:</b>
+                </div>
+                <div class="col-9">{{ v|get:"description" }}</div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="col-12" class="input-group mb-3 search-bar">
+        <div method="get" class="d-flex">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+            </div>
+            <input class="form-control" id="search_table_vision_obstacles_{{ forloop.counter }}" placeholder="{% translate 'Search in table' %}...">
+        </div>
+    </div>
+    <div class="table-responsive-sm">
+        <table class="table table-sm" id="table_vision_obstacles_{{ forloop.counter }}">
+            <thead>
+                <tr>
+                    <th style="width:5% !important" scope="col-1">{% translate 'Rank' %}</th>
+                    <th style="width:45% !important" scope="col-3">{% translate 'Obstacle' %}</th>
+                    <th style="width:5% !important" scope="col-1">{% translate 'Description' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obstacle in v|get:"obstaclesDuGroupe" %}
+                <tr>
+                    <td>
+                        {{ obstacle|get:"rang" }}
+                    </td>
+                    <td style="" align="left">
+                        {{ obstacle|get:"obstacle" }}
+                    </td>
+                    <td>
+                        {{ obstacle|get:"description" }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th rowspan="1" colspan="1">
+                    </th>
+                    <th rowspan="1" colspan="1">
+                    </th>
+                    <th rowspan="1" colspan="1">
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+{% endfor %}
+`);
+
+
+$(document).ready(function () {
+    {% get_current_language as lang %}
+
+    let ids = []
+    {% for k, v in datas.groups_vision_obstacles.items %}
+        ids.push("table_vision_obstacles_{{ forloop.counter }}");
+    {% endfor %}
+
+    ids.forEach(function(item){
+            
+            var table_subcomponent_priorities = $(`#${item}`).DataTable({
+                language: {
+                    url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
+                },
+                dom: "ltipr",
+                initComplete: function () {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            var column = this;
+                            
+                            // Create select element and listener
+                            var select = $('<select style="width:50px !important;"><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $(`#${item}`).DataTable.util.escapeRegex($(this).val());
+            
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+            
+                            // Add list of options
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append('<option value="' + d + '">' + d + '</option>');
+                                });
+                        });
+                }, 
+                lengthMenu: [10, 50, 100],
+                pageLength: 10,
+                order: [[0, 'asc']]
+            });
+            $(`#search_${item}`).on('keyup', function () {
+                table_subcomponent_priorities.search($(this).val()).draw();
+            });
+
+        });
+        
+    });
+
+
+    spin_vision_obstacles.hide();
+
+</script>
