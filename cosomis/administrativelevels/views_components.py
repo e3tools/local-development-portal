@@ -16,6 +16,7 @@ from administrativelevels.functions import (
 from administrativelevels.libraries.functions import strip_accents
 from subprojects.models import Subproject
 from subprojects.serializers import SubprojectSerializer
+from assignments.models import AssignAdministrativeLevelToFacilitator
 
 
 class AdministrativeLevelMixin:
@@ -73,16 +74,28 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             
         villages_cvds_ids = []
         _villages = []
+        facilitators_ids = []
         for v_c in villages:
             if v_c.cvd:
                 _villages.append(v_c)
+                try:
+                    facilitators_ids.append(
+                        int(AssignAdministrativeLevelToFacilitator.objects.get(
+                            administrative_level_id=v_c.id,
+                            project_id=1,
+                            activated=True
+                        ).facilitator_id)
+                    )
+                except Exception as exc:
+                    print(exc)
                 if str(v_c.cvd.headquarters_village.id) not in villages_cvds_ids:
                     villages_cvds_ids.append(str(v_c.cvd.headquarters_village.id))
+        facilitators_ids = list(set(facilitators_ids))
 
         length_villages_cvds_ids = len(villages_cvds_ids)
         count_villages_cvds = 0
 
-        for f in Facilitator.objects.using('cdd').filter(develop_mode=False, training_mode=False):
+        for f in Facilitator.objects.using('cdd').filter(id__in=facilitators_ids,develop_mode=False, training_mode=False):
             facilitator_db = self.nsc.get_db(f.no_sql_db_name)
             docs = facilitator_db.all_docs(include_docs=True)['rows']
             facilitator_doc = None
