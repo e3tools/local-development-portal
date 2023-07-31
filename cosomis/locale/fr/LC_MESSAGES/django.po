@@ -1279,3 +1279,7 @@ msgstr "Renouvellé"
 msgid "Old"
 msgstr "Ancien"
 
+#: .\administrativelevels\views_component.py
+msgid "at"
+msgstr "à"
+
