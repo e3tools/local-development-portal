@@ -57,6 +57,7 @@ CREATED_APPS = [
     'unicorn',
     'kobotoolbox',
     'authentication',
+    'assignments',
 ]
 
 THIRD_PARTY_APPS = [
