@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load static i18n custom_tags %}
 <script type="text/javascript">
     let spin_civil_servants_associations = $("#spin-civil-servants-associations");
     let civil_servants_associations = $("#civil_servants_associations");
@@ -7,16 +7,44 @@
     <br />
     <div class="row" style="margin: auto;">
         <div class="col-6" style="margin: auto;">
-            <p><b><i class="fa fa-check" aria-hidden="true"></i></b> {% translate "Village/canton/neighborhood chief" %}</p>
-            <p><b></b> {% translate "Village/canton/neighborhood chief" %}</p>
-            <p><b></b> {% translate "School Committee" %}</p>
-            <p><b></b> {% translate "Health Committee" %}</p>
-            <p><b></b> {% translate "Agricultural cooperative" %}</p>
-            <p><b></b> {% translate "Agricultural supervisor" %}</p>
-            <p><b></b> {% translate "National or international NGO" %}</p>
-            <p><b></b> {% translate "Municipal agent" %}</p>
-            <p><b></b> {% translate "Regional or departmental civil servant" %}</p>
-            <p><b></b> {% translate "Women's Group" %}</p>
+            <span>
+                {% if datas.villages_canton_quartier_chief and datas.villages_canton_quartier_chief|get:"chefVillage" %}
+                <b><i class="fa fa-check" aria-hidden="true"></i></b>
+                {% endif %} 
+                {% translate "Village/canton/neighborhood chief" %}
+            </span><br />
+            <span>
+                {% if datas.village_dev_committee and datas.village_dev_committee|get:"presidentCVD" %}
+                <b><i class="fa fa-check" aria-hidden="true"></i></b>
+                {% endif %} 
+                {% translate "Village Development Committee" %}
+                    {% if datas.village_dev_committee and datas.village_dev_committee|get:"description" %}
+                    ({{ datas.village_dev_committee|get:"description" }})
+                    {% endif %}
+            </span><br />
+            <span>
+                {% if datas.school_committee %}
+                <b><i class="fa fa-check" aria-hidden="true"></i></b>
+                {% endif %} 
+                {% translate "School Committee" %}
+            </span><br />
+            <span>
+                {% if datas.health_committee and datas.health_committee|get:"infirmier" %}
+                <b><i class="fa fa-check" aria-hidden="true"></i></b>
+                {% endif %} 
+                {% translate "Health Committee" %}
+            </span><br />
+            <span><b></b> {% translate "Agricultural cooperative" %}</span><br />
+            <span><b></b> {% translate "Agricultural supervisor" %}</span><br />
+            <span><b></b> {% translate "National or international NGO" %}</span><br />
+            <span><b></b> {% translate "Municipal agent" %}</span><br />
+            <span><b></b> {% translate "Regional or departmental civil servant" %}</span><br />
+            <span>
+                {% if datas.Women_s_Group and datas.Women_s_Group|get:"responsableFemmes" %}
+                <b><i class="fa fa-check" aria-hidden="true"></i></b>
+                {% endif %} 
+                {% translate "Women's Group" %}
+            </span><br />
         </div>
     </div>
     `);

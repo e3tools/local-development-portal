@@ -1267,3 +1267,15 @@ msgstr "Fonctionnaire au niveau régional ou départemental"
 msgid "Women's Group"
 msgstr "Groupement Féminin"
 
+#: .\administrativelevels\views_component.py
+msgid "New"
+msgstr "Nouveau"
+
+#: .\administrativelevels\views_component.py
+msgid "Renewed"
+msgstr "Renouvellé"
+
+#: .\administrativelevels\views_component.py
+msgid "Old"
+msgstr "Ancien"
+

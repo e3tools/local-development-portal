@@ -60,6 +60,9 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
         p_g_farmers_breeders_1_2_b, p_g_women_1_2_b, p_g_young_1_2_b, p_g_ethnic_minorities_1_2_b = {}, {}, {}, {}
 
         """Civil servants and associations in the village attributes"""
+        villages_canton_quartier_chief, village_dev_committee, school_committee = None, {}, None
+        health_committee, agricultural_cooperative, agricultural_supervisor, Women_s_Group = None, None, None, None
+        national_or_international_NGO, municipal_agent, regional_departmental_civil_servant = None, None, None
 
 
         villages = []
@@ -230,13 +233,50 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                         except Exception as exc:
                                             pass
 
+                                    if _task.get('sql_id') == 15: #Vérification de l'existence d'un comité cantonal de développement (CCD)
+                                        try:
+                                            village_dev_committee["description"] = gettext_lazy("New").__str__() if get_datas_dict(form_response, "existenceCDD", 1) == "Non" else None
+                                        except:
+                                            pass
+
+                                    if _task.get('sql_id') == 16: #Sollicitation de l'appui des autorités villageoises pour une forte mobilisation communautaire
+                                        try:
+                                            personnes = get_datas_dict(form_response, "personnes", 1)
+                                            if personnes:
+                                                villages_canton_quartier_chief = {
+                                                    "chefVillage": personnes.get("chefVillage"),
+                                                    "contactChefVillage": personnes.get("contactChefVillage")
+                                                }
+                                                school_committee = personnes.get("Directeur")
+                                                health_committee = {
+                                                    "infirmier": personnes.get("infirmier"),
+                                                    "contactInfirmier": personnes.get("contactInfirmier")
+                                                }
+                                                village_dev_committee["presidentCVD"] = personnes.get("presidentCVD")
+                                                village_dev_committee["contactPresidentCVD"] = personnes.get("contactPresidentCVD")
+                                                Women_s_Group = {
+                                                    "responsableFemmes": personnes.get("responsableFemmes"),
+                                                    "contactResponsableFemmes": personnes.get("contactResponsableFemmes")
+                                                }
+
+                                        except:
+                                            pass
+                                    
+                                    if _task.get('sql_id') == 19: #Vérification de l'existence du CVD et de ses organes
+                                        try:
+                                            actions = get_datas_dict(form_response, "actions", 1)
+                                            if actions and village_dev_committee.get('description') != gettext_lazy("New").__str__():
+                                                village_dev_committee['description'] = gettext_lazy("Renew").__str__() if actions.get('bureauARenoiveller') == 'Oui' else gettext_lazy("Old").__str__()
+                                        except:
+                                            pass
+
                                     if _task.get('sql_id') == 41: #Présenter les activités de la journée
                                         try:
                                             date_identified_priorities = form_response[0]["dateDeLaReunion"]
                                         except:
                                             pass
 
-                                    if _task.get('sql_id') == 51: #Présenter les activités de la journée
+                                    if _task.get('sql_id') == 51: #Soumission de la demande de financement du sous-projet à l’ANADEB pour approbation par le CORA
                                         try:
                                             date_submission = form_response[0]["dateDeSoumission"]
                                         except:
@@ -468,7 +508,10 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
             "attachments": attachments, "exists_at_least_attachment": len(attachments) != 0,
             "object": self.administrative_level, "last_task_completed": last_task_completed,
             "facilitator": facilitator, "date_identified_priorities": date_identified_priorities,
-            "date_submission": date_submission, "priorities_1_1": priorities_1_1,
+            "date_submission": date_submission, 
+            
+            #Prioirities
+            "priorities_1_1": priorities_1_1,
             "priorities_1_2_a": priorities_1_2_a, "priorities_1_2_b": priorities_1_2_b,
             "priorities_1_3": priorities_1_3,
             "groups_priorities_1_1": {
@@ -484,7 +527,16 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                 gettext_lazy("Ethnic minorities"): p_g_ethnic_minorities_vision_obstacles
             },
             "groups_priorities_1_2_a": groups_priorities_1_2_a,
-            "groups_priorities_1_2_b": groups_priorities_1_2_b
+            "groups_priorities_1_2_b": groups_priorities_1_2_b,
+
+            #Civil servants and associations in the village
+            "villages_canton_quartier_chief": villages_canton_quartier_chief, 
+            "village_dev_committee": village_dev_committee, "school_committee": school_committee,
+            "health_committee": health_committee, "agricultural_cooperative": agricultural_cooperative, 
+            "agricultural_supervisor": agricultural_supervisor, "Women_s_Group": Women_s_Group,
+            "national_or_international_NGO": national_or_international_NGO, 
+            "municipal_agent": municipal_agent, 
+            "regional_departmental_civil_servant": regional_departmental_civil_servant
         }
     
     def get_queryset(self):

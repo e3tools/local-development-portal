@@ -98,8 +98,8 @@
     {% include 'components/vision_obstacles.html' with datas=datas %}
     {% include 'components/overview_village_civil_servants_associations.html' with datas=datas %}
 {% else %}
-    {% include 'components/overview_canton_infrastructure_and_services.html' with datas=datas %}
     {% include 'components/villages_overview_under_canton.html' with datas=datas %}
 {% endif %}
 
+{% include 'components/overview_canton_infrastructure_and_services.html' with datas=datas %}
 {% include 'components/overview_canton_community_details.html' with datas=datas %}
