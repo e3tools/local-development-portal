@@ -279,7 +279,7 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
                                         try:
                                             actions = get_datas_dict(form_response, "actions", 1)
                                             if actions and village_dev_committee.get('description') != gettext_lazy("New").__str__():
-                                                village_dev_committee['description'] = gettext_lazy("Renew").__str__() if actions.get('bureauARenoiveller') == 'Oui' else gettext_lazy("Old").__str__()
+                                                village_dev_committee['description'] = gettext_lazy("Renewed").__str__() if actions.get('bureauARenoiveller') == 'Oui' else gettext_lazy("Old").__str__()
                                         except:
                                             pass
 
