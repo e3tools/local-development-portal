@@ -17,4 +17,5 @@ urlpatterns = [
 
     path('utils/', include('subprojects.utils.urls')),
     path('components/', include('subprojects.urls_component')),
+    path('step/', include('subprojects.urls_step')),
 ]
