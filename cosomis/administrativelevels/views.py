@@ -670,6 +670,30 @@ class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, AdminPermissionR
                     village.save()
                 except Exception as exc:
                     print(exc)
+            
+            #Record automatically CVD if unit has one village
+            if villages and len(villages) == 1:
+                try:
+                    length_str_cvd = str(CVD.objects.all().last().pk + 1)
+                    cvd = CVD()
+                    cvd.unique_code = ('0'*(9-len(length_str_cvd))) + length_str_cvd
+                    cvd = cvd.save_and_return_object()
+                        
+                    village = AdministrativeLevel.objects.get(id=int(villages[0]))
+                    village.cvd = cvd
+                    village.save()
+
+                    cvd.name = village.name
+                    cvd.geographical_unit = unit
+                    cvd.headquarters_village = village
+                    cvd.save()
+                        
+
+                except Exception as exc:
+                    length_str_cvd = "1"
+                
+
+                
 
             return redirect('administrativelevels:geographical_units_list')
         return super(GeographicalUnitCreateView, self).get(request, *args, **kwargs)
