@@ -1,6 +1,8 @@
 from email.policy import default
 from django.db import models
 import locale
+from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import post_save
 
 from administrativelevels.models import AdministrativeLevel, CVD
 
@@ -91,6 +93,11 @@ class Subproject(BaseModel):
     projects = models.ManyToManyField('Project', default=[], blank=True) #In Which projects that we finance the subproject
     financiers = models.ManyToManyField('Financier', default=[], blank=True) #Which Financiers finance this subproject (when its project is define, we don't need to specialize this attribute)
 
+    #Whose choice this subproject?
+    women_s_group = models.BooleanField(null=True, blank=True)
+    youth_group = models.BooleanField(null=True, blank=True)
+    breeders_farmers_group = models.BooleanField(null=True, blank=True)
+    ethnic_minority_group = models.BooleanField(null=True, blank=True)
 
     def get_cantons_names(self):
         if self.location_subproject_realized:
@@ -195,9 +202,71 @@ class Subproject(BaseModel):
     @property
     def get_all_financiers(self):
         return self.financiers.all()
+    
+    def get_projects_ids(self):
+        return [o.id for o in self.projects.all()]
+    
+    @property
+    def get_facilitator_name(self):
+        if self.facilitator_name:
+            return self.facilitator_name
+        elif self.cvd and self.cvd.headquarters_village:
+            f = self.cvd.headquarters_village.get_facilitator(self.get_projects_ids())
+            return f.name if f else None
+        return None
+    
+    def get_subproject_steps(self, order=True):
+        if order:
+            return sorted(self.subprojectstep_set.get_queryset(), key=lambda o: o.begin, reverse=True)
+        return self.subprojectstep_set.get_queryset()
+    
 
     def __str__(self):
         return self.full_title_of_approved_subproject
+
+class _Step(BaseModel):
+    wording = models.CharField(max_length=200, verbose_name=_("Wording"))
+    percent = models.FloatField(null=True, blank=True, verbose_name=_("Percent"))
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
+    ranking = models.IntegerField(default=0, verbose_name=_("Ranking"))
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f'{self.wording}' + (' '+str(self.percent)+'%' if self.percent else '')
+    
+class Step(_Step):
+    has_levels = models.BooleanField(default=False, verbose_name=_("Has levels"))
+    
+    class Meta:
+        unique_together = ['ranking']
+
+
+class SubprojectStep(_Step):
+    subproject = models.ForeignKey(Subproject, on_delete=models.CASCADE, verbose_name=_("Subproject"))
+    step = models.ForeignKey(Step, on_delete=models.CASCADE, verbose_name=_("Step"))
+    begin = models.DateField(verbose_name=_("Begin"))
+    end = models.DateField(null=True, blank=True, verbose_name=_("End"))
+    
+    def get_levels(self, order=True):
+        if order:
+            return sorted(self.level_set.get_queryset(), key=lambda o: o.begin, reverse=True)
+        return self.level_set.get_queryset()
+    
+    
+    def __str__(self):
+        percent = self.percent
+        for level in  self.get_levels():
+            if (level.percent and not percent) or (level.percent and percent and level.percent > percent):
+                percent = level.percent
+        return f'{self.wording}' + (' '+str(percent)+'%' if percent else '')
+
+class Level(_Step):
+    subproject_step = models.ForeignKey(SubprojectStep, on_delete=models.CASCADE, verbose_name=_("Step"))
+    percent = models.FloatField(verbose_name=_("Percent"))
+    begin = models.DateField(verbose_name=_("Begin"))
+    end = models.DateField(null=True, blank=True, verbose_name=_("End"))
 
 
 class VulnerableGroup(BaseModel):
@@ -304,3 +373,14 @@ class Project(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+def update_step(sender, instance, **kwargs):
+    if not kwargs['created']:
+        for subproject_step in instance.subprojectstep_set.get_queryset():
+            subproject_step.wording = instance.wording
+            subproject_step.percent = instance.percent
+            subproject_step.ranking = instance.ranking
+            subproject_step.save()
+
+post_save.connect(update_step, sender=Step)
