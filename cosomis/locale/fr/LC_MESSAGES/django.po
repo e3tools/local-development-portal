@@ -1283,3 +1283,75 @@ msgstr "Ancien"
 msgid "at"
 msgstr "à"
 
+#: .\administrativelevels\views_component.py
+msgid "Sub-project tracking graph"
+msgstr "Graphe du suivi du sous-projet"
+
+#: .\administrativelevels\views_component.py
+msgid "Sub-project history"
+msgstr "Historique du sous-projet"
+
+#: .\administrativelevels\views_component.py
+msgid "Add Step"
+msgstr "Ajouter une étape"
+
+#: .\administrativelevels\views_component.py
+msgid "Wording"
+msgstr "Libellé"
+
+#: .\administrativelevels\views_component.py
+msgid "Percent"
+msgstr "Pourcentage"
+
+#: .\administrativelevels\views_component.py
+msgid "Step"
+msgstr "Etape"
+
+#: .\administrativelevels\views_component.py
+msgid "Begin"
+msgstr "Début"
+
+#: .\administrativelevels\views_component.py
+msgid "End"
+msgstr "Fin"
+
+#: .\administrativelevels\views_component.py
+msgid "Ranking"
+msgstr "Classement"
+
+#: .\administrativelevels\views_component.py
+msgid "Record a step"
+msgstr "Enregistrez une étape"
+
+#: .\administrativelevels\views_component.py
+msgid "Save"
+msgstr "Enregistrer"
+
+#: .\administrativelevels\views_component.py
+msgid "The Step was successfully saved."
+msgstr "L'étape a été enregistrée avec succès."
+
+#: .\administrativelevels\views_component.py
+msgid "Has levels"
+msgstr "Dispose de niveaux"
+
+#: .\administrativelevels\views_component.py
+msgid "Add an evolution level"
+msgstr "Ajouter un niveau d'évolution"
+
+#: .\administrativelevels\views_component.py
+msgid "Record an evolution level"
+msgstr "Enregistrer un niveau d'évolution"
+
+#: .\administrativelevels\views_component.py
+msgid "The Level was successfully saved."
+msgstr "Le niveau a été enregistrée avec succès."
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Sub-project evolution curve"
+msgstr "Courbe de l'évolution du sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Month"
+msgstr "Mois"
+
