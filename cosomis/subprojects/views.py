@@ -13,6 +13,7 @@ from subprojects.models import Subproject, VulnerableGroup, SubprojectImage
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 
 from django import forms
 from subprojects import functions as subprojects_functions
@@ -22,7 +23,48 @@ from usermanager.permissions import (
     AdminPermissionRequiredMixin
     )
 
-# Create your views here.
+
+
+class SubprojectMixin:
+    subproject = None
+    permissions = ('read', 'write')
+    has_permission = True
+
+    def get_query_result(self, **kwargs):
+        try:
+            return Subproject.objects.get(id=kwargs['subproject_id'])
+        except Exception as exc:
+            print(exc)
+            raise Http404
+        
+
+    def check_permissions(self):
+        pass
+
+    def specific_permissions(self):
+        user = self.request.user
+        if not (
+                user.groups.all().exists()
+            ):
+            raise PermissionDenied
+        
+    def dispatch(self, request, *args, **kwargs):
+        subproject = self.get_query_result(**kwargs)
+        try:
+            self.subproject = subproject
+        except Exception:
+            raise Http404
+
+        self.check_permissions()
+        if not self.has_permission:
+            raise PermissionDenied
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    
 
 class SubprojectsListView(PageMixin, LoginRequiredMixin, generic.ListView):
     model = Subproject
