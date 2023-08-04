@@ -676,6 +676,8 @@ class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, AdminPermissionR
                 try:
                     length_str_cvd = str(CVD.objects.all().last().pk + 1)
                     cvd = CVD()
+                    cvd.name = "Record automatically"
+                    cvd.geographical_unit = unit
                     cvd.unique_code = ('0'*(9-len(length_str_cvd))) + length_str_cvd
                     cvd = cvd.save_and_return_object()
                         
@@ -684,7 +686,6 @@ class GeographicalUnitCreateView(PageMixin, LoginRequiredMixin, AdminPermissionR
                     village.save()
 
                     cvd.name = village.name
-                    cvd.geographical_unit = unit
                     cvd.headquarters_village = village
                     cvd.save()
                         
