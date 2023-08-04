@@ -49,6 +49,12 @@ class AdministrativeLevel(BaseModel):
         if self.cvd:
             return self.cvd.subproject_set.get_queryset()
         return []
+    
+    def get_facilitator(self, projects_ids):
+        for assign in self.assignadministrativeleveltofacilitator_set.get_queryset().filter(project_id__in=projects_ids, activated=True):
+            return assign.facilitator
+        return None
+
 
 
 class GeographicalUnit(BaseModel):
