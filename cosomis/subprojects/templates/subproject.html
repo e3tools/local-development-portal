@@ -105,6 +105,154 @@
 
             </div>
         </div>
+
+
+
+        <div class="card" >
+            <div class="card-header">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <h5 class="font-weight-bold">{% translate 'Sub-project tracking graph' %}</h5>
+                    </div>
+                    <div class="float-right">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="subproject_step_graph"></div>
+            </div>
+            <div class="overlay" id="load-subproject-step-graph-spin">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+            </div>
+        </div>
+
+
+
+
+
+
+        
+
+
+
+        <div class="row">
+            <div class="col-4">
+                <div class="card" >
+                    <div class="card-header">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <h5 class="font-weight-bold">{% translate 'Facilitator' %}</h5>
+                            </div>
+                            <div class="float-right">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        
+                        <div class="clearfix">
+                            <a href="#" class="font-weight-bold">
+                                {% if object.get_facilitator_name %}
+                                    {{ object.get_facilitator_name }}
+                                {% else %}
+                                    {% translate 'Name not defined' %}
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        {% if object.wave %}
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Wave' %}: </span><span>{{ object.wave }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if object.lot %}
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Lot' %}: </span><span>{{ object.lot }}</span>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                        
+                </div>
+            </div>
+            <div class="col-4">
+            <div class="card">
+                    <div class="card-header">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <h5 class="font-weight-bold">{% translate 'Financial' %}</h5>
+                            </div>
+                            <div class="float-right">
+                                <a href="#" class="font-weight-bold">{% translate 'Add Movement' %} <i
+                                        class="fas fa-plus"></i></a>
+                            </div>
+                        </div>
+                        <div class="card bg-light" style="height: 30px;">
+                            <div class="card-body">
+                                <div class="font-weight-bold">
+                                    <div class="clearfix">
+                                        <div class="float-left">
+                                            <h5 class="font-weight-bold">{% translate 'Remaining' %} </h5>
+                                        </div>
+                                        <div class="float-right"><a href="#" class="font-weight-bold text-primary">6000 USD</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <h6 class="font-weight-bold text-danger">- 550 USD</h6>
+                            </div>
+                            <div class="float-right">
+                                <span href="#">{% translate 'Lorem ipsum' %} </span>
+                            </div>
+                        </div>
+                        <hr>
+
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <h6><a href="#" class="font-weight-bold text-primary">{% translate 'View All Movements' %}</a></h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <h5 class="font-weight-bold">{% translate 'Timeline' %}</h5>
+                            </div>
+                            <div class="float-right">
+                                <a href="#" class="font-weight-bold">{% translate 'Update' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        
+
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
     </div>
     <div class="col-3">
         <div class="card">
@@ -160,125 +308,34 @@
             </div>
 
         </div>
-    </div>
-</div>
 
 
 
 
-
-
-
-
-
-<div class="row">
-    <div class="col-4">
-        <div class="card" >
-            <div class="card-header">
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h5 class="font-weight-bold">{% translate 'Facilitator' %}</h5>
-                    </div>
-                    <div class="float-right">
-                        
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                
-                 <div class="clearfix">
-                    <a href="#" class="font-weight-bold">
-                        {% if object.facilitator_name %}
-                            {{ object.facilitator_name }}
-                        {% else %}
-                            {% translate 'Name not defined' %}
-                        {% endif %}
-                    </a>
-                </div>
-
-                {% if object.wave %}
-                <div class="clearfix pb-1">
-                    <span class="font-weight-bold">{% translate 'Wave' %}: </span><span>{{ object.wave }}</span>
-                </div>
-                {% endif %}
-
-                {% if object.lot %}
-                <div class="clearfix pb-1">
-                    <span class="font-weight-bold">{% translate 'Lot' %}: </span><span>{{ object.lot }}</span>
-                </div>
-                {% endif %}
-
-            </div>
-
-                 
-        </div>
-    </div>
-    <div class="col-4">
-       <div class="card">
-            <div class="card-header">
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h5 class="font-weight-bold">{% translate 'Financial' %}</h5>
-                    </div>
-                    <div class="float-right">
-                        <a href="#" class="font-weight-bold">{% translate 'Add Movement' %} <i
-                                class="fas fa-plus"></i></a>
-                    </div>
-                </div>
-                <div class="card bg-light" style="height: 30px;">
-                    <div class="card-body">
-                        <div class="font-weight-bold">
-                             <div class="clearfix">
-                                <div class="float-left">
-                                    <h5 class="font-weight-bold">{% translate 'Remaining' %} </h5>
-                                </div>
-                                <div class="float-right"><a href="#" class="font-weight-bold text-primary">6000 USD</a></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-
-                 <div class="clearfix">
-                    <div class="float-left">
-                        <h6 class="font-weight-bold text-danger">- 550 USD</h6>
-                    </div>
-                    <div class="float-right">
-                        <span href="#">{% translate 'Lorem ipsum' %} </span>
-                    </div>
-                </div>
-                <hr>
-
-            </div>
-            <div class="card-footer d-flex justify-content-center">
-                <h6><a href="#" class="font-weight-bold text-primary">{% translate 'View All Movements' %}</a></h6>
-            </div>
-        </div>
-    </div>
-    <div class="col-4">
         <div class="card">
             <div class="card-header">
                 <div class="clearfix">
                     <div class="float-left">
-                        <h5 class="font-weight-bold">{% translate 'Timeline' %}</h5>
-                    </div>
-                    <div class="float-right">
-                        <a href="#" class="font-weight-bold">{% translate 'Update' %}</a>
+                        <h5 class="font-weight-bold">{% translate 'Sub-project history' %}</h5>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-
-                 
-
+                <div id="subproject_step_add"></div>
             </div>
-            <div class="card-footer d-flex justify-content-center">
-                
+            <div class="card-footer d-flex justify-content-center"></div>
+            <div class="overlay" id="load-subproject-step-add-spin">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
             </div>
         </div>
+
+
+
     </div>
 </div>
+
+
+
 
 
 
@@ -506,7 +563,9 @@
 
 {% endblock %}
 
-
+{% block modals %}
+    <div id="statusChangeModalForm" class="modal" role="dialog" aria-hidden="true" data-backdrop="static"></div>
+{% endblock %}
 
 
 {% block javascript %}
@@ -516,9 +575,14 @@
 <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
+<script src="{% static 'js/csrfSafeMethodAjax.js' %}"></script>
+<script src="{% static 'js/formAjaxSubmit.js' %}"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
+            let status_change_modal = $('#statusChangeModalForm');
+            let load_subproject_step_add_spin = $('#load-subproject-step-add-spin');
+            let load_subproject_step_graph_spin = $('#load-subproject-step-graph-spin');
             
             $(document).on("click", "#submit_btn_image_update", function (event) {
                 event.preventDefault();
@@ -591,7 +655,82 @@
 
 
 
-            
+            //Subproject Tracking add
+            class AddStepFormAjaxSubmit extends FormAjaxSubmit {
+                submitted_form() {
+                    loadSubprojectStep();
+                }
+            }
+            let add_subproject_tracking_step_form_ajax = new AddStepFormAjaxSubmit();
+
+            class AddLevelFormAjaxSubmit extends FormAjaxSubmit {
+                submitted_form() {
+                    loadSubprojectStep();
+                }
+            }
+            let add_subproject_tracking_level_form_ajax = new AddLevelFormAjaxSubmit();
+
+            function loadSubprojectStep(){
+                load_subproject_step_graph_spin.show();
+                load_subproject_step_add_spin.show();
+                $('#subproject_step_add').load("{% url 'subprojects:step:subproject_step_add_template' object.id %}", function (
+                    response, status, xhr) {
+                    if (status === "error") {
+                        alert(error_server_message + "Error " + response.status);
+                    }
+                    //Add subproject step
+                    let add_subproject_tracking_step = $("#add_subproject_tracking_step");
+                    let comment_thread_a = $(".comment-thread a");
+                    add_subproject_tracking_step.on('click', function () {
+                        let url = "{% url 'subprojects:step:subproject_step_add_form' object.id %}";
+                        add_subproject_tracking_step_form_ajax.load_form('#subproject_add_step_form', status_change_modal, url);
+                    });
+                    //End Add subproject step
+
+                    //Add subproject level
+                    let add_evolution_level = $(".add_evolution_level");
+                    add_evolution_level.on('click', function () {
+                        let list_id_attr = add_evolution_level.attr("id").split("_");
+                        let id_add_evolution_level = list_id_attr[list_id_attr.length - 1];
+                        let url = "{% url 'subprojects:step:subproject_level_add_form' object.id 0 %}".replace("/0", ("/"+id_add_evolution_level));
+                        console.log(url);
+                        add_subproject_tracking_level_form_ajax.load_form('#subproject_add_level_form', status_change_modal, url);
+                    });
+                    //End Add subproject level
+
+                    //Update Subproject Step-Level
+                    comment_thread_a.on('click', function () {
+                        console.log(this.classList);
+                        if(this.classList.contains('subproject_step')){
+                            console.log(this.id);
+                            add_subproject_tracking_step_form_ajax.load_form('#subproject_add_step_form', status_change_modal, this.id);
+                        }else if(this.classList.contains('subproject_level')){
+                            console.log(this.id);
+                            add_subproject_tracking_level_form_ajax.load_form('#subproject_add_level_form', status_change_modal, this.id);
+                        }
+                    });
+                    //End Update Subproject Step-Level
+
+                    load_subproject_step_add_spin.hide();
+                });
+
+                $('#subproject_step_graph').load("{% url 'subprojects:step:subproject_step_graph_template' object.id %}", function (
+                    response, status, xhr) {
+                    if (status === "error") {
+                        alert(error_server_message + "Error " + response.status);
+                    }
+                    load_subproject_step_graph_spin.hide();
+                });
+            }
+            //End Subproject Tracking add
+
+
+
+
+
+
+
+            loadSubprojectStep()
         });
 
 </script>
