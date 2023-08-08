@@ -30,100 +30,179 @@
 
 <div class="row">
     <div class="col-9">
-        <div class="card">
-            <div class="card-body">
 
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h5 class="font-weight-bold text-sm">{% translate 'Subproject Description' %}</h5>
-                    </div>
-                    <div class="float-right">
-                        <a href="#" class="font-weight-bold">{% translate 'Update' %}</a>
-                    </div>
-                </div>
+        <div class="row">
 
-                <div class="clearfix pb-1" >
-                    <span class="font-weight-bold">{% translate 'Location' %}: </span>
-                    {% if object.location_subproject_realized %}
-                        <a style="color: #599cf7 !important;" target="_blank" 
-                            href="{% url 'administrativelevels:village_detail' object.location_subproject_realized.pk %}" >
-                            {{ object.get_location }}
-                        </a>
-                    {% else %}
-                        <span style="color: #599cf7 !important;">
-                            {{ object.get_location_commune }}, 
-                            <a style="color: #599cf7 !important;" target="_blank" 
-                                href="{% url 'administrativelevels:detail' object.canton.pk %}" >
-                                {{ object.canton.name }}
-                            </a>
-                            {% for sp in object.subproject_set.get_queryset %}
-                                / <a style="color: #599cf7 !important;" target="_blank" 
-                                    href="{% url 'administrativelevels:detail' sp.canton.pk %}" >
-                                    {{ sp.canton.name }}
-                                </a>
-                            {% endfor %}
-                        </span>
-                    {% endif %}
-                </div>
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-body">
 
-                {% if object.location_subproject_realized %}
-                <div class="clearfix pb-1">
-                    <span class="font-weight-bold">{% translate 'CVD' %}: </span>
-                    <span>
-                        {{ object.cvd.name }} (
-                            {% for vg in object.cvd.get_villages %}
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <h5 class="font-weight-bold text-sm">{% translate 'Subproject Description' %}</h5>
+                            </div>
+                            <div class="float-right">
+                                <a href="{% url 'subprojects:update' object.pk %}" class="font-weight-bold">{% translate 'Update' %}</a>
+                            </div>
+                        </div>
+
+                        <div class="clearfix pb-1" >
+                            <span class="font-weight-bold">{% translate 'Location' %}: </span>
+                            {% if object.location_subproject_realized %}
                                 <a style="color: #599cf7 !important;" target="_blank" 
-                                    href="{% url 'administrativelevels:village_detail' vg.pk %}" >
-                                    {{ vg.name }}
+                                    href="{% url 'administrativelevels:village_detail' object.location_subproject_realized.pk %}" >
+                                    {{ object.get_location }}
                                 </a>
-                                {% if not forloop.last %}
-                                    / 
-                                {% endif %}
-                            {% endfor %}
-                        )
-                    </span>
-                </div>
-                {% endif %}
+                            {% else %}
+                                <span style="color: #599cf7 !important;">
+                                    {{ object.get_location_commune }}, 
+                                    <a style="color: #599cf7 !important;" target="_blank" 
+                                        href="{% url 'administrativelevels:detail' object.canton.pk %}" >
+                                        {{ object.canton.name }}
+                                    </a>
+                                    {% for sp in object.subproject_set.get_queryset %}
+                                        / <a style="color: #599cf7 !important;" target="_blank" 
+                                            href="{% url 'administrativelevels:detail' sp.canton.pk %}" >
+                                            {{ sp.canton.name }}
+                                        </a>
+                                    {% endfor %}
+                                </span>
+                            {% endif %}
+                        </div>
 
-                <div class="clearfix pb-1">
-                    <span class="font-weight-bold">{% translate 'Sector' %}: </span><span>{{ object.subproject_sector }}</span>
-                </div>
+                        {% if object.location_subproject_realized %}
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'CVD' %}: </span>
+                            <span>
+                                {{ object.cvd.name }} (
+                                    {% for vg in object.cvd.get_villages %}
+                                        <a style="color: #599cf7 !important;" target="_blank" 
+                                            href="{% url 'administrativelevels:village_detail' vg.pk %}" >
+                                            {{ vg.name }}
+                                        </a>
+                                        {% if not forloop.last %}
+                                            / 
+                                        {% endif %}
+                                    {% endfor %}
+                                )
+                            </span>
+                        </div>
+                        {% endif %}
 
-                <div class="clearfix pb-1">
-                    <span class="font-weight-bold">{% translate 'Type' %}: </span><span>{{ object.type_of_subproject }}</span>
-                </div>
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Sector' %}: </span><span>{{ object.subproject_sector }}</span>
+                        </div>
 
-                <div class="clearfix pb-1">
-                    <span class="font-weight-bold">{% translate 'Description' %}: </span><span>{{ object.full_title_of_approved_subproject }}</span>
-                </div>
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Type' %}: </span><span>{{ object.type_of_subproject }}</span>
+                        </div>
 
-                {% if drilling_flow_rate %}
-                <div class="clearfix pb-1">
-                    <span class="font-weight-bold">{% translate 'Boring Flow' %} (m3): </span><span>{{ object.drilling_flow_rate }}</span>
-                </div>
-                {% endif %}
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Description' %}: </span><span>{{ object.full_title_of_approved_subproject }}</span>
+                        </div>
 
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Estimated cost' %}: </span><span>{{ object.get_estimated_cost_str }}</span>
+                        </div>
+
+                        {% if drilling_flow_rate %}
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Boring Flow' %} (m3): </span><span>{{ object.drilling_flow_rate }}</span>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
             </div>
+            
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        {% comment %} {% if object.get_all_projects or object.get_all_financiers %}
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Financed by' %}: </span>
+                            <span>
+                                {% for project in object.get_all_projects %}
+                                    {{ project.name }}
+                                    {% if project.financier %}({{ project.financier }}){% endif %}
+                                {% endfor %}
+                                {% if object.get_all_projects and object.get_all_financiers %} ; {% endif %}
+                                {% for financier in object.get_all_financiers %}
+                                    {{ financier.name }}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        {% endif %} {% endcomment %}
+                        {% if object.get_all_projects or object.get_all_financiers %}
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Financed by' %}: </span>
+                            <span>
+                                {% if object.get_all_projects %}
+                                    {% for project in object.get_all_projects %}
+                                        {% if project.financier %}{{ project.financier }}{% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% for financier in object.get_all_financiers %}
+                                        {{ financier.name }}
+                                    {% endfor %}
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        {% if object.get_all_projects %}
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Project' %}: </span>
+                            <span>
+                                {% for project in object.get_all_projects %}
+                                    {{ project.name }}
+                                    {% if project.financier %}({{ project.financier }}){% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Name of company awarded work contract (ET)' %}: </span>
+                            <span>{% if object.name_of_the_awarded_company_works_companies %}{{ object.name_of_the_awarded_company_works_companies }}{% else %}-{% endif %}</span>
+                        </div>
+
+                        <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Date contract signed by works companies (ET)' %}: </span>
+                            <span>{% if object.date_signature_contract_work_companies %}{{ object.date_signature_contract_work_companies }}{% else %}-{% endif %}</span>
+                        </div>
+
+                        {% comment %} <div class="clearfix pb-1">
+                            <span class="font-weight-bold">{% translate 'Estimated cost' %}: </span><span>{{ object.get_estimated_cost_str }}</span>
+                        </div> {% endcomment %}
+
+                    </div>
+                </div>
+            </div>
+
         </div>
 
 
-
-        <div class="card" >
-            <div class="card-header">
-                <div class="clearfix">
-                    <div class="float-left">
-                        <h5 class="font-weight-bold">{% translate 'Sub-project tracking graph' %}</h5>
+        <div class="row">
+            <div class="col-12">
+                <div class="card" >
+                    <div class="card-header">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <h5 class="font-weight-bold">{% translate 'Sub-project tracking graph' %}</h5>
+                            </div>
+                            <div class="float-right">
+                                
+                            </div>
+                        </div>
                     </div>
-                    <div class="float-right">
-                        
+                    <div class="card-body">
+                        <div id="subproject_step_graph"></div>
+                    </div>
+                    <div class="overlay" id="load-subproject-step-graph-spin">
+                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <div id="subproject_step_graph"></div>
-            </div>
-            <div class="overlay" id="load-subproject-step-graph-spin">
-                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
             </div>
         </div>
 
@@ -670,6 +749,13 @@
             }
             let add_subproject_tracking_level_form_ajax = new AddLevelFormAjaxSubmit();
 
+            class DelteSubprojectStepFormAjaxSubmit extends FormAjaxSubmit {
+                submitted_form() {
+                    loadSubprojectStep();
+                }
+            }
+            let delete_subproject_tracking_step_form_ajax = new DelteSubprojectStepFormAjaxSubmit();
+
             function loadSubprojectStep(){
                 load_subproject_step_graph_spin.show();
                 load_subproject_step_add_spin.show();
@@ -700,16 +786,19 @@
 
                     //Update Subproject Step-Level
                     comment_thread_a.on('click', function () {
-                        console.log(this.classList);
                         if(this.classList.contains('subproject_step')){
-                            console.log(this.id);
                             add_subproject_tracking_step_form_ajax.load_form('#subproject_add_step_form', status_change_modal, this.id);
                         }else if(this.classList.contains('subproject_level')){
-                            console.log(this.id);
                             add_subproject_tracking_level_form_ajax.load_form('#subproject_add_level_form', status_change_modal, this.id);
                         }
                     });
-                    //End Update Subproject Step-Level
+                    //End Update Subproject Step-Level 
+                    
+                    //Delete Subproject Step-Level
+                    $(".subproject_step_delete").on('click', function () {
+                        delete_subproject_tracking_step_form_ajax.load_form('#subproject_deletion_step_form', status_change_modal, this.id);
+                    });
+                    //End Delete Subproject Step-Level
 
                     load_subproject_step_add_spin.hide();
                 });

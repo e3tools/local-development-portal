@@ -17,14 +17,14 @@
                 </div>
                 <div class="card-body">
                     <div class="row justify-content-center">
-                        <div class="col-8">
+                        <div class="col-9">
                             <form method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 
                                 {% for field in form %}
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">{{ field.label }}</label>
-                                        <div class="col-sm-9">
+                                        <label class="col-sm-4 col-form-label">{{ field.label }}</label>
+                                        <div class="col-sm-8">
                                             {{ field }}
                                         </div>
                                         {% if field.errors %}
@@ -54,6 +54,72 @@
 
         $(document).ready(function () {
             {% get_current_language as lang %}
+
+
+
+            //Datetimepicker Input
+            $('b[role="presentation"]').hide();
+            $('.select2-selection__arrow').append(
+                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+            let dp1 = '<div class="input-group-prepend" data-target="#{id}" data-toggle="datetimepicker">' +
+                '<div class="input-group-text"><i class="fa fa-calendar text-primary"></i></div></div>';
+            let dp2 = '<div class="input-group date" id="{id}" data-target-input="nearest"></div>';
+            //Datemask dd/mm/yyyy
+            $('.datetimepicker-input').inputmask({alias: "datetime", inputFormat: "dd/mm/yyyy"});
+            let defaultDate = Date.now();
+            
+            let help_text1 = null;
+            {% for field in form %}
+                {% if "date" in field.name %}
+                    $(('#id_{{ field.name }}')).before(dp1.replace('{id}', '{{ field.name }}')).parent().wrapInner(
+                        dp2.replace('{id}', '{{ field.name }}'));
+                    
+                    help_text1 = $('#{{ field.name }} small')[0];
+                    $('#{{ field.name }} small').remove();
+                    $('#{{ field.name }}').after(help_text1);
+
+                    {% if field.value %}
+            defaultDate = '{{ field.value|date:'Y-m-d' }}';//moment('{{ field.value }}').format('YYYY-MM-DD'); //moment("{{ field.value }}", "YYYY-MM-DD");
+        {% else %}
+            defaultDate = false;
+        {% endif %}
+        
+        if(defaultDate){
+            $('#{{ field.name }}').datetimepicker({
+                maxDate: Date.now(),
+                useCurrent: false,
+                defaultDate: defaultDate,
+                format: "DD/MM/YYYY",
+                widgetPositioning: {
+                    vertical: 'bottom',
+                }
+            });
+        }else{
+            $('#{{ field.name }}').datetimepicker({
+                maxDate: Date.now(),
+                format: "DD/MM/YYYY",
+                widgetPositioning: {
+                    vertical: 'bottom',
+                }
+            });
+        }
+        
+                    
+
+                {% endif %}
+            {% endfor %}
+
+
+        
+
+        
+
+        
+
+            //End Datetimepicker Input
+
+
+
 
             
         });

@@ -17,6 +17,9 @@ class SubprojectForm(forms.ModelForm):
             if label == "cvds":
                 self.fields[label].queryset = CVD.objects.filter()
                 self.fields[label].label = "CVD"
+            
+            if "date" in label:
+                self.fields[label].widget.attrs['class'] = 'form-control datetimepicker-input'
 
     class Meta:
         model = Subproject
@@ -38,6 +41,7 @@ class VulnerableGroupForm(forms.ModelForm):
         model = VulnerableGroup
         fields = '__all__' # specify the fields to be displayed
 
+#Add
 class SubprojectAddStepForm(forms.ModelForm):
     begin = forms.DateField(label=_('Begin'), input_formats=['%d/%m/%Y'],
                                       help_text="DD/MM/YYYY")
@@ -50,7 +54,10 @@ class SubprojectAddStepForm(forms.ModelForm):
 
     class Meta:
         model = SubprojectStep
-        fields = ('step', 'begin', 'end', 'description') # specify the fields to be displayed
+        fields = (
+            'step', 'begin', 'end', 'description', 
+            'amount_spent_at_this_step', 'total_amount_spent'
+        ) # specify the fields to be displayed
 
 
 class SubprojectAddLevelForm(forms.ModelForm):
@@ -63,4 +70,19 @@ class SubprojectAddLevelForm(forms.ModelForm):
 
     class Meta:
         model = Level
-        fields = ('wording', 'percent', 'ranking', 'begin', 'end', 'description') # specify the fields to be displayed
+        fields = (
+            'wording', 'percent', 'ranking', 'begin', 'end', 'description', 
+            'amount_spent_at_this_step', 'total_amount_spent'
+        ) # specify the fields to be displayed
+#And Add
+
+
+
+# #Delete
+# class DeleteConfirmForm(forms.Form):
+#     confirmation = forms.BooleanField(label=_('Please check this box and click the confirmation button for validation.'),
+#                                        widget=forms.CheckboxInput, required=True)
+    
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+# #And Delete
