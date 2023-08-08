@@ -1,14 +1,15 @@
-from administrativelevels.models import AdministrativeLevel, CVD
-from subprojects.models import Subproject
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-
-import os
-from sys import platform
-from administrativelevels.libraries import functions as libraries_functions
 from datetime import datetime
 import pandas as pd
 import copy
+import re as re_module
+import os
+from sys import platform
+
+from administrativelevels.libraries import functions as libraries_functions
+from administrativelevels.models import AdministrativeLevel, CVD
+from subprojects.models import Subproject
 
 
 
@@ -22,29 +23,43 @@ def exists_id(liste, id):
     return False
 
 
-def get_adminstrative_level_by_name(ad_name, ad_type):
+def get_adminstrative_level_by_name(ad_name, canton_str: str):
     try:
-        return AdministrativeLevel.objects.get(name=ad_name, type=ad_type)
+        return AdministrativeLevel.objects.get(name=ad_name, type="Village", parent__name=canton_str)
     except AdministrativeLevel.DoesNotExist as exc:
         try:
             return AdministrativeLevel.objects.get(
-                name=libraries_functions.strip_accents(ad_name), type=ad_type
+                name=libraries_functions.strip_accents(ad_name), type="Village", parent__name=canton_str
             )
         except AdministrativeLevel.DoesNotExist as exc:
             try:
-                return AdministrativeLevel.objects.get(name=ad_name.replace(" ", ""), type=ad_type)
+                return AdministrativeLevel.objects.get(name=ad_name.replace(" ", ""), type="Village", parent__name=canton_str)
             except AdministrativeLevel.DoesNotExist as exc:
                 try:
                     return AdministrativeLevel.objects.get(
-                        name=libraries_functions.strip_accents(ad_name.replace(" ", "")), type=ad_type
+                        name=libraries_functions.strip_accents(ad_name.replace(" ", "")), type="Village", parent__name=canton_str
                     )
                 except AdministrativeLevel.DoesNotExist as exc:
                     try:
                         return AdministrativeLevel.objects.get(
-                            name=libraries_functions.strip_accents(ad_name.replace("-", " ")), type=ad_type
+                            name=libraries_functions.strip_accents(ad_name.replace("-", " ")), type="Village", parent__name=canton_str
                         )
                     except AdministrativeLevel.DoesNotExist as exc:
-                        return None
+                        try:
+                            return AdministrativeLevel.objects.get(
+                                name=libraries_functions.strip_accents(ad_name.replace(" ", "-")), type="Village", parent__name=canton_str
+                            )
+                        except AdministrativeLevel.DoesNotExist as exc:
+                            try:
+                                return AdministrativeLevel.objects.get(
+                                    name=libraries_functions.strip_accents(ad_name.replace(" ", "-")), type="Village", parent__name=canton_str
+                                )
+                            except AdministrativeLevel.DoesNotExist as exc:
+                                return None
+                            except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                return None
+                        except AdministrativeLevel.MultipleObjectsReturned as exc:
+                            return None
                     except AdministrativeLevel.MultipleObjectsReturned as exc:
                         return None
                 
@@ -59,7 +74,19 @@ def get_adminstrative_level_by_name(ad_name, ad_type):
 
     except AdministrativeLevel.MultipleObjectsReturned as exc:
         return None
-    
+
+def get_adminstrative_level_by_name_with_slash(ad_name: str, canton_str: str):
+    villages_name = re_module.split('[&,;/]| Et ', ad_name.title()) #ad_name.split("/")
+    print(villages_name)
+    for village_name in villages_name:
+        v = get_adminstrative_level_by_name(village_name.upper(), canton_str)
+        if v:
+            try:
+                return v.cvd.headquarters_village
+            except:
+                return v
+    return None
+
 
 
 def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]) -> str:
@@ -70,6 +97,7 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
     at_least_error_name = False # Variable to determine if the name of village is wrong
     text_errors = ""
     list_villages_not_found = []
+    list_villages_not_found_full_infos = []
     list_villages_multi_obj_found = []
     nbr_subproject_not_associate_to_priority = 0
     text_subproject_not_associate_to_priority = ""
@@ -92,9 +120,11 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
         
             
             try:
+                canton_file_data = str(datas_file["CANTON"][count]).upper()
                 _village = str(datas_file["VILLAGE"][count])
                 __village = _village.upper()
                 number = get_value(datas_file["N°"][count])
+                joint_subproject_number = get_value(datas_file["num_sp"][count])
                 intervention_unit = get_value(datas_file["UNITE D'INTERVENTION"][count])
                 facilitator_name = get_value(datas_file["NOM DE L'AC"][count])
                 wave = get_value(datas_file["VAGUE"][count])
@@ -149,6 +179,13 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                 direct_beneficiaries_women = get_value(datas_file["F (BENEFICIAIRES DIRECTS)"][count])
                 indirect_beneficiaries_men = get_value(datas_file["H (BENEFICIAIRES INDIRECTS)"][count])
                 indirect_beneficiaries_women = get_value(datas_file["F (BENEFICIAIRES INDIRECTS)"][count])
+
+                women_s_group = get_value(datas_file["Groupe des femmes"][count])
+                youth_group = get_value(datas_file["Groupe des jeunes"][count])
+                breeders_farmers_group = get_value(datas_file["Groupe des éleveurs/Agriculteurs"][count])
+                ethnic_minority_group = get_value(datas_file["Groupe des minorités ethniques"][count])
+
+
                 list_of_villages_crossed_by_the_track_or_electrification = get_value(datas_file["LISTE DE VILLAGES TRAVERSÉ PAR LA PISTE OU L'ÉLECTRIFICATION"][count])
                 
                 
@@ -161,36 +198,50 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                 administrative_level = None
                 administrative_level_canton = None
                 subproject = None
-                if village == "CCD":
+                if village in ("CCD", "TOUTE LA COMMUNAUTE"):
                     pass
                 else:
                     try:
-                        administrative_level = AdministrativeLevel.objects.get(name=village, type="Village")
+                        administrative_level = AdministrativeLevel.objects.get(name=village, type="Village", parent__name=canton_file_data)
                     except AdministrativeLevel.DoesNotExist as exc:
                         try:
                             administrative_level = AdministrativeLevel.objects.get(
-                                name=libraries_functions.strip_accents(village), type="Village"
+                                name=libraries_functions.strip_accents(village), type="Village", parent__name=canton_file_data
                             )
                         except AdministrativeLevel.DoesNotExist as exc:
                             try:
-                                administrative_level = AdministrativeLevel.objects.get(name=village.replace(" ", ""), type="Village")
+                                administrative_level = AdministrativeLevel.objects.get(name=village.replace(" ", ""), type="Village", parent__name=canton_file_data)
                             except AdministrativeLevel.DoesNotExist as exc:
                                 try:
                                     administrative_level = AdministrativeLevel.objects.get(
-                                        name=libraries_functions.strip_accents(village.replace(" ", "")), type="Village"
+                                        name=libraries_functions.strip_accents(village.replace(" ", "")), type="Village", parent__name=canton_file_data
                                     )
                                 except AdministrativeLevel.DoesNotExist as exc:
                                     try:
                                         administrative_level = AdministrativeLevel.objects.get(
-                                            name=libraries_functions.strip_accents(village.replace("-", " ")), type="Village"
+                                            name=libraries_functions.strip_accents(village.replace("-", " ")), type="Village", parent__name=canton_file_data
                                         )
                                     except AdministrativeLevel.DoesNotExist as exc:
-                                        _is_object_error = True
-                                        if _village not in list_villages_not_found:
-                                            list_villages_not_found.append(_village)
-                                        text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{_village}]: {exc.__str__()}')
-                                        at_least_error_name = True
-                                        at_least_one_error = True
+                                        try:
+                                            administrative_level = AdministrativeLevel.objects.get(
+                                                name=libraries_functions.strip_accents(village.replace(" ", "-")), type="Village", parent__name=canton_file_data
+                                            )
+                                        except AdministrativeLevel.DoesNotExist as exc:
+                                            _is_object_error = True
+                                            if _village not in list_villages_not_found:
+                                                list_villages_not_found.append(_village)
+                                                list_villages_not_found_full_infos.append({
+                                                    "REGION": get_value(datas_file["REGION"][count]),
+                                                    "PREFECTURE": get_value(datas_file["PREFECTURE"][count]),
+                                                    "COMMUNE": get_value(datas_file["COMMUNE"][count]),
+                                                    "CANTON": get_value(datas_file["CANTON"][count]),
+                                                    "VILLAGE": get_value(datas_file["VILLAGE"][count])
+                                                })
+                                            text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{_village}]: {exc.__str__()}')
+                                            at_least_error_name = True
+                                            at_least_one_error = True
+                                        except AdministrativeLevel.MultipleObjectsReturned as exc:
+                                            raise AdministrativeLevel.MultipleObjectsReturned()
                                     except AdministrativeLevel.MultipleObjectsReturned as exc:
                                         raise AdministrativeLevel.MultipleObjectsReturned()
                                 
@@ -210,7 +261,15 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                         at_least_error_name = True
                         at_least_one_error = True
                         text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{_village}]: {exc.__str__()}')
-                    
+                
+                # if _is_object_error and not administrative_level and \
+                #     ("/" in village.title() or "," in village.title() or ";" in village.title() or " Et " in village.title() or "&" in village.title()):
+                #     print(village) 
+                #     administrative_level = get_adminstrative_level_by_name_with_slash(village, canton_file_data)
+                #     if not administrative_level:
+                #         _is_object_error = True
+                #     else:
+                #         del list_villages_not_found_full_infos[-1]
 
                 if not _is_object_error:
                     
@@ -232,7 +291,7 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                     #         except Exception as exc:
                     #             component = None
 
-                    if village == "CCD":
+                    if village in ("CCD", "TOUTE LA COMMUNAUTE"):
                         subprojects = Subproject.objects.filter(
                             full_title_of_approved_subproject=full_title_of_approved_subproject
                             )
@@ -264,6 +323,13 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                                                 _is_object_error = True
                                                 if canton not in list_villages_not_found:
                                                     list_villages_not_found.append(canton)
+                                                    list_villages_not_found_full_infos.append({
+                                                        "REGION": get_value(datas_file["REGION"][count]),
+                                                        "PREFECTURE": get_value(datas_file["PREFECTURE"][count]),
+                                                        "COMMUNE": get_value(datas_file["COMMUNE"][count]),
+                                                        "CANTON": get_value(datas_file["CANTON"][count]),
+                                                        "VILLAGE": get_value(datas_file["VILLAGE"][count])
+                                                    })
                                                 text_errors += (f'\nLine N°{count} [{canton}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{canton}]: {exc.__str__()}')
                                                 at_least_error_name = True
                                                 at_least_one_error = True
@@ -299,7 +365,9 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                     else:
                         subproject = Subproject.objects.filter(
                             full_title_of_approved_subproject=full_title_of_approved_subproject,
-                            location_subproject_realized=administrative_level
+                            location_subproject_realized=administrative_level, 
+                            subproject_sector=subproject_sector,
+                            type_of_subproject=type_of_subproject
                             )
                         if subproject:
                             subproject = list(subproject)[0]
@@ -312,9 +380,11 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                         subproject = Subproject()
                         subproject.ranking = 1
                         subproject.link_to_subproject = subproject_to_link
+                    
 
                     subproject.location_subproject_realized = administrative_level
                     subproject.number = number
+                    subproject.joint_subproject_number = joint_subproject_number
                     subproject.intervention_unit = intervention_unit
                     subproject.facilitator_name = facilitator_name
                     subproject.wave = wave
@@ -367,25 +437,30 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                     subproject.direct_beneficiaries_women = direct_beneficiaries_women
                     subproject.indirect_beneficiaries_men = indirect_beneficiaries_men
                     subproject.indirect_beneficiaries_women = indirect_beneficiaries_women
+                    
+                    if women_s_group != None:
+                        subproject.women_s_group = bool(women_s_group)
+                    if youth_group != None:
+                        subproject.youth_group = bool(youth_group)
+                    if breeders_farmers_group != None:
+                        subproject.breeders_farmers_group = bool(breeders_farmers_group)
+                    if ethnic_minority_group != None:
+                        subproject.ethnic_minority_group = bool(ethnic_minority_group)
 
                     subproject = subproject.save_and_return_object()
                     
-                    if village == "CCD" and administrative_level_canton:
+                    if village in ("CCD", "TOUTE LA COMMUNAUTE") and administrative_level_canton:
                         subproject.canton = administrative_level_canton
 
                         if list_of_villages_crossed_by_the_track_or_electrification:
                             liste = str(list_of_villages_crossed_by_the_track_or_electrification).split(";")
                             for ad_name in liste:
-                                ad = get_adminstrative_level_by_name(ad_name.strip(), "Village")
+                                ad = get_adminstrative_level_by_name(ad_name.strip(), canton_file_data)
                                 if ad:
                                     subproject.list_of_villages_crossed_by_the_track_or_electrification.add(ad)
                         
                     elif administrative_level and administrative_level.cvd:
                         subproject.cvd  = administrative_level.cvd
-                    
-                    # if administrative_level.cvd:
-                    #     if not exists_id(subproject.cvds, administrative_level.id):
-                    #         subproject.cvds.add(administrative_level.cvd)
                     
 
                     subproject.save()
@@ -395,11 +470,12 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                 text_errors += f'\nLine N°{count} [{_village}]: {exc.__str__()}'
                 nbr_other_errors += 1
                 at_least_one_error = True
+                print(exc)
 
             count += 1
             # if count == 1:
             #     break
-    
+            
     message = ""
     if at_least_one_save and not at_least_one_error:
         message = _("Success!")
@@ -444,10 +520,49 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
     f = open("media/"+file_path, "a")
     f.write(summary_errors)
     f.close()
-    
-
 
     return (message, file_path.replace("/", "\\\\") if platform == "win32" else file_path)
+
+    #Excel error
+    # datas = {
+    #     "REGION": {},
+    #     "PREFECTURE": {},
+    #     "COMMUNE": {},
+    #     "CANTON": {},
+    #     "VILLAGE": {}
+    # }
+    # count = 0
+    # file_type = "excel"
+    # _type = "Village"
+    # value_of_type = "all"
+    # for v_error in list_villages_not_found_full_infos:
+    #     datas["REGION"][count] = v_error.get("REGION")
+    #     datas["PREFECTURE"][count] = v_error.get("PREFECTURE")
+    #     datas["COMMUNE"][count] = v_error.get("COMMUNE")
+    #     datas["CANTON"][count] = v_error.get("CANTON")
+    #     datas["VILLAGE"][count] = v_error.get("VILLAGE")
+    #     count += 1
+
+    # if not os.path.exists("media/"+file_type+"/subprojects"):
+    #     os.makedirs("media/"+file_type+"/subprojects")
+
+    # file_name = "subprojects_" + _type.lower() + "_" + ((value_of_type.lower() + "_") if value_of_type else "")
+
+    # if file_type == "csv":
+    #     file_path = file_type+"/subprojects/" + file_name + str(datetime.today().replace(microsecond=0)).replace("-", "").replace(":", "").replace(" ", "_") +".csv"
+    #     pd.DataFrame(datas).to_csv("media/"+file_path)
+    # else:
+    #     file_path = file_type+"/subprojects/" + file_name + str(datetime.today().replace(microsecond=0)).replace("-", "").replace(":", "").replace(" ", "_") +".xlsx"
+    #     pd.DataFrame(datas).to_excel("media/"+file_path)
+
+    # if platform == "win32":
+    #     # windows
+    #     return "", file_path.replace("/", "\\\\")
+    # else:
+    #     return "", file_path
+    #End Excel error
+    
+
 
 
 
@@ -459,6 +574,7 @@ def get_subprojects_under_file_excel_or_csv(file_type="excel", params={"type":"A
 
     datas = {
         "N°": {},
+        "num_sp": {},
         "Longitude (x)": {},
         "Latitude (y)": {},
         "REGION": {},
@@ -522,7 +638,11 @@ def get_subprojects_under_file_excel_or_csv(file_type="excel", params={"type":"A
         "DATES DE RECEPTION PROVISOIRE DES MARCHE DE FOURNITURE DE MOBILIERS ET EQUIPEMENTS": {},
         "DATE DE REMISE OFFICIELLE DU MICROPROJET A LA COMMUNAUTE": {},
         "DATE DE REMISE OFFICIELLE DU MICROPROJET AU SECTORIEL": {},
-        "COMMENTAIRES": {}
+        "Groupe des femmes": {},
+        "Groupe des jeunes": {},
+        "Groupe des éleveurs/Agriculteurs": {},
+        "Groupe des minorités ethniques": {},
+        "COMMENTAIRES": {},
     }
 
     # administratives_levels = []
@@ -649,6 +769,7 @@ def get_subprojects_under_file_excel_or_csv(file_type="excel", params={"type":"A
         
 
         datas["N°"][count] = elt.number
+        datas["num_sp"][count] = elt.joint_subproject_number
         datas["Longitude (x)"][count] = elt.longitude
         datas["Latitude (y)"][count] = elt.latitude
         datas["UNITE D'INTERVENTION"][count] = elt.intervention_unit
@@ -719,6 +840,12 @@ def get_subprojects_under_file_excel_or_csv(file_type="excel", params={"type":"A
         datas["DATES DE RECEPTION PROVISOIRE DES MARCHE DE FOURNITURE DE MOBILIERS ET EQUIPEMENTS"][count] = elt.provisional_acceptance_date_for_efme_contracts
         datas["DATE DE REMISE OFFICIELLE DU MICROPROJET A LA COMMUNAUTE"][count] = elt.official_handover_date_of_the_microproject_to_the_community
         datas["DATE DE REMISE OFFICIELLE DU MICROPROJET AU SECTORIEL"][count] = elt.official_handover_date_of_the_microproject_to_the_sector
+
+        datas["Groupe des femmes"][count] = 1 if elt.women_s_group else (0 if elt.women_s_group == False else "")
+        datas["Groupe des jeunes"][count] = 1 if elt.youth_group else (0 if elt.youth_group == False else "")
+        datas["Groupe des éleveurs/Agriculteurs"][count] = 1 if elt.breeders_farmers_group else (0 if elt.breeders_farmers_group == False else "")
+        datas["Groupe des minorités ethniques"][count] = 1 if elt.ethnic_minority_group else (0 if elt.ethnic_minority_group == False else "")
+
         datas["COMMENTAIRES"][count] = elt.comments
         
         count += 1
