@@ -19,7 +19,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .views import set_language
+from . import views
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -30,7 +30,7 @@ from .views import set_language
 # ]
 urlpatterns = [
     path('set-language/', 
-         set_language, 
+         views.set_language, 
          name='set_language')
 ]
 
@@ -43,6 +43,8 @@ urlpatterns += i18n_patterns(
     path('kobotoolbox/', include('kobotoolbox.urls')),
 
     path('services/', include('administrativelevels.libraries.services.urls')),
+
+    path('delete-object/<int:object_id>/<str:type>/', views.DeleteObjectFormView.as_view(), name='object_deletion_form'),
 )
 
 

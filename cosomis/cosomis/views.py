@@ -2,6 +2,20 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.utils.translation import get_language
 
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
+from django.utils.translation import gettext_lazy as _
+from django.views import generic
+from django.http import Http404
+from django.apps import apps
+
+from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin, ModalFormMixin
+from cosomis.forms import DeleteConfirmForm
+from usermanager.permissions import AdminPermissionRequiredMixin
+
+
+
 def set_language(request):
     response = HttpResponseRedirect('/')
     if request.method == 'POST':
@@ -29,3 +43,49 @@ def set_language(request):
         except Exception as exc:
             pass
     return response
+
+
+#Delete
+class DeleteObjectFormView(AJAXRequestMixin, ModalFormMixin, AdminPermissionRequiredMixin, JSONResponseMixin,
+                                      generic.FormView):
+    form_class = DeleteConfirmForm
+    id_form = "subproject_deletion_step_form"
+    title = _('Confirm deletion')
+    submit_button = _('Confirm')
+    form_class_color = 'danger'
+
+    def post(self, request, *args, **kwargs):
+        form = None
+        if self.kwargs.get('object_id') and self.kwargs.get('type'):
+            ClassModal = None
+            for app_conf in apps.get_app_configs():
+                try:
+                    ClassModal = app_conf.get_model(self.kwargs.get('type').lower())
+                    break # stop as soon as it is found
+                except LookupError:
+                    # no such model in this application
+                    pass
+            
+            if ClassModal:
+                obj = ClassModal.objects.get(id=self.kwargs.get('object_id'))
+                form = DeleteConfirmForm(request.POST)
+
+                if form and form.is_valid():
+                    return self._delete_object(obj)
+        
+        msg = _("An error has occurred...")
+        messages.add_message(self.request, messages.ERROR, msg, extra_tags='error')
+
+        context = {'msg': render(self.request, 'common/messages.html').content.decode("utf-8")}
+        return self.render_to_json_response(context, safe=False)
+    
+    def _delete_object(self, obj):
+        
+        obj.delete()
+        
+        msg = _("The Step was successfully removed.")
+        messages.add_message(self.request, messages.SUCCESS, msg, extra_tags='success')
+
+        context = {'msg': render(self.request, 'common/messages.html').content.decode("utf-8")}
+        return self.render_to_json_response(context, safe=False)
+#And Delete
