@@ -148,6 +148,15 @@
                             </tr>
                         {% endfor %}
                         </tbody>
+                        
+                        <tfoot>
+                            <tr>
+                            {% if type in begin_village %}<th rowspan="1" colspan="1"></th>{% endif %}
+                            {% if type in begin_canton %}<th rowspan="1" colspan="1"></th>{% endif %}
+                            {% if type in begin_commune %}<th rowspan="1" colspan="1"></th>{% endif %}
+                            {% if type in begin_prefecture %}<th rowspan="1" colspan="1"></th>{% endif %}
+                            </tr>
+                        </tfoot>
                     </table>
 
                     <nav>
@@ -195,12 +204,37 @@
                     url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
                 },
                 dom: "ltipr",
+                initComplete: function () {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            var column = this;
+                            
+                            // Create select element and listener
+                            var select = $('<select style="width:50px !important;"><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $(`#table`).DataTable.util.escapeRegex($(this).val());
+            
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+            
+                            // Add list of options
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append('<option value="' + d + '">' + d + '</option>');
+                                });
+                        });
+                },
                 columnDefs: [
-                    {
+                    {% comment %} {
                         targets: 1,
                         orderable: false,
                         searchable: false,
-                    }
+                    } {% endcomment %}
                 ],
                 lengthMenu: [10, 50, 100],
                 pageLength: 10,
