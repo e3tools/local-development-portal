@@ -1355,3 +1355,293 @@ msgstr "Courbe de l'évolution du sous-projet"
 msgid "Month"
 msgstr "Mois"
 
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Please check this box and click the confirmation button for validation."
+msgstr "Veuillez cocher cette câche et cliquez le bouton de confirmation pour validation."
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "The Step was successfully removed."
+msgstr "L'étape a été supprimée avec succès."
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "level"
+msgstr "niveau"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "step"
+msgstr "étape"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Confirm deletion"
+msgstr "Confirmation de la suppression"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Name of company awarded work contract (ET)"
+msgstr "Nom de l'entreprise attributaire entreprises de travaux (ET)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date contract signed by works companies (ET)"
+msgstr "Date signature contrat entreprises de travaux (ET)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Project"
+msgstr "Projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Amount spent at this stage"
+msgstr "Montant dépensé à cette étape"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Total amount spent"
+msgstr "Montant global dépensé"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Exact amount spent on the sub-project"
+msgstr "Montant exact dépensé sur le sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Subproject location"
+msgstr "Emplacement du subproject"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Linked to a sub-project"
+msgstr "Lié à un sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "List of villages where the runway or electrification crosses"
+msgstr "Liste des villages traversés par la piste ou l'électrification"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Number unique to each sub-project or infrastructure"
+msgstr "Numéro unique à chaque sous-projet ou infrastructure"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Common sub-project number"
+msgstr "Numéro commun au sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Intervention unit"
+msgstr "Unite d'intervention"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Facilitator name"
+msgstr "Nom de l'AC"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Subproject sector"
+msgstr "Secteur du sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Type of subproject"
+msgstr "Type de sous-project"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Full title of approved sub-project (description)"
+msgstr "Intitule complet du sous-projet approuves (description)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Works type"
+msgstr "Type de travaux"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Level of donation certificate"
+msgstr "Niveau d'obtention attestation de donation"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Approval date cora"
+msgstr "Date d'approbation cora"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date signature contrat controleurs de travaux BTP (CT)"
+msgstr "Date signature contrat controleurs de travaux BTP (CT)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Contract amount for construction supervisors BTP (CT)"
+msgstr "Montant du contrat controleurs de travaux BTP (CT)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date signed SES controllers contract (CSES)"
+msgstr "Date signature contrat controleurs en SES (CSES)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Contract amount for SES controllers (CSES)"
+msgstr "Montant du contrat controleurs en SES (CSES)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Convention"
+msgstr "Convention"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Contract no. for work companies (ET)"
+msgstr "N° contrat entreprises de travaux (ET)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date of signature of works contract (ET)"
+msgstr "Date signature contrat entreprises de travaux (ET)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Contract amount for works companies (ET)"
+msgstr "Montant du contrat entreprises de travaux (ET)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Name of contractor entreprises de fourniture de mobiliers et equipements (EFME)"
+msgstr "Nom de l'entreprise attributaire entreprises de fourniture de mobiliers et equipements (EFME)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date signature contrat entreprises de fourniture de mobiliers et equipements (EFME)"
+msgstr "Date signature contrat entreprises de fourniture de mobiliers et equipements (EFME)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Contract amount Entreprises de fourniture de mobiliers et equipements (EFME)"
+msgstr "Montant du contrat entreprises de fourniture de mobiliers et equipements (EFME)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date of signature of facilitator contract"
+msgstr "Date signature contrat animateur communautaire (AC)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Contract amount for facilitator"
+msgstr "Montant du contrat animateur communautaire (AC)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date of start of work in the village (date of notification of service order)"
+msgstr "Date de lancement du chantier dans le village (date notification de l'ordre de service)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Current level of physical realization of the work"
+msgstr "Niveau actuel de realisation physique de l'ouvrage"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Length of track (km)"
+msgstr "Longueur de la piste (km)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Borehole depth (m)"
+msgstr "Pronfondeur du forage (m)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Borehole flow (m3)"
+msgstr "Debit du forage (m3)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Current site status (Work in progress, Work stopped, Work abandoned, Technical acceptance, Provisional acceptance, etc.)"
+msgstr "Statut actuel du chantier (Travaux en cours, Arrêt travaux, Abandon travaux, Réception technique, Réception provisoire etc,)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Estimated completion time (months)"
+msgstr "Durée prevue de realisation des travaux (mois)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Expected contract end date"
+msgstr "Date prevue de fin du contrat"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Total amount of the pay contract (technical inspection + safeguard inspection + construction company + furniture company + facilitator)"
+msgstr "Montant total du marche paye (contrôle technique + contrôle sauvegardes + entreprise btp + entreprise mobiliers + AC)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Upkeep and maintenance fund (EMI) to be mobilized"
+msgstr "Montant du fonds d'entretien et de maintenance (EMI)  prevu pour etre mobilise"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Amount of maintenance fund (EMI) mobilized and deposited in village account"
+msgstr "Montant du fonds d'entretien et de maintenance (EMI)  mobilise et depose sur le compte du village"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Existence of a maintenance and upkeep plan (EMI plan) drawn up by the community (if yes, put 1; if no, put 0)"
+msgstr "Existence d'un plan d'entretien et de maintenance (plan EMI) élaboré par la communauaté (si oui mettre 1; si non mettre 0)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Dates for technical acceptance of work contracts (BTP or FORAGE)"
+msgstr "Dates de reception technique des marche de travaux (BTP ou FORAGE)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Technical acceptance dates for furniture and equipment supply contracts"
+msgstr "Dates de reception technique des marche de fourniture de mobiliers et equipements"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Dates of provisional acceptance of work contracts (BTP or FORAGE)"
+msgstr "Dates de reception provisoire des marche de travaux (BTP ou FORAGE)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Provisional acceptance dates for furniture and equipment supply contracts"
+msgstr "Dates de reception provisoire des marche de fourniture de mobiliers et equipements"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date of official handover of the microproject to the community"
+msgstr "Date de remise officielle du microprojet a la communaute"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Date of official handover of the microproject to the sector"
+msgstr "Date de remise officielle du microprojet au sectoriel"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Comments"
+msgstr "Commentaires"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Target female beneficiaries"
+msgstr "Bénéficiaires femmes ciblés"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Target male beneficiaries"
+msgstr "Bénéficiaires hommes ciblés"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Target youth beneficiaries"
+msgstr "Bénéficiaires jeunes ciblés"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Direct beneficiaries men"
+msgstr "Bénéficiaires directs hommes"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Direct beneficiaries women"
+msgstr "Bénéficiaires directs femmes"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Indirect beneficiaries men"
+msgstr "Bénéficiaires indirects hommes"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Indirect beneficiaries women"
+msgstr "Bénéficiaires indirects femmes"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Component (Subcomponent)"
+msgstr "Composante (sous-composante)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Latitude"
+msgstr "Latitude"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Longitude"
+msgstr "Longitude"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Projects"
+msgstr "Projets"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Financiers"
+msgstr "Financiers"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Women's group"
+msgstr "Groupe des femmes"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Youth group"
+msgstr "Groupe des jeunes"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Breeders farmers group"
+msgstr "Groupe des éleveurs/Agriculteurs"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Ethnic minority group"
+msgstr "Groupe des minorités ethniques"
+
+
+
