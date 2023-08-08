@@ -11,4 +11,5 @@ urlpatterns = [
     path('update-subproject-step/<int:subproject_id>/<int:subproject_step_update_id>/', views_step.SubprojectStepAddFormView.as_view(), name='subproject_step_update_form'),
     path('add-subproject-level/<int:subproject_id>/<int:subproject_step_id>/', views_step.SubprojectLevelAddFormView.as_view(), name='subproject_level_add_form'),
     path('add-subproject-level/<int:subproject_id>/<int:subproject_step_id>/<int:subproject_level_update_id>/', views_step.SubprojectLevelAddFormView.as_view(), name='subproject_level_update_form'),
+    # path('delete-subproject-step/<int:subproject_step_deletion_id>/<str:type>/', views_step.SubprojectStepDeleteFormView.as_view(), name='subproject_step_delete_form'),
 ]

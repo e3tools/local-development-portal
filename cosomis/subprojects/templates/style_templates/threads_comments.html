@@ -23,7 +23,7 @@ button {
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    font-size: 14px;
+    font-size: 10px;
     padding: 4px 8px;
     color: rgba(0, 0, 0, 0.85);
     background-color: #fff;
@@ -66,7 +66,7 @@ button:active {
     display: flex;
     align-items: center;
     height: 50px;
-    font-size: 14px;
+    font-size: 10px;
 }
 .comment-voting {
     width: 20px;
@@ -80,7 +80,7 @@ button:active {
     height: 50%;
     padding: 0;
     border: 0;
-    font-size: 10px;
+    font-size: 6px;
 }
 .comment-info {
     color: rgba(0, 0, 0, 0.5);
@@ -139,17 +139,17 @@ details.comment:not([open]) .comment-heading {
 .comment-heading::after {
     display: inline-block;
     position: absolute;
-    right: 5px;
+    right: -50px;
     align-self: center;
-    font-size: 12px;
+    font-size: 8px;
     color: rgba(0, 0, 0, 0.55);
     margin-top: -20px;
 }
 details.comment[open] .comment-heading::after {
-    content: "{% if lang == 'fr' %}Cliquer pour masquer{% else %}Click to hide{% endif %}";
+    content: "{% if lang == 'fr' %}Masquer{% else %}Hide{% endif %}";
 }
 details.comment:not([open]) .comment-heading::after {
-    content: "{% if lang == 'fr' %}Cliquer pour afficher{% else %}Click to show{% endif %}";
+    content: "{% if lang == 'fr' %}Afficher{% else %}Show{% endif %}";
 }
 
 /* Adjustment for Internet Explorer */

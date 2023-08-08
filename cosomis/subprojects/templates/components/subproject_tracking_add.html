@@ -6,8 +6,9 @@
 
 
 
-    <button type="button" class="font-weight-bold" id="add_subproject_tracking_step">{% translate 'Add Step' %} <i
-                                class="fas fa-plus"></i></button>
+    <button type="button" class="font-weight-bold" id="add_subproject_tracking_step">
+        <i class="fas fa-plus"></i> {% translate 'step' %}
+    </button>
 
 
 
@@ -23,8 +24,9 @@
             <summary>
                 <div class="comment-heading">
                     <div>
-                        <button type="button">
-                            <span aria-hidden="true">&bull;</span>
+                        <button type="button" class="subproject_step_delete" 
+                            id="{% url 'object_deletion_form' subproject_step.id 'SubprojectStep' %}">
+                            <span aria-hidden="true"><i class="fas fa-times text-danger"></i></span>
                         </button>
                     </div>
                     <div class="comment-info">
@@ -44,8 +46,9 @@
                     {% if subproject_step.description %}{{ subproject_step.description }}{% endif %}
                 </p>
                 {% if subproject_step.step.has_levels %}
-                    <button type="button" class="add_evolution_level" id="add_evolution_level_{{ subproject_step.id }}">
-                        {% translate "Add an evolution level" %}
+                    <button type="button" class="add_evolution_level" 
+                        id="add_evolution_level_{{ subproject_step.id }}">
+                        <i class="fas fa-plus"></i> {% translate "level" %}
                     </button>
                 {% endif %}
             </div>
@@ -63,8 +66,9 @@
                     <summary>
                         <div class="comment-heading">
                             <div>
-                                <button type="button">
-                                    <span aria-hidden="true">&bull;</span>
+                                <button type="button" class="subproject_step_delete" 
+                                    id="{% url 'object_deletion_form' level.id 'Level' %}">
+                                    <span aria-hidden="true"><i class="fas fa-times text-danger"></i></span>
                                 </button>
                             </div>
                             <div class="comment-info">

@@ -12,7 +12,7 @@ from django.forms.models import model_to_dict
 
 from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin, ModalFormMixin
 from subprojects.views import SubprojectMixin
-from subprojects.forms import SubprojectAddStepForm, SubprojectAddLevelForm
+from subprojects.forms import SubprojectAddStepForm, SubprojectAddLevelForm #, DeleteConfirmForm
 from subprojects.models import SubprojectStep, Level
 
 class SubprojectFormMixin(SubprojectMixin, generic.FormView):
@@ -115,7 +115,7 @@ class SubprojectStepAddTemplateView(SubprojectMixin, AJAXRequestMixin, LoginRequ
         context['subproject_steps'] = self.subproject.get_subproject_steps()
         return context
     
-
+#Add
 class SubprojectStepAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredMixin, JSONResponseMixin,
                                       SubprojectFormMixin):
     model = SubprojectStep
@@ -207,3 +207,49 @@ class SubprojectLevelAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequired
 
         context = {'msg': render(self.request, 'common/messages.html').content.decode("utf-8")}
         return self.render_to_json_response(context, safe=False)
+#And Add
+
+
+
+# #Delete
+# class SubprojectStepDeleteFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredMixin, JSONResponseMixin,
+#                                       generic.FormView):
+#     form_class = DeleteConfirmForm
+#     id_form = "subproject_deletion_step_form"
+#     title = _('Confirm deletion')
+#     submit_button = _('Confirm')
+#     form_class_color = 'danger'
+#     # permissions = ('read',)
+
+#     def check_permissions(self):
+#         super().check_permissions()
+
+#     def post(self, request, *args, **kwargs):
+#         form = None
+#         if self.kwargs.get('subproject_step_deletion_id'):
+#             if self.kwargs.get('type') == "Step":
+#                 obj = SubprojectStep.objects.get(id=self.kwargs['subproject_step_deletion_id'])
+#             elif self.kwargs.get('type') == "Level":
+#                 obj = Level.objects.get(id=self.kwargs['subproject_step_deletion_id'])
+            
+#             form = DeleteConfirmForm(request.POST)
+
+#             if form and form.is_valid():
+#                 return self._delete_object(obj)
+        
+#         msg = _("An error has occurred...")
+#         messages.add_message(self.request, messages.ERROR, msg, extra_tags='error')
+
+#         context = {'msg': render(self.request, 'common/messages.html').content.decode("utf-8")}
+#         return self.render_to_json_response(context, safe=False)
+    
+#     def _delete_object(self, obj):
+        
+#         # obj.delete()
+        
+#         msg = _("The Step was successfully removed.")
+#         messages.add_message(self.request, messages.SUCCESS, msg, extra_tags='success')
+
+#         context = {'msg': render(self.request, 'common/messages.html').content.decode("utf-8")}
+#         return self.render_to_json_response(context, safe=False)
+# #And Delete
