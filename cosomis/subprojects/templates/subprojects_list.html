@@ -84,8 +84,11 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                    <b>{{ total_without_link }}/{{ total }} {% translate 'Subprojects' %}</b>
-
+                    {% comment %} <b>{{ total_without_link }}/{{ total }} {% translate 'Subprojects' %}</b> {% endcomment %}
+                    
+                    <b>{{ total_subproject }} ==> {% translate 'Subprojects only' %}</b><br />
+                    <b>{{ total }} ==> {% translate 'Includes all infrastructures' %}</b><br />
+                    <b>{{ total_without_link }} ==> {% translate 'No duplication of ongoing sub-projects (such as (tracks, electrification, etc.) in several cantons)' %}</b><br />
                     
 
                     <nav>

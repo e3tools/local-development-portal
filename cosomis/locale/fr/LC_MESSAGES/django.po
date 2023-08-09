@@ -1643,5 +1643,22 @@ msgstr "Groupe des éleveurs/Agriculteurs"
 msgid "Ethnic minority group"
 msgstr "Groupe des minorités ethniques"
 
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Subproject type designation (Subproject or Infrastructure)"
+msgstr "Type désignatif de sous-projet (Sous-projet ou Infrastructure)"
 
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Infrastructure"
+msgstr "Infrastructure"
 
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Includes all infrastructures"
+msgstr "Inclut toutes les infrastructures"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Subprojects only"
+msgstr "Sous-projers uniquement"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "No duplication of ongoing sub-projects (such as (tracks, electrification, etc.) in several cantons)"
+msgstr "Sans duplication des sous-projets continus (comme les (Pistes, électrifications, etc) dans plusieurs canton)"

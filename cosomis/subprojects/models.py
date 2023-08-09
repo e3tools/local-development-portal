@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 
 from administrativelevels.models import AdministrativeLevel, CVD
+from subprojects import SUB_PROJECT_TYPE_DESIGNATION
 
 
 class BaseModel(models.Model):
@@ -35,6 +36,7 @@ class Subproject(BaseModel):
     lot = models.CharField(max_length=2, null=True, blank=True, verbose_name=_("Lot"))
     subproject_sector = models.CharField(max_length=100, verbose_name=_("Subproject sector"))
     type_of_subproject = models.CharField(max_length=100, verbose_name=_("Type of subproject"))
+    subproject_type_designation = models.CharField(max_length=100, choices=SUB_PROJECT_TYPE_DESIGNATION, default='Subproject', verbose_name=_("Subproject type designation (Subproject or Infrastructure)"))
     full_title_of_approved_subproject = models.TextField(verbose_name=_("Full title of approved sub-project (description)"))
     works_type = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Works type"))
     estimated_cost = models.FloatField(null=True, blank=True, verbose_name=_("Estimated cost"))
