@@ -129,3 +129,19 @@ def save_facilitator_assignment_in_mis(project_id: int, develop_mode=False, trai
                         print(exc)
                         input()
     print(">>> Done!")
+
+
+def link_infrastures_to_subproject():
+    print("Start !")
+    subprojects = Subproject.objects.all().order_by('number', 'joint_subproject_number')
+    for subproject in subprojects:
+        for _subproject in subprojects:
+            if subproject.id != _subproject.id and \
+                subproject.number < _subproject.number and \
+                    subproject.joint_subproject_number == _subproject.joint_subproject_number:
+                print(_subproject.full_title_of_approved_subproject)
+                _subproject.link_to_subproject = subproject
+                _subproject.subproject_type_designation = "Infrastructure"
+                _subproject.save()
+    print()
+    print("Done !")
