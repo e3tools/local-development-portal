@@ -16,8 +16,8 @@
             </div>
             <div class="float-right">
                 <span href="#" class="font-weight-bold" style="background-color: #ffac67; color: white; padding: 7px; border-radius: 5px;">
-                    {% if object.current_level_of_physical_realization_of_the_work %}
-                        {{ object.current_level_of_physical_realization_of_the_work }}
+                    {% if object.get_current_subproject_step_and_level %}
+                        {{ object.get_current_subproject_step_and_level }}
                     {% else %}
                         {% translate 'No start' %}
                     {% endif %}
@@ -33,7 +33,7 @@
 
         <div class="row">
 
-            <div class="col-8">
+            <div class="col-{% if object.has_subprojects_linked %}7{% else %}12{% endif %}">
                 <div class="card">
                     <div class="card-body">
 
@@ -42,7 +42,16 @@
                                 <h5 class="font-weight-bold text-sm">{% translate 'Subproject Description' %}</h5>
                             </div>
                             <div class="float-right">
-                                <a href="{% url 'subprojects:update' object.pk %}" class="font-weight-bold">{% translate 'Update' %}</a>
+                                {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
+                                    <a href="{% url 'subprojects:update' object.pk %}" class="float-right font-weight-bold">{% translate 'Update' %}</a>
+                                    {% if not object.has_subprojects_linked and not object.link_to_subproject %}
+                                    <a href="{% url 'subprojects:create_infra_or_link_subproject' object.pk %}" class="font-weight-bold" style="font-size: 10px !important;">{% translate 'Add an infrastructure or a subproject linking to this sub-project' %}</a>
+                                    {% endif %}
+                                {% endif %}
+                                {% if object.link_to_subproject %}
+                                <br />
+                                <a href="{% url 'subprojects:detail' object.link_to_subproject.pk %}" class="float-right font-weight-bold">{% translate 'View subproject details' %}</a>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -94,7 +103,7 @@
                         </div>
 
                         <div class="clearfix pb-1">
-                            <span class="font-weight-bold">{% translate 'Type' %}: </span><span>{{ object.type_of_subproject }}</span>
+                            <span class="font-weight-bold">{% translate 'Type' %}: </span><span>{{ object.type_of_subproject }} | {{ object.subproject_type_designation }}</span>
                         </div>
 
                         <div class="clearfix pb-1">
@@ -114,71 +123,78 @@
                     </div>
                 </div>
             </div>
+
+
             
-            <div class="col-4">
+            {% if object.has_subprojects_linked %}
+            <div class="col-5">
                 <div class="card">
                     <div class="card-body">
-                        {% comment %} {% if object.get_all_projects or object.get_all_financiers %}
-                        <div class="clearfix pb-1">
-                            <span class="font-weight-bold">{% translate 'Financed by' %}: </span>
-                            <span>
-                                {% for project in object.get_all_projects %}
-                                    {{ project.name }}
-                                    {% if project.financier %}({{ project.financier }}){% endif %}
-                                {% endfor %}
-                                {% if object.get_all_projects and object.get_all_financiers %} ; {% endif %}
-                                {% for financier in object.get_all_financiers %}
-                                    {{ financier.name }}
-                                {% endfor %}
-                            </span>
-                        </div>
-                        {% endif %} {% endcomment %}
-                        {% if object.get_all_projects or object.get_all_financiers %}
-                        <div class="clearfix pb-1">
-                            <span class="font-weight-bold">{% translate 'Financed by' %}: </span>
-                            <span>
-                                {% if object.get_all_projects %}
-                                    {% for project in object.get_all_projects %}
-                                        {% if project.financier %}{{ project.financier }}{% endif %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% for financier in object.get_all_financiers %}
-                                        {{ financier.name }}
-                                    {% endfor %}
+
+                        <div class="clearfix">
+                                {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
+                                <a href="{% url 'subprojects:create_infra_or_link_subproject' object.pk %}" class="font-weight-bold" style="font-size: 10px !important;">{% translate 'Add an infrastructure or a subproject linking to this sub-project' %}</a>
+                                <br /><br />
                                 {% endif %}
-                            </span>
-                        </div>
-                        {% endif %}
 
-                        {% if object.get_all_projects %}
-                        <div class="clearfix pb-1">
-                            <span class="font-weight-bold">{% translate 'Project' %}: </span>
-                            <span>
-                                {% for project in object.get_all_projects %}
-                                    {{ project.name }}
-                                    {% if project.financier %}({{ project.financier }}){% endif %}
-                                {% endfor %}
-                            </span>
+                                <div>
+                                    <div>
+                                        {% if object.get_infrastructures_linked|length > 1 %}
+                                            {% translate 'Infrastructures' %} : 
+                                            <br />
+                                        {% elif object.get_infrastructures_linked|length == 1 %}
+                                            {% translate 'Infrastructure' %} : 
+                                        {% endif %}
+                                        {% for sub_sub in object.get_infrastructures_linked %}
+                                            <a href="{% url 'subprojects:update' sub_sub.pk %}" class="font-weight-bold" style="font-size: 9px !important;">{{ forloop.counter }}-/ N{{ sub_sub.number }}.{{ sub_sub.joint_subproject_number }} {{ sub_sub.type_of_subproject }}</a>
+                                              &nbsp; 
+                                            {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
+                                            <a href="{% url 'subprojects:update' sub_sub.pk %}" style="font-size: 9px !important;"
+                                                 title="{% translate 'Edit' %}">
+                                                <i class="fa fa-edit"></i>
+                                            </a> &nbsp; 
+                                            {% endif %}
+                                            <a href="{% url 'subprojects:detail' sub_sub.pk %}" style="font-size: 9px !important;"
+                                                title="{% translate 'View details' %}" target="_blank">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <br />
+                                        {% endfor %}
+                                    </div>
+                                    <div>
+                                        {% if object.get_subprojects_linked|length > 1 %}
+                                            {% translate 'Subprojects' %} : 
+                                            <br />
+                                        {% elif object.get_subprojects_linked|length == 1 %}
+                                            {% translate 'Subproject' %} : 
+                                        {% endif %}
+                                        {% for sub_sub in object.get_subprojects_linked %}
+                                            <a href="{% url 'subprojects:update' sub_sub.pk %}" class="font-weight-bold" style="font-size: 9px !important;">{{ forloop.counter }}-/ N{{ sub_sub.number }}.{{ sub_sub.joint_subproject_number }} {{ sub_sub.type_of_subproject }}</a>
+                                             &nbsp; 
+                                            {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
+                                            <a href="{% url 'subprojects:update' sub_sub.pk %}" style="font-size: 9px !important;"
+                                                 title="{% translate 'Edit' %}">
+                                                <i class="fa fa-edit"></i>
+                                            </a> &nbsp; 
+                                            {% endif %}
+                                            <a href="{% url 'subprojects:detail' sub_sub.pk %}" style="font-size: 9px !important;"
+                                                title="{% translate 'View details' %}" target="_blank">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <br />
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
                         </div>
-                        {% endif %}
-
-                        <div class="clearfix pb-1">
-                            <span class="font-weight-bold">{% translate 'Name of company awarded work contract (ET)' %}: </span>
-                            <span>{% if object.name_of_the_awarded_company_works_companies %}{{ object.name_of_the_awarded_company_works_companies }}{% else %}-{% endif %}</span>
-                        </div>
-
-                        <div class="clearfix pb-1">
-                            <span class="font-weight-bold">{% translate 'Date contract signed by works companies (ET)' %}: </span>
-                            <span>{% if object.date_signature_contract_work_companies %}{{ object.date_signature_contract_work_companies }}{% else %}-{% endif %}</span>
-                        </div>
-
-                        {% comment %} <div class="clearfix pb-1">
-                            <span class="font-weight-bold">{% translate 'Estimated cost' %}: </span><span>{{ object.get_estimated_cost_str }}</span>
-                        </div> {% endcomment %}
 
                     </div>
                 </div>
             </div>
+            {% endif %}
+
+
+            
 
         </div>
 
@@ -405,6 +421,72 @@
             <div class="card-footer d-flex justify-content-center"></div>
             <div class="overlay" id="load-subproject-step-add-spin">
                 <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+            </div>
+        </div>
+
+
+
+
+        <div class="card">
+            <div class="card-body">
+                {% comment %} {% if object.get_all_projects or object.get_all_financiers %}
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Financed by' %}: </span>
+                    <span>
+                        {% for project in object.get_all_projects %}
+                            {{ project.name }}
+                            {% if project.financier %}({{ project.financier }}){% endif %}
+                        {% endfor %}
+                        {% if object.get_all_projects and object.get_all_financiers %} ; {% endif %}
+                        {% for financier in object.get_all_financiers %}
+                            {{ financier.name }}
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %} {% endcomment %}
+                {% if object.get_all_projects or object.get_all_financiers %}
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Financed by' %}: </span>
+                    <span>
+                        {% if object.get_all_projects %}
+                            {% for project in object.get_all_projects %}
+                                {% if project.financier %}{{ project.financier }}{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% for financier in object.get_all_financiers %}
+                                {{ financier.name }}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if object.get_all_projects %}
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Project' %}: </span>
+                    <span>
+                        {% for project in object.get_all_projects %}
+                            {{ project.name }}
+                            {% if project.financier %}({{ project.financier }}){% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Name of company awarded work contract (ET)' %}: </span>
+                    <span>{% if object.name_of_the_awarded_company_works_companies %}{{ object.name_of_the_awarded_company_works_companies }}{% else %}-{% endif %}</span>
+                </div>
+
+                <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Date contract signed by works companies (ET)' %}: </span>
+                    <span>{% if object.date_signature_contract_work_companies %}{{ object.date_signature_contract_work_companies }}{% else %}-{% endif %}</span>
+                </div>
+
+                {% comment %} <div class="clearfix pb-1">
+                    <span class="font-weight-bold">{% translate 'Estimated cost' %}: </span><span>{{ object.get_estimated_cost_str }}</span>
+                </div> {% endcomment %}
+
             </div>
         </div>
 

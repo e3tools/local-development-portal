@@ -6,6 +6,7 @@ class PageMixin(object):
     active_level1 = None
     active_level2 = None
     breadcrumb = None
+    form_mixin = None
 
     def get_context_data(self, **kwargs):
         ctx = super(PageMixin, self).get_context_data(**kwargs)
@@ -13,6 +14,7 @@ class PageMixin(object):
         ctx.setdefault('active_level1', self.active_level1)
         ctx.setdefault('active_level2', self.active_level2)
         ctx.setdefault('breadcrumb', self.breadcrumb)
+        ctx.setdefault('form_mixin', self.form_mixin)
         return ctx
 
 

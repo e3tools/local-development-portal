@@ -9,6 +9,7 @@ urlpatterns = [
     path('map', views.SubprojectsMapView.as_view(), name='map'),
     path('<int:pk>', views.SubprojectDetailView.as_view(), name='detail'),
     path('create', views.SubprojectCreateView.as_view(), name='create'),
+    path('create-infra-or-link-subproject/<int:subproject_id>/', views.SubSubprojectCreateView.as_view(), name='create_infra_or_link_subproject'),
     path('update/<int:pk>/', views.SubprojectUpdateView.as_view(), name='update'),
     path('vulnerable-group/create', views.VulnerableGroupCreateView.as_view(), name='vulnerable_group_create'),
     path('image/<int:image_id>/delete', views.subprojectimage_delete, name='subproject_image_delete'),

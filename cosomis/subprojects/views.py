@@ -20,7 +20,7 @@ from subprojects import functions as subprojects_functions
 from administrativelevels.libraries import download_file
 from usermanager.permissions import (
     CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
-    AdminPermissionRequiredMixin
+    AdminPermissionRequiredMixin, InfraPermissionRequiredMixin
     )
 
 
@@ -176,7 +176,7 @@ class SubprojectDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 
-class SubprojectCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, generic.CreateView):
+class SubprojectCreateView(PageMixin, LoginRequiredMixin, InfraPermissionRequiredMixin, generic.CreateView):
     model = Subproject
     template_name = 'subproject_create.html'
     context_object_name = 'subproject'
@@ -194,17 +194,29 @@ class SubprojectCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequire
     ]
  
     form_class = SubprojectForm # specify the class form to be displayed
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.form_mixin:
+            context['form'] = self.form_mixin
+        else:
+            context['form'] = SubprojectForm()
+        return context
 
     def post(self, request, *args, **kwargs):
         form = SubprojectForm(request.POST)
         if form.is_valid():
             subproject = form.save()
+            if subproject.location_subproject_realized and subproject.location_subproject_realized.cvd:
+                subproject.cvd = subproject.location_subproject_realized.cvd
             subproject.save()
+            if subproject.id:
+                return redirect('subprojects:detail', pk=subproject.id)
             return redirect('subprojects:list')
+        self.form_mixin = form
         return super(SubprojectCreateView, self).get(request, *args, **kwargs)
     
 
-class SubprojectUpdateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, generic.UpdateView):
+class SubprojectUpdateView(PageMixin, LoginRequiredMixin, InfraPermissionRequiredMixin, generic.UpdateView):
     model = Subproject
     template_name = 'subproject_create.html'
     context_object_name = 'subproject'
@@ -224,17 +236,84 @@ class SubprojectUpdateView(PageMixin, LoginRequiredMixin, AdminPermissionRequire
     form_class = SubprojectForm # specify the class form to be displayed
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = SubprojectForm(instance=self.get_object())
+        _object = self.get_object()
+        
+        if _object.subproject_type_designation == "Infrastructure":
+            context['title'] = _('Update the infrastructure')
+        elif _object.link_to_subproject and _object.subproject_type_designation == "Subproject":
+            context['title'] = _('Update the subproject')
+
+        if self.form_mixin:
+            context['form'] = self.form_mixin
+        else:
+            context['form'] = SubprojectForm(instance=_object)
         return context
     def post(self, request, *args, **kwargs):
         form = SubprojectForm(request.POST, instance=self.get_object())
         if form.is_valid():
             subproject = form.save()
+            if subproject.location_subproject_realized and subproject.location_subproject_realized.cvd:
+                subproject.cvd = subproject.location_subproject_realized.cvd
             subproject.save()
-            return redirect('subprojects:list')
+            return redirect('subprojects:detail', pk=subproject.id)
+        self.form_mixin = form
         return super(SubprojectCreateView, self).get(request, *args, **kwargs)
     
+class SubSubprojectCreateView(PageMixin, LoginRequiredMixin, InfraPermissionRequiredMixin, generic.CreateView):
+    model = Subproject
+    template_name = 'subproject_create.html'
+    context_object_name = 'subproject'
+    title = _('Create Subproject')
+    active_level1 = 'subprojects'
+    breadcrumb = [
+        {
+            'url': reverse_lazy('subprojects:list'),
+            'title': _('subprojects')
+        },
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+ 
+    form_class = SubprojectForm # specify the class form to be displayed
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title']= _('Record an infrastructure or a subproject')
+        try:
+            if self.form_mixin:
+                context['form'] = self.form_mixin
+            else:
+                obj = Subproject.objects.get(id=self.kwargs['subproject_id'])
+                list_of_beneficiary_villages = obj.list_of_beneficiary_villages.all()
+                if not obj.location_subproject_realized:
+                    list_of_beneficiary_villages = []
+                    
+                obj.id = None
+                obj.pk = None
+                obj.canton = None
+                obj.type_of_subproject = None
+                obj.link_to_subproject = Subproject.objects.get(id=self.kwargs['subproject_id'])
+                
+                context['form'] = SubprojectForm(initial={
+                    "list_of_beneficiary_villages": list_of_beneficiary_villages
+                }, instance=obj)
+        except:
+            raise Http404
+        
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = SubprojectForm(request.POST)
+        if form.is_valid():
+            subproject = form.save()
+            if subproject.location_subproject_realized and subproject.location_subproject_realized.cvd:
+                subproject.cvd = subproject.location_subproject_realized.cvd
+            subproject.save()
+            return redirect('subprojects:detail', pk=subproject.link_to_subproject.id)
+        self.form_mixin = form
+        return super(SubSubprojectCreateView, self).get(request, *args, **kwargs)
     
 
 

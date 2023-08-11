@@ -11,6 +11,18 @@
                             <a class="btn btn-primary" href="{% url 'subprojects:list' %}">{% translate 'List Subprojects' %}</a>
                         </div>
                         <div class="btn-group pull-right">
+                            {% if object.pk %}
+                            <a class="btn btn-primary" 
+                                {% if object.link_to_subproject %}
+                                href="{% url 'subprojects:detail' object.link_to_subproject.pk %}"
+                                {% else %}
+                                href="{% url 'subprojects:detail' object.pk %}"
+                                {% endif %}
+                                >
+                                {% translate 'View details' %}
+                            </a>
+                            &nbsp; &nbsp;
+                            {% endif %}
                             <a class="btn btn-primary" href="{% url 'subprojects:map' %}">{% translate 'Map View' %}</a>
                         </div>
                     </div>
@@ -20,6 +32,22 @@
                         <div class="col-9">
                             <form method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
+                                
+                                {% if form_mixin.errors %}
+                                    {% for field in form_mixin %}
+                                        {% for error in field.errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>{{ error|escape }}</strong>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form_mixin.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+
                                 
                                 {% for field in form %}
                                     <div class="form-group row">
@@ -124,4 +152,103 @@
             
         });
     </script>
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+        function set_datas(element, data){
+            $(element).next().find('b[role="presentation"]').hide();
+            $(element).next().find('.select2-selection__arrow').append(
+                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+
+            let options = '';
+            $.each(data, function (index, value) {
+                let option = '<option value="' + value.id + '" selected>';
+                
+                option += value.name + '</option>';
+                options += option
+
+            });
+            element.html(options);
+            element.trigger('change');
+            let element_val = element.val();
+            if (element_val !== '') {
+                element.val(element_val)
+            }
+        }
+
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+            let child = $("#id_list_of_beneficiary_villages");
+            let subproject_id = null;
+            
+            {% if object or subproject %}
+            subproject_id = "{{ object.id }}";
+            {% else %}
+            // child.html('');
+            {% endif %}
+
+            $(document).on("change", "#id_canton", function () {
+                if($(this).val()){
+                    $(this).attr('disabled', true);
+                    $.ajax({
+                        type: 'GET',
+                        url: "{% url 'administrativelevels:utils:get_choices_for_next_administrative_level_no_condition' %}",
+                        data: {
+                            parent_id: $(this).val()
+                        },
+                        success: function (data) {
+                            if (data.length > 0) {
+                                set_datas(child, data);
+                            }
+                        },
+                        error: function (data) {
+                            alert(error_server_message + "Error " + data.status);
+                            $("#id_canton").attr('disabled', false);
+                        }
+                    }).done(function () {
+                            $("#id_canton").attr('disabled', false);
+                        }
+                    );
+                }else{
+                    set_datas(child, []);
+                }
+            });
+
+
+            $(document).on("change", "#id_location_subproject_realized", function () {
+                if($(this).val()){
+                    $(this).attr('disabled', true);
+                    $.ajax({
+                        type: 'GET',
+                        url: "{% url 'administrativelevels:utils:get_administrative_level_for_cvd_by_adl' %}",
+                        data: {
+                            administrative_level_id: $(this).val()
+                        },
+                        success: function (data) {
+                            if (data.length > 0) {
+                                set_datas(child, data);
+                            }
+                        },
+                        error: function (data) {
+                            alert(error_server_message + "Error " + data.status);
+                            $("#id_location_subproject_realized").attr('disabled', false);
+                        }
+                    }).done(function () {
+                            $("#id_location_subproject_realized").attr('disabled', false);
+                        }
+                    );
+                }else{
+                    set_datas(child, []);
+                }
+            });
+            
+        });
+    </script>
+
 {% endblock %}

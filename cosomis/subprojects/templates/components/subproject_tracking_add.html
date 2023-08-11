@@ -5,21 +5,22 @@
 
 
 
-
+    {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
     <button type="button" class="font-weight-bold" id="add_subproject_tracking_step">
         <i class="fas fa-plus"></i> {% translate 'step' %}
     </button>
-
+    {% endif %}
 
 
 
 
     <div class="comment-thread">
+        {% with subproject_steps|length as subproject_steps_length %}
         {% for subproject_step in subproject_steps %}
         <!-- Comment -->
         <details open class="comment" id="comment-{{ subproject_step.id }}">
             <a href="#comment-{{ subproject_step.id }}" class="comment-border-link">
-                <span class="sr-only">{{ subproject_step.ranking }}-{{ subproject_step }}</span>
+                <span class="sr-only">{{ subproject_steps_length|subtract:forloop.counter0 }}-{{ subproject_step }}</span>
             </a>
             <summary>
                 <div class="comment-heading">
@@ -32,7 +33,7 @@
                     <div class="comment-info">
                         <a href="#!" class="comment-author subproject_step" 
                             id="{% url 'subprojects:step:subproject_step_update_form' subproject_step.subproject.id subproject_step.id %}">
-                            {{ subproject_step.ranking }}-{{ subproject_step }}
+                            {{ subproject_steps_length|subtract:forloop.counter0 }}-{{ subproject_step }}
                         </a>
                         <p class="m-0">
                             {% translate "Begin" %} &bull; {{ subproject_step.begin }}
@@ -46,10 +47,12 @@
                     {% if subproject_step.description %}{{ subproject_step.description }}{% endif %}
                 </p>
                 {% if subproject_step.step.has_levels %}
+                    {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
                     <button type="button" class="add_evolution_level" 
                         id="add_evolution_level_{{ subproject_step.id }}">
                         <i class="fas fa-plus"></i> {% translate "level" %}
                     </button>
+                    {% endif %}
                 {% endif %}
             </div>
 
@@ -94,14 +97,18 @@
                 <!-- Comment end -->
                 {% endfor %}
             </div>
-             {% endif %}
-
+            {% endif %}
 
 
 
         </details>
         <!-- Comment end -->
+        {% empty %}
+            <div class="font-weight-bold d-flex justify-content-center text-danger" >
+                <p>{% translate 'Empty!' %}</p>
+            </div>
         {% endfor %}
+        {% endwith %}
     </div>
 
 

@@ -5,7 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 
 from administrativelevels.models import AdministrativeLevel, CVD
-from subprojects import SUB_PROJECT_TYPE_DESIGNATION
+from subprojects import SUB_PROJECT_TYPE_DESIGNATION, SUB_PROJECT_SECTORS, TYPES_OF_SUB_PROJECT
+from cosomis.customers_fields import *
 
 
 class BaseModel(models.Model):
@@ -22,12 +23,14 @@ class BaseModel(models.Model):
 
 # Create your models here.
 class Subproject(BaseModel):
-    cvd = models.ForeignKey(CVD, null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("CVD"))
     location_subproject_realized = models.ForeignKey(AdministrativeLevel, null=True, blank=True, on_delete=models.CASCADE, related_name='location_subproject_realized', verbose_name=_("Subproject location"))
+    cvd = models.ForeignKey(CVD, null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("CVD"))
+    # cvds = models.ManyToManyField(CVD, default=[], blank=True, related_name="cvds_subprojects", verbose_name=_("Beneficiaries CVD"))
+    list_of_beneficiary_villages = models.ManyToManyField(AdministrativeLevel, default=[], blank=True, related_name="vilages_subprojects", verbose_name=_("Beneficiaries villages"))
     canton = models.ForeignKey(AdministrativeLevel, null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Canton")) #canton subprojects (rural track)
-    link_to_subproject = models.ForeignKey('Subproject', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Linked to a sub-project")) #To link the subprojects that the cantons or CVD link to make
     list_of_villages_crossed_by_the_track_or_electrification = models.ManyToManyField(AdministrativeLevel, default=[], blank=True, related_name="cantonal_subprojects", verbose_name=_("List of villages where the runway or electrification crosses"))
-
+    link_to_subproject = models.ForeignKey('Subproject', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Linked to a sub-project")) #To link the subprojects that the cantons or CVD link to make
+    
     number = models.IntegerField(null=True, blank=True, verbose_name=_("Number unique to each sub-project or infrastructure"))
     joint_subproject_number = models.IntegerField(null=True, blank=True, verbose_name=_("Common sub-project number"))
     intervention_unit = models.IntegerField(null=True, blank=True, verbose_name=_("Intervention unit"))
@@ -102,6 +105,19 @@ class Subproject(BaseModel):
     breeders_farmers_group = models.BooleanField(null=True, blank=True, verbose_name=_("Breeders farmers group"))
     ethnic_minority_group = models.BooleanField(null=True, blank=True, verbose_name=_("Ethnic minority group"))
 
+
+    class Meta:
+        unique_together = [
+            [
+                'full_title_of_approved_subproject', 'location_subproject_realized', 
+                'subproject_sector', 'type_of_subproject'
+            ], 
+            ['canton', 'full_title_of_approved_subproject'],
+            ['number']
+        ]
+
+        
+
     def get_cantons_names(self):
         if self.location_subproject_realized:
             return self.location_subproject_realized.parent.name
@@ -167,7 +183,21 @@ class Subproject(BaseModel):
         
         return location
 
-
+    def get_all_subprojects_linked(self):
+        return self.subproject_set.get_queryset()
+    
+    @property
+    def has_subprojects_linked(self):
+        if self.get_all_subprojects_linked():
+            return True
+        return False
+    
+    def get_infrastructures_linked(self):
+        return self.get_all_subprojects_linked().filter(subproject_type_designation="Infrastructure")
+    
+    def get_subprojects_linked(self):
+        return self.get_all_subprojects_linked().filter(subproject_type_designation="Subproject")
+    
     def get_estimated_cost(self):
         estimated_cost = self.estimated_cost
         for o in self.subproject_set.get_queryset():
@@ -182,9 +212,9 @@ class Subproject(BaseModel):
         if subproject_link_objects:
             for o in self.subproject_set.get_queryset():
                 estimated_cost_str += " + " + locale.currency(o.estimated_cost, grouping=True).__str__()
-            return locale.currency(self.get_estimated_cost(), grouping=True).__str__() + f' ({estimated_cost_str})'
+            return (locale.currency(self.get_estimated_cost(), grouping=True).__str__() + f' ({estimated_cost_str})').replace("$", "XOF")
         
-        return estimated_cost_str.replace("$", "")
+        return estimated_cost_str.replace("$", "XOF")
 
 
     def get_all_images(self, order=False):
@@ -220,16 +250,35 @@ class Subproject(BaseModel):
     
     def get_subproject_steps(self, order=True):
         if order:
-            return sorted(self.subprojectstep_set.get_queryset(), key=lambda o: o.begin, reverse=True)
+            return self.subprojectstep_set.get_queryset().order_by("-begin", "-ranking")
+            #sorted(self.subprojectstep_set.get_queryset(), key=lambda o: o.begin, reverse=True) #self.subprojectstep_set.get_queryset().order_by("-ranking") #
         return self.subprojectstep_set.get_queryset()
     
+    def get_current_subproject_step(self):
+        return self.get_subproject_steps().first()
+    
+    def get_current_subproject_step_and_level(self):
+        step = self.get_current_subproject_step()
+        if step and step.wording == "En cours":
+            level = step.get_levels().first()
+            if level:
+                return level
+        if step:
+            return step
+        return self.current_level_of_physical_realization_of_the_work
+    
+    def check_step(self, step):
+        for s in self.subprojectstep_set.get_queryset():
+            if s.ranking == step.ranking:
+                return True
+        return False
 
     def __str__(self):
         return self.full_title_of_approved_subproject
 
 class _Step(BaseModel):
     wording = models.CharField(max_length=200, verbose_name=_("Wording"))
-    percent = models.FloatField(null=True, blank=True, verbose_name=_("Percent"))
+    percent = CustomerFloatRangeField(null=True, blank=True, verbose_name=_("Percent"), min_value=0, max_value=100)
     description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
     ranking = models.IntegerField(default=0, verbose_name=_("Ranking"))
     amount_spent_at_this_step = models.FloatField(null=True, blank=True, verbose_name=_("Amount spent at this stage"))
@@ -256,9 +305,16 @@ class SubprojectStep(_Step):
     
     def get_levels(self, order=True):
         if order:
-            return sorted(self.level_set.get_queryset(), key=lambda o: o.begin, reverse=True)
+            return self.level_set.get_queryset().order_by("-begin")
+            #sorted(self.level_set.get_queryset(), key=lambda o: o.begin, reverse=True)
         return self.level_set.get_queryset()
     
+    def check_step(self, wording):
+        for l in self.level_set.get_queryset():
+            if l.wording == wording:
+                return True
+        return False
+        
     
     def __str__(self):
         percent = self.percent
@@ -269,7 +325,7 @@ class SubprojectStep(_Step):
 
 class Level(_Step):
     subproject_step = models.ForeignKey(SubprojectStep, on_delete=models.CASCADE, verbose_name=_("Step"))
-    percent = models.FloatField(verbose_name=_("Percent"))
+    percent = CustomerFloatRangeField(verbose_name=_("Percent"), min_value=0, max_value=100)
     begin = models.DateField(verbose_name=_("Begin"))
     end = models.DateField(null=True, blank=True, verbose_name=_("End"))
 

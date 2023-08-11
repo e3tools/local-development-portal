@@ -5,6 +5,31 @@ from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin
 from administrativelevels.models import AdministrativeLevel
 
 
+class GetAdministrativeLevelForCVDByADLView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
+    def get(self, request, *args, **kwargs):
+        adl_id = request.GET.get('administrative_level_id')
+
+        objects = AdministrativeLevel.objects.filter(id=int(adl_id))
+        d = []
+        if objects:
+            obj = objects.first()
+            if obj.cvd:
+                d = [{'id': elt.id, 'name': elt.name} for elt in obj.cvd.get_villages()]
+
+        return self.render_to_json_response(sorted(d, key=lambda o: o['name']), safe=False)
+    
+
+class GetChoicesForNextAdministrativeLevelNoConditionView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
+    def get(self, request, *args, **kwargs):
+        parent_id = request.GET.get('parent_id')
+
+        data = AdministrativeLevel.objects.filter(parent_id=int(parent_id))
+
+        d = [{'id': elt.id, 'name': elt.name} for elt in data]
+
+        return self.render_to_json_response(sorted(d, key=lambda o: o['name']), safe=False)
+    
+
 class GetChoicesForNextAdministrativeLevelView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
     def get(self, request, *args, **kwargs):
         parent_id = request.GET.get('parent_id')

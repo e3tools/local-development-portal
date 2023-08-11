@@ -1357,7 +1357,7 @@ msgstr "Mois"
 
 #: .\subprojects\components\subproject_tracking_graph.html
 msgid "Please check this box and click the confirmation button for validation."
-msgstr "Veuillez cocher cette câche et cliquez le bouton de confirmation pour validation."
+msgstr "Veuillez cocher cette câche et cliquez sur le bouton de confirmation pour la validation."
 
 #: .\subprojects\components\subproject_tracking_graph.html
 msgid "The Step was successfully removed."
@@ -1662,3 +1662,172 @@ msgstr "Sous-projers uniquement"
 #: .\subprojects\components\subproject_tracking_graph.html
 msgid "No duplication of ongoing sub-projects (such as (tracks, electrification, etc.) in several cantons)"
 msgstr "Sans duplication des sous-projets continus (comme les (Pistes, électrifications, etc) dans plusieurs canton)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Beneficiaries villages"
+msgstr "Villages bénéficiaires"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Beneficiaries CVD"
+msgstr "CVD bénéficiaires"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Fill in this field only if the subproject concerns all the villages in the canton."
+msgstr "Vous renseignez ce champs uniquement si le sous-projet concerne tous les villages du canton."
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Add an infrastructure or a subproject linking to this sub-project"
+msgstr "Ajouter une infrastructure ou un sous-projet reliant à ce sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Record an infrastructure or a subproject"
+msgstr "Enregistrer une infrastructure ou un sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Grassroots-development"
+msgstr "Developpement-a-la-Base"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Water-Hydraulics"
+msgstr "Eau-Hydraulique"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Tracks"
+msgstr "Pistes"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Education"
+msgstr "Education"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Agriculture"
+msgstr "Agriculture"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Health"
+msgstr "Sante"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Energy"
+msgstr "Energie"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Sport-Loisir"
+msgstr "Sport-Loisir"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Sanitation"
+msgstr "Assainissement"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Environment"
+msgstr "Environnement"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Photovoltaic drilling (Community center)"
+msgstr "Forage Photovoltaïque (Centre communautaire)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Photovoltaic drilling (Beverage)"
+msgstr "Forage Photovoltaïque (Boisson)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Track + OF"
+msgstr "Piste + OF"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "School building at CEG"
+msgstr "Batiment Scolaire au CEG"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Photovoltaic drilling (School)"
+msgstr "Forage Photovoltaïque (Ecole)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Medical-social center"
+msgstr "CMS"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Power grid extension"
+msgstr "Extension réseau électrique"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Soccer pitch"
+msgstr "Terrain de Foot"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Prefectural hospital center"
+msgstr "CHP"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Community latrine"
+msgstr "Latrine Communautaire"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Photovoltaic drilling (Latrines)"
+msgstr "Forage Photovoltaïque (Latrines)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Photovoltaic drilling (market gardening)"
+msgstr "Forage Photovoltaïque (Maraichage)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "School building at Lycée"
+msgstr "Batiment Scolaire au Lycée"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Primary school building"
+msgstr "Batiment Scolaire au Primaire"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Pharmacy"
+msgstr "Pharmacie"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Solar street lamps"
+msgstr "Lampadaires solaire"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Pediatrics"
+msgstr "Pédiatrie"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Laboratory"
+msgstr "Laboratoire"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Reforestation"
+msgstr "Reboisement"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Youth center"
+msgstr "Maison des jeunes"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Photovoltaic drilling (youth center)"
+msgstr "Forage Photovoltaïque (Maison des jeunes)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Meeting room"
+msgstr "Salle de réunion"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Photovoltaic drilling (Meeting room)"
+msgstr "Forage Photovoltaïque (Salle de réunion)"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Update the infrastructure"
+msgstr "Mise à jour de l'infrastructure"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Update the subproject"
+msgstr "Mise à jour du sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "View subproject details"
+msgstr "Voir les détails du sous-projet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "You must follow each step..."
+msgstr "Vous devez suivre chaque étape..."
+

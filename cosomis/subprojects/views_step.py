@@ -14,6 +14,9 @@ from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin, ModalFormMixin
 from subprojects.views import SubprojectMixin
 from subprojects.forms import SubprojectAddStepForm, SubprojectAddLevelForm #, DeleteConfirmForm
 from subprojects.models import SubprojectStep, Level
+from usermanager.permissions import (
+    InfraPermissionRequiredMixin, 
+)
 
 class SubprojectFormMixin(SubprojectMixin, generic.FormView):
 
@@ -107,7 +110,8 @@ class SubprojectStepGraphTemplateView(SubprojectMixin, AJAXRequestMixin, LoginRe
         context['y_axes_values'] = json.dumps(percents)
         return context
     
-class SubprojectStepAddTemplateView(SubprojectMixin, AJAXRequestMixin, LoginRequiredMixin, generic.TemplateView):
+class SubprojectStepAddTemplateView(SubprojectMixin, AJAXRequestMixin, LoginRequiredMixin, 
+                                    InfraPermissionRequiredMixin, generic.TemplateView):
     template_name = 'components/subproject_tracking_add.html'
 
     def get_context_data(self, **kwargs):
@@ -116,8 +120,8 @@ class SubprojectStepAddTemplateView(SubprojectMixin, AJAXRequestMixin, LoginRequ
         return context
     
 #Add
-class SubprojectStepAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredMixin, JSONResponseMixin,
-                                      SubprojectFormMixin):
+class SubprojectStepAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredMixin, 
+                                InfraPermissionRequiredMixin, JSONResponseMixin, SubprojectFormMixin):
     model = SubprojectStep
     form_class = SubprojectAddStepForm
     id_form = "subproject_add_step_form"
@@ -130,6 +134,8 @@ class SubprojectStepAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredM
 
     def post(self, request, *args, **kwargs):
         form = None
+        obj = None
+        msg = ''
         if self.kwargs.get('subproject_step_update_id'):
             obj = SubprojectStep.objects.get(id=self.kwargs['subproject_step_update_id'])
             form = SubprojectAddStepForm(request.POST, instance=obj)
@@ -137,9 +143,32 @@ class SubprojectStepAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredM
             form = SubprojectAddStepForm(request.POST)
 
         if form and form.is_valid():
-            return self.form_valid(form)
-        
-        msg = _("An error has occurred...")
+            data = form.cleaned_data
+            ranking = None
+            if obj:
+                ranking = obj.ranking
+            else:
+                current_subproject_step = self.subproject.get_current_subproject_step()
+                if current_subproject_step and current_subproject_step.ranking:
+                    ranking = current_subproject_step.ranking
+                    if ranking:
+                        if current_subproject_step.wording == "Identifié" and data['step'].ranking == 3:
+                            ranking = 2
+                        elif current_subproject_step.wording == "En cours" and data['step'].ranking == 10:
+                            ranking = 9
+                        elif current_subproject_step.wording == "En cours" and data['step'].ranking == 11:
+                            ranking = 10
+                        elif current_subproject_step.wording == "Interrompu":
+                            ranking = 8
+                                
+                    ranking = ranking + 1
+            print(data['step'].ranking, ranking)
+            if (data.get('step') and ranking and data['step'].ranking != ranking) or (not ranking and data['step'].ranking != 1):
+                msg = _("You must follow each step...")
+            else:
+                return self.form_valid(form)
+        else:
+            msg = _("An error has occurred...")
         messages.add_message(self.request, messages.ERROR, msg, extra_tags='error')
 
         context = {'msg': render(self.request, 'common/messages.html').content.decode("utf-8")}
@@ -162,8 +191,8 @@ class SubprojectStepAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredM
         context = {'msg': render(self.request, 'common/messages.html').content.decode("utf-8")}
         return self.render_to_json_response(context, safe=False)
 
-class SubprojectLevelAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredMixin, JSONResponseMixin,
-                                      SubprojectFormMixin):
+class SubprojectLevelAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredMixin, InfraPermissionRequiredMixin, 
+                                 JSONResponseMixin, SubprojectFormMixin):
     model = Level
     form_class = SubprojectAddLevelForm
     id_form = "subproject_add_level_form"

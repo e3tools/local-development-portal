@@ -1,8 +1,11 @@
-from subprojects.models import Subproject, Component
+import datetime
+
+from subprojects.models import Subproject, Component, SubprojectStep, Level, Step
 from no_sql_client import NoSQLClient
 from authentication.models import Facilitator
 from administrativelevels.models import AdministrativeLevel
 from assignments.models import AssignAdministrativeLevelToFacilitator
+from administrativelevels.libraries.functions import strip_accents
 
 
 def get_facilitators_village_liste(develop_mode=False, training_mode=False, no_sql_db=False, only_ids=True):
@@ -143,5 +146,151 @@ def link_infrastures_to_subproject():
                 _subproject.link_to_subproject = subproject
                 _subproject.subproject_type_designation = "Infrastructure"
                 _subproject.save()
+    print()
+    print("Done !")
+
+
+def copy_cvd_to_list_of_beneficiary_villages():
+    print("Start !")
+    subprojects = Subproject.objects.all()
+    for subproject in subprojects:
+        print(subproject.full_title_of_approved_subproject)
+        if subproject.cvd:
+            for v in subproject.cvd.get_villages():
+                subproject.list_of_beneficiary_villages.add(v)
+        
+        if subproject.canton:
+            for v in subproject.canton.administrativelevel_set.get_queryset():
+                subproject.list_of_beneficiary_villages.add(v)
+
+        subproject.save()
+    print()
+    print("Done !")
+
+
+def set_step(subproject, liste):
+    for s in liste:
+        if not subproject.check_step(s):
+            subproject_step = SubprojectStep()
+            subproject_step.subproject = subproject
+            subproject_step.wording = s.wording
+            subproject_step.percent = s.percent
+            subproject_step.ranking = s.ranking
+            subproject_step.step = s
+            
+            if subproject.approval_date_cora and s.ranking == 1: #1
+                subproject_step.begin = subproject.approval_date_cora - datetime.timedelta(days=14)
+            elif subproject.approval_date_cora and s.ranking in (2, 3): #2 & 3
+                subproject_step.begin = subproject.approval_date_cora
+            elif subproject.launch_date_of_the_construction_site_in_the_village and s.ranking == 8:# 8
+                subproject_step.begin = subproject.launch_date_of_the_construction_site_in_the_village
+            elif subproject.date_signature_contract_work_companies and s.ranking in (5, 6):
+                if s.ranking == 6:
+                    subproject_step.begin = subproject.date_signature_contract_work_companies + datetime.timedelta(days=3)
+                else:
+                    subproject_step.begin = subproject.date_signature_contract_work_companies
+            else:
+                subproject_step_current = subproject.get_current_subproject_step()
+                if subproject_step_current:
+                    subproject_step.begin = subproject_step_current.begin + datetime.timedelta(days=7)
+                elif subproject_step.ranking > 7:
+                    subproject_step.begin = datetime.datetime.now().date()
+                elif subproject.approval_date_cora and subproject_step.ranking <= 7:
+                    subproject_step.begin = subproject.approval_date_cora + datetime.timedelta(days=3)
+                else:
+                    subproject_step.begin = datetime.date(2023, 1, 1)
+            subproject_step.save()
+    
+
+
+def save_subproject_tracking():
+    print("Start !")
+    subprojects = Subproject.objects.all()
+    sectors = []
+    types = []
+    step_identifie = Step.objects.get(ranking=1)
+    step_not_approved = Step.objects.get(ranking=2)
+    step_approved = Step.objects.get(ranking=3)
+    step_dao_progress = Step.objects.get(ranking=4)
+    step_company_selected = Step.objects.get(ranking=5)
+    step_contract_signed = Step.objects.get(ranking=6)
+    step_site_handover = Step.objects.get(ranking=7)
+    step_progress = Step.objects.get(ranking=8)
+    step_abandon = Step.objects.get(ranking=9)
+    step_interrupted = Step.objects.get(ranking=10)
+    step_completed = Step.objects.get(ranking=11)
+    step_technical_acceptance = Step.objects.get(ranking=12)
+    step_provisional_acceptance = Step.objects.get(ranking=13)
+    step_handover_to_the_community = Step.objects.get(ranking=14)
+    step_final_acceptance = Step.objects.get(ranking=15)
+
+    for subproject in subprojects:
+        if subproject.current_level_of_physical_realization_of_the_work:
+            current_level = strip_accents(subproject.current_level_of_physical_realization_of_the_work).title()
+            if current_level == "Remise du site".title(): #Remise du site
+                print("Remise du site")
+                set_step(
+                    subproject, 
+                    [
+                        step_identifie, step_approved, step_dao_progress, 
+                        step_company_selected, step_contract_signed, step_site_handover
+                    ]
+                )
+            elif "se de validation".title() in current_level: #En phase de validation | En phse de validation
+                print("En phase de validation")
+                set_step(subproject, [step_identifie])
+            elif "notification de l'intention d'attribution".title() in current_level: #En  phase  de notification de l'intention d'attribution  | En phse de notification de l'intention d'attribution
+                print("En  phase  de notification de l'intention d'attribution")
+                set_step(
+                    subproject, 
+                    [
+                        step_identifie, step_approved, step_dao_progress, 
+                        step_company_selected
+                    ]
+                )
+            elif current_level == "Reception provisoire".title(): #Reception provisoire
+                print("Reception provisoire")
+                set_step(
+                    subproject, 
+                    [
+                        step_identifie, step_approved, step_dao_progress, 
+                        step_company_selected, step_contract_signed, step_site_handover,
+                        step_progress, step_completed, step_technical_acceptance,
+                        step_provisional_acceptance, step_handover_to_the_community
+                    ]
+                )
+            elif current_level == "Infructueux".title(): #Infructueux
+                print("Infructueux")
+                set_step(
+                    subproject, 
+                    [
+                        step_identifie, step_approved, step_dao_progress
+                    ]
+                )
+            else:
+                print("En cours")
+                set_step(
+                    subproject, 
+                    [
+                        step_identifie, step_approved, step_dao_progress, 
+                        step_company_selected, step_contract_signed, step_site_handover,
+                        step_progress
+                    ]
+                )
+                print(subproject.current_level_of_physical_realization_of_the_work)
+                subproject_step_progress = subproject.get_current_subproject_step()
+                if subproject_step_progress.step.has_levels and not subproject_step_progress.check_step(subproject.current_level_of_physical_realization_of_the_work):
+                    subproject_level = Level()
+                    subproject_level.wording = subproject.current_level_of_physical_realization_of_the_work
+                    subproject_level.subproject_step = subproject_step_progress
+                    subproject_level.percent = 35.0
+                    subproject_level.begin = datetime.datetime.now().date()
+                    subproject_level.save()
+                
+        else:
+            print("Identifié")
+            set_step(subproject, [step_identifie])
+        
+        
     print()
     print("Done !")

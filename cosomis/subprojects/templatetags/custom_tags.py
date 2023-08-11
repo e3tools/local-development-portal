@@ -25,10 +25,11 @@ def get_group_high(user):
         - Accountant            : Accountant
         - Regional Coordinator  : RegionalCoordinator
         - National Coordinator  : NationalCoordinator
-        - General Manager  : GeneralManager
-        - Director  : Director
-        - Advisor  : Advisor
-        - Minister  : Minister
+        - General Manager       : GeneralManager
+        - Director              : Director
+        - Advisor               : Advisor
+        - Minister              : Minister
+        - Infra                 : Infra
     """
     if user.is_superuser:
         return gettext_lazy("Principal Administrator").__str__()
@@ -53,6 +54,8 @@ def get_group_high(user):
         return gettext_lazy("Advisor").__str__()
     if user.groups.filter(name="Minister").exists():
         return gettext_lazy("Minister").__str__()
+    if user.groups.filter(name="Infra").exists():
+        return gettext_lazy("Infra").__str__()
 
 
     return gettext_lazy("User").__str__()
@@ -112,3 +115,7 @@ def join_with_commas(obj_list):
     else:    
         return ", ".join(str(obj) for obj in obj_list[:l-1]) \
                 + " " + gettext_lazy("and").__str__() + " " + str(obj_list[l-1])
+    
+@register.filter
+def subtract(value, arg):
+    return value - arg

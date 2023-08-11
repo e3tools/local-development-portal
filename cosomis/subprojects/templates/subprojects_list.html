@@ -34,11 +34,13 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-12">
-                        {% if user.is_superuser or user|has_group:"Admin" %}
+                        {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
                         <div class="btn-group pull-left">
                             <a class="btn btn-primary" href="{% url 'subprojects:create' %}">{% translate 'Create' %}</a>
+                            {% if user.is_superuser or user|has_group:"Admin" %}
                             &nbsp; &nbsp; &nbsp; &nbsp; 
                             {% include 'components/modal_upload_one_sheet.html' with type_object="subproject_new" show_just_villages=False %}
+                            {% endif %}
                         </div>
                         {% endif %}
                         <div class="btn-group pull-right">
@@ -56,6 +58,7 @@
                             <th>{% translate 'Canton' %}</th>
                             <th>{% translate 'Region' %}</th>
                             <th>{% translate 'Project Name' %}</th>
+                            <th>{% translate 'Status' %}</th>
                             <th>{% translate 'Allocation' %} CFA</th>
                             <th width="12%">{% translate 'Action' %}</th>
                         </tr>
@@ -67,13 +70,20 @@
                                 <td>{{ subproject.get_cantons_names }}</td>
                                 <td>{{ subproject.get_canton.parent.parent.parent.name }}</td>
                                 <td>{{ subproject.full_title_of_approved_subproject }}</td>
+                                <td>
+                                    {% if subproject.get_current_subproject_step_and_level %}
+                                        {{ subproject.get_current_subproject_step_and_level }}
+                                    {% else %}
+                                        {% translate 'No start' %}
+                                    {% endif %}
+                                </td>
                                 <td>{{ subproject.get_estimated_cost_str }}</td>
                                 <td>
                                     <a href="{% url 'subprojects:detail' subproject.pk %}" style="font-size: 9px !important;"
                                        class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    {% if user.is_superuser or user|has_group:"Admin" %}
+                                    {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
                                     <a href="{% url 'subprojects:update' subproject.pk %}" style="font-size: 9px !important;"
                                        class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
                                         <i class="fa fa-edit"></i>
@@ -136,11 +146,11 @@
                 },
                 dom: "ltipr",
                 columnDefs: [
-                    {
+                    {% comment %} {
                         targets: 1,
                         orderable: false,
                         searchable: false,
-                    }
+                    } {% endcomment %}
                 ],
                 lengthMenu: [10, 50, 100],
                 pageLength: 10,
