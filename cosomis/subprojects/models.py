@@ -212,9 +212,9 @@ class Subproject(BaseModel):
         if subproject_link_objects:
             for o in self.subproject_set.get_queryset():
                 estimated_cost_str += " + " + locale.currency(o.estimated_cost, grouping=True).__str__()
-            return (locale.currency(self.get_estimated_cost(), grouping=True).__str__() + f' ({estimated_cost_str})').replace("$", "XOF")
+            return (locale.currency(self.get_estimated_cost(), grouping=True).__str__() + f' ({estimated_cost_str})').replace("$", "")
         
-        return estimated_cost_str.replace("$", "XOF")
+        return estimated_cost_str.replace("$", "")
 
 
     def get_all_images(self, order=False):
