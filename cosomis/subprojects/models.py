@@ -40,7 +40,7 @@ class Subproject(BaseModel):
     subproject_sector = models.CharField(max_length=100, verbose_name=_("Subproject sector"))
     type_of_subproject = models.CharField(max_length=100, verbose_name=_("Type of subproject"))
     subproject_type_designation = models.CharField(max_length=100, choices=SUB_PROJECT_TYPE_DESIGNATION, default='Subproject', verbose_name=_("Subproject type designation (Subproject or Infrastructure)"))
-    full_title_of_approved_subproject = models.TextField(verbose_name=_("Full title of approved sub-project (description)"))
+    full_title_of_approved_subproject = models.TextField(max_length=255, verbose_name=_("Full title of approved sub-project (description)"))
     works_type = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Works type"))
     estimated_cost = models.FloatField(null=True, blank=True, verbose_name=_("Estimated cost"))
     exact_amount_spent = models.FloatField(null=True, blank=True, verbose_name=_("Exact amount spent on the sub-project"))
