@@ -108,12 +108,12 @@ class Subproject(BaseModel):
 
     class Meta:
         unique_together = [
-            [
-                'full_title_of_approved_subproject', 'location_subproject_realized', 
-                'subproject_sector', 'type_of_subproject'
-            ], 
-            ['canton', 'full_title_of_approved_subproject'],
-            ['number']
+            # [
+            #     'full_title_of_approved_subproject', 'location_subproject_realized', 
+            #     'subproject_sector', 'type_of_subproject'
+            # ], 
+            # ['canton', 'full_title_of_approved_subproject'],
+            # ['number']
         ]
 
         

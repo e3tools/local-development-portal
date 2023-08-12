@@ -45,6 +45,7 @@
                                 {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Infra" %}
                                     <a href="{% url 'subprojects:update' object.pk %}" class="float-right font-weight-bold">{% translate 'Update' %}</a>
                                     {% if not object.has_subprojects_linked and not object.link_to_subproject %}
+                                    <br />
                                     <a href="{% url 'subprojects:create_infra_or_link_subproject' object.pk %}" class="font-weight-bold" style="font-size: 10px !important;">{% translate 'Add an infrastructure or a subproject linking to this sub-project' %}</a>
                                     {% endif %}
                                 {% endif %}
