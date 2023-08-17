@@ -110,8 +110,7 @@ class SubprojectStepGraphTemplateView(SubprojectMixin, AJAXRequestMixin, LoginRe
         context['y_axes_values'] = json.dumps(percents)
         return context
     
-class SubprojectStepAddTemplateView(SubprojectMixin, AJAXRequestMixin, LoginRequiredMixin, 
-                                    InfraPermissionRequiredMixin, generic.TemplateView):
+class SubprojectStepAddTemplateView(SubprojectMixin, AJAXRequestMixin, LoginRequiredMixin, generic.TemplateView):
     template_name = 'components/subproject_tracking_add.html'
 
     def get_context_data(self, **kwargs):
