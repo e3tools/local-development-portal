@@ -79,19 +79,15 @@ class AdministrativeLevelOverviewComponent(AdministrativeLevelMixin, LoginRequir
         for v_c in villages:
             if v_c.cvd:
                 _villages.append(v_c)
-                try:
-                    facilitators_ids.append(
-                        int(AssignAdministrativeLevelToFacilitator.objects.get(
-                            administrative_level_id=v_c.id,
-                            project_id=1,
-                            activated=True
-                        ).facilitator_id)
-                    )
-                except Exception as exc:
-                    print(exc)
                 if str(v_c.cvd.headquarters_village.id) not in villages_cvds_ids:
                     villages_cvds_ids.append(str(v_c.cvd.headquarters_village.id))
-        facilitators_ids = list(set(facilitators_ids))
+
+        assign_facilitators = AssignAdministrativeLevelToFacilitator.objects.filter(
+                            administrative_level_id__in=[v_c.id for v_c in _villages],
+                            project_id=1,
+                            activated=True
+            )
+        facilitators_ids = list(set([int(f.facilitator_id) for f in assign_facilitators]))
 
         length_villages_cvds_ids = len(villages_cvds_ids)
         count_villages_cvds = 0
