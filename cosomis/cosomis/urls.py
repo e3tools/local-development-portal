@@ -31,7 +31,8 @@ from . import views
 urlpatterns = [
     path('set-language/', 
          views.set_language, 
-         name='set_language')
+         name='set_language'),
+    # path('api/', include('cosomis.urls_api')),
 ]
 
 urlpatterns += i18n_patterns(
@@ -41,6 +42,7 @@ urlpatterns += i18n_patterns(
     path('administrative-levels/', include('administrativelevels.urls')),
     path('unicorn/', include('django_unicorn.urls')),
     path('kobotoolbox/', include('kobotoolbox.urls')),
+    path('dashboard/', include('dashboard.urls')),
 
     path('services/', include('administrativelevels.libraries.services.urls')),
 
