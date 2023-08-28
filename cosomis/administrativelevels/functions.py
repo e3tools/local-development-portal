@@ -516,3 +516,21 @@ def get_priorities_group_combine(old_liste, new_liste, group):
         else:
             old_liste.append(priority)
     return old_liste
+
+
+def get_administrative_level_ids_descendants(parent_id, parent_type, ids):
+    data = []
+    
+    if parent_id == "All":
+        data = AdministrativeLevel.objects.filter(type=parent_type)
+    elif parent_id == 0:
+        data = AdministrativeLevel.objects.filter(type="Region")
+    else:
+        data = AdministrativeLevel.objects.filter(parent_id=int(parent_id))
+    
+    descendants_ids = [obj.id for obj in data]
+    for descendant_id in descendants_ids:
+        get_administrative_level_ids_descendants(descendant_id, parent_type, ids)
+        ids.append(str(descendant_id))
+
+    return ids
