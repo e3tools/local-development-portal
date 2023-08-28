@@ -3,10 +3,23 @@ from django.db import models
 import locale
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
+from typing import TypeVar, Any
 
 from administrativelevels.models import AdministrativeLevel, CVD
 from subprojects import SUB_PROJECT_TYPE_DESIGNATION, SUB_PROJECT_SECTORS, TYPES_OF_SUB_PROJECT
 from cosomis.customers_fields import *
+from cosomis.types import _QS
+
+
+class CustomQuerySet(models.QuerySet):
+    
+    def filter_by_step(self, Type, step_id) -> _QS:
+        l = []
+        for o in self:
+            if o.get_current_subproject_step and o.get_current_subproject_step.step.id == step_id:
+                l.append(o)
+                
+        return Type.objects.filter(id__in=[o.id for o in l])
 
 
 class BaseModel(models.Model):
@@ -104,6 +117,9 @@ class Subproject(BaseModel):
     youth_group = models.BooleanField(null=True, blank=True, verbose_name=_("Youth group"))
     breeders_farmers_group = models.BooleanField(null=True, blank=True, verbose_name=_("Breeders farmers group"))
     ethnic_minority_group = models.BooleanField(null=True, blank=True, verbose_name=_("Ethnic minority group"))
+
+
+    objects = CustomQuerySet.as_manager()
 
 
     class Meta:
@@ -254,18 +270,31 @@ class Subproject(BaseModel):
             #sorted(self.subprojectstep_set.get_queryset(), key=lambda o: o.begin, reverse=True) #self.subprojectstep_set.get_queryset().order_by("-ranking") #
         return self.subprojectstep_set.get_queryset()
     
+    @property
     def get_current_subproject_step(self):
         return self.get_subproject_steps().first()
     
+    @property
     def get_current_subproject_step_and_level(self):
-        step = self.get_current_subproject_step()
+        step = self.get_current_subproject_step
+        if step and step.wording == "En cours":
+            level = step.get_levels().first()
+            if level:
+                return level.__str__()
+        if step:
+            return step.__str__()
+        return self.current_level_of_physical_realization_of_the_work
+
+    @property
+    def get_current_subproject_step_and_level_object(self):
+        step = self.get_current_subproject_step
         if step and step.wording == "En cours":
             level = step.get_levels().first()
             if level:
                 return level
         if step:
             return step
-        return self.current_level_of_physical_realization_of_the_work
+        return None
     
     def check_step(self, step):
         for s in self.subprojectstep_set.get_queryset():
