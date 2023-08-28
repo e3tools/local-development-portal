@@ -190,7 +190,7 @@ def set_step(subproject, liste):
                 else:
                     subproject_step.begin = subproject.date_signature_contract_work_companies
             else:
-                subproject_step_current = subproject.get_current_subproject_step()
+                subproject_step_current = subproject.get_current_subproject_step
                 if subproject_step_current:
                     subproject_step.begin = subproject_step_current.begin + datetime.timedelta(days=7)
                 elif subproject_step.ranking > 7:
@@ -278,7 +278,7 @@ def save_subproject_tracking():
                     ]
                 )
                 print(subproject.current_level_of_physical_realization_of_the_work)
-                subproject_step_progress = subproject.get_current_subproject_step()
+                subproject_step_progress = subproject.get_current_subproject_step
                 if subproject_step_progress.step.has_levels and not subproject_step_progress.check_step(subproject.current_level_of_physical_realization_of_the_work):
                     subproject_level = Level()
                     subproject_level.wording = subproject.current_level_of_physical_realization_of_the_work
