@@ -58,6 +58,7 @@ CREATED_APPS = [
     'kobotoolbox',
     'authentication',
     'assignments',
+    'dashboard',
 ]
 
 THIRD_PARTY_APPS = [
@@ -118,7 +119,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'fr'
 
 TIME_ZONE = 'UTC'
 
@@ -149,7 +150,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/'
 
-LOGIN_REDIRECT_URL = 'subprojects:list'
+LOGIN_REDIRECT_URL = 'dashboard:dashboard'
 
 
 # Mapbox
