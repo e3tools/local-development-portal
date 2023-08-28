@@ -93,6 +93,17 @@ def get(dictionary, key):
     return dictionary.get(key, None)
 
 @register.filter
+def get_on_list(data, index):
+    try:
+        return data[index]
+    except:
+        return None
+
+@register.filter
+def isnumber(value):
+    return str(value).replace('.','',1).replace(',','',1).isdigit()
+
+@register.filter
 def get_project_by_id(pk):
     return Project.objects.get(pk=pk)
 
@@ -115,7 +126,68 @@ def join_with_commas(obj_list):
     else:    
         return ", ".join(str(obj) for obj in obj_list[:l-1]) \
                 + " " + gettext_lazy("and").__str__() + " " + str(obj_list[l-1])
+
+@register.filter
+def separate_with_space(value, unit="FCFA"):
+    if not value or not str(value).replace('.','',1).replace(',','',1).isdigit():
+        return ""
+    value = str(value).split(',')[0].split('.')[0]
+    l = len(str(int(value)))
+    if l in (0, 1) and int(value) < 1:
+        return str(int(value))  + " " + unit
+    
+    list_value_str = list(value)
+    list_value_str.reverse()
+    money_format = ""
+    for i in range(1, len(list_value_str)+1):
+        money_format += list_value_str[i-1]
+        if i%3 == 0 :
+            money_format += " "
+
+    list_money_format = list(money_format)
+    list_money_format.reverse()
+    return "".join(list_money_format) + " " + unit
+
+@register.filter
+def remove_zeros_on_zeros(value):
+    if not value or not str(value).replace('.','',1).replace(',','',1).isdigit():
+        return ""
+    value = str(value).split(',')[0].split('.')[0]
+    l = len(str(int(value)))
+    
+    if l in (0, 1) and int(value) < 1:
+        return int(value)
+    
+    return value
+
     
 @register.filter
 def subtract(value, arg):
     return value - arg
+
+class MakeListNode(template.Node):
+    def __init__(self, items, varname):
+        # self.items = map(template.Variable, items)
+        self.items = items
+        self.varname = varname
+
+    def render(self, context):
+        # context[self.varname] = [ i.resolve(context) for i in self.items ]
+        # context[self.varname] = [ i for i in range(0, 8) ]
+        context[self.varname] = []
+        for i in self.items:
+            if i.isdigit():
+                context[self.varname].append(int(i))
+            else:
+                context[self.varname].append(str(i).replace('"', ''))
+        return ""
+
+@register.tag
+def make_list(parser, token):
+    bits = list(token.split_contents())
+    if len(bits) >= 4 and bits[-2] == "as":
+        varname = bits[-1]
+        items = bits[1:-2]
+        return MakeListNode(items, varname)
+    else:
+        raise template.TemplateSyntaxError("%r expected format is 'item [item ...] as varname'" % bits[0])
