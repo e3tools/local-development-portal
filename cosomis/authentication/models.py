@@ -21,3 +21,7 @@ class Facilitator(models.Model):
     total_tasks = models.IntegerField(default=0)
     total_tasks_completed = models.IntegerField(default=0)
     last_activity = models.DateTimeField(blank=True, null=True)
+
+    @property
+    def is_active(self):
+        return self.active
