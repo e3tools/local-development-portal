@@ -54,6 +54,10 @@ class AdministrativeLevel(BaseModel):
         for assign in self.assignadministrativeleveltofacilitator_set.get_queryset().filter(project_id__in=projects_ids, activated=True):
             return assign.facilitator
         return None
+    
+    @property
+    def children(self):
+        return self.administrativelevel_set.get_queryset()
 
 
 
