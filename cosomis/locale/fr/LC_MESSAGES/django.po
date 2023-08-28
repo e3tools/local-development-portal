@@ -1831,3 +1831,74 @@ msgstr "Voir les détails du sous-projet"
 msgid "You must follow each step..."
 msgstr "Vous devez suivre chaque étape..."
 
+#: .\subprojects\api
+msgid "Incorrect identifiers"
+msgstr "Identifiants incorrects"
+
+#: .\subprojects\api
+msgid "Your account is inactive"
+msgstr "Votre compte est inactif"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Number of subprojects"
+msgstr "Nombre de Sous-projets"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Number of subproject infrastructures"
+msgstr "Nombre d'infrastructures pour le sous-projet"
+
+#: .\subprojects\api
+msgid "Number of sub-projects by administrative level and sector"
+msgstr "Nombre de sous-projets par niveau administratif et par secteur"
+
+#: .\subprojects\api
+msgid "Amount of sub-projects by administrative level and sector"
+msgstr "Montant de sous-projets par niveau administratif et par secteur"
+
+#: .\subprojects\api
+msgid "OBSERVATIONS"
+msgstr "OBSERVATIONS"
+
+#: .\subprojects\api
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: .\subprojects\api
+msgid "Number of sub-projects by administrative level, sector and step"
+msgstr "Montant de sous-projets par niveau administratif, secteur et étape"
+
+#: .\subprojects\api
+msgid "Sites"
+msgstr "Sites"
+
+#: .\subprojects\api
+msgid "Structures"
+msgstr "Ouvrages"
+
+#: .\subprojects\api
+msgid "Subprojects by administrative level, sector and step"
+msgstr "Sous-projets par niveau administratif, secteur et étape"
+
+#: .\subprojects\api
+msgid "Companies"
+msgstr "Entreprises"
+
+#: .\subprojects\api
+msgid "Amount FCFA TTC"
+msgstr "Montant FCFA TTC"
+
+#: .\subprojects\api
+msgid "Actual level"
+msgstr "Niveau réel"
+
+#: .\subprojects\api
+msgid "Physical level"
+msgstr "Niveau Physique"
+
+#: .\subprojects\api
+msgid "Number"
+msgstr "Nombre"
+
+#: .\subprojects\api
+msgid "Subprojects by step"
+msgstr "Sousprojets étape"
