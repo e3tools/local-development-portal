@@ -25,6 +25,13 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                 <li class="nav-item">
+                    <a href="{% url 'dashboard:dashboard' %}"
+                       class="nav-link {% if active_level1 == 'dashboard' %}active{% endif %}">
+                        <i class="nav-icon fa fa-project-diagram"></i>
+                        <p>{% translate "Dashboard" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{% url 'subprojects:list' %}"
                        class="nav-link {% if active_level1 == 'subprojects' %}active{% endif %}">
                         <i class="nav-icon fa fa-project-diagram"></i>
