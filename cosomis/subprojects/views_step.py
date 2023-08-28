@@ -147,7 +147,7 @@ class SubprojectStepAddFormView(AJAXRequestMixin, ModalFormMixin, LoginRequiredM
             if obj:
                 ranking = obj.ranking
             else:
-                current_subproject_step = self.subproject.get_current_subproject_step()
+                current_subproject_step = self.subproject.get_current_subproject_step
                 if current_subproject_step and current_subproject_step.ranking:
                     ranking = current_subproject_step.ranking
                     if ranking:
