@@ -852,6 +852,10 @@ msgid "of"
 msgstr "de"
 
 #: .\administrativelevels\templates\administrativelevels_list.html
+msgid "Of"
+msgstr "du"
+
+#: .\administrativelevels\templates\administrativelevels_list.html
 msgid "Page"
 msgstr "Page"
 
@@ -1856,6 +1860,10 @@ msgid "Amount of sub-projects by administrative level and sector"
 msgstr "Montant de sous-projets par niveau administratif et par secteur"
 
 #: .\subprojects\api
+msgid "Subprojects by administrative level and sector"
+msgstr "Sous-projets par niveau administratif et par secteur"
+
+#: .\subprojects\api
 msgid "OBSERVATIONS"
 msgstr "OBSERVATIONS"
 
@@ -1901,4 +1909,93 @@ msgstr "Nombre"
 
 #: .\subprojects\api
 msgid "Subprojects by step"
-msgstr "Sousprojets étape"
+msgstr "Sousprojets par étape"
+
+#: .\subprojects\api
+msgid "Subprojects Dashboard"
+msgstr "Tableau de bord des sous-projets"
+
+#: .\subprojects\api
+msgid "Indicators"
+msgstr "Indicateurs"
+
+#: .\subprojects\api
+msgid "Administrative levels Dashboard"
+msgstr "Tableau de bord des niveaux administratifs"
+
+#: .\subprojects\api
+msgid "Amount"
+msgstr "Montant"
+
+#: .\subprojects\api
+msgid "Administrative level"
+msgstr "Niveau administrative"
+
+#: .\subprojects\api
+msgid "Register an allocation"
+msgstr "Enregistrer une allocation"
+
+#: .\subprojects\api
+msgid "Part"
+msgstr "Partie"
+
+#: .\subprojects\api
+msgid "Start date"
+msgstr "Date de début"
+
+#: .\subprojects\api
+msgid "End date"
+msgstr "Date de fin"
+
+#: .\subprojects\api
+msgid "Investment cycle deployment time"
+msgstr "Délai de déploiement du cycle d’investissement"
+
+#: .\subprojects\api
+msgid "Cantons covered"
+msgstr "Cantons couverts"
+
+#: .\subprojects\api
+msgid "Number of villages"
+msgstr "Nombre de villages"
+
+#: .\subprojects\api
+msgid "Number of geographic intervention units"
+msgstr "Nombre d’unité d’intervention géographique"
+
+#: .\subprojects\api
+msgid "Number of subprojects selected"
+msgstr "Nombre de sous-projets sélectionnés"
+
+#: .\subprojects\api
+msgid "%(len_cantons)s cantons in the %(region_name)s region"
+msgstr "%(len_cantons)s cantons dans la région des %(region_name)s"
+
+#: .\subprojects\api
+msgid "Project coverage"
+msgstr "Couverture du projet"
+
+#: .\subprojects\api
+msgid "Summary of locations reached"
+msgstr "Résumé des localités atteints"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Total estimate for subprojects"
+msgstr "Estimation totale des sous-projets"
+
+#: .\administrativelevels\templates\canton_detail.html
+msgid "Exact amount spent on subprojects"
+msgstr "Montant exact dépense sur les sous-projets"
+
+#: .\subprojects\api
+msgid "Remaining amount"
+msgstr "Montant restant"
+
+#: .\subprojects\api
+msgid "Allocation"
+msgstr "Allocation"
+
+#: .\subprojects\api
+msgid "Remainder after estimated cost"
+msgstr "Reste après coût estimé"
+
