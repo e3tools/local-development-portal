@@ -12,7 +12,7 @@ def record_administrative_levels_waves():
 
     AdministrativeLevelWave.objects.bulk_create([
         AdministrativeLevelWave(
-            project_id=o.project_id,
+            project_id=1,
             wave_id=o.wave_id,
             administrative_level_id=o.administrative_level_id,
             begin=o.begin,
