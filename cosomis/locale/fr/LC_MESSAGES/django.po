@@ -1999,3 +1999,75 @@ msgstr "Allocation"
 msgid "Remainder after estimated cost"
 msgstr "Reste après coût estimé"
 
+#: .\subprojects\api
+msgid "Abbreviation"
+msgstr "Abbréviation"
+
+#: .\subprojects\api
+msgid "Parent"
+msgstr "Parent"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Frontalier"
+msgstr "Frontalier"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Rural"
+msgstr "Rural"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Unique code"
+msgstr "Code unique"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Attributed number in canton"
+msgstr "Numéro attribué dans le canton"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Headquarters village"
+msgstr "Village siège"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Bank"
+msgstr "Banque"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Bank code"
+msgstr "Code Banque"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Guichet code"
+msgstr "Code guichet"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Account number"
+msgstr "N° de Compte"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "RIB"
+msgstr "RIB"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "President name of the CVD"
+msgstr "Nom du président du CVD"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "President phone of the CVD"
+msgstr "Tél du Président du CVD"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Treasurer name of the CVD"
+msgstr "Nom du trésorier du CVD"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Treasurer phone of the CVD"
+msgstr "Tél du trésorier du CVD"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Secretary name of the CVD"
+msgstr "Nom du secrétaire du CVD"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Secretary phone of the CVD"
+msgstr "Tél du secrétaire du CVD"
+
