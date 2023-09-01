@@ -58,6 +58,10 @@ class AdministrativeLevel(BaseModel):
     @property
     def children(self):
         return self.administrativelevel_set.get_queryset()
+    
+    def get_list_geographical_unit(self):
+        """Method to get the list of the all Geographical Unit that the administrative is linked"""
+        return self.geographicalunit_set.get_queryset()
 
 
 

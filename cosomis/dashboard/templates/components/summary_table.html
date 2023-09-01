@@ -1,15 +1,17 @@
 {% load static i18n bootstrap4 custom_tags humanize  %}
 {% if datas %}
 
-{% make_list "summary_subprojects_by_sectors_1" as ids_to_skip_to_format %}
+{% make_list "summary_subprojects_by_sectors_1" "summary_administrative_level_waves" "summary_administrative_level_children" as ids_to_skip_to_format %}
 {% make_list "Nombre de Sous-projets" "Number of subprojects" "Nombre d'infrastructures pour le sous-projet" "Number of subproject infrastructures" "Step" "Etape" "N°" "Actual level" "Niveau réel" "Number" "Nombre" as columns_to_skip_to_format %}
 {% make_list "Actual level" "Niveau réel" as columns_to_add_percent %}
-{% make_list "Secteurs" "Sectors" "Type" "Ouvrages" "Structures" "Step" "Etape" as columns_to_put_left %}
+{% make_list "Secteurs" "Sectors" "Type" "Ouvrages" "Structures" "Step" "Etape" "Cantons covered" "Cantons couverts" as columns_to_put_left %}
 
 <div class="card">
     <div class="card-header">
         <h5 class="font-weight-bold">{{ datas_title }}</h5>
     </div>
+
+    {% if not headers %}
     <div class="row">
         <div class="col-10">
             <div class="input-group mb-3 search-bar">
@@ -29,6 +31,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
     <div class="card-body table-responsive">
         <table id="table-{{ data_id }}" class="table {{ table_class_style }}" >
@@ -38,15 +41,22 @@
                 <td colspan="{{ datas.keys|length }}" scope="col">{{ queryset_results.administrative_level_type }}</td>
             </tr>
             {% endif %}
+            
+            {% if headers %}
+                {% for k, v_header_columns in headers.items %}
+                    <tr>
+                        {% for column in v_header_columns %}
+                        <td> {{ column }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% else %}
             <tr>
                 {% for column in datas.keys %}
-                <td 
-                    {% if column != 'Sectors' and column != 'Secteurs' and column != 'Type' %}
-                    
-                    {% endif %}
-                    >{{ column }}</td>
+                <td> {{ column }}</td>
                 {% endfor %}
             </tr>
+            {% endif %}
             </thead>
             <tbody>
                 {% for i in datas_length_loop %}
@@ -66,8 +76,12 @@
                                         {{ v|remove_zeros_on_zeros }}
                                     {% elif column in columns_to_add_percent %}
                                         {% if v %}{{ v }}%{% endif %}
+                                    {% elif '\n' in v %}
+                                        {% for line in v|split:'\n' %}
+                                            {{ line }}<br>
+                                        {% endfor %}
                                     {% else %}
-                                        {% if v %}{{ v }}{% else %} - {% endif %}
+                                        {% if v %}{{ v|safe  }}{% else %} - {% endif %}
                                     {% endif %}
 
                                     {% if column in columns_to_add_percent and v %}%{% endif %}
@@ -93,14 +107,7 @@
 
 
 <!-- DataTables export files -->
-<script src="{% static 'AdminLTE/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'AdminLTE/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'AdminLTE/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'AdminLTE/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-
-<script src="{% static 'AdminLTE/plugins/cloudflare/ajax/libs/jszip/3.10.1/jszip.min.js' %}"></script>
-<script src="{% static 'AdminLTE/plugins/cloudflare/ajax/libs/pdfmake/0.1.53/pdfmake.min.js' %}"></script>
-<script src="{% static 'AdminLTE/plugins/cloudflare/ajax/libs/pdfmake/0.1.53/vfs_fonts.js' %}"></script>
+{% include 'layouts/datatable-js.html' %}
 
 <script type="text/javascript">
 
@@ -120,7 +127,7 @@
                 }
             ], {% endcomment %}
 
-            dom: 'Blrtip',
+            dom: {% if not headers %}'Blrtip'{% else %}'Blfrtip'{% endif %},
         {% comment %} buttons: [
             {
                 extend: 'print',
@@ -148,6 +155,7 @@
             table_subprojects_number.search($(this).val()).draw();
         });
 
+        {% if not headers %}
         $("#export-{{ data_id }}").on("click", function (event) {
             event.preventDefault();
             var datas_json = {{ datas|safe }};
@@ -176,6 +184,7 @@
 
 
         });
+        {% endif %}
 
 
     });

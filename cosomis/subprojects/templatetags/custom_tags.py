@@ -165,29 +165,10 @@ def remove_zeros_on_zeros(value):
 def subtract(value, arg):
     return value - arg
 
-class MakeListNode(template.Node):
-    def __init__(self, items, varname):
-        # self.items = map(template.Variable, items)
-        self.items = items
-        self.varname = varname
+@register.filter(name="checkType")
+def check_type(elt, _type):
+    return  type(elt).__name__ == _type
 
-    def render(self, context):
-        # context[self.varname] = [ i.resolve(context) for i in self.items ]
-        # context[self.varname] = [ i for i in range(0, 8) ]
-        context[self.varname] = []
-        for i in self.items:
-            if i.isdigit():
-                context[self.varname].append(int(i))
-            else:
-                context[self.varname].append(str(i).replace('"', ''))
-        return ""
-
-@register.tag
-def make_list(parser, token):
-    bits = list(token.split_contents())
-    if len(bits) >= 4 and bits[-2] == "as":
-        varname = bits[-1]
-        items = bits[1:-2]
-        return MakeListNode(items, varname)
-    else:
-        raise template.TemplateSyntaxError("%r expected format is 'item [item ...] as varname'" % bits[0])
+@register.filter
+def split(value, key):
+    return value.split(key)

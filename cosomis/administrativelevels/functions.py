@@ -518,7 +518,7 @@ def get_priorities_group_combine(old_liste, new_liste, group):
     return old_liste
 
 
-def get_administrative_level_ids_descendants(parent_id, parent_type, ids):
+def get_administrative_level_ids_descendants(parent_id, parent_type=None, ids=[]):
     data = []
     
     if parent_id == "All":
@@ -528,9 +528,50 @@ def get_administrative_level_ids_descendants(parent_id, parent_type, ids):
     else:
         data = AdministrativeLevel.objects.filter(parent_id=int(parent_id))
     
-    descendants_ids = [obj.id for obj in data]
+    descendants_ids = [obj.id for obj in data if obj.id not in ids]
     for descendant_id in descendants_ids:
         get_administrative_level_ids_descendants(descendant_id, parent_type, ids)
-        ids.append(str(descendant_id))
+        ids.append(descendant_id)
 
     return ids
+
+def get_administrative_level_ids_ascendants(child_id, ids=[]):
+    data = []
+    if child_id and str(child_id).isdigit():
+        child_ad_obj = list(AdministrativeLevel.objects.filter(id=int(child_id)))
+        if child_ad_obj:
+            if child_ad_obj[0].type == "Region":
+                data = []
+            else:
+                data.append(child_ad_obj[0].parent)
+        
+    ascendants_ids = [obj.id for obj in data]
+    for ascendant_id in ascendants_ids:
+        get_administrative_level_ids_ascendants(ascendant_id, ids)
+        ids.append(ascendant_id)
+    return ids
+
+def get_administrative_level_id_ascendant(child_id, parent_type):
+    child_ad_objs = list(AdministrativeLevel.objects.filter(id=int(child_id)))
+    if child_ad_objs:
+        child_ad_obj = child_ad_objs[0]
+        if child_ad_obj.parent:
+            if child_ad_obj.parent.type == parent_type:
+                return [child_ad_obj.parent.id]
+            elif child_ad_obj.parent.parent:
+                if child_ad_obj.parent.parent.type == parent_type:
+                    return [child_ad_obj.parent.parent.id]
+                elif child_ad_obj.parent.parent.parent:
+                    if child_ad_obj.parent.parent.parent.type == parent_type:
+                        return [child_ad_obj.parent.parent.parent.id]
+                    elif child_ad_obj.parent.parent.parent.parent:
+                        if child_ad_obj.parent.parent.parent.parent.type == parent_type:
+                            return [child_ad_obj.parent.parent.parent.parent.id]
+    return []
+
+def get_children_types_administrativelevels(_type: str):
+    types = ["Region", "Prefecture", "Commune", "Canton", "Village"]
+    try:
+        return types[(types.index(_type)+1):]
+    except:
+        return types

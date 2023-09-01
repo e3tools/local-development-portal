@@ -1,7 +1,0 @@
-{% load static i18n bootstrap4 custom_tags %}
-
-{% for k, v in summary.items %}
-
-    {% include 'components/summary_subprojects_table.html' with data_id=k datas_title=v|get:'title' datas=v|get:'datas' datas_length_loop=v|get:'length_loop' datas_values=v|get:'values' %}
-    
-{% endfor %}

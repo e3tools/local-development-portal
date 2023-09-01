@@ -1,5 +1,7 @@
 {% load static i18n custom_tags %}
 
+{% make_list "dashboard_subprojects" "dashboard_administrativelevels" "dashboard_indicators" as active_dashboard %}
+
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-light-primary soft-shadow sidebar-no-expand">
 
@@ -24,13 +26,39 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-                <li class="nav-item">
-                    <a href="{% url 'dashboard:dashboard' %}"
-                       class="nav-link {% if active_level1 == 'dashboard' %}active{% endif %}">
-                        <i class="nav-icon fa fa-project-diagram"></i>
+
+
+                <li class="nav-item has-submenu">
+                    <a href="javascript:"
+                       class="nav-link {% if active_level1 in active_dashboard %}active{% endif %}">
+                        <i class="nav-icon fa fa-tachometer"></i>
                         <p>{% translate "Dashboard" %}</p>
                     </a>
+                    <ul class="submenu collapse {% if active_level1 in active_dashboard %}show{% endif %}">
+                        <li class="nav-item">
+                            <a href="#"
+                            class="nav-link {% if active_level1 == 'dashboard_indicators' %}active text-dark{% endif %} disabled">
+                                <i class="nav-icon fa fa-tachometer"></i>
+                                <p>{% translate "Indicators" %}</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'dashboard:dashboard_administrativelevels' %}"
+                            class="nav-link {% if active_level1 == 'dashboard_administrativelevels' %}active text-dark{% endif %}">
+                                <i class="nav-icon fa fa-home"></i>
+                                <p>{% translate "Administrative levels" %}</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'dashboard:dashboard_subprojects' %}"
+                            class="nav-link {% if active_level1 == 'dashboard_subprojects' %}active text-dark{% endif %}">
+                                <i class="nav-icon fa fa-project-diagram"></i>
+                                <p>{% translate "Subprojects" %}</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
                 <li class="nav-item">
                     <a href="{% url 'subprojects:list' %}"
                        class="nav-link {% if active_level1 == 'subprojects' %}active{% endif %}">
@@ -46,7 +74,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href=""
+                    <a href="{% url 'financial:allocations_list' %}"
                        class="nav-link {% if active_level1 == 'financial' %}active{% endif %}">
                         <i class="nav-icon fa fa-money"></i>
                         <p>{% translate "Financial" %}</p>
@@ -54,28 +82,28 @@
                 </li>
                 <li class="nav-item">
                     <a href=""
-                       class="nav-link {% if active_level1 == 'procurement' %}active{% endif %}">
+                       class="nav-link {% if active_level1 == 'procurement' %}active{% endif %} disabled" >
                         <i class="nav-icon fa fa-cart-plus"></i>
                         <p>{% translate "Procurement" %}</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href=""
-                       class="nav-link {% if active_level1 == 'facilitators' %}active{% endif %}">
+                       class="nav-link {% if active_level1 == 'facilitators' %}active{% endif %} disabled">
                         <i class="nav-icon fa fa-user-friends"></i>
                         <p>{% translate "Facilitators" %}</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href=""
-                       class="nav-link {% if active_level1 == 'results_framework' %}active{% endif %}">
+                       class="nav-link {% if active_level1 == 'results_framework' %}active{% endif %} disabled">
                         <i class="nav-icon fa fa-pie-chart"></i>
                         <p>{% translate "Results Framework" %}</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href=""
-                       class="nav-link {% if active_level1 == 'reports' %}active{% endif %}">
+                       class="nav-link {% if active_level1 == 'reports' %}active{% endif %} disabled">
                         <i class="nav-icon fa fa-area-chart"></i>
                         <p>{% translate "Reports" %}</p>
                     </a>
