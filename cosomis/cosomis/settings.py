@@ -59,6 +59,7 @@ CREATED_APPS = [
     'authentication',
     'assignments',
     'dashboard',
+    'financial',
 ]
 
 THIRD_PARTY_APPS = [
