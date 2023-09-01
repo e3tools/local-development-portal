@@ -43,6 +43,7 @@ urlpatterns += i18n_patterns(
     path('unicorn/', include('django_unicorn.urls')),
     path('kobotoolbox/', include('kobotoolbox.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('financial/', include('financial.urls')),
 
     path('services/', include('administrativelevels.libraries.services.urls')),
 
