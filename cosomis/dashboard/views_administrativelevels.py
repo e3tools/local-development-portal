@@ -94,6 +94,7 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
             _("Cantons covered"): {},
             _("Number of villages"): {},
             _("Number of geographic intervention units"): {},
+            _("CVD"): {},
             _("Number of subprojects selected"): {},
         }
         columns_listes = list(all_administrative_levels_waves.order_by('wave__number').values_list('wave__number'))
@@ -104,7 +105,7 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
                 waves.append(_wave[0])
            
         count = 0
-
+        total_cantons = 0
         for wave in waves:
             datas[_("Wave")][count] = wave
 
@@ -118,12 +119,17 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
             cantons_ids = []
             villages_ids = []
             nbr_geographical_unit = 0
+            nbr_cvd = 0
             for canton in cantons:
                 cantons_ids.append(canton.id)
                 for village in canton.children:
                     villages_ids.append(village.id)
 
-                nbr_geographical_unit += canton.get_list_geographical_unit().count()
+                units = canton.get_list_geographical_unit()
+                nbr_geographical_unit += units.count()
+
+                for u in units:
+                    nbr_cvd += u.get_cvds().count()
 
             _d_cantons = {}
             for c in cantons:
@@ -138,6 +144,7 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
             c = 0
             for region_name, _cantons in _d_cantons.items():
                 len_cantons = len(_cantons)
+                total_cantons += len_cantons
                 cantons_covered_str += f'{_("%(len_cantons)s cantons in the %(region_name)s region") % {"region_name": region_name, "len_cantons": len_cantons}} ({", ".join([c.name for c in _cantons])})'
                 c += 1
                 if len_d_cantons != c:
@@ -147,6 +154,7 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
 
             datas[_("Number of villages")][count] = len(villages_ids)
             datas[_("Number of geographic intervention units")][count] = nbr_geographical_unit
+            datas[_("CVD")][count] = nbr_cvd
             datas[_("Number of subprojects selected")][count] = Subproject.objects.filter(
                     Q(location_subproject_realized__id__in=villages_ids) | 
                     Q(canton__id__in=cantons_ids),
@@ -155,15 +163,32 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
             
             count += 1
 
+        # All sum
+        datas[_("Wave")][count] = _("Total")
+        datas[_("Cantons covered")][count] = total_cantons
+
+        columns_skip = [_("Wave"), _("Cantons covered")]
+        for k_data in datas.keys():
+            _sum = 0
+            if k_data not in columns_skip:
+                _sum = functions.sum_dict_value(datas[k_data], count)
+            if _sum:
+                datas[k_data][count] = _sum
+        # End All sum
+
+
         return {
             'title': _("Project coverage"),
             'datas': datas,
-            'length_loop': range(0, count),
+            'length_loop': range(0, count+1),
             'values': list(datas.values())
         }
     
 
     def summary_administrative_level_waves_times(self, all_period_wave, project_id=1):
+        import locale
+        locale.setlocale(locale.LC_TIME, "fr_FR") # french
+
         datas = {
             (_("Wave"), _("Wave")): {}
         }
@@ -196,9 +221,9 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
             for part in parts:
                 try:
                     period = PeriodWave.objects.get(project_id=project_id, part=part, wave__number=wave)
-                    datas[(f'{_("Part")} {part}', _("Start date"))][count] = period.begin
+                    datas[(f'{_("Part")} {part}', _("Start date"))][count] = period.begin.strftime("%B %Y").title()
                     
-                    datas[(f'{_("Part")} {part}', _("End date"))][count] = period.end
+                    datas[(f'{_("Part")} {part}', _("End date"))][count] = period.end.strftime("%B %Y").title()
                 except:
                     pass
             count += 1
