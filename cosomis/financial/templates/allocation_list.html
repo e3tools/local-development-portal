@@ -1,0 +1,137 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="btn-group pull-left">
+
+                            <div class="" style="display: inline-block;">
+                                <button class="btn btn-primary" style="display: inline-block;" 
+                                    type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% translate 'Others' %}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                
+                                    <a class="dropdown-item" href="?type=Village">
+                                    Village
+                                    </a>
+                                    <a class="dropdown-item" href="?type=Canton">
+                                    Canton
+                                    </a>
+                                    <a class="dropdown-item" href="?type=Commune">
+                                    Commune
+                                    </a>
+                                    <a class="dropdown-item" href="?type=Prefecture">
+                                    Prefecture
+                                    </a>
+                                    <a class="dropdown-item" href="?type=Region">
+                                    Region
+                                    </a>
+                                </div>
+                            </div>
+                            {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" %}
+                            &nbsp; &nbsp; 
+                            <a class="btn btn-primary" href="{% url 'financial:allocation_create' %}">{% translate 'Register an allocation' %}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive">
+                    <table id="table" class="table">
+                        <thead>
+                        <tr>
+                            <th>{% translate 'Administrative level' %}</th>
+                            <th>{% translate 'Location' %}</th>
+                            <th>{% translate 'Allocation' %}</th>
+                            <th>{% translate 'Project' %}</th>
+                            <th>{% translate 'Date' %}</th>
+                            <th width="12%">{% translate 'Action' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for allocation in allocations %}
+                            <tr>
+                                <td>{{ allocation.administrative_level.type }}</td>
+                                <td>{{ allocation.administrative_level.name }}</td>
+                                <td>{{ allocation.amount|separate_with_space }}</td>
+                                <td>{{ allocation.project.name }}</td>
+                                <td>{{ allocation.allocation_date }}</td>
+                                <td>
+                                    <a href="{% url 'financial:allocation_detail' allocation.pk %}" style="font-size: 9px !important;"
+                                       class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" %}
+                                    <a href="{% url 'financial:allocation_update' allocation.pk %}" style="font-size: 9px !important;"
+                                       class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            {% if allocations.has_previous %}
+                                <li>
+                                    <a class="page-link" href="?page={{ allocations.previous_page_number }}">
+                                        {% comment %} <span aria-hiden="true">&laquo;</span> {% endcomment %}
+                                        <i class="fa fa-arrow-left text-bold"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="page-item">
+                                <p class="page-link text-bold">
+                                    {% translate 'Page' %} {{ allocations.number }} {% translate 'of' %} {{ allocations.paginator.num_pages }}
+                                </p>
+                            </li>
+                            {% if allocations.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ allocations.next_page_number }}">
+                                        {% comment %} <span aria-hidden="true">&laquo;</span> {% endcomment %}
+                                        <i class="fa fa-arrow-right text-bold"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <!-- DataTables export files -->
+    {% include 'layouts/datatable-js.html' %}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+
+            let table = $('#table').DataTable({
+                language: {
+                    url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
+                },
+                dom: 'Blfrtip',
+                buttons: [ 'copy', 'excel', 'pdf', 'colvis' ],
+                lengthMenu: [10, 20, 50, 100],
+                pageLength: 10,
+                order: []
+            });
+            $('#search').on('keyup', function () {
+                table.search($(this).val()).draw();
+            });
+        });
+    </script>
+{% endblock %}
