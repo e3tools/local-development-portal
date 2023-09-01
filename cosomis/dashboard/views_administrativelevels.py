@@ -16,7 +16,7 @@ from assignments.models import AssignAdministrativeLevelToFacilitator
 from . import forms
 from . import functions
 from process_manager.models import AdministrativeLevelWave, PeriodWave
-from financial.models import AdministrativeLevelAllocation
+from financial.models.allocation import AdministrativeLevelAllocation
 
 
 

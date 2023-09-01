@@ -9,6 +9,7 @@ from administrativelevels.models import AdministrativeLevel, CVD
 from subprojects import SUB_PROJECT_TYPE_DESIGNATION, SUB_PROJECT_SECTORS, TYPES_OF_SUB_PROJECT
 from cosomis.customers_fields import *
 from cosomis.types import _QS
+from cosomis.models_base import BaseModel
 
 
 class CustomQuerySet(models.QuerySet):
@@ -22,16 +23,16 @@ class CustomQuerySet(models.QuerySet):
         return Type.objects.filter(id__in=[o.id for o in l])
 
 
-class BaseModel(models.Model):
-    created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
-    updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
+# class BaseModel(models.Model):
+#     created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+#     updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
 
-    class Meta:
-        abstract = True
+#     class Meta:
+#         abstract = True
     
-    def save_and_return_object(self):
-        super().save()
-        return self
+#     def save_and_return_object(self):
+#         super().save()
+#         return self
 
 
 # Create your models here.

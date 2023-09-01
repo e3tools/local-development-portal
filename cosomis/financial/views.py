@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 
-from financial.models import AdministrativeLevelAllocation
+from financial.models.allocation import AdministrativeLevelAllocation
 from usermanager.permissions import (
     EvaluatorPermissionRequiredMixin,
     )

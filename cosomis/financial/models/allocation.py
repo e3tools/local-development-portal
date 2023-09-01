@@ -4,18 +4,19 @@ from django.utils.translation import gettext_lazy as _
 from administrativelevels.models import AdministrativeLevel
 from subprojects.models import Project
 from cosomis.customers_fields import CustomerFloatRangeField
+from cosomis.models_base import BaseModel
 
 
-class BaseModel(models.Model):
-    created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
-    updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
+# class BaseModel(models.Model):
+#     created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+#     updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
 
-    class Meta:
-        abstract = True
+#     class Meta:
+#         abstract = True
     
-    def save_and_return_object(self):
-        super().save()
-        return self
+#     def save_and_return_object(self):
+#         super().save()
+#         return self
     
 class AdministrativeLevelAllocation(BaseModel):
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE, verbose_name=_("Administrative level"))
@@ -24,3 +25,7 @@ class AdministrativeLevelAllocation(BaseModel):
     allocation_date = models.DateField(verbose_name=_("Date"))
     description = models.TextField(verbose_name=_("Description"))
 
+    
+    class Meta(object):
+        app_label = 'financial'
+        db_table = 'financial_administrativeLevel_allocation'

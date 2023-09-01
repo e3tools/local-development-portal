@@ -1,9 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from administrativelevels.models import AdministrativeLevel, BaseModel
+from administrativelevels.models import AdministrativeLevel
 from subprojects.models import Project
 from authentication.models import Facilitator
+from cosomis.models_base import BaseModel
 
 class AssignAdministrativeLevelToFacilitator(BaseModel):
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)

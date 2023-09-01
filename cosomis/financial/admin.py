@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import AdministrativeLevelAllocation
+from .models.allocation import AdministrativeLevelAllocation
+from .models.bank import Bank
 # Register your models here.
 
 class AdministrativeLevelAllocationAdmin(admin.ModelAdmin):
@@ -34,3 +35,4 @@ class AdministrativeLevelAllocationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AdministrativeLevelAllocation, AdministrativeLevelAllocationAdmin)
+admin.site.register(Bank)

@@ -2,30 +2,34 @@ from email.policy import default
 from django.db import models
 from cdd_client import CddClient
 from django.db.models.signals import post_save, post_delete
+from django.utils.translation import gettext_lazy as _
+
+from financial.models.bank import Bank
+from cosomis.models_base import BaseModel
 
 
 # Create your models here.
-class BaseModel(models.Model):
-    created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
-    updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
+# class BaseModel(models.Model):
+#     created_date = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+#     updated_date = models.DateTimeField(auto_now = True, blank=True, null=True)
 
-    class Meta:
-        abstract = True
+#     class Meta:
+#         abstract = True
     
-    def save_and_return_object(self):
-        super().save()
-        return self
+#     def save_and_return_object(self):
+#         super().save()
+#         return self
     
 class AdministrativeLevel(BaseModel):
-    name = models.CharField(max_length=255)
-    parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE)
-    geographical_unit = models.ForeignKey('GeographicalUnit', null=True, blank=True, on_delete=models.CASCADE)
-    cvd = models.ForeignKey('CVD', null=True, blank=True, on_delete=models.CASCADE)
-    type = models.CharField(max_length=255)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    frontalier = models.BooleanField(default=True)
-    rural = models.BooleanField(default=True)
+    name = models.CharField(max_length=255, verbose_name=_("Name"))
+    parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"))
+    geographical_unit = models.ForeignKey('GeographicalUnit', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
+    cvd = models.ForeignKey('CVD', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("CVD"))
+    type = models.CharField(max_length=255, verbose_name=_("Type"))
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, verbose_name=_("Latitude"))
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, verbose_name=_("Longitude"))
+    frontalier = models.BooleanField(default=True, verbose_name=_("Frontalier"))
+    rural = models.BooleanField(default=True, verbose_name=_("Rural"))
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
@@ -66,10 +70,10 @@ class AdministrativeLevel(BaseModel):
 
 
 class GeographicalUnit(BaseModel):
-    canton = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE)
-    attributed_number_in_canton = models.IntegerField()
-    unique_code = models.CharField(max_length=100, unique=True)
-    description = models.TextField(null=True, blank=True)
+    canton = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Administrative level"))
+    attributed_number_in_canton = models.IntegerField(verbose_name=_("Attributed number in canton"))
+    unique_code = models.CharField(max_length=100, unique=True, verbose_name=_("Unique code"))
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
 
     class Meta:
         unique_together = ['canton', 'attributed_number_in_canton']
@@ -97,18 +101,23 @@ class GeographicalUnit(BaseModel):
     
 
 class CVD(BaseModel):
-    name = models.CharField(max_length=255)
-    geographical_unit = models.ForeignKey('GeographicalUnit', on_delete=models.CASCADE)
-    headquarters_village = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, related_name='headquarters_village_of_the_cvd')
-    attributed_number_in_canton = models.IntegerField(null=True, blank=True)
-    unique_code = models.CharField(max_length=100, unique=True)
-    president_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True)
-    president_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True)
-    treasurer_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True)
-    treasurer_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True)
-    secretary_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True)
-    secretary_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
+    name = models.CharField(max_length=255, verbose_name=_("Name"))
+    geographical_unit = models.ForeignKey('GeographicalUnit', on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
+    headquarters_village = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, related_name='headquarters_village_of_the_cvd', verbose_name=_("Headquarters village"))
+    attributed_number_in_canton = models.IntegerField(null=True, blank=True, verbose_name=_("Attributed number in canton"))
+    unique_code = models.CharField(max_length=100, verbose_name=_("Unique code"))
+    bank = models.ForeignKey(Bank, null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Bank"))
+    bank_code = models.CharField(max_length=10, verbose_name=_("Bank code"), null=True, blank=True)
+    guichet_code = models.CharField(max_length=10, verbose_name=_("Guichet code"), null=True, blank=True)
+    account_number = models.CharField(max_length=100, verbose_name=_("Account number"), null=True, blank=True)
+    rib = models.CharField(max_length=2, verbose_name=_("RIB"), null=True, blank=True)
+    president_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("President name of the CVD"))
+    president_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True, verbose_name=_("President phone of the CVD"))
+    treasurer_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Treasurer name of the CVD"))
+    treasurer_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True, verbose_name=_("Treasurer phone of the CVD"))
+    secretary_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Secretary name of the CVD"))
+    secretary_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True, verbose_name=_("Secretary phone of the CVD"))
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
 
     def get_name(self):
         administrativelevels = self.get_villages()
