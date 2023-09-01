@@ -60,6 +60,7 @@ CREATED_APPS = [
     'assignments',
     'dashboard',
     'financial',
+    'process_manager',
 ]
 
 THIRD_PARTY_APPS = [
