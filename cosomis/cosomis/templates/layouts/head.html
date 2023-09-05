@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 
 <meta charset="utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -57,3 +57,32 @@
             padding-right: 1rem;
       }
 </style>
+
+<script>
+
+      function loadPage(url_path, elt_data_place, elt_spin, administrative_level_id=null, administrative_level_type=null) {
+            elt_spin.show();
+            $.ajax({
+                  type: "GET",
+                  url: url_path,
+                  data: {
+                  administrative_level_id: administrative_level_id,
+                  administrative_level_type: administrative_level_type
+                  },
+                  success: function (response) {
+                  elt_spin.hide();
+                  elt_data_place.html(response);
+                  },
+                  error: function (data) {
+                  elt_spin.hide();
+                  alert(error_server_message + "Error " + data.status);
+                  }
+            });
+      }
+
+      function close_window() {
+            if (confirm('{% translate "Close this tab?" %}')) {
+                  close();
+            }
+      }
+</script>

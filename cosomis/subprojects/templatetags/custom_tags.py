@@ -129,12 +129,26 @@ def join_with_commas(obj_list):
 
 @register.filter
 def separate_with_space(value, unit="FCFA"):
+    
     if not value or not str(value).replace('.','',1).replace(',','',1).isdigit():
         return ""
+    
+    float_values = str(value).split(',')
+    if len(float_values) > 1:
+        float_value = float_values[-1]
+    else:
+        float_value = float_values[0]
+    float_values = str(float_value).split('.')
+    if len(float_values) > 1:
+        float_value = float_values[-1]
+    else:
+        float_value = float_values[0]
+
+
     value = str(value).split(',')[0].split('.')[0]
     l = len(str(int(value)))
     if l in (0, 1) and int(value) < 1:
-        return str(int(value))  + " " + unit
+        return str(int(value)) + " " + unit
     
     list_value_str = list(value)
     list_value_str.reverse()
@@ -146,7 +160,7 @@ def separate_with_space(value, unit="FCFA"):
 
     list_money_format = list(money_format)
     list_money_format.reverse()
-    return "".join(list_money_format) + " " + unit
+    return "".join(list_money_format) + "." + float_value + " " + unit
 
 @register.filter
 def remove_zeros_on_zeros(value):

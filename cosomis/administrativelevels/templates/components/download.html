@@ -12,7 +12,7 @@
         <div class="modal-content">
 
             <form method="post" enctype="multipart/form-data"
-                action="{% url 'administrativelevels:download' %}">
+                action="{% if export_url %}{% url export_url %}{% else %}{% url 'administrativelevels:download' %}{% endif %}">
                 {% csrf_token %}
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">
@@ -38,7 +38,7 @@
                     <div class="form-group" id="value_of_type_content">
                         <label for="value_of_type">{% translate 'Name' %} "<span id="type_name"></span>"</label>
                         {% comment %} <input type="text" class="form-control" id="value_of_type" name="value_of_type" value=""> {% endcomment %}
-                        <select class="form-control" id="value_of_type" name="value_of_type" style="width: 100%;">
+                        <select class="form-control" id="value_of_type" name="value_of_type" style="width: 100%;" multiple>
                         </select>
                     </div>
 
@@ -105,7 +105,7 @@
                     success: function (data) {
                         for(let i=0; i < data.length; i++){
                             value_of_type_elt.innerHTML += `
-                            <option value="`+ data[i].name +`">`+ data[i].name +`</option>
+                            <option value="`+ data[i].id +`">`+ data[i].name +`</option>
                             `;
                         }
                         

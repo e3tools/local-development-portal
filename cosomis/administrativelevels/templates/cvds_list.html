@@ -34,11 +34,18 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-12">
-                        {% if user.is_superuser or user|has_group:"Admin" %}
                         <div class="btn-group pull-left">
-                            <a class="btn btn-primary" href="{% url 'administrativelevels:cvd_create' %}">{% translate 'Create CVD' %}</a>
+                            {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Accountant" %}
+                                {% if user.is_superuser or user|has_group:"Admin" %}
+                                <a class="btn btn-primary" href="{% url 'administrativelevels:cvd_create' %}">{% translate 'Create CVD' %}</a>
+                                <div> &nbsp; &nbsp; </div>
+                                {% endif %}
+                                {% include 'components/modal_upload_one_sheet.html' with type_object="cvd" show_just_villages=False %}
+                                <div> &nbsp; &nbsp; </div>
+                            {% endif %}
+                            {% include 'components/download.html' with export_url='administrativelevels:download_cvd' %}
                         </div>
-                        {% endif %}
+
                         <div class="btn-group pull-right">
                             {% if user.is_superuser or user|has_group:"Admin" %}
                                 <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_unit_create' %}">{% translate 'Create geographical unit' %}</a>
@@ -75,7 +82,7 @@
                                        class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
                                         <span class="_mobile"><i class="fa fa-eye"></i></span>
                                     </a>
-                                    {% if user.is_superuser or user|has_group:"Admin" %}
+                                    {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Accountant" %}
                                     <a href="{% url 'administrativelevels:cvd_update' cvd.pk %}"
                                        class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
                                         <span class="_mobile"><i class="fa fa-edit"></i></span>
@@ -85,6 +92,17 @@
                             </tr>
                         {% endfor %}
                         </tbody>
+                        
+                        <tfoot>
+                            <tr>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            </tr>
+                        </tfoot>
                     </table>
 
                     <nav>
@@ -138,7 +156,32 @@
                 ],
                 lengthMenu: [10, 50, 100],
                 pageLength: 10,
-                order: [[0, 'desc']]
+                order: [],
+                initComplete: function () {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            var column = this;
+                            
+                            // Create select element and listener
+                            var select = $('<select style="width:50px !important;"><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $(`#table`).DataTable.util.escapeRegex($(this).val());
+            
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+            
+                            // Add list of options
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append('<option value="' + d + '">' + d + '</option>');
+                                });
+                        });
+                }
             });
             $('#search').on('keyup', function () {
                 table.search($(this).val()).draw();

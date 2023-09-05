@@ -15,22 +15,22 @@
                                     {% translate 'Others' %}
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?type=cvd">
+                                    <a class="dropdown-item tab-bank-transfer-other" href="#bank-transfers" data-href="{% url 'financial:bank_transfers_list' %}?type=cvd">
                                     {% translate 'CVD' %}
                                     </a>
-                                    <a class="dropdown-item tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?type=Village">
+                                    <a class="dropdown-item tab-bank-transfer-other" href="#bank-transfers" data-href="{% url 'financial:bank_transfers_list' %}?type=Village">
                                     {% translate 'Village' %}
                                     </a>
-                                    <a class="dropdown-item tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?type=Canton">
+                                    <a class="dropdown-item tab-bank-transfer-other" href="#bank-transfers" data-href="{% url 'financial:bank_transfers_list' %}?type=Canton">
                                     {% translate 'Canton' %}
                                     </a>
-                                    <a class="dropdown-item tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?type=Commune">
+                                    <a class="dropdown-item tab-bank-transfer-other" href="#bank-transfers" data-href="{% url 'financial:bank_transfers_list' %}?type=Commune">
                                     {% translate 'Commune' %}
                                     </a>
-                                    <a class="dropdown-item tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?type=Prefecture">
+                                    <a class="dropdown-item tab-bank-transfer-other" href="#bank-transfers" data-href="{% url 'financial:bank_transfers_list' %}?type=Prefecture">
                                     {% translate 'Prefecture' %}
                                     </a>
-                                    <a class="dropdown-item tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?type=Region">
+                                    <a class="dropdown-item tab-bank-transfer-other" href="#bank-transfers" data-href="{% url 'financial:bank_transfers_list' %}?type=Region">
                                     {% translate 'Region' %}
                                     </a>
                                 </div>
@@ -38,47 +38,47 @@
                             {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Accountant" %}
                             &nbsp; &nbsp; 
                             <a class="btn btn-primary" target="_blank"
-                                href="{% url 'financial:allocation_create' %}">
-                                    {% translate 'Register an allocation' %}
+                                href="{% url 'financial:bank_transfer_create' %}">
+                                    {% translate 'Register a bank transfer' %}
                             </a>
                             {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="card-body table-responsive">
-                    <table id="table-allocations" class="table">
+                    <table id="table-bank-transfers" class="table">
                         <thead>
                         <tr>
                             <th>{% translate 'Administrative level' %}</th>
                             <th>{% translate 'Location' %}</th>
-                            <th>{% translate 'Allocation' %}</th>
+                            <th>{% translate 'Amount Transfer' %}</th>
                             <th>{% translate 'Project' %}</th>
                             <th>{% translate 'Date' %}</th>
                             <th width="12%">{% translate 'Action' %}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for allocation in allocations %}
+                        {% for bank_transfer in bank_transfers %}
                             <tr>
-                                {% if allocation.administrative_level %}
-                                <td>{{ allocation.administrative_level.type }}</td>
-                                <td>{{ allocation.administrative_level.name }}</td>
+                                {% if bank_transfer.administrative_level %}
+                                <td>{{ bank_transfer.administrative_level.type }}</td>
+                                <td>{{ bank_transfer.administrative_level.name }}</td>
                                 {% else %}
                                 <td>CVD</td>
-                                <td>{{ allocation.cvd.name }}</td>
+                                <td>{{ bank_transfer.cvd.name }}</td>
                                 {% endif %}
 
-                                <td>{{ allocation.amount|separate_with_space }}</td>
-                                <td>{{ allocation.project.name }}</td>
-                                <td>{{ allocation.allocation_date }}</td>
+                                <td>{{ bank_transfer.amount_transferred|separate_with_space }}</td>
+                                <td>{{ bank_transfer.project.name }}</td>
+                                <td>{{ bank_transfer.transfer_date }}</td>
                                 <td>
-                                    <a href="#" data-toggle="modal" data-target="#allocation-details-{{ allocation.pk }}" 
+                                    <a href="#" data-toggle="modal" data-target="#bank-transfer-details-{{ bank_transfer.pk }}" 
                                         style="font-size: 9px !important;" 
                                        class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                     {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Accountant" %}
-                                    <a href="{% url 'financial:allocation_update' allocation.pk %}" 
+                                    <a href="{% url 'financial:bank_transfer_update' bank_transfer.pk %}" 
                                         style="font-size: 9px !important;" target="_blank"
                                        class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
                                         <i class="fa fa-edit"></i>
@@ -92,10 +92,10 @@
 
                     <nav>
                         <ul class="pagination justify-content-center">
-                            {% if allocations.has_previous %}
+                            {% if bank_transfers.has_previous %}
                                 <li>
-                                    <a class="page-link" href="#allocations" data-href="{% url 'financial:allocations_list' %}?page={{ allocations.previous_page_number }}" 
-                                        class="tab-allocation-other">
+                                    <a class="page-link" href="#bank-transfers" data-href="{% url 'financial:bank_transfers_list' %}?page={{ bank_transfers.previous_page_number }}" 
+                                        class="tab-bank-transfer-other">
                                         {% comment %} <span aria-hiden="true">&laquo;</span> {% endcomment %}
                                         <i class="fa fa-arrow-left text-bold"></i>
                                     </a>
@@ -103,13 +103,13 @@
                             {% endif %}
                             <li class="page-item">
                                 <p class="page-link text-bold">
-                                    {% translate 'Page' %} {{ allocations.number }} {% translate 'of' %} {{ allocations.paginator.num_pages }}
+                                    {% translate 'Page' %} {{ bank_transfers.number }} {% translate 'of' %} {{ bank_transfers.paginator.num_pages }}
                                 </p>
                             </li>
-                            {% if allocations.has_next %}
+                            {% if bank_transfers.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link" href="#allocations" data-href="{% url 'financial:allocations_list' %}?page={{ allocations.next_page_number }}" 
-                                        class="tab-allocation-other">
+                                    <a class="page-link" href="#bank-transfers" data-href="{% url 'financial:bank_transfers_list' %}?page={{ bank_transfers.next_page_number }}" 
+                                        class="tab-bank-transfer-other">
                                         {% comment %} <span aria-hidden="true">&laquo;</span> {% endcomment %}
                                         <i class="fa fa-arrow-right text-bold"></i>
                                     </a>
@@ -127,34 +127,37 @@
 
 
 <!-- Modal -->
-{% for allocation in allocations %}
-<div class="modal fade" id="allocation-details-{{ allocation.pk }}" tabindex="-1" role="dialog" aria-labelledby="allocation-center-title-{{ allocation.pk }}" aria-hidden="true">
+{% for bank_transfer in bank_transfers %}
+<div class="modal fade" id="bank-transfer-details-{{ bank_transfer.pk }}" tabindex="-1" role="dialog" aria-labelledby="bank-transfer-center-title-{{ bank_transfer.pk }}" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="allocation-log-title-{{ allocation.pk }}">{% translate 'Allocation details' %}</h5>
+        <h5 class="modal-title" id="bank-transfer-log-title-{{ bank_transfer.pk }}">{% translate 'Bank transfer details' %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div>
-            <span style="font-weight: bold;">{% translate 'Administrative level' %}</span> : <span>{% if allocation.administrative_level %}{{ allocation.administrative_level.type }}{% else %}CVD{% endif %}</span>
+            <span style="font-weight: bold;">{% translate 'Administrative level' %}</span> : <span>{% if bank_transfer.administrative_level %}{{ bank_transfer.administrative_level.type }}{% else %}CVD{% endif %}</span>
         </div><br />
         <div>
-            <span style="font-weight: bold;">{% translate 'Location' %}</span> : <span>{% if allocation.administrative_level %}{{ allocation.administrative_level.name }}{% else %}{{ allocation.cvd.name }}{% endif %}</span>
+            <span style="font-weight: bold;">{% translate 'Location' %}</span> : <span>{% if bank_transfer.administrative_level %}{{ bank_transfer.administrative_level.name }}{% else %}{{ bank_transfer.cvd.name }}{% endif %}</span>
         </div><br />
         <div>
-            <span style="font-weight: bold;">{% translate 'Amount allocated' %}</span> : <span>{{ allocation.amount|separate_with_space }}</span>
+            <span style="font-weight: bold;">{% translate 'Amount Transfer' %}</span> : <span>{{ bank_transfer.amount_transferred|separate_with_space }}</span>
         </div><br />
         <div>
             <span style="font-weight: bold;">{% translate 'Project' %}</span> : <span>{{ bank_transfer.project.name }}</span>
         </div><br />
         <div>
-            <span style="font-weight: bold;">{% translate 'Date' %}</span> : <span>{{ allocation.allocation_date }}</span>
+            <span style="font-weight: bold;">{% translate 'Transfer date' %}</span> : <span>{{ bank_transfer.transfer_date }}</span>
         </div><br />
         <div>
-            <span style="font-weight: bold;">{% translate 'Description' %}</span> : <span>{% if allocation.description %}{{ allocation.description }}{% else %}-{% endif %}</span>
+            <span style="font-weight: bold;">{% translate 'Motif' %}</span> : <span>{% if bank_transfer.motif %}{{ bank_transfer.motif }}{% else %}-{% endif %}</span>
+        </div><br />
+        <div>
+            <span style="font-weight: bold;">{% translate 'Description' %}</span> : <span>{% if bank_transfer.description %}{{ bank_transfer.description }}{% else %}-{% endif %}</span>
         </div>
         
       </div>
@@ -168,6 +171,7 @@
 <!-- End Modal -->
 
 
+
 {% comment %} {% block javascript %}
     {{ block.super }} {% endcomment %}
 
@@ -177,8 +181,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
             {% get_current_language as lang %}
-            
-            let table_allocations = $('#table-allocations').DataTable({
+
+            let table_bank_transfers = $('#table-bank-transfers').DataTable({
                 retrieve: true,
                 paging: false,
                 language: {
@@ -191,13 +195,11 @@
                 order: []
             });
         
-            $('a.tab-allocation-other').on('click', function () {
+            $('a.tab-bank-transfer-other').on('click', function () {
                 var elt = $(this).attr('href').replace('#', '');
                 loadPage($(this).attr('data-href'), $(`#${elt}-data`), $(`#${elt}-spin`));
             });
 
-
-            
         });
     </script>
 {% comment %} {% endblock %} {% endcomment %}

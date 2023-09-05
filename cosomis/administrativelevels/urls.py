@@ -13,6 +13,7 @@ urlpatterns = [
     path('detail/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='detail'), #The path of the detail
     path('upload/', views.UploadCSVView.as_view(), name='upload'), #The path to download CSV/Excel file from db
     path('download/', views.DownloadCSVView.as_view(), name='download'), #The path to upload CSV file and save in db
+    path('download-cvd/', views.DownloadCVDCSVView.as_view(), name='download_cvd'), #The path to upload CVD on CSV file and save in db
     path('village/<int:administrative_level_id>/obstacles', views.ObstaclesListView.as_view(), name='priorities_obstacles'),
     path('village/obstacles/<int:obstacle_id>/delete', views.obstacle_delete, name='obstacle_delete'), #The path to delete obstacle
     path('village/<int:administrative_level_id>/goals', views.GoalsListView.as_view(), name='priorities_goals'),

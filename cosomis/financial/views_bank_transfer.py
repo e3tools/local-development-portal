@@ -10,31 +10,21 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 
-from financial.models.allocation import AdministrativeLevelAllocation
+from financial.models.financial import BankTransfer
 from usermanager.permissions import (
     AccountantPermissionRequiredMixin,
     )
-from financial.forms import AdministrativeLevelAllocationForm
+from financial.forms import BankTransferForm
 # Create your views here.
 
 
-class FinancialTemplateView(PageMixin, LoginRequiredMixin, generic.TemplateView):
-    template_name = 'financials.html'
-    active_level1 = 'financial'
-    title = _('Financials')
-    
-    def get_context_data(self, **kwargs):
-        ctx = super(FinancialTemplateView, self).get_context_data(**kwargs)
-        ctx['hide_content_header'] = True
-        return ctx
 
 
-
-class AdministrativeLevelAllocationCreateView(PageMixin, LoginRequiredMixin, AccountantPermissionRequiredMixin, generic.CreateView):
-    model = AdministrativeLevelAllocation
-    template_name = 'allocation_add.html'
-    context_object_name = 'allocation'
-    title = _('Create Administrative level Allocation')
+class BankTransferCreateView(PageMixin, LoginRequiredMixin, AccountantPermissionRequiredMixin, generic.CreateView):
+    model = BankTransfer
+    template_name = 'bank_transfer_add.html'
+    context_object_name = 'bank_transfer'
+    title = _('Register a bank transfer')
     active_level1 = 'financial'
     breadcrumb = [
         {
@@ -43,29 +33,29 @@ class AdministrativeLevelAllocationCreateView(PageMixin, LoginRequiredMixin, Acc
         },
     ]
 
-    form_class = AdministrativeLevelAllocationForm # specify the class form to be displayed
+    form_class = BankTransferForm # specify the class form to be displayed
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.form_mixin:
             context['form'] = self.form_mixin
         else:
-            context['form'] = AdministrativeLevelAllocationForm()
+            context['form'] = BankTransferForm()
         return context
     
     def post(self, request, *args, **kwargs):
-        form = AdministrativeLevelAllocationForm(request.POST)
+        form = BankTransferForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('financial:financials')
         self.form_mixin = form
-        return super(AdministrativeLevelAllocationCreateView, self).get(request, *args, **kwargs)
+        return super(BankTransferCreateView, self).get(request, *args, **kwargs)
 
 
-class AdministrativeLevelAllocationUpdateView(PageMixin, LoginRequiredMixin, AccountantPermissionRequiredMixin, generic.UpdateView):
-    model = AdministrativeLevelAllocation
-    template_name = 'allocation_add.html'
-    context_object_name = 'allocation'
-    title = _('Update Administrative level Allocation')
+class BankTransferUpdateView(PageMixin, LoginRequiredMixin, AccountantPermissionRequiredMixin, generic.UpdateView):
+    model = BankTransfer
+    template_name = 'bank_transfer_add.html'
+    context_object_name = 'bank_transfer'
+    title = _('Update Transfer')
     active_level1 = 'financial'
     breadcrumb = [
         {
@@ -74,34 +64,34 @@ class AdministrativeLevelAllocationUpdateView(PageMixin, LoginRequiredMixin, Acc
         },
     ]
 
-    form_class = AdministrativeLevelAllocationForm # specify the class form to be displayed
+    form_class = BankTransferForm # specify the class form to be displayed
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.form_mixin:
             context['form'] = self.form_mixin
         else:
-            context['form'] = AdministrativeLevelAllocationForm(instance=self.get_object())
+            context['form'] = BankTransferForm(instance=self.get_object())
         return context
     
     
     def post(self, request, *args, **kwargs):
-        form = AdministrativeLevelAllocationForm(request.POST, instance=self.get_object())
+        form = BankTransferForm(request.POST, instance=self.get_object())
         if form.is_valid():
             form.save()
             return redirect('financial:financials')
         self.form_mixin = form
-        return super(AdministrativeLevelAllocationForm, self).get(request, *args, **kwargs)
+        return super(BankTransferUpdateView, self).get(request, *args, **kwargs)
     
 
 
-class AdministrativeLevelAllocationsListView(PageMixin, LoginRequiredMixin, generic.ListView):
-    """Display allocations list"""
+class BankTransfersListView(PageMixin, LoginRequiredMixin, generic.ListView):
+    """Display bank transfers list"""
 
-    model = AdministrativeLevelAllocation
+    model = BankTransfer
     queryset = []
-    template_name = 'allocation_list.html'
-    context_object_name = 'allocations'
-    title = _('Allocations')
+    template_name = 'bank_transfer_list.html'
+    context_object_name = 'bank_transfers'
+    title = _('Transfers')
     active_level1 = 'financial'
     breadcrumb = [
         {
@@ -113,30 +103,31 @@ class AdministrativeLevelAllocationsListView(PageMixin, LoginRequiredMixin, gene
     def get_queryset(self):
         search = self.request.GET.get("search", None)
         page_number = self.request.GET.get("page", None)
-        _type = self.request.GET.get("type", "Canton").title()
+        _type = self.request.GET.get("type", "cvd").title()
         if search:
             if search == "All":
-                ads = AdministrativeLevelAllocation.objects.filter(
+                ads = BankTransfer.objects.filter(
                     Q(
                         Q(administrative_level__type=_type) if _type != "Cvd" else Q(cvd__isnull=False)
                     )
                 )
                 return Paginator(ads, ads.count()).get_page(page_number)
             search = search.upper()
-            return Paginator(AdministrativeLevelAllocation.objects.filter(
+            return Paginator(BankTransfer.objects.filter(
                 Q(
                     Q(administrative_level__name__icontains=search) if _type != "Cvd" else Q(cvd__name__icontains=search)
                 ) | 
                 Q(project__name__icontains=search) | 
-                Q(allocation_date__icontains=search) | 
+                Q(transfer_date__icontains=search) | 
                 Q(description__icontains=search) | 
-                Q(amount__icontains=search),
+                Q(motif__icontains=search) | 
+                Q(amount_transferred__icontains=search),
                 Q(
                     Q(administrative_level__type=_type) if _type != "Cvd" else Q(cvd__isnull=False)
                 )
             ), 100).get_page(page_number)
         else:
-            return Paginator(AdministrativeLevelAllocation.objects.filter(
+            return Paginator(BankTransfer.objects.filter(
                 Q(
                     Q(administrative_level__type=_type) if _type != "Cvd" else Q(cvd__isnull=False)
                 )
@@ -144,19 +135,19 @@ class AdministrativeLevelAllocationsListView(PageMixin, LoginRequiredMixin, gene
 
         # return super().get_queryset()
     def get_context_data(self, **kwargs):
-        ctx = super(AdministrativeLevelAllocationsListView, self).get_context_data(**kwargs)
+        ctx = super(BankTransfersListView, self).get_context_data(**kwargs)
         ctx['search'] = self.request.GET.get("search", None)
-        ctx['type'] = self.request.GET.get("type", "Canton")
+        ctx['type'] = self.request.GET.get("type", "cvd")
         return ctx
     
 
-class AdministrativeLevelAllocationDetailView(PageMixin, LoginRequiredMixin, generic.DetailView):
-    """Class to present the detail page of one allocations"""
+class BankTransferDetailView(PageMixin, LoginRequiredMixin, generic.DetailView):
+    """Class to present the detail page of one Bank Transfer"""
 
-    model = AdministrativeLevelAllocation
-    template_name = 'alocation_detail.html'
-    context_object_name = 'allocation'
-    title = _('Allocation')
+    model = BankTransfer
+    template_name = 'bank_transfer_detail.html'
+    context_object_name = 'bank_transfer'
+    title = _('Bank Transfer')
     active_level1 = 'financial'
     breadcrumb = [
         {

@@ -8,8 +8,9 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="btn-group pull-left">
-                            {% comment %} <a class="btn btn-primary" href="{% url 'financial:allocations_list' %}">{% translate 'Allocations' %}</a> {% endcomment %}
-                            <a href="javascript:close_window();"><i class="fas fa-times text-danger"></i></a>
+                            {% comment %} <a class="nav-link font-weight-bold" href="{% url 'financial:financials' %}" 
+                                role="button"><i class="fas fa-chevron-left text-primary"></i></a> {% endcomment %}
+                                <a href="javascript:close_window();"><i class="fas fa-times text-danger"></i></a>
                         </div>
                     </div>
                 </div>
@@ -18,6 +19,9 @@
                         <div class="col-9">
                             <form method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
+                                {% comment %} {% for field in form %}
+                                    {% bootstrap_field field %}
+                                {% endfor %} {% endcomment %}
                                 {% if form_mixin.errors %}
                                     {% for field in form_mixin %}
                                         {% for error in field.errors %}

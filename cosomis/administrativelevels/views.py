@@ -19,8 +19,15 @@ from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Co
 from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm
 from usermanager.permissions import (
     CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
-    AdminPermissionRequiredMixin
+    AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
     )
+from administrativelevels import functions_cvd as cvd_functions
+from administrativelevels.functions import (
+    get_administrative_level_ids_descendants,
+)
+from administrativelevels.functions_cvd import save_cvd_instead_of_csv_file_datas_in_db
+
+
 
 class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     """Class to present the detail page of one village"""
@@ -198,7 +205,8 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin,
             except Exception as exc:
                 raise Http404
         elif _type == "subproject_new":
-            """Load Administrative Levels"""
+            """Load Subprojects"""
+            redirect_path = "subprojects:list"
             try:
                 datas = convert_file_to_dict.conversion_file_xlsx_to_dict(request.FILES.get('file'), request.POST.get('sheet_name'))
             except pd.errors.ParserError as exc:
@@ -212,9 +220,8 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin,
             
             except Exception as exc:
                 raise Http404
-            
+        
         else:
-            """Load Administrative Levels"""
             try:
                 datas = convert_file_to_dict.conversion_file_xlsx_to_dict(request.FILES.get('file'))
             except pd.errors.ParserError as exc:
@@ -222,8 +229,15 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin,
             except Exception as exc:
                 messages.info(request, _("An error has occurred..."))
             
-            message = administrativelevels_functions.save_csv_file_datas_in_db(datas) # call function to save CSV datas in database
             
+            if _type == "cvd":
+                """Load CVD"""
+                redirect_path = "administrativelevels:cvds_list"
+                message = save_cvd_instead_of_csv_file_datas_in_db(datas) # call function to save CSV datas in database
+            else:
+                """Load Administrative Levels"""
+                message = administrativelevels_functions.save_csv_file_datas_in_db(datas) # call function to save CSV datas in database
+                
         if message:
             messages.info(request, message)
 
@@ -251,10 +265,30 @@ class DownloadCSVView(PageMixin, LoginRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         file_path = ""
+        administrative_level_ids_get = self.request.POST.getlist('value_of_type', None)
+        administrative_level_type = self.request.POST.get('type', 'All').title()
+        
+        administrative_level_type = "All" if administrative_level_type in ("", "null", "undefined") else administrative_level_type
+        
+        ald_filter_ids = []
+        administrative_levels_ids = []
+        if not administrative_level_ids_get:
+            administrative_level_ids_get.append("")
+        for ald_id in administrative_level_ids_get:
+            ald_id = 0 if ald_id in ("", "null", "undefined", "All") else ald_id
+            administrative_levels_ids += get_administrative_level_ids_descendants(
+                ald_id, None, []
+            )
+            if ald_id:
+                ald_filter_ids.append(int(ald_id))
+                
+        administrative_levels_ids = list(set(administrative_levels_ids))
+
         try:
             file_path = administrativelevels_functions.get_administratives_levels_under_file_excel_or_csv(
-                file_type=request.POST.get("file_type"),
-                params={"type":request.POST.get("type"), "value_of_type":request.POST.get("value_of_type")}
+                request.POST.get("file_type"), #file_type=request.POST.get("file_type"),
+                administrative_levels_ids
+                # params={"type":request.POST.get("type"), "value_of_type":request.POST.get("value_of_type")}
             )
 
         except Exception as exc:
@@ -620,7 +654,7 @@ class GeographicalUnitListView(PageMixin, LoginRequiredMixin, ListView):
             search = search.upper()
             _gs = []
             for g in gs:
-                if search in g.get_name():
+                if search in g.get_name() or (g.canton and search in g.canton.name):
                     _gs.append(g)
             return Paginator(_gs, 100).get_page(page_number)
         else:
@@ -803,7 +837,9 @@ class CVDListView(PageMixin, LoginRequiredMixin, ListView):
                 cs = CVD.objects.all()
                 return Paginator(cs, cs.count()).get_page(page_number)
             search = search.upper()
-            return Paginator(CVD.objects.filter(name__icontains=search), 100).get_page(page_number)
+            return Paginator(CVD.objects.filter(
+                Q(name__icontains=search) | Q(headquarters_village__parent__name__icontains=search)
+            ), 100).get_page(page_number)
         else:
             return Paginator(CVD.objects.all(), 100).get_page(page_number)
 
@@ -854,7 +890,7 @@ class CVDCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin,
         return super(CVDCreateView, self).get(request, *args, **kwargs)
 
 
-class CVDUpdateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, UpdateView):
+class CVDUpdateView(PageMixin, LoginRequiredMixin, AccountantPermissionRequiredMixin, UpdateView):
     model = CVD
     template_name = 'cvd_create.html'
     context_object_name = 'cvd'
@@ -918,4 +954,56 @@ class CVDDetailView(PageMixin, LoginRequiredMixin, DetailView):
             'title': title
         },
     ]
+
+class DownloadCVDCSVView(PageMixin, LoginRequiredMixin, TemplateView):
+    """Class to download CVD under excel file"""
+
+    template_name = 'components/download.html'
+    context_object_name = 'Download'
+    title = _("Download")
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def post(self, request, *args, **kwargs):
+        file_path = ""
+        administrative_level_ids_get = self.request.POST.getlist('value_of_type', None)
+        administrative_level_type = self.request.POST.get('type', 'All').title()
+        
+        administrative_level_type = "All" if administrative_level_type in ("", "null", "undefined") else administrative_level_type
+        
+        ald_filter_ids = []
+        administrative_levels_ids = []
+        if not administrative_level_ids_get:
+            administrative_level_ids_get.append("")
+        for ald_id in administrative_level_ids_get:
+            ald_id = 0 if ald_id in ("", "null", "undefined", "All") else ald_id
+            administrative_levels_ids += get_administrative_level_ids_descendants(
+                ald_id, None, []
+            )
+            if ald_id:
+                ald_filter_ids.append(int(ald_id))
+                
+        administrative_levels_ids = list(set(administrative_levels_ids))
+
+        try:
+            file_path = cvd_functions.get_cvd_under_file_excel_or_csv(
+                request.POST.get("file_type"), administrative_levels_ids
+            )
+
+        except Exception as exc:
+            messages.info(request, _("An error has occurred..."))
+
+        if not file_path:
+            return redirect('administrativelevels:list')
+        else:
+            return download_file.download(
+                request, 
+                file_path,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
     

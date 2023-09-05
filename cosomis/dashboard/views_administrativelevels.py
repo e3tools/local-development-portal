@@ -379,7 +379,8 @@ class DashboardSummaryAdministrativeLevelAllocationListView(DashboardAdministrat
 
             try:
                 amount__sum = AdministrativeLevelAllocation.objects.filter(
-                    administrative_level__id=line.administrative_level.id, project_id=project_id
+                    administrative_level__id=line.administrative_level.id, project_id=project_id,
+                    cvd=None
                 ).aggregate(Sum('amount'))['amount__sum']
 
                 datas[_("Allocation")][count] = amount__sum if amount__sum else ""

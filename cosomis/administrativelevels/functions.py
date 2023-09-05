@@ -120,10 +120,12 @@ def save_csv_file_datas_in_db(datas_file: dict) -> str:
 
 
 
-def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params={"type":"All", "value_of_type":""}) -> str:
-    _type = params.get("type").capitalize() if params.get("type") else ""
-    if file_type not in ("csv", "excel") or _type not in ("All", "Region", "Prefecture", "Commune", "Canton", "Village"):
-        return ""
+# def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params={"type":"All", "value_of_type":""}) -> str:
+def get_administratives_levels_under_file_excel_or_csv(file_type, administrative_levels_ids) -> str:
+    
+    # _type = params.get("type").capitalize() if params.get("type") else ""
+    # if file_type not in ("csv", "excel") or _type not in ("All", "Region", "Prefecture", "Commune", "Canton", "Village"):
+    #     return ""
 
     datas = {
         "Région" : {}, "Id Région" : {}, "Préfecture" : {}, "Id Préfecture" : {}, 
@@ -132,31 +134,36 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
         "Village frontalier (1=oui, 0= non)" : {}, "Localité (Rural=1, urbain=0)" : {}, "Latitude" : {}, "Longitude" : {}
     }
 
-    administratives_levels = []
-    value_of_type = params.get("value_of_type").upper() if params.get("value_of_type") else ""
-    if _type == "All":
-        administratives_levels = AdministrativeLevel.objects.filter(type="Village")
-    elif _type == "Region":
-        for region in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
-            for prefecture in AdministrativeLevel.objects.filter(parent=region):
-                for commune in AdministrativeLevel.objects.filter(parent=prefecture):
-                    for canton in AdministrativeLevel.objects.filter(parent=commune):
-                        [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
-    elif _type == "Prefecture":
-        for prefecture in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
-            for commune in AdministrativeLevel.objects.filter(parent=prefecture):
-                for canton in AdministrativeLevel.objects.filter(parent=commune):
-                    [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
-    elif _type == "Commune":
-        for commune in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
-            for canton in AdministrativeLevel.objects.filter(parent=commune):
-                [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
-    elif _type == "Canton":
-        for canton in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
-            [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
-    elif _type == "Village":
-        administratives_levels = AdministrativeLevel.objects.filter(type=_type, name=value_of_type)
-
+    # administratives_levels = []
+    # value_of_type = params.get("value_of_type").upper() if params.get("value_of_type") else ""
+    # if _type == "All":
+    #     administratives_levels = AdministrativeLevel.objects.filter(type="Village")
+    # elif _type == "Region":
+    #     for region in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
+    #         for prefecture in AdministrativeLevel.objects.filter(parent=region):
+    #             for commune in AdministrativeLevel.objects.filter(parent=prefecture):
+    #                 for canton in AdministrativeLevel.objects.filter(parent=commune):
+    #                     [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+    # elif _type == "Prefecture":
+    #     for prefecture in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
+    #         for commune in AdministrativeLevel.objects.filter(parent=prefecture):
+    #             for canton in AdministrativeLevel.objects.filter(parent=commune):
+    #                 [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+    # elif _type == "Commune":
+    #     for commune in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
+    #         for canton in AdministrativeLevel.objects.filter(parent=commune):
+    #             [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+    # elif _type == "Canton":
+    #     for canton in AdministrativeLevel.objects.filter(type=_type, name=value_of_type):
+    #         [administratives_levels.append(village) for village in canton.administrativelevel_set.get_queryset()]
+    # elif _type == "Village":
+    #     administratives_levels = AdministrativeLevel.objects.filter(type=_type, name=value_of_type)
+    administratives_levels = AdministrativeLevel.objects.filter(
+        id__in=administrative_levels_ids, type="Village"
+    ).order_by(
+        'parent__parent__parent__parent__name', 'parent__parent__parent__name', 
+        'parent__parent__name', 'parent__name', 'name'
+        )
     count = 0
     for elt in administratives_levels:
         
@@ -200,7 +207,7 @@ def get_administratives_levels_under_file_excel_or_csv(file_type="excel", params
     if not os.path.exists("media/"+file_type+"/administratives_levels"):
         os.makedirs("media/"+file_type+"/administratives_levels")
 
-    file_name = "administratives_levels_" + _type.lower() + "_" + ((value_of_type.lower() + "_") if value_of_type else "")
+    file_name = "administratives_levels_"
 
     if file_type == "csv":
         file_path = file_type+"/administratives_levels/" + file_name + str(datetime.today().replace(microsecond=0)).replace("-", "").replace(":", "").replace(" ", "_") +".csv"

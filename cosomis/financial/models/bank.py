@@ -12,3 +12,8 @@ class Bank(BaseModel):
     class Meta(object):
         app_label = 'financial'
         db_table = 'financial_bank'
+        unique_together = [['name'], ['abbreviation']]
+
+    
+    def __str__(self):
+        return self.abbreviation

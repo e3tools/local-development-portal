@@ -108,6 +108,8 @@ class AccountantPermissionRequiredMixin(UserPassesTestMixin):
         return True if(self.request.user.is_authenticated and (
             self.request.user.groups.filter(name="Accountant").exists()
             or 
+            self.request.user.groups.filter(name="Evaluator").exists()
+            or 
             self.request.user.groups.filter(name="Admin").exists()
             or 
             bool(self.request.user.is_superuser)

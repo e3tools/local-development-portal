@@ -2071,3 +2071,150 @@ msgstr "Nom du secrétaire du CVD"
 msgid "Secretary phone of the CVD"
 msgstr "Tél du secrétaire du CVD"
 
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "You must select either an administrative level or a CVD"
+msgstr "Vous devez choisir qu'un niveau administrative ou un CVD"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "You must choose an administrative level or a CVD"
+msgstr "Vous devez choisir un niveau administrative ou un CVD"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Amount transferred"
+msgstr "Montant viré"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Transfer date"
+msgstr "Date de virement"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Motif"
+msgstr "Motif"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Financials"
+msgstr "Financements"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Disbursements"
+msgstr "Décaissements"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Bank transfers"
+msgstr "Virements bancaires"
+
+#: .\subprojects\api
+msgid "Allocations"
+msgstr "Allocations"
+
+#: .\subprojects\api
+msgid "Amount requested"
+msgstr "Montant demandé"
+
+#: .\subprojects\api
+msgid "Request date"
+msgstr "Date de la demande"
+
+#: .\subprojects\api
+msgid "Reply date"
+msgstr "Date de la réponse"
+
+#: .\subprojects\api
+msgid "Comment related to the request response"
+msgstr "Commentaire lié à la réponse de la demande"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Amount disbursed"
+msgstr "Montant décaissé"
+
+#: .\subprojects\components\subproject_tracking_graph.html
+msgid "Disbursement date"
+msgstr "Date du décaissement"
+
+#: .\subprojects\api
+msgid "Please select the file"
+msgstr "Veuillez choisir le fichier"
+
+#: .\subprojects\api
+msgid "We can't find the object id"
+msgstr "Nous ne pouvons pas trouver l'identifiant de l'objet"
+
+#: .\subprojects\api
+msgid "Register a bank transfer"
+msgstr "Enregistrer un virement"
+
+#: .\subprojects\api
+msgid "Close this tab?"
+msgstr "Fermer cet onglet ?"
+
+#: .\subprojects\api
+msgid "Disbursements Request"
+msgstr "Demande de déboursements"
+
+#: .\subprojects\api
+msgid "Replied"
+msgstr "Répondu"
+
+#: .\subprojects\api
+msgid "Register a request"
+msgstr "Enregistrer une demande"
+
+#: .\subprojects\api
+msgid "Disbursement Request"
+msgstr "Demande de déboursement"
+
+#: .\subprojects\api
+msgid "Update disbursement request"
+msgstr "Mise à jour de la demande de décaissement"
+
+#: .\subprojects\api
+msgid "Register a disbursement request"
+msgstr "Enregistrer une demande de décaissement"
+
+#: .\subprojects\api
+msgid "Disbursement"
+msgstr "Décaissement"
+
+#: .\subprojects\api
+msgid "Update disbursement"
+msgstr "Mise à jour du décaissement"
+
+#: .\subprojects\api
+msgid "Register a disbursement"
+msgstr "Enregistrer un décaissement"
+
+#: .\subprojects\api
+msgid "Amount disbursed in dollars"
+msgstr "Montant décaissé en dollars"
+
+#: .\subprojects\api
+msgid "Amount requested in dollars"
+msgstr "Montant demandé en dollars"
+
+#: .\subprojects\api
+msgid "This disbursement is related to the following request"
+msgstr "Ce décaissement est relié à la demande suivant"
+
+#: .\subprojects\api
+msgid "Disbursement details"
+msgstr "Détails décaissement"
+
+#: .\subprojects\api
+msgid "Request"
+msgstr "Demande"
+
+#: .\subprojects\api
+msgid "Disbursement request details"
+msgstr "Détails de la demande de décaissement"
+
+#: .\subprojects\api
+msgid "Bank transfer details"
+msgstr "Détails du virement bancaire"
+
+#: .\subprojects\api
+msgid "Allocation details"
+msgstr "Détails de l'allocation"
+
+#: .\subprojects\api
+msgid "Amount allocated"
+msgstr "Montant alloué"
