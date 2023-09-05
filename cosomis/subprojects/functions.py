@@ -261,15 +261,18 @@ def save_csv_datas_subprojects_in_db(datas_file: dict, cvd_ids=[], canton_ids=[]
                         at_least_error_name = True
                         at_least_one_error = True
                         text_errors += (f'\nLine N°{count} [{_village}]: {exc.__str__()}' if text_errors else f'Line N°{count} [{_village}]: {exc.__str__()}')
-                
-                # if _is_object_error and not administrative_level and \
-                #     ("/" in village.title() or "," in village.title() or ";" in village.title() or " Et " in village.title() or "&" in village.title()):
-                #     print(village) 
-                #     administrative_level = get_adminstrative_level_by_name_with_slash(village, canton_file_data)
-                #     if not administrative_level:
-                #         _is_object_error = True
-                #     else:
-                #         del list_villages_not_found_full_infos[-1]
+                    print(_is_object_error)
+                    if _is_object_error and not administrative_level and \
+                        ("/" in village.title() or "," in village.title() or ";" in village.title() or " Et " in village.title() or "&" in village.title()):
+                        print(village)
+                        administrative_level = get_adminstrative_level_by_name_with_slash(village, canton_file_data)
+                        print(administrative_level)
+                        if not administrative_level:
+                            _is_object_error = True
+                        else:
+                            del list_villages_not_found_full_infos[-1]
+                            del list_villages_not_found[-1]
+                            _is_object_error = False
 
                 if not _is_object_error:
                     

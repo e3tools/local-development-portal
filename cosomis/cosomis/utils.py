@@ -1,6 +1,6 @@
 import datetime
 
-from subprojects.models import Subproject, Component, SubprojectStep, Level, Step
+from subprojects.models import Subproject, Component, SubprojectStep, Level, Step, Project
 from no_sql_client import NoSQLClient
 from authentication.models import Facilitator
 from administrativelevels.models import AdministrativeLevel
@@ -294,3 +294,11 @@ def save_subproject_tracking():
         
     print()
     print("Done !")
+
+
+def all_functions_call():
+    attribute_component_to_subprojects(Subproject.objects.all(), Component.objects.get(id=1))
+    attribute_project_to_subprojects(Subproject.objects.all(), Project.objects.get(id=1))
+    link_infrastures_to_subproject()
+    copy_cvd_to_list_of_beneficiary_villages()
+    save_subproject_tracking()
