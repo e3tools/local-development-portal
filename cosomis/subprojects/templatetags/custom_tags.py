@@ -142,7 +142,8 @@ def separate_with_space(value, unit="FCFA"):
     if len(float_values) > 1:
         float_value = float_values[-1]
     else:
-        float_value = float_values[0]
+        float_value = None
+
 
 
     value = str(value).split(',')[0].split('.')[0]
@@ -160,7 +161,9 @@ def separate_with_space(value, unit="FCFA"):
 
     list_money_format = list(money_format)
     list_money_format.reverse()
-    return "".join(list_money_format) + "." + float_value + " " + unit
+
+    return "".join(list_money_format) + "." + float_value + " " + unit if float_value else "".join(list_money_format) + " " + unit
+
 
 @register.filter
 def remove_zeros_on_zeros(value):
