@@ -302,3 +302,25 @@ def all_functions_call():
     link_infrastures_to_subproject()
     copy_cvd_to_list_of_beneficiary_villages()
     save_subproject_tracking()
+
+
+
+from django.db import connection
+import logging
+
+def set_projects_images():
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute("""
+            INSERT INTO `subprojects_subprojectimage` (`id`, `created_date`, `updated_date`, `name`, `url`, `order`, `principal`, `date_taken`, `subproject_id`) VALUES
+(3, '2023-04-24 10:21:53.758608', '2023-04-24 10:22:52.616677', 'Forage réception provisoire', 'https://cddfiles.s3.amazonaws.com/proof_of_work/1682080153717.jpg1682331713.4758635?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=wBh6fp5Y4eah1rgQTyCXQc9QcEw%3D&Expires=1682335313', 1, 1, '2023-04-21', 746),
+(4, '2023-04-24 10:23:54.968777', '2023-04-24 10:23:54.968825', 'Forage réception provisoire', 'https://cddfiles.s3.amazonaws.com/proof_of_work/1682080079370.jpg1682331834.7461157?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=WeXyPtSDTibn448RmQrfIADj2oY%3D&Expires=1682335434', 2, 0, '2023-04-21', 746);
+            """)
+            
+        except Exception as exc:
+            logging.exception(exc)
+
+
+    print()
+    print("Done !")
+
