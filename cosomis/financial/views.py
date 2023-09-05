@@ -15,6 +15,7 @@ from usermanager.permissions import (
     AccountantPermissionRequiredMixin,
     )
 from financial.forms import AdministrativeLevelAllocationForm
+from financial import function_allocation
 # Create your views here.
 
 
@@ -147,6 +148,16 @@ class AdministrativeLevelAllocationsListView(PageMixin, LoginRequiredMixin, gene
         ctx = super(AdministrativeLevelAllocationsListView, self).get_context_data(**kwargs)
         ctx['search'] = self.request.GET.get("search", None)
         ctx['type'] = self.request.GET.get("type", "Canton")
+        ctx['sum_allocation_mount'] = function_allocation.sum_allocation_amount()
+        ctx['sum_allocation_amount_in_dollars'] = function_allocation.sum_allocation_amount_in_dollars()
+
+        ctx['sum_allocation_amount_by_component_1_1'] = function_allocation.sum_allocation_amount_by_component(2)
+        ctx['sum_allocation_amount_by_component_1_2'] = function_allocation.sum_allocation_amount_by_component(3)
+        ctx['sum_allocation_amount_by_component_1_3'] = function_allocation.sum_allocation_amount_by_component(6)
+        
+        ctx['sum_allocation_amount_in_dollars_by_component_1_1'] = function_allocation.sum_allocation_amount_in_dollars_by_component(2)
+        ctx['sum_allocation_amount_in_dollars_by_component_1_2'] = function_allocation.sum_allocation_amount_in_dollars_by_component(3)
+        ctx['sum_allocation_amount_in_dollars_by_component_1_3'] = function_allocation.sum_allocation_amount_in_dollars_by_component(6)
         return ctx
     
 

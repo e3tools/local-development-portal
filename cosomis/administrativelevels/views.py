@@ -26,7 +26,7 @@ from administrativelevels.functions import (
     get_administrative_level_ids_descendants,
 )
 from administrativelevels.functions_cvd import save_cvd_instead_of_csv_file_datas_in_db
-
+from financial import function_allocation
 
 
 class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
@@ -222,6 +222,7 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin,
                 raise Http404
         
         else:
+            datas = convert_file_to_dict.conversion_file_xlsx_to_dict(request.FILES.get('file'))
             try:
                 datas = convert_file_to_dict.conversion_file_xlsx_to_dict(request.FILES.get('file'))
             except pd.errors.ParserError as exc:
@@ -229,8 +230,12 @@ class UploadCSVView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin,
             except Exception as exc:
                 messages.info(request, _("An error has occurred..."))
             
-            
-            if _type == "cvd":
+            if _type == "allocation":
+                """Load allocation"""
+                redirect_path = "financial:financials"
+                message, file_path = function_allocation.save_csv_datas_cantons_allocations_in_db(datas)
+                return download_file.download(request, file_path, "text/plain")
+            elif _type == "cvd":
                 """Load CVD"""
                 redirect_path = "administrativelevels:cvds_list"
                 message = save_cvd_instead_of_csv_file_datas_in_db(datas) # call function to save CSV datas in database

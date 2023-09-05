@@ -189,3 +189,8 @@ def check_type(elt, _type):
 @register.filter
 def split(value, key):
     return value.split(key)
+
+@register.simple_tag
+def call_method(obj, method_name, *args):
+    method = getattr(obj, method_name)
+    return method(*args)

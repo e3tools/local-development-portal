@@ -67,8 +67,8 @@
                         <ul class="pagination justify-content-center">
                             {% if disbursement_requests.has_previous %}
                                 <li>
-                                    <a class="page-link" href="#disbursements-requests" data-href="{% url 'financial:disbursement_requests_list' %}?page={{ disbursement_requests.previous_page_number }}" 
-                                        class="tab-disbursement-request-other">
+                                    <a class="page-link tab-disbursement-request-other" href="#disbursements-requests" data-href="{% url 'financial:disbursement_requests_list' %}?page={{ disbursement_requests.previous_page_number }}" 
+                                        >
                                         {% comment %} <span aria-hiden="true">&laquo;</span> {% endcomment %}
                                         <i class="fa fa-arrow-left text-bold"></i>
                                     </a>
@@ -81,8 +81,8 @@
                             </li>
                             {% if disbursement_requests.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link" href="#disbursements-requests" data-href="{% url 'financial:disbursement_requests_list' %}?page={{ disbursement_requests.next_page_number }}" 
-                                        class="tab-disbursement-request-other">
+                                    <a class="page-link tab-disbursement-request-other" href="#disbursements-requests" data-href="{% url 'financial:disbursement_requests_list' %}?page={{ disbursement_requests.next_page_number }}" 
+                                        >
                                         {% comment %} <span aria-hidden="true">&laquo;</span> {% endcomment %}
                                         <i class="fa fa-arrow-right text-bold"></i>
                                     </a>
@@ -159,7 +159,7 @@
 
             let table_disbursements_requests = $('#table-disbursements-requests').DataTable({
                 retrieve: true,
-                paging: false,
+                //paging: false,
                 language: {
                     url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
                 },

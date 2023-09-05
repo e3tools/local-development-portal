@@ -9,8 +9,13 @@
                     <div class="col-md-12">
                         <div class="btn-group pull-left">
 
-                            <div class="" style="display: inline-block;">
-                                <button class="btn btn-primary" style="display: inline-block;" 
+                            <div class="btn-group pull-left" >
+                                {% if user.is_superuser or user|has_group:"Admin" %}
+                                    {% include 'components/modal_upload_one_sheet.html' with type_object="allocation" show_just_villages=False %}
+                                    <div> &nbsp; &nbsp; </div>
+                                {% endif %}
+
+                                <button class="btn btn-primary" 
                                     type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {% translate 'Others' %}
                                 </button>
@@ -53,7 +58,7 @@
                             <th>{% translate 'Location' %}</th>
                             <th>{% translate 'Allocation' %}</th>
                             <th>{% translate 'Project' %}</th>
-                            <th>{% translate 'Date' %}</th>
+                            <th>{% translate 'Component' %}</th>
                             <th width="12%">{% translate 'Action' %}</th>
                         </tr>
                         </thead>
@@ -70,7 +75,7 @@
 
                                 <td>{{ allocation.amount|separate_with_space }}</td>
                                 <td>{{ allocation.project.name }}</td>
-                                <td>{{ allocation.allocation_date }}</td>
+                                <td>{% if allocation.component %}{{ allocation.component }}{% else %} - {% endif %}</td>
                                 <td>
                                     <a href="#" data-toggle="modal" data-target="#allocation-details-{{ allocation.pk }}" 
                                         style="font-size: 9px !important;" 
@@ -94,8 +99,8 @@
                         <ul class="pagination justify-content-center">
                             {% if allocations.has_previous %}
                                 <li>
-                                    <a class="page-link" href="#allocations" data-href="{% url 'financial:allocations_list' %}?page={{ allocations.previous_page_number }}" 
-                                        class="tab-allocation-other">
+                                    <a class="page-link tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?page={{ allocations.previous_page_number }}" 
+                                        >
                                         {% comment %} <span aria-hiden="true">&laquo;</span> {% endcomment %}
                                         <i class="fa fa-arrow-left text-bold"></i>
                                     </a>
@@ -108,8 +113,8 @@
                             </li>
                             {% if allocations.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link" href="#allocations" data-href="{% url 'financial:allocations_list' %}?page={{ allocations.next_page_number }}" 
-                                        class="tab-allocation-other">
+                                    <a class="page-link tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?page={{ allocations.next_page_number }}" 
+                                        >
                                         {% comment %} <span aria-hidden="true">&laquo;</span> {% endcomment %}
                                         <i class="fa fa-arrow-right text-bold"></i>
                                     </a>
@@ -117,6 +122,21 @@
                             {% endif %}
                         </ul>
                     </nav>
+                    
+
+                    <b>{{ sum_allocation_mount|separate_with_space }} ==> {% translate 'Total amount allocated' %}</b><br />
+                    <b>{{ sum_allocation_amount_in_dollars|separate_with_space:'$' }} ==> {% translate 'Total amount allocated in dollars' %}</b><br />
+                    <br />
+                    <b>{{ sum_allocation_amount_by_component_1_1|separate_with_space }} ==> {% translate 'Total amount allocated to component 1.1' %}</b><br />
+                    <b>{{ sum_allocation_amount_in_dollars_by_component_1_1|separate_with_space:'$' }} ==> {% translate 'Total amount allocated in dollars to component 1.1' %}</b><br />
+                    <br />
+                    <b>{{ sum_allocation_amount_by_component_1_2|separate_with_space }} ==> {% translate 'Total amount allocated to component 1.2' %}</b><br />
+                    <b>{{ sum_allocation_amount_in_dollars_by_component_1_2|separate_with_space:'$' }} ==> {% translate 'Total amount allocated in dollars to component 1.2' %}</b><br />
+                    <br />
+                    <b>{{ sum_allocation_amount_by_component_1_3|separate_with_space }} ==> {% translate 'Total amount allocated to component 1.3' %}</b><br />
+                    <b>{{ sum_allocation_amount_in_dollars_by_component_1_3|separate_with_space:'$' }} ==> {% translate 'Total amount allocated in dollars to component 1.3' %}</b><br />
+
+
 
                 </div>
             </div>
@@ -129,7 +149,7 @@
 <!-- Modal -->
 {% for allocation in allocations %}
 <div class="modal fade" id="allocation-details-{{ allocation.pk }}" tabindex="-1" role="dialog" aria-labelledby="allocation-center-title-{{ allocation.pk }}" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="allocation-log-title-{{ allocation.pk }}">{% translate 'Allocation details' %}</h5>
@@ -148,15 +168,38 @@
             <span style="font-weight: bold;">{% translate 'Amount allocated' %}</span> : <span>{{ allocation.amount|separate_with_space }}</span>
         </div><br />
         <div>
-            <span style="font-weight: bold;">{% translate 'Project' %}</span> : <span>{{ bank_transfer.project.name }}</span>
+            <span style="font-weight: bold;">{% translate 'Project' %}</span> : <span>{{ allocation.project.name }}</span>
         </div><br />
         <div>
-            <span style="font-weight: bold;">{% translate 'Date' %}</span> : <span>{{ allocation.allocation_date }}</span>
+            <span style="font-weight: bold;">{% translate 'Component' %}</span> : <span>{% if allocation.component %}{{ allocation.component }}{% else %}-{% endif %}</span>
+        </div><br />
+        <div>
+            <span style="font-weight: bold;">{% translate 'Date' %}</span> : <span>{% if allocation.allocation_date %}{{ allocation.allocation_date }}{% else %}-{% endif %}</span>
         </div><br />
         <div>
             <span style="font-weight: bold;">{% translate 'Description' %}</span> : <span>{% if allocation.description %}{{ allocation.description }}{% else %}-{% endif %}</span>
         </div>
-        
+
+        <hr />
+        <b>{{ allocation.sum_amount_by_administrative_level|separate_with_space }} ==> {% translate 'Total amount allocated' %}</b><br />
+        <b>{{ allocation.sum_amount_in_dollars_by_administrative_level|separate_with_space:'$' }} ==> {% translate 'Total amount allocated in dollars' %}</b><br />
+        <br />
+        {% call_method allocation 'sum_amount_by_administrative_level_and_component' 2 as sum_amount_by_administrative_level_and_component_1_1 %}
+        <b>{{ sum_amount_by_administrative_level_and_component_1_1|separate_with_space }} ==> {% translate 'Total amount allocated to component 1.1' %}</b><br />
+        {% call_method allocation 'sum_amount_in_dollars_by_administrative_level_and_component' 2 as sum_amount_in_dollars_by_administrative_level_and_component_1_1 %}
+        <b>{{ sum_amount_in_dollars_by_administrative_level_and_component_1_1|separate_with_space:'$' }} ==> {% translate 'Total amount allocated in dollars to component 1.1' %}</b><br />
+        <br />
+        {% call_method allocation 'sum_amount_by_administrative_level_and_component' 3 as sum_amount_by_administrative_level_and_component_1_2 %}
+        <b>{{ sum_amount_by_administrative_level_and_component_1_2|separate_with_space }} ==> {% translate 'Total amount allocated to component 1.2' %}</b><br />
+        {% call_method allocation 'sum_amount_in_dollars_by_administrative_level_and_component' 3 as sum_amount_in_dollars_by_administrative_level_and_component_1_2 %}
+        <b>{{ sum_amount_in_dollars_by_administrative_level_and_component_1_2|separate_with_space:'$' }} ==> {% translate 'Total amount allocated in dollars to component 1.2' %}</b><br />
+        <br />
+        {% call_method allocation 'sum_amount_by_administrative_level_and_component' 6 as sum_amount_by_administrative_level_and_component_1_3 %}
+        <b>{{ sum_amount_by_administrative_level_and_component_1_3|separate_with_space }} ==> {% translate 'Total amount allocated to component 1.3' %}</b><br />
+        {% call_method allocation 'sum_amount_in_dollars_by_administrative_level_and_component' 6 as sum_amount_in_dollars_by_administrative_level_and_component_1_3 %}
+        <b>{{ sum_amount_in_dollars_by_administrative_level_and_component_1_3|separate_with_space:'$' }} ==> {% translate 'Total amount allocated in dollars to component 1.3' %}</b><br />
+        <br />
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
@@ -180,7 +223,6 @@
             
             let table_allocations = $('#table-allocations').DataTable({
                 retrieve: true,
-                paging: false,
                 language: {
                     url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
                 },

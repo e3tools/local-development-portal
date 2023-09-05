@@ -2218,3 +2218,39 @@ msgstr "Détails de l'allocation"
 #: .\subprojects\api
 msgid "Amount allocated"
 msgstr "Montant alloué"
+
+#: .\subprojects\api
+msgid "Amount allocated in dollars"
+msgstr "Montant alloué en dollars"
+
+#: .\subprojects\api
+msgid "Total amount allocated"
+msgstr "Montant total alloué"
+
+#: .\subprojects\api
+msgid "'Total amount allocated in dollars"
+msgstr "Montant total alloué en dollars"
+
+#: .\subprojects\api
+msgid "Total amount allocated to component 1.1"
+msgstr "Montant total alloué sur la composante 1.1"
+
+#: .\subprojects\api
+msgid "Total amount allocated to component 1.2"
+msgstr "Montant total alloué sur la composante 1.2"
+
+#: .\subprojects\api
+msgid "Total amount allocated to component 1.3"
+msgstr "Montant total alloué sur la composante 1.3"
+
+#: .\subprojects\api
+msgid "Total amount allocated in dollars to component 1.1"
+msgstr "Montant total alloué en dollars sur la composante 1.1"
+
+#: .\subprojects\api
+msgid "Total amount allocated in dollars to component 1.2"
+msgstr "Montant total alloué en dollars sur la composante 1.3"
+
+#: .\subprojects\api
+msgid "Total amount allocated in dollars to component 1.3"
+msgstr "Montant total alloué en dollars sur la composante 1.3"

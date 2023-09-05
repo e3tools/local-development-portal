@@ -2,20 +2,29 @@ import pandas as pd
 
 
 def conversion_file_csv_to_dict(file_csv, sheet="Sheet1") -> dict:
-    read_file = pd.read_csv(file_csv, sheet)
+    try:
+        read_file = pd.read_csv(file_csv, sheet)
+    except:
+        read_file = pd.read_csv(file_csv)
     datas = read_file.to_dict()
 
     return datas
 
 def conversion_file_xlsx_to_dict(file_xlsx, sheet="Sheet1") -> dict:
-    read_file = pd.read_excel(file_xlsx, sheet)
+    try:
+        read_file = pd.read_excel(file_xlsx, sheet)
+    except:
+        read_file = pd.read_excel(file_xlsx)
     datas = read_file.to_dict()
 
     return datas
 
 
 def conversion_file_csv_merger_to_dict(file_csv, sheet="Sheet1", method='ffill', columns_fillna=[], axis=0) -> dict:
-    read_file = pd.read_csv(file_csv, sheet)
+    try:
+        read_file = pd.read_csv(file_csv, sheet)
+    except:
+        read_file = pd.read_csv(file_csv)
     if columns_fillna:
         read_file[columns_fillna] = read_file[columns_fillna].fillna(method=method, axis=axis)
     else:
@@ -25,7 +34,10 @@ def conversion_file_csv_merger_to_dict(file_csv, sheet="Sheet1", method='ffill',
     return datas
 
 def conversion_file_xlsx_merger_to_dict(file_xlsx, sheet="Sheet1", method='ffill', columns_fillna=[], axis=0) -> dict:
-    read_file = pd.read_excel(file_xlsx, sheet)
+    try:
+        read_file = pd.read_excel(file_xlsx, sheet)
+    except:
+        read_file = pd.read_excel(file_xlsx)
     if columns_fillna:
         read_file[columns_fillna] = read_file[columns_fillna].fillna(method=method, axis=axis)
     else:
