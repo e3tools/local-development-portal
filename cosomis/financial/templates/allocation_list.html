@@ -17,7 +17,7 @@
 
                                 <button class="btn btn-primary" 
                                     type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {% translate 'Others' %}
+                                    {% translate 'See Others' %}
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <a class="dropdown-item tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?type=cvd">
@@ -39,14 +39,21 @@
                                     {% translate 'Region' %}
                                     </a>
                                 </div>
+                                &nbsp; &nbsp; 
+                                
+                                <a class="btn btn-primary tab-allocation-other" href="#allocations" data-href="{% url 'financial:allocations_list' %}?type={{ type }}&search=All">
+                                    {% translate 'See All' %}
+                                </a>
+
+                                {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Accountant" %}
+                                &nbsp; &nbsp; 
+                                <a class="btn btn-primary" target="_blank"
+                                    href="{% url 'financial:allocation_create' %}">
+                                        {% translate 'Register an allocation' %}
+                                </a>
+                                {% endif %}
+
                             </div>
-                            {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Accountant" %}
-                            &nbsp; &nbsp; 
-                            <a class="btn btn-primary" target="_blank"
-                                href="{% url 'financial:allocation_create' %}">
-                                    {% translate 'Register an allocation' %}
-                            </a>
-                            {% endif %}
                         </div>
                     </div>
                 </div>

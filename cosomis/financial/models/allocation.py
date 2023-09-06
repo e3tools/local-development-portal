@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 from administrativelevels.models import AdministrativeLevel, CVD
 from subprojects.models import Project, Component
@@ -27,21 +27,23 @@ class AdministrativeLevelAllocation(BaseModel):
 
     def sum_amount_by_administrative_level(self):
         return AdministrativeLevelAllocation.objects.filter(
-            administrative_level_id=self.administrative_level.id
+            Q(cvd_id=self.cvd.id) if self.cvd else Q(administrative_level_id=self.administrative_level.id)
         ).aggregate(Sum('amount'))['amount__sum']
 
     def sum_amount_in_dollars_by_administrative_level(self):
         return AdministrativeLevelAllocation.objects.filter(
-            administrative_level_id=self.administrative_level.id
+            Q(cvd_id=self.cvd.id) if self.cvd else Q(administrative_level_id=self.administrative_level.id)
         ).aggregate(Sum('amount_in_dollars'))['amount_in_dollars__sum']
 
     def sum_amount_by_administrative_level_and_component(self, component_id):
         return AdministrativeLevelAllocation.objects.filter(
-            component_id=component_id, administrative_level_id=self.administrative_level.id
+            Q(cvd_id=self.cvd.id) if self.cvd else Q(administrative_level_id=self.administrative_level.id),
+            component_id=component_id
         ).aggregate(Sum('amount'))['amount__sum']
 
     def sum_amount_in_dollars_by_administrative_level_and_component(self, component_id):
         return AdministrativeLevelAllocation.objects.filter(
-            component_id=component_id, administrative_level_id=self.administrative_level.id
+            Q(cvd_id=self.cvd.id) if self.cvd else Q(administrative_level_id=self.administrative_level.id),
+            component_id=component_id
         ).aggregate(Sum('amount_in_dollars'))['amount_in_dollars__sum']
 

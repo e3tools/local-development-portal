@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from sys import platform
 from django.utils.translation import gettext_lazy as _
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 from administrativelevels.models import AdministrativeLevel
 from financial.models.allocation import AdministrativeLevelAllocation
@@ -157,28 +157,34 @@ def save_csv_datas_cantons_allocations_in_db(datas_file: dict, project_id=1) -> 
 
 
 
-def sum_allocation_amount_by_component(component_id):
+def sum_allocation_amount_by_component(component_id, is_administrative_level=True):
     return AdministrativeLevelAllocation.objects.filter(
-            component_id=component_id, administrative_level__isnull=False
+            Q(administrative_level__isnull=False) if is_administrative_level else Q(cvd__isnull=False),
+            component_id=component_id
         ).aggregate(Sum('amount'))['amount__sum']
 
-def sum_allocation_amount_in_dollars_by_component(component_id):
+def sum_allocation_amount_in_dollars_by_component(component_id, is_administrative_level=True):
     return AdministrativeLevelAllocation.objects.filter(
-            component_id=component_id, administrative_level__isnull=False
+            Q(administrative_level__isnull=False) if is_administrative_level else Q(cvd__isnull=False),
+            component_id=component_id
         ).aggregate(Sum('amount_in_dollars'))['amount_in_dollars__sum']
 
-def sum_allocation_amount_by_administrative_level(administrative_level_id):
+def sum_allocation_amount_by_administrative_level(administrative_level_id, is_administrative_level=True):
     return AdministrativeLevelAllocation.objects.filter(
-            administrative_level_id=administrative_level_id
+            Q(administrative_level_id=administrative_level_id) if is_administrative_level else Q(cvd_id=administrative_level_id)
         ).aggregate(Sum('amount'))['amount__sum']
 
-def sum_allocation_amount_in_dollars_by_administrative_level(administrative_level_id):
+def sum_allocation_amount_in_dollars_by_administrative_level(administrative_level_id, is_administrative_level=True):
     return AdministrativeLevelAllocation.objects.filter(
-            administrative_level_id=administrative_level_id
+            Q(administrative_level_id=administrative_level_id) if is_administrative_level else Q(cvd_id=administrative_level_id)
         ).aggregate(Sum('amount_in_dollars'))['amount_in_dollars__sum']
 
-def sum_allocation_amount():
-    return AdministrativeLevelAllocation.objects.filter(administrative_level__isnull=False).aggregate(Sum('amount'))['amount__sum']
+def sum_allocation_amount(is_administrative_level=True):
+    return AdministrativeLevelAllocation.objects.filter(
+        Q(administrative_level__isnull=False) if is_administrative_level else Q(cvd__isnull=False)
+    ).aggregate(Sum('amount'))['amount__sum']
 
-def sum_allocation_amount_in_dollars():
-    return AdministrativeLevelAllocation.objects.filter(administrative_level__isnull=False).aggregate(Sum('amount_in_dollars'))['amount_in_dollars__sum']
+def sum_allocation_amount_in_dollars(is_administrative_level=True):
+    return AdministrativeLevelAllocation.objects.filter(
+        Q(administrative_level__isnull=False) if is_administrative_level else Q(cvd__isnull=False)
+    ).aggregate(Sum('amount_in_dollars'))['amount_in_dollars__sum']
