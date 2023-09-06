@@ -2249,7 +2249,7 @@ msgstr "Montant total alloué en dollars sur la composante 1.1"
 
 #: .\subprojects\api
 msgid "Total amount allocated in dollars to component 1.2"
-msgstr "Montant total alloué en dollars sur la composante 1.3"
+msgstr "Montant total alloué en dollars sur la composante 1.2"
 
 #: .\subprojects\api
 msgid "Total amount allocated in dollars to component 1.3"
