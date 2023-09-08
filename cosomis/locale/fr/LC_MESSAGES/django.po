@@ -2287,3 +2287,18 @@ msgstr "Sous-projets par village, secteur et étape"
 msgid "Number of infrastructures"
 msgstr "Nombre d'infrastuctures"
 
+#: .\subprojects\api
+msgid "Amount allocated after signature of contract(s) (This is only necessary if it's a CVD)"
+msgstr "Montant alloué après signature du(des) contrat(s) (Ceci n'est nécessaire que s'il s'agit d'un CVD)"
+
+#: .\subprojects\api
+msgid "Amount allocated in dollars after signature of contract(s) (This is only necessary if it's a CVD)"
+msgstr "Montant alloué en dollars après signature du(des) contrat(s) (Ceci n'est nécessaire que s'il s'agit d'un CVD)"
+
+#: .\subprojects\api
+msgid "Allocation Date"
+msgstr "Date d'attribution"
+
+#: .\subprojects\api
+msgid "Allocation Date after signature of contract(s) (This is only necessary if it's a CVD)"
+msgstr "Date d'attribution après la signature du(des) contrat(s) (Ceci n'est nécessaire que s'il s'agit d'un CVD)"
