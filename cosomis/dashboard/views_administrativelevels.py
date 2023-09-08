@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Sum, Max
 
-from subprojects.models import Subproject, Step
+from subprojects.models import Subproject, Step, Component
 from administrativelevels.models import AdministrativeLevel
 from administrativelevels.functions import (
     get_administrative_level_ids_descendants, get_children_types_administrativelevels,
@@ -185,6 +185,36 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
         }
     
 
+    def get_context_data(self, **kwargs):
+        ctx = super(DashboardWaveListView, self).get_context_data(**kwargs)
+        columns_tuples = ctx['queryset_results']['columns_tuples']
+        administrative_level_ids_descendants = ctx['queryset_results']['ald_filter_ids'].copy()
+        
+        for column in columns_tuples:
+            _ids_descendants = get_administrative_level_ids_descendants(column[0], None, [])
+
+            administrative_level_ids_descendants += ([column[0]] + _ids_descendants if column[0] != "All" else _ids_descendants)
+
+        all_administrative_levels_waves = AdministrativeLevelWave.objects.filter(
+            administrative_level__id__in=administrative_level_ids_descendants
+        )
+
+        ctx["summary"] = {}
+
+        ctx["summary"]["summary_administrative_level_waves"] = {}
+        for k, v in self.summary_administrative_level_waves(all_administrative_levels_waves).items():
+            ctx["summary"]["summary_administrative_level_waves"][k] = v
+        
+        ctx["queryset_results"]["administrative_level_type"] = None
+
+        return ctx
+
+
+class DashboardWaveTimesListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin, LoginRequiredMixin, generic.ListView):
+    template_name = 'tracking.html'
+    context_object_name = 'queryset_results'
+    table_class_style = 'table-bordered'
+
     def summary_administrative_level_waves_times(self, all_period_wave, project_id=1):
         import locale
         locale.setlocale(locale.LC_TIME, "fr_FR") # french
@@ -237,7 +267,7 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
         }
 
     def get_context_data(self, **kwargs):
-        ctx = super(DashboardWaveListView, self).get_context_data(**kwargs)
+        ctx = super(DashboardWaveTimesListView, self).get_context_data(**kwargs)
         columns_tuples = ctx['queryset_results']['columns_tuples']
         administrative_level_ids_descendants = ctx['queryset_results']['ald_filter_ids'].copy()
         
@@ -251,10 +281,6 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
         )
 
         ctx["summary"] = {}
-
-        ctx["summary"]["summary_administrative_level_waves"] = {}
-        for k, v in self.summary_administrative_level_waves(all_administrative_levels_waves).items():
-            ctx["summary"]["summary_administrative_level_waves"][k] = v
 
         ctx["summary"]["summary_administrative_level_waves_times"] = {}
         for k, v in self.summary_administrative_level_waves_times(PeriodWave.objects.all()).items():
@@ -358,12 +384,15 @@ class DashboardSummaryAdministrativeLevelAllocationListView(DashboardAdministrat
     def summary_administrative_level_allocation(self, adl_ids, project_id=1):
         datas = {
             _("Cantons"): {},
-            _("Allocation"): {},
-            _("Total estimate for subprojects"): {},
-            _("Exact amount spent on subprojects"): {},
-            _("Remainder after estimated cost"): {},
-            _("Remaining amount"): {},
+            _("Component"): {},
+            _("Allocation") + " FCFA": {},
+            _("Total estimate for subprojects") + " FCFA": {},
+            _("Exact amount spent on subprojects") + " FCFA": {},
+            _("Remainder after estimated cost") + " FCFA": {},
+            _("Remaining amount") + " FCFA": {},
         }
+        components = Component.objects.filter(parent__name="Composante 1")
+        subprojects = Subproject.objects.all()
         ids = []
         
         if adl_ids:
@@ -375,72 +404,130 @@ class DashboardSummaryAdministrativeLevelAllocationListView(DashboardAdministrat
             
         count = 0
         for line in lines:
-            datas[_("Cantons")][count] = line.administrative_level.name
+            _ids = ([line.administrative_level.id] + get_administrative_level_ids_descendants(line.administrative_level.id, None, []))
+            for component in components:
+                datas[_("Cantons")][count] = line.administrative_level.name
+                datas[_("Component")][count] = component.name
 
-            try:
-                amount__sum = AdministrativeLevelAllocation.objects.filter(
-                    administrative_level__id=line.administrative_level.id, project_id=project_id,
-                    cvd=None
-                ).aggregate(Sum('amount'))['amount__sum']
+                try:
+                    amount__sum = AdministrativeLevelAllocation.objects.filter(
+                        administrative_level__id=line.administrative_level.id, project_id=project_id,
+                        cvd=None,
+                        component_id=component.id
+                    ).aggregate(Sum('amount'))['amount__sum']
 
-                datas[_("Allocation")][count] = amount__sum if amount__sum else ""
-            except:
-                datas[_("Allocation")][count] = ""
-            
-            try:
-                _ids = ([line.administrative_level.id] + get_administrative_level_ids_descendants(line.administrative_level.id, None, []))
+                    datas[_("Allocation") + " FCFA"][count] = amount__sum if amount__sum else ""
+                except:
+                    datas[_("Allocation") + " FCFA"][count] = ""
+                
+                subproject_filter = subprojects.filter(
+                        Q(location_subproject_realized__id__in=_ids) | 
+                        Q(canton__id__in=_ids),
+                        component_id=component.id
+                    )
+                try:
+                    estimated_cost__sum = subproject_filter.aggregate(Sum('estimated_cost'))['estimated_cost__sum']
 
-                estimated_cost__sum = Subproject.objects.filter(
-                    Q(location_subproject_realized__id__in=_ids) | 
-                    Q(canton__id__in=_ids)
-                ).aggregate(Sum('estimated_cost'))['estimated_cost__sum']
+                    datas[_("Total estimate for subprojects") + " FCFA"][count] = estimated_cost__sum if estimated_cost__sum else ""
+                except:
+                    datas[_("Total estimate for subprojects") + " FCFA"][count] = ""
+                
+                try:
+                    exact_amount_spent__sum = subproject_filter.aggregate(Sum('exact_amount_spent'))['exact_amount_spent__sum']
 
-                datas[_("Total estimate for subprojects")][count] = estimated_cost__sum if estimated_cost__sum else ""
-            except:
-                datas[_("Total estimate for subprojects")][count] = ""
-            
-            try:
-                exact_amount_spent__sum = Subproject.objects.filter(
-                    Q(location_subproject_realized__id__in=_ids) | 
-                    Q(canton__id__in=_ids)
-                ).aggregate(Sum('exact_amount_spent'))['exact_amount_spent__sum']
+                    datas[_("Exact amount spent on subprojects") + " FCFA"][count] = exact_amount_spent__sum if exact_amount_spent__sum else ""
+                except:
+                    datas[_("Exact amount spent on subprojects") + " FCFA"][count] = ""
+                
+                if datas[_("Allocation") + " FCFA"][count] and datas[_("Total estimate for subprojects") + " FCFA"][count]:
+                    datas[_("Remainder after estimated cost") + " FCFA"][count] = datas[_("Allocation") + " FCFA"][count] - datas[_("Total estimate for subprojects") + " FCFA"][count]
+                else:
+                    datas[_("Remainder after estimated cost") + " FCFA"][count] = datas[_("Allocation") + " FCFA"][count]
 
-                datas[_("Exact amount spent on subprojects")][count] = exact_amount_spent__sum if exact_amount_spent__sum else ""
-            except:
-                datas[_("Exact amount spent on subprojects")][count] = ""
-            
-            if datas[_("Allocation")][count] and datas[_("Total estimate for subprojects")][count]:
-                datas[_("Remainder after estimated cost")][count] = datas[_("Allocation")][count] - datas[_("Total estimate for subprojects")][count]
-            else:
-                datas[_("Remainder after estimated cost")][count] = ""
+                if datas[_("Allocation") + " FCFA"][count] and datas[_("Exact amount spent on subprojects") + " FCFA"][count]:
+                    datas[_("Remaining amount") + " FCFA"][count] = datas[_("Allocation") + " FCFA"][count] - datas[_("Exact amount spent on subprojects") + " FCFA"][count]
+                else:
+                    datas[_("Remaining amount") + " FCFA"][count] = datas[_("Allocation") + " FCFA"][count]
+                # except:
+                #     pass
 
-            if datas[_("Allocation")][count] and datas[_("Exact amount spent on subprojects")][count]:
-                datas[_("Remaining amount")][count] = datas[_("Allocation")][count] - datas[_("Exact amount spent on subprojects")][count]
-            else:
-                datas[_("Remaining amount")][count] = ""
-            # except:
-            #     pass
-
-            datas[_("Exact amount spent on subprojects")][count] = 0     
-            datas[_("Remaining amount")][count] = 0        
-            
-            count += 1
+                datas[_("Exact amount spent on subprojects") + " FCFA"][count] = 0     
+                datas[_("Remaining amount") + " FCFA"][count] = 0        
+                
+                count += 1
 
         # All sum
-        datas[ _("Cantons")][count] = _("Total")
-        columns_skip = [ _("Cantons")]
-        for k_data in datas.keys():
-            _sum = 0
-            if k_data not in columns_skip:
-                _sum = functions.sum_dict_value(datas[k_data], count)
-            if _sum:
-                datas[k_data][count] = _sum
+        c = 0
+        for component in components:
+            datas[_("Cantons")][count+c] = _("Total")
+            datas[_("Component")][count+c] = component.name
+            amount__sum = AdministrativeLevelAllocation.objects.filter(
+                        cvd=None,
+                        component_id=component.id
+            ).aggregate(Sum('amount'))['amount__sum']
+            datas[_("Allocation") + " FCFA"][count+c] = amount__sum if amount__sum else ""
+
+            subproject_filter = subprojects.filter(component_id=component.id)
+
+            estimated_cost__sum = subproject_filter.aggregate(Sum('estimated_cost'))['estimated_cost__sum']
+            datas[_("Total estimate for subprojects") + " FCFA"][count+c] = estimated_cost__sum if estimated_cost__sum else ""
+            
+            exact_amount_spent__sum = subproject_filter.aggregate(Sum('exact_amount_spent'))['exact_amount_spent__sum']
+            datas[_("Exact amount spent on subprojects") + " FCFA"][count+c] = exact_amount_spent__sum if exact_amount_spent__sum else ""
+            
+            if datas[_("Allocation") + " FCFA"][count+c] and datas[_("Total estimate for subprojects") + " FCFA"][count+c]:
+                datas[_("Remainder after estimated cost") + " FCFA"][count+c] = datas[_("Allocation") + " FCFA"][count+c] - datas[_("Total estimate for subprojects") + " FCFA"][count+c]
+            else:
+                datas[_("Remainder after estimated cost") + " FCFA"][count+c] = datas[_("Allocation") + " FCFA"][count+c]
+
+            if datas[_("Allocation") + " FCFA"][count+c] and datas[_("Exact amount spent on subprojects") + " FCFA"][count+c]:
+                datas[_("Remaining amount") + " FCFA"][count+c] = datas[_("Allocation") + " FCFA"][count+c] - datas[_("Exact amount spent on subprojects") + " FCFA"][count+c]
+            else:
+                datas[_("Remaining amount") + " FCFA"][count+c] = datas[_("Allocation") + " FCFA"][count+c]
+            
+            datas[_("Exact amount spent on subprojects") + " FCFA"][count+c] = 0     
+            datas[_("Remaining amount") + " FCFA"][count+c] = 0   
+        
+            
+            c += 1
+            
+        datas[ _("Cantons")][count+c] = _("Total")
+        datas[ _("Component")][count+c] = _("All")
+        datas[_("Allocation") + " FCFA"][count+c] = AdministrativeLevelAllocation.objects.filter(
+                        cvd=None
+            ).aggregate(Sum('amount'))['amount__sum']
+        
+        estimated_cost__sum = subprojects.aggregate(Sum('estimated_cost'))['estimated_cost__sum']
+        datas[_("Total estimate for subprojects") + " FCFA"][count+c] = estimated_cost__sum if estimated_cost__sum else ""
+
+        exact_amount_spent__sum = subprojects.aggregate(Sum('exact_amount_spent'))['exact_amount_spent__sum']
+        datas[_("Exact amount spent on subprojects") + " FCFA"][count+c] = exact_amount_spent__sum if exact_amount_spent__sum else ""
+        if datas[_("Allocation") + " FCFA"][count+c] and datas[_("Total estimate for subprojects") + " FCFA"][count+c]:
+            datas[_("Remainder after estimated cost") + " FCFA"][count+c] = datas[_("Allocation") + " FCFA"][count+c] - datas[_("Total estimate for subprojects") + " FCFA"][count+c]
+        else:
+            datas[_("Remainder after estimated cost") + " FCFA"][count+c] = datas[_("Allocation") + " FCFA"][count+c]
+
+        if datas[_("Allocation") + " FCFA"][count+c] and datas[_("Exact amount spent on subprojects") + " FCFA"][count+c]:
+            datas[_("Remaining amount") + " FCFA"][count+c] = datas[_("Allocation") + " FCFA"][count+c] - datas[_("Exact amount spent on subprojects") + " FCFA"][count+c]
+        else:
+            datas[_("Remaining amount") + " FCFA"][count+c] = datas[_("Allocation") + " FCFA"][count+c]
+
+        datas[_("Exact amount spent on subprojects") + " FCFA"][count+c] = 0     
+        datas[_("Remaining amount") + " FCFA"][count+c] = 0   
+
+        # columns_skip = [ _("Cantons")]
+        # for k_data in datas.keys():
+        #     _sum = 0
+        #     if k_data not in columns_skip:
+        #         _sum = functions.sum_dict_value(datas[k_data], count)
+        #     if _sum:
+        #         datas[k_data][count+c] = _sum
         # End All sum
 
         return {
             'title': _("Allocation"),
             'datas': datas,
-            'length_loop': range(0, count+1),
+            'length_loop': range(0, count+c+1),
             'values': list(datas.values())
         }
 

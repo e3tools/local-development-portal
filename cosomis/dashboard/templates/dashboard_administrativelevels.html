@@ -30,7 +30,96 @@
             </div>
 
 
+
+
+
             <div class="card">
+
+
+                <div class="container">
+                    <ul class="nav nav-tabs">
+                        <li style="width: 25%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link active" data-toggle="tab" href="#Project-coverage">{% translate "Project coverage" %}</a></li>
+                        <li style="width: 25%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link" data-toggle="tab" href="#Investment-cycle-deployment-time">{% translate "Investment cycle deployment time" %}</a></li>
+                        <li style="width: 25%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link" data-toggle="tab" href="#Summary-of-locations-reached">{% translate "Summary of locations reached" %}</a></li>
+                        <li style="width: 25%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link" data-toggle="tab" href="#Allocation-tab">{% translate "Allocation" %}</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="Project-coverage" class="tab-pane active">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="waves-list">
+                                        <h3>{% translate "Project coverage" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="waves-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="Investment-cycle-deployment-time" class="tab-pane fade">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="waves-times-list">
+                                        <h3>{% translate "Investment cycle deployment time" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="waves-times-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="Summary-of-locations-reached" class="tab-pane fade">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="summary-adl-number-list">
+                                        <h3>{% translate "Summary of locations reached" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="summary-adl-number-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="Allocation-tab" class="tab-pane fade">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="summary-allocation-list">
+                                        <h3>{% translate "Allocation" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="summary-allocation-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+                    
+            </div>
+
+
+
+
+
+
+
+            {% comment %} <div class="card">
                 <div class="card-body table-responsive">
                     <div id="waves-times-list">
                         <h3>{% translate "Project coverage" %}</h3>
@@ -63,7 +152,7 @@
                 <div class="overlay" id="summary-allocation-spin">
                     <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                 </div>
-            </div>
+            </div> {% endcomment %}
 
 
             {% comment %} <div class="card">
@@ -82,6 +171,8 @@
         $(document).ready(function () {
             {% get_current_language as lang %}
             let administrative_level_ids = ["id_region", "id_prefecture", "id_commune", "id_canton", "id_village"];
+            let waves_spin = $('#waves-spin');
+            let waves_number = $('#waves-list');
             let waves_times_spin = $('#waves-times-spin');
             let waves_times_number = $('#waves-times-list');
             let summary_adl_number_spin = $('#summary-adl-number-spin');
@@ -95,10 +186,31 @@
 
 
             function loadWaves(administrative_level_id=null, administrative_level_type=null) {
-                waves_times_spin.show();
+                waves_spin.show();
                 $.ajax({
                     type: "GET",
                     url: "{% url 'dashboard:dashboard_waves' %}",
+                    data: {
+                        administrative_level_id: administrative_level_id,
+                        administrative_level_type: administrative_level_type
+                    },
+                    success: function (response) {
+                        waves_spin.hide();
+                        
+                        waves_number.html(response);
+                    },
+                    error: function (data) {
+                        waves_spin.hide();
+                        alert(error_server_message + "Error " + data.status);
+                    }
+                });
+            }
+
+            function loadWavesTimes(administrative_level_id=null, administrative_level_type=null) {
+                waves_times_spin.show();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'dashboard:dashboard_waves_times' %}",
                     data: {
                         administrative_level_id: administrative_level_id,
                         administrative_level_type: administrative_level_type
@@ -159,6 +271,7 @@
 
             
             loadWaves();
+            loadWavesTimes();
             loadSummaryAdministrativeLevels();
             loadSummaryAllocation();
             
@@ -175,6 +288,7 @@
                     administrative_level_id = $(this).val();
                 }
                 loadWaves(administrative_level_id, administrative_level_type);
+                loadWavesTimes(administrative_level_id, administrative_level_type);
                 loadSummaryAdministrativeLevels(administrative_level_id, administrative_level_type);
                 loadSummaryAllocation(administrative_level_id, administrative_level_type);
             });
@@ -185,6 +299,7 @@
                 $('.administrative-level-filter input').val('');
                 $('.administrative-level-filter select').val(null).trigger('change.select2');
                 loadWaves();
+                loadWavesTimes();
                 loadSummaryAdministrativeLevels();
                 loadSummaryAllocation();
             }); 
