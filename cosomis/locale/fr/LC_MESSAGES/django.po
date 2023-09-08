@@ -2283,3 +2283,7 @@ msgstr "Sousprojets par étape en cours"
 msgid "Subprojects by village, sector and step"
 msgstr "Sous-projets par village, secteur et étape"
 
+#: .\subprojects\api
+msgid "Number of infrastructures"
+msgstr "Nombre d'infrastuctures"
+

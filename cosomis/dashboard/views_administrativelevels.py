@@ -96,6 +96,7 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
             _("Number of geographic intervention units"): {},
             _("CVD"): {},
             _("Number of subprojects selected"): {},
+            _("Number of infrastructures"): {},
         }
         columns_listes = list(all_administrative_levels_waves.order_by('wave__number').values_list('wave__number'))
         waves = []
@@ -155,10 +156,16 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
             datas[_("Number of villages")][count] = len(villages_ids)
             datas[_("Number of geographic intervention units")][count] = nbr_geographical_unit
             datas[_("CVD")][count] = nbr_cvd
-            datas[_("Number of subprojects selected")][count] = Subproject.objects.filter(
+
+            subproject_filters = Subproject.objects.filter(
                     Q(location_subproject_realized__id__in=villages_ids) | 
-                    Q(canton__id__in=cantons_ids),
+                    Q(canton__id__in=cantons_ids)
+                )
+            datas[_("Number of subprojects selected")][count] = subproject_filters.filter(
                     subproject_type_designation__in=["Subproject"]
+                ).count()
+            datas[_("Number of infrastructures")][count] = subproject_filters.filter(
+                    subproject_type_designation__in=["Subproject", "Infrastructure"]
                 ).count()
             
             count += 1
