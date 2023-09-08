@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Subproject, VulnerableGroup, SubprojectStep, Level, Step
+from .models import Subproject, VulnerableGroup, SubprojectStep, Level, Step, Component
 from administrativelevels.models import AdministrativeLevel, CVD
 from subprojects import SUB_PROJECT_SECTORS, TYPES_OF_SUB_PROJECT
 
@@ -40,6 +40,9 @@ class SubprojectForm(forms.ModelForm):
                 self.fields[label].widget.choices = choices_datas[label]
                 if instance_datas[label]:
                     self.fields[label].initial = instance_datas[label]
+            
+            if label == "component":
+                self.fields[label].queryset = Component.objects.filter(parent__name="Composante 1")
 
     class Meta:
         model = Subproject
