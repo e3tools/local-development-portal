@@ -1977,7 +1977,7 @@ msgstr "Couverture du projet"
 
 #: .\subprojects\api
 msgid "Summary of locations reached"
-msgstr "Résumé des localités atteints"
+msgstr "Résumé des localités atteintes"
 
 #: .\administrativelevels\templates\canton_detail.html
 msgid "Total estimate for subprojects"
