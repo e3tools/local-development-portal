@@ -297,11 +297,11 @@ def save_subproject_tracking():
 
 
 def all_functions_call():
-    attribute_component_to_subprojects(Subproject.objects.all(), Component.objects.get(id=1))
-    attribute_project_to_subprojects(Subproject.objects.all(), Project.objects.get(id=1))
-    link_infrastures_to_subproject()
-    copy_cvd_to_list_of_beneficiary_villages()
-    save_subproject_tracking()
+    attribute_component_to_subprojects(Subproject.objects.all(), Component.objects.get(id=2))
+    # attribute_project_to_subprojects(Subproject.objects.all(), Project.objects.get(id=1))
+    # link_infrastures_to_subproject()
+    # copy_cvd_to_list_of_beneficiary_villages()
+    # save_subproject_tracking()
 
 
 

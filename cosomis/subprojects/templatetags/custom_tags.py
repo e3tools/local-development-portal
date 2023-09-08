@@ -101,7 +101,7 @@ def get_on_list(data, index):
 
 @register.filter
 def isnumber(value):
-    return str(value).replace('.','',1).replace(',','',1).isdigit()
+    return str(value).replace('-','').replace('.','',1).replace(',','',1).isdigit()
 
 @register.filter
 def get_project_by_id(pk):
@@ -128,11 +128,19 @@ def join_with_commas(obj_list):
                 + " " + gettext_lazy("and").__str__() + " " + str(obj_list[l-1])
 
 @register.filter
-def separate_with_space(value, unit="FCFA"):
+def separate_with_space(value, unit=None, show_float=False):
+    if unit:
+        unit = " " + unit
+    else:
+        unit = ""
     
-    if not value or not str(value).replace('.','',1).replace(',','',1).isdigit():
+    if not show_float:
+        value = round(float(value))
+
+    if not value or not str(value).replace('-','').replace('.','',1).replace(',','',1).isdigit():
         return ""
     
+
     float_values = str(value).split(',')
     if len(float_values) > 1:
         float_value = float_values[-1]
@@ -149,7 +157,7 @@ def separate_with_space(value, unit="FCFA"):
     value = str(value).split(',')[0].split('.')[0]
     l = len(str(int(value)))
     if l in (0, 1) and int(value) < 1:
-        return str(int(value)) + " " + unit
+        return str(int(value)) + unit
     
     list_value_str = list(value)
     list_value_str.reverse()
@@ -162,7 +170,7 @@ def separate_with_space(value, unit="FCFA"):
     list_money_format = list(money_format)
     list_money_format.reverse()
 
-    return "".join(list_money_format) + "." + float_value + " " + unit if float_value else "".join(list_money_format) + " " + unit
+    return "".join(list_money_format) + "." + float_value + unit if float_value else "".join(list_money_format) + unit
 
 
 @register.filter

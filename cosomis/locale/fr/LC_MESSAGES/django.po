@@ -2149,7 +2149,7 @@ msgstr "Fermer cet onglet ?"
 
 #: .\subprojects\api
 msgid "Disbursements Request"
-msgstr "Demande de déboursements"
+msgstr "Demande de décaissements"
 
 #: .\subprojects\api
 msgid "Replied"
@@ -2161,7 +2161,7 @@ msgstr "Enregistrer une demande"
 
 #: .\subprojects\api
 msgid "Disbursement Request"
-msgstr "Demande de déboursement"
+msgstr "Demande de décaissement"
 
 #: .\subprojects\api
 msgid "Update disbursement request"
@@ -2256,9 +2256,30 @@ msgid "Total amount allocated in dollars to component 1.3"
 msgstr "Montant total alloué en dollars sur la composante 1.3"
 
 #: .\subprojects\api
-msgid "See Other"
+msgid "See Others"
 msgstr "Voir autres"
 
 #: .\subprojects\api
 msgid "See All"
 msgstr "Voir tout"
+
+#: .\subprojects\api
+msgid "Level of realization"
+msgstr "Niveau de réalisation"
+
+#: .\subprojects\api
+msgid "Estimated-cost"
+msgstr "Coût-estimé"
+
+#: .\subprojects\api
+msgid "Amount-FCFA-TTC"
+msgstr "Montant-FCFA-TTC"
+
+#: .\subprojects\api
+msgid "Subprojects by current step"
+msgstr "Sousprojets par étape en cours"
+
+#: .\subprojects\api
+msgid "Subprojects by village, sector and step"
+msgstr "Sous-projets par village, secteur et étape"
+
