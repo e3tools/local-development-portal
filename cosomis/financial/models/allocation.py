@@ -13,10 +13,13 @@ class AdministrativeLevelAllocation(BaseModel):
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE, verbose_name=_("Administrative level"), null=True, blank=True)
     cvd = models.ForeignKey(CVD, on_delete=models.CASCADE, verbose_name=_("CVD"), null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name=_("Project"))
-    component = models.ForeignKey(Component, on_delete=models.CASCADE, verbose_name=_("Component (Subcomponent)"), null=True)
+    component = models.ForeignKey(Component, on_delete=models.CASCADE, verbose_name=_("Component (Subcomponent)"), null=True, blank=True)
     amount = CustomerFloatRangeField(verbose_name=_("Amount allocated"), min_value=0)
     amount_in_dollars = CustomerFloatRangeField(verbose_name=_("Amount allocated in dollars"), min_value=0)
-    allocation_date = models.DateField(verbose_name=_("Date"), null=True, blank=True)
+    allocation_date = models.DateField(verbose_name=_("Allocation Date"), null=True, blank=True)
+    amount_after_signature_of_contracts = CustomerFloatRangeField(verbose_name=_("Amount allocated after signature of contract(s) (This is only necessary if it's a CVD)"), min_value=0, null=True, blank=True)
+    amount_in_dollars_after_signature_of_contracts = CustomerFloatRangeField(verbose_name=_("Amount allocated in dollars after signature of contract(s) (This is only necessary if it's a CVD)"), min_value=0, null=True, blank=True)
+    allocation_date_after_signature_of_contracts = models.DateField(verbose_name=_("Allocation Date after signature of contract(s) (This is only necessary if it's a CVD)"), null=True, blank=True)
     description = models.TextField(verbose_name=_("Description"), null=True, blank=True)
 
     
