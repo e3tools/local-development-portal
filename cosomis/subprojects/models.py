@@ -23,6 +23,16 @@ class CustomQuerySet(models.QuerySet):
         return Type.objects.filter(id__in=[o.id for o in l])
 
 
+    def filter_by_steps_already_track(self, Type, step_id) -> _QS:
+        l = []
+        step = Step.objects.filter(id=step_id).first()
+        for o in self:
+            if o.check_step(step):
+                l.append(o)
+                
+        return Type.objects.filter(id__in=[o.id for o in l])
+
+
 
 
 # Create your models here.
@@ -275,6 +285,17 @@ class Subproject(BaseModel):
         if step:
             return step.__str__()
         return self.current_level_of_physical_realization_of_the_work
+    
+    @property
+    def get_current_subproject_step_and_level_without_percent(self):
+        step = self.get_current_subproject_step
+        if step and step.wording == "En cours":
+            level = step.get_levels().first()
+            if level:
+                return level.wording
+        if step:
+            return step.wording
+        return self.current_level_of_physical_realization_of_the_work
 
     @property
     def get_current_subproject_step_and_level_object(self):
@@ -289,7 +310,7 @@ class Subproject(BaseModel):
     
     def check_step(self, step):
         for s in self.subprojectstep_set.get_queryset():
-            if s.ranking == step.ranking:
+            if s.wording == step.wording:
                 return True
         return False
 
