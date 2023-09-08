@@ -13,7 +13,8 @@ urlpatterns = [
     path('subprojects-sectors/', views_subprojects.DashboardSubprojectsListView.as_view(), name='dashboard_subprojects_sectors'),
     path('subprojects-sectors-amount/', views_subprojects.DashboardSubprojectsBySectorAmountListView.as_view(), name='dashboard_subprojects_sectors_amount'),
     path('subprojects-sectors-and-steps/', views_subprojects.DashboardSubprojectsSectorsAndStepsListView.as_view(), name='dashboard_subprojects_sectors_and_steps'),
-    path('subprojects-steps/', views_subprojects.DashboardSubprojectsStepsListView.as_view(), name='dashboard_subprojects_steps'),
+    path('subprojects-steps-already-track/', views_subprojects.DashboardSubprojectsStepsAlreadyTrackListView.as_view(), name='dashboard_subprojects_steps_already_track'),
+    path('subprojects-current-steps/', views_subprojects.DashboardSubprojectsCurrentStepsListView.as_view(), name='dashboard_subprojects_current_steps'),
     
     path('waves/', views_administrativelevels.DashboardWaveListView.as_view(), name='dashboard_waves'),
     path('waves-times/', views_administrativelevels.DashboardWaveTimesListView.as_view(), name='dashboard_waves_times'),

@@ -505,7 +505,7 @@ class DashboardSubprojectsSectorsAndStepsListView(DashboardSubprojectsMixin, AJA
     
 
 
-class DashboardSubprojectsStepsListView(DashboardSubprojectsMixin, AJAXRequestMixin, LoginRequiredMixin, generic.ListView):
+class DashboardSubprojectsStepsAlreadyTrackListView(DashboardSubprojectsMixin, AJAXRequestMixin, LoginRequiredMixin, generic.ListView):
     template_name = 'tracking.html'
     context_object_name = 'queryset_results'
     table_class_style = 'table-bordered'
@@ -533,7 +533,31 @@ class DashboardSubprojectsStepsListView(DashboardSubprojectsMixin, AJAXRequestMi
             'values': list(datas.values())
         }
     
-    def summary_subprojects_by_steps(self, all_subprojects, characters_length):
+
+
+    def get_context_data(self, **kwargs):
+        ctx = super(DashboardSubprojectsStepsAlreadyTrackListView, self).get_context_data(**kwargs)
+        all_subprojects = ctx['queryset_results']['subprojects']
+        
+        ctx["summary"] = {}
+
+        characters_length = 3
+        ctx["summary"]["summary_subprojects_by_steps_already_track"] = {}
+        for k, v in self.summary_subprojects_by_steps_already_track(all_subprojects, characters_length).items():
+            ctx["summary"]["summary_subprojects_by_steps_already_track"][k] = v
+
+        ctx["queryset_results"]["administrative_level_type"] = None
+
+        return ctx
+    
+
+
+class DashboardSubprojectsCurrentStepsListView(DashboardSubprojectsMixin, AJAXRequestMixin, LoginRequiredMixin, generic.ListView):
+    template_name = 'tracking.html'
+    context_object_name = 'queryset_results'
+    table_class_style = 'table-bordered'
+    
+    def summary_subprojects_by_current_steps(self, all_subprojects, characters_length):
         datas = {
             _("Step"): {},
             _("Number"): {}
@@ -572,19 +596,16 @@ class DashboardSubprojectsStepsListView(DashboardSubprojectsMixin, AJAXRequestMi
 
 
     def get_context_data(self, **kwargs):
-        ctx = super(DashboardSubprojectsStepsListView, self).get_context_data(**kwargs)
+        ctx = super(DashboardSubprojectsCurrentStepsListView, self).get_context_data(**kwargs)
         all_subprojects = ctx['queryset_results']['subprojects']
         
         ctx["summary"] = {}
 
         characters_length = 3
-        ctx["summary"]["summary_subprojects_by_steps_already_track"] = {}
-        for k, v in self.summary_subprojects_by_steps_already_track(all_subprojects, characters_length).items():
-            ctx["summary"]["summary_subprojects_by_steps_already_track"][k] = v
 
-        ctx["summary"]["summary_subprojects_by_steps"] = {}
-        for k, v in self.summary_subprojects_by_steps(all_subprojects, characters_length).items():
-            ctx["summary"]["summary_subprojects_by_steps"][k] = v
+        ctx["summary"]["summary_subprojects_by_current_steps"] = {}
+        for k, v in self.summary_subprojects_by_current_steps(all_subprojects, characters_length).items():
+            ctx["summary"]["summary_subprojects_by_current_steps"][k] = v
 
         ctx["queryset_results"]["administrative_level_type"] = None
 
