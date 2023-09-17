@@ -43,8 +43,7 @@ class Subproject(BaseModel):
     list_of_beneficiary_villages = models.ManyToManyField(AdministrativeLevel, default=[], blank=True, related_name="vilages_subprojects", verbose_name=_("Beneficiaries villages"))
     canton = models.ForeignKey(AdministrativeLevel, null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Canton")) #canton subprojects (rural track)
     list_of_villages_crossed_by_the_track_or_electrification = models.ManyToManyField(AdministrativeLevel, default=[], blank=True, related_name="cantonal_subprojects", verbose_name=_("List of villages where the runway or electrification crosses"))
-    link_to_subproject = models.ForeignKey('Subproject', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Linked to a sub-project")) #To link the subprojects that the cantons or CVD link to make
-    
+    link_to_subproject = models.ForeignKey('Subproject', null=True, blank=True, on_delete = models.CASCADE, verbose_name=_("Linked to a sub-project")) #To link the subprojects that the cantons or CVD link to make
     number = models.IntegerField(null=True, blank=True, verbose_name=_("Number unique to each sub-project or infrastructure"))
     joint_subproject_number = models.IntegerField(null=True, blank=True, verbose_name=_("Common sub-project number"))
     intervention_unit = models.IntegerField(null=True, blank=True, verbose_name=_("Intervention unit"))

@@ -3,6 +3,10 @@ from .models import GeographicalUnit, CVD, AdministrativeLevel
 from django.core.exceptions import NON_FIELD_ERRORS
 
 class GeographicalUnitForm(forms.ModelForm):
+    """
+    permet de creer une unitee geographique
+
+    """
     
     # cvds = forms.MultipleChoiceField(required=False, label="CVD")
     villages = forms.MultipleChoiceField(required=False, label="Villages")
