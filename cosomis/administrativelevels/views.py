@@ -2,6 +2,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView
+from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from cosomis.constants import OBSTACLES_FOCUS_GROUP, GOALS_FOCUS_GROUP
 from cosomis.mixins import PageMixin
@@ -16,7 +17,7 @@ from administrativelevels.models import AdministrativeLevel, GeographicalUnit, C
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
-from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm
+from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm
 from usermanager.permissions import (
     CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
     AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
@@ -51,10 +52,11 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
         raise Http404
 
 
-class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, DetailView):
+class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView, DetailView):
     """Class to present the detail page of one village"""
 
     model = AdministrativeLevel
+    financial_partner_form_class = FinancialPartnerForm
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
@@ -65,6 +67,93 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, DetailView):
     #         'title': title
     #     },
     # ]
+
+    _base_doc = {
+      "_id": "<couch_db_id>",
+      "adm_id": "11323//uniqueidsforadms",
+      "type": "administrative_level",
+      "level": "village",
+      "parent": 11323,
+      "name": "Kotoule - 1",
+      "total_population": 565,
+      "population_men": 242,
+      "population_women": 323,
+      "population_young": 82,
+      "population_elder": 47,
+      "population_handicap": 23,
+      "population_agruculture": 300,
+      "population_breeders": 25,
+      "population_minorities": 282,
+      "languages": [
+        "Puelh",
+        "Yanga",
+        "Moba"
+      ],
+      "current_phase": "Planification",
+      "current_activity": "Troisieme reunion du village",
+      "current_task": "Etablissement des priorites",
+      "% Complete": 0.23,
+      "priorities_identified": True,
+      "priorities_identified_date": "2023-01-12",
+      "village_development_plan": True,
+      "village_development_plan_date": "2023-01-12",
+      "Facilitator": {
+        "name": "DJANWORE Pouguinimpo Youltodib",
+        "email": "test@test.com",
+        "phone_number": "+254 333 2152"
+      },
+      "priorities": [
+        {
+          "ranking": 1,
+          "name": "Extention réseau électrique",
+          "votes_young": None,
+          "votes_woman": 15,
+          "votes_me": 1,
+          "votes_ae": 1,
+          "beneficiaries": 565,
+          "estimated_cost": 30000000,
+          "financed_by": "COSO",
+          "contrubution_to_climate": True
+        },
+        {
+          "ranking": 2,
+          "name": "Rehabilitation USP",
+          "votes_young": None,
+          "votes_woman": 1,
+          "votes_me": 2,
+          "votes_ae": None,
+          "beneficiaries": 2500,
+          "estimated_cost": 50000000,
+          "financed_by": "AFD",
+          "contrubution_to_climate": True
+        },
+        {
+          "ranking": 3,
+          "name": "Forage Photovoltaique AEP",
+          "votes_young": None,
+          "votes_woman": 2,
+          "votes_me": 3,
+          "votes_ae": None,
+          "beneficiaries": 565,
+          "estimated_cost": 20000000,
+          "financed_by": "COSO",
+          "contrubution_to_climate": True
+        },
+        {
+          "ranking": 4,
+          "name": "Construction Ponts",
+          "votes_young": None,
+          "votes_woman": None,
+          "votes_me": None,
+          "votes_ae": 3,
+          "beneficiaries": 2100,
+          "estimated_cost": 10000000,
+          "financed_by": None,
+          "contrubution_to_climate": True
+        }
+      ],
+      "last_updated": "2023-09-25"
+    }
     
     def get_context_data(self, **kwargs):
         context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
@@ -74,6 +163,9 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, DetailView):
         context['title'] = _type
         context['hide_content_header'] = True
         context['administrativelevel_profile'] = context['object']
+        context['priorities'] = self._base_doc['priorities']
+        if "form" not in kwargs:
+            kwargs["form"] = self.get_form()
         # context['breadcrumb'] = [
         #     {
         #         'url': '',
@@ -81,6 +173,10 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, DetailView):
         #     },
         # ]
         return context
+
+    def get_form_class(self):
+        """Return the form class to use."""
+        return self.financial_partner_form_class
 
         
 class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):

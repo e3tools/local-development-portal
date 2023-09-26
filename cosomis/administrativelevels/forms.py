@@ -72,3 +72,10 @@ class AdministrativeLevelForm(forms.ModelForm):
     class Meta:
         model = AdministrativeLevel
         exclude  = ['no_sql_db_id'] # specify the fields to be hid
+
+
+class FinancialPartnerForm(forms.Form):
+    name = forms.CharField()
+    is_full_contribution = forms.BooleanField()
+    potential_date = forms.DateField()
+    commentaries = forms.CharField(widget=forms.Textarea())

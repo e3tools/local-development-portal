@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n custom_tags %}
+{% load static i18n humanize bootstrap4 custom_tags %}
 
 {% block extracss %}
 {{ block.super }}
@@ -80,132 +80,45 @@
 
                     <div class="tab-content">
                         <div id="priorities" class="tab-pane active">
-                            <div class="row">
-                                <div class="col-12"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12"></div>
-                            </div>
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="row">
-                                        {% comment %} <div class="col-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="text-center">{% translate "Priority needs" %}</h5>
-                                                    <div id=""></div>
-                                                    <span>{% translate "In construction" %}</span>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-priority-needs">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="text-center">{% translate "Sub-component priorities" %}</h5>
-                                                    <div id=""></div>
-                                                    <span>{% translate "In construction" %}</span>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-Subcomponent-priorities">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="text-center">{% translate "Vision and Obstacles" %}</h5>
-                                                    <div id=""></div>
-                                                    <span>{% translate "In construction" %}</span>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-vision-obstacles">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div> {% endcomment %}
-                                        <div id="accordion">
-                                            <div class="card">
-                                                <div class="card-header" id="headingOne">
-                                                <h5 class="mb-0">
-                                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                        {% translate "Priority needs" %} <span style="font-size:11px;">({% translate "Priorities by sub-component (1.1, 1.2 and 1.3) for CCD discussion at cantonal arbitration meeting" %})</span>
-                                                    </button>
-                                                </h5>
-                                                </div>
-
-                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <div id="priority_needs"></div>
-                                                </div>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-priority-needs">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                            <div class="card">
-                                                <div class="card-header" id="headingTwo">
-                                                <h5 class="mb-0">
-                                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                    {% translate "Sub-component priorities" %}
-                                                    </button>
-                                                </h5>
-                                                </div>
-                                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <div id="subcomponent_priorities"></div>
-                                                </div>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-Subcomponent-priorities">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                            <div class="card">
-                                                <div class="card-header" id="headingThree">
-                                                <h5 class="mb-0">
-                                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                    {% translate "Vision and Obstacles" %}
-                                                    </button>
-                                                </h5>
-                                                </div>
-                                                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <div id="vision_obstacles"></div>
-                                                </div>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-vision-obstacles">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h5 class="text-center">{% translate "Subprojects" %}</h5>
-                                            <div id="summary_subprojects"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="overlay" id="spin-summary-subprojects">
-                                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                    </div>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="align-middle" rowspan="2">{% translate "Rank" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Priority to the village" %}</th>
+                                                <th class="align-middle" colspan="4">{% translate "Prioritized by" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Beneficiaries" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Estimate cost" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Fund by" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Contribution to climate" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Actions" %}</th>
+                                            </tr>
+                                            <tr>
+                                              <th class="bg-yellow">J</th>
+                                              <th class="bg-blue">F</th>
+                                              <th class="bg-orange">ME</th>
+                                              <th class="bg-green">AE</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for priority in priorities %}
+                                            <tr>
+                                                <td>{{ priority.ranking }}</td>
+                                                <td>{{ priority.name }}</td>
+                                                <td>{% if priority.votes_young is not None  %}{{ priority.votes_young }}{% endif %}</td>
+                                                <td>{% if priority.votes_woman is not None  %}{{ priority.votes_woman }}{% endif %}</td>
+                                                <td>{% if priority.votes_me is not None  %}{{ priority.votes_me }}{% endif %}</td>
+                                                <td>{% if priority.votes_ae is not None  %}{{ priority.votes_ae }}{% endif %}</td>
+                                                <td>{{ priority.beneficiaries }}</td>
+                                                <td>{{ priority.estimated_cost|intcomma }}</td>
+                                                <td>{{ priority.financed_by }}</td>
+                                                <td>{% if priority.contrubution_to_climate %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</td>
+                                                <td><i class="nav-icon fa fa-list" data-toggle="modal" data-target="#exampleModal"></i></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -294,6 +207,29 @@
 </div>
 
 
+{% endblock %}
+
+
+{% block modals %}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          {% bootstrap_form form %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 
