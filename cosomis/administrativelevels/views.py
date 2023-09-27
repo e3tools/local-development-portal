@@ -13,6 +13,8 @@ from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
 from django.db.models import Q
 
+from no_sql_client import NoSQLClient
+
 from administrativelevels.models import AdministrativeLevel, GeographicalUnit, CVD
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
@@ -57,126 +59,92 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
 
     model = AdministrativeLevel
     financial_partner_form_class = FinancialPartnerForm
+    nsc_class = NoSQLClient
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
     active_level1 = 'administrative_levels'
-    # breadcrumb = [
-    #     {
-    #         'url': '',
-    #         'title': title
-    #     },
-    # ]
-
-    _base_doc = {
-      "_id": "<couch_db_id>",
-      "adm_id": "11323//uniqueidsforadms",
-      "type": "administrative_level",
-      "level": "village",
-      "parent": 11323,
-      "name": "Kotoule - 1",
-      "total_population": 565,
-      "population_men": 242,
-      "population_women": 323,
-      "population_young": 82,
-      "population_elder": 47,
-      "population_handicap": 23,
-      "population_agruculture": 300,
-      "population_breeders": 25,
-      "population_minorities": 282,
-      "languages": [
-        "Puelh",
-        "Yanga",
-        "Moba"
-      ],
-      "current_phase": "Planification",
-      "current_activity": "Troisieme reunion du village",
-      "current_task": "Etablissement des priorites",
-      "% Complete": 0.23,
-      "priorities_identified": True,
-      "priorities_identified_date": "2023-01-12",
-      "village_development_plan": True,
-      "village_development_plan_date": "2023-01-12",
-      "Facilitator": {
-        "name": "DJANWORE Pouguinimpo Youltodib",
-        "email": "test@test.com",
-        "phone_number": "+254 333 2152"
-      },
-      "priorities": [
-        {
-          "ranking": 1,
-          "name": "Extention réseau électrique",
-          "votes_young": None,
-          "votes_woman": 15,
-          "votes_me": 1,
-          "votes_ae": 1,
-          "beneficiaries": 565,
-          "estimated_cost": 30000000,
-          "financed_by": "COSO",
-          "contrubution_to_climate": True
-        },
-        {
-          "ranking": 2,
-          "name": "Rehabilitation USP",
-          "votes_young": None,
-          "votes_woman": 1,
-          "votes_me": 2,
-          "votes_ae": None,
-          "beneficiaries": 2500,
-          "estimated_cost": 50000000,
-          "financed_by": "AFD",
-          "contrubution_to_climate": True
-        },
-        {
-          "ranking": 3,
-          "name": "Forage Photovoltaique AEP",
-          "votes_young": None,
-          "votes_woman": 2,
-          "votes_me": 3,
-          "votes_ae": None,
-          "beneficiaries": 565,
-          "estimated_cost": 20000000,
-          "financed_by": "COSO",
-          "contrubution_to_climate": True
-        },
-        {
-          "ranking": 4,
-          "name": "Construction Ponts",
-          "votes_young": None,
-          "votes_woman": None,
-          "votes_me": None,
-          "votes_ae": 3,
-          "beneficiaries": 2100,
-          "estimated_cost": 10000000,
-          "financed_by": None,
-          "contrubution_to_climate": True
-        }
-      ],
-      "last_updated": "2023-09-25"
-    }
     
     def get_context_data(self, **kwargs):
         context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
-        _type = self.request.GET.get("type", context['object'].type)
+        try:
+            _type = self.request.GET.get("type", context['object'].type)
+        except AttributeError:
+            _type = 'village'
         self.template_name = (_type.lower() if _type.lower() in ('village', 'canton') else "administrativelevel") + "_detail.html"
         context['context_object_name'] = _type
         context['title'] = _type
         context['hide_content_header'] = True
         context['administrativelevel_profile'] = context['object']
-        context['priorities'] = self._base_doc['priorities']
+        context['priorities'] = self._get_priorities()
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
-        # context['breadcrumb'] = [
-        #     {
-        #         'url': '',
-        #         'title': _type
-        #     },
-        # ]
         return context
 
     def get_form_class(self):
         """Return the form class to use."""
         return self.financial_partner_form_class
+
+    def _get_village(self):
+        nsc = self.nsc_class()
+        db = nsc.get_db("administrative_levels")
+        village_document = db.get_query_result(
+            {
+                "type": "administrative_level",
+                "_id": self.kwargs.get(self.pk_url_kwarg)
+            }
+        )[0]
+        if len(village_document) > 0:
+            return village_document[0]
+        return None
+
+    def _get_priorities(self):
+        try:
+            village_obj = self._get_village()
+            if village_obj is not None and 'priorities' in village_obj:
+                return village_obj['priorities']
+            return []
+        except Exception as e:
+            return []
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        # Next, try looking up by primary key.
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        if pk is not None:
+            try:
+                pk = int(pk)
+                queryset = queryset.filter(pk=pk)
+            except ValueError:
+                pass
+
+        # Next, try looking up by slug.
+        if slug is not None and (pk is None or self.query_pk_and_slug):
+            slug_field = self.get_slug_field()
+            queryset = queryset.filter(**{slug_field: slug})
+
+        # If none of those are defined, it's an error.
+        if pk is None and slug is None:
+            raise AttributeError(
+                "Generic detail view %s must be called with either an object "
+                "pk or a slug in the URLconf." % self.__class__.__name__
+            )
+
+        try:
+            # Get the single item from the filtered queryset
+            obj = queryset.get()
+        except (queryset.model.DoesNotExist,  queryset.model.MultipleObjectsReturned):
+            obj = self._get_village()
+            if obj is None:
+                raise Http404(
+                    _("No %(verbose_name)s found matching the query")
+                    % {"verbose_name": queryset.model._meta.verbose_name}
+                )
+            obj['pk'] = 0
+        return obj
 
         
 class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
