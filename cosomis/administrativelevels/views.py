@@ -60,6 +60,8 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
     model = AdministrativeLevel
     financial_partner_form_class = FinancialPartnerForm
     nsc_class = NoSQLClient
+    no_sql_db_id = None
+    no_sql_database_name = "administrative_levels"
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
@@ -77,35 +79,16 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         context['hide_content_header'] = True
         context['administrativelevel_profile'] = context['object']
         context['priorities'] = self._get_priorities()
+        context['population'] = self._get_population_data()
+        context['planning_status'] = self._get_planning_status()
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
+
         return context
 
     def get_form_class(self):
         """Return the form class to use."""
         return self.financial_partner_form_class
-
-    def _get_village(self):
-        nsc = self.nsc_class()
-        db = nsc.get_db("administrative_levels")
-        village_document = db.get_query_result(
-            {
-                "type": "administrative_level",
-                "_id": self.kwargs.get(self.pk_url_kwarg)
-            }
-        )[0]
-        if len(village_document) > 0:
-            return village_document[0]
-        return None
-
-    def _get_priorities(self):
-        try:
-            village_obj = self._get_village()
-            if village_obj is not None and 'priorities' in village_obj:
-                return village_obj['priorities']
-            return []
-        except Exception as e:
-            return []
 
     def get_object(self, queryset=None):
         if queryset is None:
@@ -136,7 +119,9 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         try:
             # Get the single item from the filtered queryset
             obj = queryset.get()
+            self.no_sql_db_id = obj.no_sql_db_id
         except (queryset.model.DoesNotExist,  queryset.model.MultipleObjectsReturned):
+            self.no_sql_db_id = pk
             obj = self._get_village()
             if obj is None:
                 raise Http404(
@@ -145,6 +130,89 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
                 )
             obj['pk'] = 0
         return obj
+
+    def _get_nosql_db(self, name=None):
+        name = name if name is not None else self.no_sql_database_name
+        nsc = self.nsc_class()
+        return nsc.get_db(name)
+
+    def _get_village(self):
+        nsc = self.nsc_class()
+        db = nsc.get_db(self.no_sql_database_name)
+        _id = self.no_sql_db_id if self.no_sql_db_id is not None else self.kwargs.get(self.pk_url_kwarg)
+        village_document = db.get_query_result(
+            {
+                "type": "administrative_level",
+                "_id": _id
+            }
+        )[0]
+        if len(village_document) > 0:
+            return village_document[0]
+        return None
+
+    def _get_priorities(self):
+        try:
+            village_obj = self._get_village()
+            if village_obj is not None and 'priorities' in village_obj:
+                return village_obj['priorities']
+            return []
+        except Exception as e:
+            return []
+
+    def _get_population_data(self):
+        try:
+            village_obj = self._get_village()
+        except Exception as e:
+            return []
+
+        resp = dict()
+
+        if village_obj is not None and 'total_population' in village_obj:
+            resp['total_population'] = village_obj['total_population']
+        if village_obj is not None and 'population_men' in village_obj:
+            resp['population_men'] = village_obj['population_men']
+        if village_obj is not None and 'population_women' in village_obj:
+            resp['population_women'] = village_obj['population_women']
+        if village_obj is not None and 'population_young' in village_obj:
+            resp['population_young'] = village_obj['population_young']
+        if village_obj is not None and 'population_elder' in village_obj:
+            resp['population_elder'] = village_obj['population_elder']
+        if village_obj is not None and 'population_handicap' in village_obj:
+            resp['population_handicap'] = village_obj['population_handicap']
+        if village_obj is not None and 'population_agruculture' in village_obj:
+            resp['population_agruculture'] = village_obj['population_agruculture']
+        if village_obj is not None and 'population_breeders' in village_obj:
+            resp['population_breeders'] = village_obj['population_breeders']
+        if village_obj is not None and 'population_minorities' in village_obj:
+            resp['population_minorities'] = village_obj['population_minorities']
+
+        return resp
+
+    def _get_planning_status(self):
+        try:
+            village_obj = self._get_village()
+        except Exception as e:
+            return []
+
+        resp = dict()
+
+        if village_obj is not None and 'current_phase' in village_obj:
+            resp['current_phase'] = village_obj['current_phase']
+        if village_obj is not None and 'current_activity' in village_obj:
+            resp['current_activity'] = village_obj['current_activity']
+        if village_obj is not None and 'current_task' in village_obj:
+            resp['current_task'] = village_obj['current_task']
+        if village_obj is not None and '% Complete' in village_obj:
+            resp['completed'] = village_obj['% Complete'] == 1.0
+        if village_obj is not None and 'priorities_identified_date' in village_obj:
+            resp['priorities_identified'] = bool(village_obj['priorities_identified_date'])
+        else:
+            resp['priorities_identified'] = False
+        if village_obj is not None and 'village_development_plan_date' in village_obj:
+            resp['village_development_plan_date'] = village_obj['village_development_plan_date']
+        if village_obj is not None and 'Facilitator' in village_obj:
+            resp['facilitator'] = village_obj['Facilitator']['name']
+        return resp
 
         
 class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):

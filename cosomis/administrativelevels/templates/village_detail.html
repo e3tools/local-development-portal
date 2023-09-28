@@ -28,11 +28,38 @@
                 <h5 class="font-weight-bold">{% translate "Planning status" %}</h5>
             </div>
             <div class="card-body">
-                <div class="clearfix" id="planning_status"></div>
 
-                <div class="overlay" id="spin-spin-planning-status">
-                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                </div>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Current Phase</th>
+                            <td>{{ planning_status.current_phase }}</td>
+                        </tr>
+                        <tr>
+                            <td>Current Activity</td>
+                            <td>{{ planning_status.current_activity }}</td>
+                        </tr>
+                        <tr>
+                            <td>Current Task</td>
+                            <td>{{ planning_status.current_task }}</td>
+                        </tr>
+                        <tr>
+                            <td>Completed</td>
+                            <td>{{ planning_status.completed }}</td>
+                        <tr>
+                            <td>Priorities Identified</td>
+                            <td>{{ planning_status.priorities_identified }}</td>
+                        </tr>
+                        <tr>
+                            <td>Village Development Plan Date</td>
+                            <td>{{ planning_status.village_development_plan_date }}</td>
+                        </tr>
+                        <tr>
+                            <td>Facilitator</td>
+                            <td>{{ planning_status.facilitator }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>
@@ -43,11 +70,46 @@
                 <h5 class="font-weight-bold">{% translate "Population" %}</h5>
             </div>
             <div class="card-body">
-                <div class="clearfix" id="overview"></div>
 
-                <div class="overlay spin">
-                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                </div>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Total Population</th>
+                            <td>{{ population.total_population }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Men</td>
+                            <td>{{ population.population_men }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Women</td>
+                            <td>{{ population.population_women }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Young</td>
+                            <td>{{ population.population_young }}</td>
+                        <tr>
+                            <td>Population Elder</td>
+                            <td>{{ population.population_elder }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Handicap</td>
+                            <td>{{ population.population_handicap }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Agruculture</td>
+                            <td>{{ population.population_agruculture }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Breeders</td>
+                            <td>{{ population.population_breeders }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Minorities</td>
+                            <td>{{ population.population_minorities }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>
@@ -236,88 +298,8 @@
 {% block javascript %}
 {{ block.super }}
 
-
 <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        {% get_current_language as lang %}
-        let spin_suprojects_financing = $('#spin-suprojects-financing');
-        spin_suprojects_financing.show();
 
-        let spin = $('.spin');
-
-        spin.show();
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'administrativelevels:components:overview' object.pk %}",
-            data: {
-
-            },
-            success: function (data) {
-                spin.hide();
-                $("#overview").html(data);
-            },
-            error: function (data) {
-                alert(error_server_message + "Error " + data.status);
-            }
-        }).done(function () {
-                spin.hide();
-            }
-        );
-
-
-        //Priorities Sector
-        let spin_sector_priorities = $('#spin-sector-priorities');
-        spin_sector_priorities.show();
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'subprojects:components:by_sector_and_administrative_level' object.pk %}",
-            data: {
-
-            },
-            success: function (data) {
-                spin_sector_priorities.hide();
-                $('#priorities_by_sector').html(data);
-            },
-            error: function (data) {
-                spin_sector_priorities.hide();
-                alert(error_server_message + "Error " + data.status);
-            }
-        }).done(function () {
-                spin_sector_priorities.hide();
-            }
-        );
-        //End priorities Sector
-
-
-        //Summary Subprojects
-        let spin_summary_subprojects = $('#spin-summary-subprojects');
-        spin_summary_subprojects.show();
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'subprojects:components:by_administrative_level' object.pk %}",
-            data: {
-
-            },
-            success: function (data_summary) {
-                spin_summary_subprojects.hide();
-                $('#summary_subprojects').html(data_summary);
-            },
-            error: function (data_summary) {
-                spin_summary_subprojects.hide();
-                alert(error_server_message + "Error " + data_summary.status);
-            }
-            }).done(function () {
-                    spin_summary_subprojects.hide();
-                }
-            );
-        //End Summary Subprojects
-
-
-        
-
-    });
-</script>
 {% endblock %}
