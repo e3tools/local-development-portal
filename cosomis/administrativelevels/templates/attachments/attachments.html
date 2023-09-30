@@ -7,7 +7,6 @@
         .attachment-container {
             display: inline-flex;
             gap: 40px;
-
             flex-wrap: wrap;
             @media (max-width: 700px) {
                 gap: 10px;
@@ -24,7 +23,6 @@
         .attachment-link:nth-child(even) {
             width: 50px;
         }
-
 
         .attachment-placeholder {
             height: 80px;
@@ -96,10 +94,8 @@
                 background-color: #599cf7;
             }
         }
-
     </style>
 {% endblock %}
-
 
 {% block content %}
     {% csrf_token %}
@@ -134,8 +130,6 @@
         </div>
     </div>
 {% endblock %}
-
-
 
 {% block modals %}
     <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel"
@@ -195,16 +189,13 @@
             </div>
         </div>
     </div>
-
-
 {% endblock %}
 
 {% block javascript %}
     {{ block.super }}
-    <!-- Attachments script for carrousel -->
+    <!-- Script for carrousel -->
     <script type="text/javascript">
         $(document).ready(function () {
-
             $('.attachment-link').click(function () {
                 let spin_attachments = $("#spin-attachments");
                 spin_attachments.show();
@@ -215,5 +206,4 @@
             });
         })
     </script>
-
 {% endblock %}
