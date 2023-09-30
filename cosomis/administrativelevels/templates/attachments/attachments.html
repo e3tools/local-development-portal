@@ -108,6 +108,9 @@
             <div class="card">
                 <div class="card-body">
                     <div class="container attachment-container">
+                     {% if attachments.length != 0 %}
+                        <div>No attachments</div>
+                    {% endif %}
                         {% for attachment in attachments %}
                             {% if attachment.type == 'photo' %}
                                 <div class="d-inline-block attachment-link" data-toggle="modal"
