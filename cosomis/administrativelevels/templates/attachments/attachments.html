@@ -1,0 +1,216 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize bootstrap4 custom_tags %}
+
+{% block extracss %}
+    {{ block.super }}
+    <style>
+        .attachment-container {
+            display: inline-flex;
+            gap: 40px;
+
+            flex-wrap: wrap;
+            @media (max-width: 700px) {
+                gap: 10px;
+            }
+        }
+
+        .attachment-link {
+            width: 90px;
+            height: 80px;
+            background: #f6f9fb;
+            border-radius: 10px;
+        }
+
+        .attachment-link:nth-child(even) {
+            width: 50px;
+        }
+
+
+        .attachment-placeholder {
+            height: 80px;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .attachment-placeholder--pdf {
+            height: 40px;
+            width: 30px;
+        }
+
+        #attachmentModal {
+            .modal-header {
+                border: 0;
+            }
+
+            .btn-closeModal {
+                margin-bottom: 30px;
+                background-color: #599cf7;
+                color: white;
+                padding: 5px !important;
+                font-size: 10px;
+                height: 25px;
+                width: 25px;
+                opacity: 1;
+                border-radius: 50%;
+                margin: 5px;
+                margin-left: auto;
+                outline: transparent;
+            }
+
+            .attachment-link {
+                width: calc(100% - 135px);
+                height: 130px;
+                margin: auto;
+                display: flex;
+            }
+
+            .attachment-placeholder {
+                height: 130px;
+            }
+
+            .attachment-placeholder--pdf {
+                height: 90px;
+                width: 50px;
+            }
+
+            .carousel-control-next, .carousel-control-prev {
+                bottom: -50px;
+            }
+
+            .carousel-control-next-icon, .carousel-control-prev-icon {
+                border-radius: 50%;
+                background-color: #599cf7;
+
+                padding: 5px !important;
+                background-size: 10px;
+                height: 25px;
+                width: 25px;
+                bottom: -40px;
+            }
+
+            .carousel-indicators {
+                bottom: -40px;
+            }
+
+            .carousel-indicators li {
+                background-color: #599cf7;
+            }
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container attachment-container">
+                        {% for attachment in attachments %}
+                            {% if attachment.type == 'photo' %}
+                                <div class="d-inline-block attachment-link" data-toggle="modal"
+                                     data-target="#attachmentModal" data-count="{{ forloop.counter0 }}">
+                                    <img class="attachment-placeholder" src="{{ attachment.url|imgAWSS3Filter }}"
+                                         alt="{{ attachment.task }}">
+                                </div>
+                            {% else %}
+                                <div class="d-inline-flex align-items-center justify-content-center attachment-link"
+                                     data-toggle="modal" data-target="#attachmentModal"
+                                     data-count="{{ forloop.counter0 }}">
+                                    <img class=" attachment-placeholder attachment-placeholder--pdf" src="
+                                {% static 'images/pdf-placeholder.png' %}"
+                                         alt="{{ attachment.task }}">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{% block modals %}
+    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-closeModal" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="card-body mb-5">
+                    <div class="clearfix" id="attachments">
+                        <div id="carouselIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
+                            <ol class="carousel-indicators">
+                                {% for attachment in attachments %}
+                                    <li data-target="#carouselIndicators" #selectorId{{ forloop.counter0 }}
+                                        data-slide-to="{{ forloop.counter }}"
+                                        {% if attachment.url == selectedAttachmentUrl %}class="active"{% endif %}></li>
+                                {% endfor %}
+                            </ol>
+                            <div class="carousel-inner">
+                                {% for attachment in attachments %}
+                                    <div class="carousel-item" #slideid{{ forloop.counter0 }}>
+                                        {% if attachment.type == 'photo' %}
+                                            <div class="attachment-link">
+                                                <img class="attachment-placeholder"
+                                                     src="{{ attachment.url|imgAWSS3Filter }}"
+                                                     alt="{{ attachment.task }}">
+                                            </div>
+                                        {% else %}
+                                            <div class="align-items-center justify-content-center attachment-link">
+                                                <img class="attachment-placeholder attachment-placeholder--pdf" src="
+                {% static 'images/pdf-placeholder.png' %}"
+                                                     alt="{{ attachment.task }}">
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselIndicators" role="button"
+                               data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselIndicators" role="button"
+                               data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="overlay" id="spin-attachments">
+                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <!-- Attachments script for carrousel -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.attachment-link').click(function () {
+                let spin_attachments = $("#spin-attachments");
+                spin_attachments.show();
+                const count = $(this).data('count');
+                $('.carousel-item').eq(count).addClass('active');
+                $('.carousel-indicators li').eq(count).addClass('active');
+                spin_attachments.hide();
+            });
+        })
+    </script>
+
+{% endblock %}

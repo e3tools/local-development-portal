@@ -11,14 +11,11 @@
 <div class="row">
     <div class="col-4">
         <div class="card">
-            
             <div class="card-body">
                 <div class="clearfix"  id="attachments_images"></div>
-
                 <div class="overlay" id="spin-attachments-images">
                     <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                 </div>
-
             </div>
         </div>
     </div>
@@ -297,6 +294,50 @@
 
 {% block javascript %}
 {{ block.super }}
+
+<!-- Attachments script for carrousel -->
+<script type="text/javascript">
+    let spin_attachments_images = $("#spin-attachments-images");
+    let attachments_images = $("#attachments_images");
+    spin_attachments_images.show();
+    attachments_images.html(`
+    {% if images_data.exists_at_least_image %}
+
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                {% for image in images_data.images %}
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}" {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
+                {% endfor %}
+            </ol>
+            <div class="carousel-inner">
+                {% for image in images_data.images %}
+                    <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
+                        <a href="{% url 'administrativelevels:village_attachments' village_id %}">
+                            <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
+                            style="height: 225px !important;"
+                            alt="{{ image.task }}">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+    {% else %}
+        <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
+                alt="Card image" style="height: 225px !important;">
+    {% endif %}
+    `);
+    spin_attachments_images.hide();
+
+</script>
 
 <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>

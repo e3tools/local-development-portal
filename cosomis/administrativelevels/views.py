@@ -78,9 +78,13 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         context['title'] = _type
         context['hide_content_header'] = True
         context['administrativelevel_profile'] = context['object']
-        context['priorities'] = self._get_priorities()
-        context['population'] = self._get_population_data()
-        context['planning_status'] = self._get_planning_status()
+        village_obj = self._get_village()
+        context['priorities'] = self._get_priorities(village_obj)
+        context['population'] = self._get_population_data(village_obj)
+        context['planning_status'] = self._get_planning_status(village_obj)
+        images = self._get_images(village_obj)
+        context['village_id'] = village_obj['_id']
+        context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0]}
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
 
@@ -150,18 +154,18 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
             return village_document[0]
         return None
 
-    def _get_priorities(self):
+    def _get_priorities(self, village):
         try:
-            village_obj = self._get_village()
+            village_obj = village
             if village_obj is not None and 'priorities' in village_obj:
                 return village_obj['priorities']
             return []
         except Exception as e:
             return []
 
-    def _get_population_data(self):
+    def _get_population_data(self, village):
         try:
-            village_obj = self._get_village()
+            village_obj = village
         except Exception as e:
             return []
 
@@ -188,9 +192,9 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
 
         return resp
 
-    def _get_planning_status(self):
+    def _get_planning_status(self, village):
         try:
-            village_obj = self._get_village()
+            village_obj = village
         except Exception as e:
             return []
 
@@ -214,6 +218,14 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
             resp['facilitator'] = village_obj['Facilitator']['name']
         return resp
 
+    def _get_images(self, village):
+        try:
+            village_obj = village
+            if village_obj is not None and 'attachments' in village_obj:
+                return list(filter(lambda x: x.get('type') == 'photo', village_obj['attachments']))
+            return []
+        except Exception as e:
+            return []
         
 class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = AdministrativeLevel
@@ -759,6 +771,38 @@ def priority_delete(request, priority_id):
         raise Http404
     
     return redirect('administrativelevels:priorities_priorities', administrative_level_id=administrative_level_id)
+
+
+# Attachments
+class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
+    template_name = 'attachments/attachments.html'
+    context_object_name = 'attachments'
+    title = _("Galerie d'images")
+    nsc_class = NoSQLClient
+    no_sql_db_id = None
+    no_sql_database_name = "village_attachments"
+
+    def get_context_data(self, **kwargs):
+        context = super(AttachmentListView, self).get_context_data(**kwargs)
+        try:
+            pk_url_kwarg = self.kwargs.get("pk")
+            search = self.request.GET.get("search", None)
+            page_number = self.request.GET.get("page", None)
+            nsc = self.nsc_class()
+            db = nsc.get_db(self.no_sql_database_name)
+            _id = self.no_sql_db_id if self.no_sql_db_id is not None else self.kwargs.get(pk_url_kwarg)
+            village_image_document = db.get_query_result(
+                {
+                    "type": self.no_sql_database_name,
+                    "adm_id": pk_url_kwarg
+                }
+            )[0]
+            context['attachments'] = []
+            if len(village_image_document) > 0:
+                context['attachments'] = village_image_document[0].get('attachments', None)
+        except Exception as exc:
+            raise Http404
+        return context
 
 
 
