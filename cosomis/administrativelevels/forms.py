@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import RadioSelect, Select
+
 from .models import GeographicalUnit, CVD, AdministrativeLevel
 from django.core.exceptions import NON_FIELD_ERRORS
 
@@ -79,3 +81,15 @@ class FinancialPartnerForm(forms.Form):
     is_full_contribution = forms.BooleanField()
     potential_date = forms.DateField()
     commentaries = forms.CharField(widget=forms.Textarea())
+
+
+class AttachmentFilterForm(forms.Form):
+    TYPE_CHOICES = (
+        ("photo", "Photo"),
+        ("document", "Document"),
+        (None, "Both")
+    )
+    type = forms.ChoiceField(choices=TYPE_CHOICES, widget=RadioSelect)
+    phase = forms.ChoiceField(widget=Select, required=False)
+    activity = forms.ChoiceField(widget=Select, required=False)
+    task = forms.ChoiceField(widget=Select, required=False)

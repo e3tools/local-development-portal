@@ -1,3 +1,5 @@
+from collections import defaultdict
+from typing import Optional, Dict, List, Tuple, Any
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -19,11 +21,11 @@ from administrativelevels.models import AdministrativeLevel, GeographicalUnit, C
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
-from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm
+from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm, AttachmentFilterForm
 from usermanager.permissions import (
     CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
     AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
-    )
+)
 from administrativelevels import functions_cvd as cvd_functions
 from administrativelevels.functions import (
     get_administrative_level_ids_descendants,
@@ -83,7 +85,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         context['population'] = self._get_population_data(village_obj)
         context['planning_status'] = self._get_planning_status(village_obj)
         images = self._get_images(village_obj)
-        context['village_id'] = village_obj['_id']
+        context['adm_id'] = village_obj['adm_id']
         context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0]}
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
@@ -239,6 +241,7 @@ class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissi
             'title': title
         },
     ]
+
     def get_parent(self, type: str):
         parent = None
         if type == "Prefecture":
@@ -277,6 +280,7 @@ class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, AdminPermissi
             'title': title
         },
     ]
+
     def get_parent(self, type: str):
         parent = None
         if type == "Prefecture":
@@ -758,6 +762,7 @@ class PrioritiesListView(PageMixin, LoginRequiredMixin, TemplateView):
 
         return self.get(request, *args, **kwargs)
 
+
 @login_required
 def priority_delete(request, priority_id):
     """Function to delete one priority"""
@@ -783,27 +788,121 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     no_sql_database_name = "village_attachments"
 
     def get_context_data(self, **kwargs):
+        self.activity_choices: List[Tuple] = [(None, '---')]
+        self.task_choices: List[Tuple] = [(None, '---')]
+        self.phase_choices: List[Tuple] = [(None, '---')]
         context = super(AttachmentListView, self).get_context_data(**kwargs)
+        context['attachments'] = []
+
         try:
-            pk_url_kwarg = self.kwargs.get("pk")
-            search = self.request.GET.get("search", None)
-            page_number = self.request.GET.get("page", None)
-            nsc = self.nsc_class()
-            db = nsc.get_db(self.no_sql_database_name)
-            _id = self.no_sql_db_id if self.no_sql_db_id is not None else self.kwargs.get(pk_url_kwarg)
-            village_image_document = db.get_query_result(
-                {
-                    "type": self.no_sql_database_name,
-                    "adm_id": pk_url_kwarg
-                }
-            )[0]
-            context['attachments'] = []
-            if len(village_image_document) > 0:
-                context['attachments'] = village_image_document[0].get('attachments', None)
-        except Exception as exc:
+            adm_id: int = self.kwargs.get("adm_id")
+            query_params: dict = self.request.GET
+
+            form = AttachmentFilterForm()
+
+            nsc: NoSQLClient = self.nsc_class()
+            db: Any = nsc.get_db(self.no_sql_database_name)
+
+            village_attachments_document = db.get_query_result(self.__build_db_filter(adm_id, dict()))[0]
+            if len(village_attachments_document) > 0:
+                self.__get_select_choices(village_attachments_document)
+
+            filtered_village_attachments_document = db.get_query_result(
+                self.__build_db_filter(adm_id, query_params))[0]
+            if len(filtered_village_attachments_document) > 0:
+                context['attachments'] = self.__build_lambda_filter(
+                    filtered_village_attachments_document[0].get('attachments', None),
+                    query_params
+                )
+
+            form.fields.get('type').initial = query_params.get('type')
+            form.fields.get('task').choices = self.task_choices
+            form.fields.get('task').initial = query_params.get('task')
+            form.fields.get('phase').choices = self.phase_choices
+            form.fields.get('phase').initial = query_params.get('phase')
+            form.fields.get('activity').choices = self.activity_choices
+            form.fields.get('activity').initial = query_params.get('activity')
+            context['no_results'] = len(context['attachments']) == 0
+            context['form'] = form
+
+        except Exception as ex:
             raise Http404
         return context
 
+    def __get_select_choices(self, village_attachments_document) -> None:
+        village_attachments = village_attachments_document[0].get('attachments', None)
+        self.activity_choices = self.activity_choices + (list(
+            set(map(lambda attachment: (attachment.get('activity'), attachment.get('activity')),
+                    village_attachments
+                    ))))
+        self.task_choices = self.task_choices + (list(
+            set(map(lambda attachment: (attachment.get('task'), attachment.get('task')),
+                    village_attachments
+                    ))))
+        self.phase_choices = self.phase_choices + (list(
+            set(map(lambda attachment: (attachment.get('phase'), attachment.get('phase')),
+                    village_attachments
+                    ))))
+
+    def __build_lambda_filter(self, attachments: List[any], query_params: dict) -> Optional[List]:
+        filters = []
+
+        type_of_document = query_params.get('type')
+        if type_of_document is not None and type_of_document is not '':
+            filters.append(lambda p: p.get('type') == type_of_document)
+
+        phase = query_params.get('phase')
+        if phase is not None and phase is not '':
+            filters.append(lambda p: p.get('phase') == phase)
+
+        activity = query_params.get('activity')
+        if activity is not None and activity is not '':
+            filters.append(lambda p: p.get('activity') == activity)
+
+        task = query_params.get('task')
+        if task is not None and task is not '':
+            filters.append(lambda p: p.get('task') == task)
+
+        try:
+            return list(filter(lambda p: all(f(p) for f in filters), attachments))
+        except StopIteration:
+            return None
+
+    def __build_db_filter(self, adm_id: int, query_params: dict) -> Dict:
+        db_filter: dict = defaultdict(dict)
+        db_filter["type"] = self.no_sql_database_name
+        db_filter["adm_id"] = adm_id
+
+        if len(query_params) > 0:
+            db_filter["attachments"] = defaultdict(dict)
+            db_filter["attachments"]["$elemMatch"] = defaultdict(dict)
+
+            type_of_document = query_params.get('type')
+            if type_of_document is not None and type_of_document is not '':
+                db_filter["attachments"]["$elemMatch"]["type"] = type_of_document
+
+            phase = query_params.get('phase')
+            if phase is not None and phase is not '':
+                db_filter["attachments"]["$elemMatch"]["phase"] = phase
+
+            activity = query_params.get('activity')
+            if activity is not None and activity is not '':
+                db_filter["attachments"]["$elemMatch"]["activity"] = activity
+
+            task = query_params.get('task')
+            if task is not None and task is not '':
+                db_filter["attachments"]["$elemMatch"]["task"] = task
+
+            db_filter["attachments"]["$elemMatch"] = dict(db_filter["attachments"]["$elemMatch"])
+            db_filter["attachments"] = dict(db_filter["attachments"])
+
+            if len(db_filter["attachments"]["$elemMatch"]) == 0:
+                del (db_filter["attachments"]["$elemMatch"])
+
+            if len(db_filter["attachments"]) == 0:
+                del (db_filter["attachments"])
+
+        return dict(db_filter)
 
 
 #====================== Geographical unit=========================================
