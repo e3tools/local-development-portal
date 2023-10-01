@@ -1,7 +1,10 @@
+from collections import defaultdict
+from typing import Optional, Dict, List, Tuple, Any
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView
+from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from cosomis.constants import OBSTACLES_FOCUS_GROUP, GOALS_FOCUS_GROUP
 from cosomis.mixins import PageMixin
@@ -12,15 +15,17 @@ from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
 from django.db.models import Q
 
+from no_sql_client import NoSQLClient
+
 from administrativelevels.models import AdministrativeLevel, GeographicalUnit, CVD
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
-from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm
+from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm, AttachmentFilterForm
 from usermanager.permissions import (
     CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
     AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
-    )
+)
 from administrativelevels import functions_cvd as cvd_functions
 from administrativelevels.functions import (
     get_administrative_level_ids_descendants,
@@ -51,37 +56,178 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
         raise Http404
 
 
-class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, DetailView):
+class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView, DetailView):
     """Class to present the detail page of one village"""
 
     model = AdministrativeLevel
+    financial_partner_form_class = FinancialPartnerForm
+    nsc_class = NoSQLClient
+    no_sql_db_id = None
+    no_sql_database_name = "administrative_levels"
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
     active_level1 = 'administrative_levels'
-    # breadcrumb = [
-    #     {
-    #         'url': '',
-    #         'title': title
-    #     },
-    # ]
     
     def get_context_data(self, **kwargs):
         context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
-        _type = self.request.GET.get("type", context['object'].type)
+        try:
+            _type = self.request.GET.get("type", context['object'].type)
+        except AttributeError:
+            _type = 'village'
         self.template_name = (_type.lower() if _type.lower() in ('village', 'canton') else "administrativelevel") + "_detail.html"
         context['context_object_name'] = _type
         context['title'] = _type
         context['hide_content_header'] = True
         context['administrativelevel_profile'] = context['object']
-        # context['breadcrumb'] = [
-        #     {
-        #         'url': '',
-        #         'title': _type
-        #     },
-        # ]
+        village_obj = self._get_village()
+        context['priorities'] = self._get_priorities(village_obj)
+        context['population'] = self._get_population_data(village_obj)
+        context['planning_status'] = self._get_planning_status(village_obj)
+        images = self._get_images(village_obj)
+        context['adm_id'] = village_obj['adm_id']
+        context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0]}
+        if "form" not in kwargs:
+            kwargs["form"] = self.get_form()
+
         return context
 
+    def get_form_class(self):
+        """Return the form class to use."""
+        return self.financial_partner_form_class
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        # Next, try looking up by primary key.
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        if pk is not None:
+            try:
+                pk = int(pk)
+                queryset = queryset.filter(pk=pk)
+            except ValueError:
+                pass
+
+        # Next, try looking up by slug.
+        if slug is not None and (pk is None or self.query_pk_and_slug):
+            slug_field = self.get_slug_field()
+            queryset = queryset.filter(**{slug_field: slug})
+
+        # If none of those are defined, it's an error.
+        if pk is None and slug is None:
+            raise AttributeError(
+                "Generic detail view %s must be called with either an object "
+                "pk or a slug in the URLconf." % self.__class__.__name__
+            )
+
+        try:
+            # Get the single item from the filtered queryset
+            obj = queryset.get()
+            self.no_sql_db_id = obj.no_sql_db_id
+        except (queryset.model.DoesNotExist,  queryset.model.MultipleObjectsReturned):
+            self.no_sql_db_id = pk
+            obj = self._get_village()
+            if obj is None:
+                raise Http404(
+                    _("No %(verbose_name)s found matching the query")
+                    % {"verbose_name": queryset.model._meta.verbose_name}
+                )
+            obj['pk'] = 0
+        return obj
+
+    def _get_nosql_db(self, name=None):
+        name = name if name is not None else self.no_sql_database_name
+        nsc = self.nsc_class()
+        return nsc.get_db(name)
+
+    def _get_village(self):
+        nsc = self.nsc_class()
+        db = nsc.get_db(self.no_sql_database_name)
+        _id = self.no_sql_db_id if self.no_sql_db_id is not None else self.kwargs.get(self.pk_url_kwarg)
+        village_document = db.get_query_result(
+            {
+                "type": "administrative_level",
+                "_id": _id
+            }
+        )[0]
+        if len(village_document) > 0:
+            return village_document[0]
+        return None
+
+    def _get_priorities(self, village):
+        try:
+            village_obj = village
+            if village_obj is not None and 'priorities' in village_obj:
+                return village_obj['priorities']
+            return []
+        except Exception as e:
+            return []
+
+    def _get_population_data(self, village):
+        try:
+            village_obj = village
+        except Exception as e:
+            return []
+
+        resp = dict()
+
+        if village_obj is not None and 'total_population' in village_obj:
+            resp['total_population'] = village_obj['total_population']
+        if village_obj is not None and 'population_men' in village_obj:
+            resp['population_men'] = village_obj['population_men']
+        if village_obj is not None and 'population_women' in village_obj:
+            resp['population_women'] = village_obj['population_women']
+        if village_obj is not None and 'population_young' in village_obj:
+            resp['population_young'] = village_obj['population_young']
+        if village_obj is not None and 'population_elder' in village_obj:
+            resp['population_elder'] = village_obj['population_elder']
+        if village_obj is not None and 'population_handicap' in village_obj:
+            resp['population_handicap'] = village_obj['population_handicap']
+        if village_obj is not None and 'population_agruculture' in village_obj:
+            resp['population_agruculture'] = village_obj['population_agruculture']
+        if village_obj is not None and 'population_breeders' in village_obj:
+            resp['population_breeders'] = village_obj['population_breeders']
+        if village_obj is not None and 'population_minorities' in village_obj:
+            resp['population_minorities'] = village_obj['population_minorities']
+
+        return resp
+
+    def _get_planning_status(self, village):
+        try:
+            village_obj = village
+        except Exception as e:
+            return []
+
+        resp = dict()
+
+        if village_obj is not None and 'current_phase' in village_obj:
+            resp['current_phase'] = village_obj['current_phase']
+        if village_obj is not None and 'current_activity' in village_obj:
+            resp['current_activity'] = village_obj['current_activity']
+        if village_obj is not None and 'current_task' in village_obj:
+            resp['current_task'] = village_obj['current_task']
+        if village_obj is not None and '% Complete' in village_obj:
+            resp['completed'] = village_obj['% Complete'] == 1.0
+        if village_obj is not None and 'priorities_identified_date' in village_obj:
+            resp['priorities_identified'] = bool(village_obj['priorities_identified_date'])
+        else:
+            resp['priorities_identified'] = False
+        if village_obj is not None and 'village_development_plan_date' in village_obj:
+            resp['village_development_plan_date'] = village_obj['village_development_plan_date']
+        if village_obj is not None and 'Facilitator' in village_obj:
+            resp['facilitator'] = village_obj['Facilitator']['name']
+        return resp
+
+    def _get_images(self, village):
+        try:
+            village_obj = village
+            if village_obj is not None and 'attachments' in village_obj:
+                return list(filter(lambda x: x.get('type') == 'photo', village_obj['attachments']))
+            return []
+        except Exception as e:
+            return []
         
 class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = AdministrativeLevel
@@ -95,6 +241,7 @@ class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissi
             'title': title
         },
     ]
+
     def get_parent(self, type: str):
         parent = None
         if type == "Prefecture":
@@ -133,6 +280,7 @@ class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, AdminPermissi
             'title': title
         },
     ]
+
     def get_parent(self, type: str):
         parent = None
         if type == "Prefecture":
@@ -614,6 +762,7 @@ class PrioritiesListView(PageMixin, LoginRequiredMixin, TemplateView):
 
         return self.get(request, *args, **kwargs)
 
+
 @login_required
 def priority_delete(request, priority_id):
     """Function to delete one priority"""
@@ -628,6 +777,132 @@ def priority_delete(request, priority_id):
     
     return redirect('administrativelevels:priorities_priorities', administrative_level_id=administrative_level_id)
 
+
+# Attachments
+class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
+    template_name = 'attachments/attachments.html'
+    context_object_name = 'attachments'
+    title = _("Galerie d'images")
+    nsc_class = NoSQLClient
+    no_sql_db_id = None
+    no_sql_database_name = "village_attachments"
+
+    def get_context_data(self, **kwargs):
+        self.activity_choices: List[Tuple] = [(None, '---')]
+        self.task_choices: List[Tuple] = [(None, '---')]
+        self.phase_choices: List[Tuple] = [(None, '---')]
+        context = super(AttachmentListView, self).get_context_data(**kwargs)
+        context['attachments'] = []
+
+        try:
+            adm_id: int = self.kwargs.get("adm_id")
+            query_params: dict = self.request.GET
+
+            form = AttachmentFilterForm()
+
+            nsc: NoSQLClient = self.nsc_class()
+            db: Any = nsc.get_db(self.no_sql_database_name)
+
+            village_attachments_document = db.get_query_result(self.__build_db_filter(adm_id, dict()))[0]
+            if len(village_attachments_document) > 0:
+                self.__get_select_choices(village_attachments_document)
+
+            filtered_village_attachments_document = db.get_query_result(
+                self.__build_db_filter(adm_id, query_params))[0]
+            if len(filtered_village_attachments_document) > 0:
+                context['attachments'] = self.__build_lambda_filter(
+                    filtered_village_attachments_document[0].get('attachments', None),
+                    query_params
+                )
+
+            form.fields.get('type').initial = query_params.get('type')
+            form.fields.get('task').choices = self.task_choices
+            form.fields.get('task').initial = query_params.get('task')
+            form.fields.get('phase').choices = self.phase_choices
+            form.fields.get('phase').initial = query_params.get('phase')
+            form.fields.get('activity').choices = self.activity_choices
+            form.fields.get('activity').initial = query_params.get('activity')
+            context['no_results'] = len(context['attachments']) == 0
+            context['form'] = form
+
+        except Exception as ex:
+            raise Http404
+        return context
+
+    def __get_select_choices(self, village_attachments_document) -> None:
+        village_attachments = village_attachments_document[0].get('attachments', None)
+        self.activity_choices = self.activity_choices + (list(
+            set(map(lambda attachment: (attachment.get('activity'), attachment.get('activity')),
+                    village_attachments
+                    ))))
+        self.task_choices = self.task_choices + (list(
+            set(map(lambda attachment: (attachment.get('task'), attachment.get('task')),
+                    village_attachments
+                    ))))
+        self.phase_choices = self.phase_choices + (list(
+            set(map(lambda attachment: (attachment.get('phase'), attachment.get('phase')),
+                    village_attachments
+                    ))))
+
+    def __build_lambda_filter(self, attachments: List[any], query_params: dict) -> Optional[List]:
+        filters = []
+
+        type_of_document = query_params.get('type')
+        if type_of_document is not None and type_of_document is not '':
+            filters.append(lambda p: p.get('type') == type_of_document)
+
+        phase = query_params.get('phase')
+        if phase is not None and phase is not '':
+            filters.append(lambda p: p.get('phase') == phase)
+
+        activity = query_params.get('activity')
+        if activity is not None and activity is not '':
+            filters.append(lambda p: p.get('activity') == activity)
+
+        task = query_params.get('task')
+        if task is not None and task is not '':
+            filters.append(lambda p: p.get('task') == task)
+
+        try:
+            return list(filter(lambda p: all(f(p) for f in filters), attachments))
+        except StopIteration:
+            return None
+
+    def __build_db_filter(self, adm_id: int, query_params: dict) -> Dict:
+        db_filter: dict = defaultdict(dict)
+        db_filter["type"] = self.no_sql_database_name
+        db_filter["adm_id"] = adm_id
+
+        if len(query_params) > 0:
+            db_filter["attachments"] = defaultdict(dict)
+            db_filter["attachments"]["$elemMatch"] = defaultdict(dict)
+
+            type_of_document = query_params.get('type')
+            if type_of_document is not None and type_of_document is not '':
+                db_filter["attachments"]["$elemMatch"]["type"] = type_of_document
+
+            phase = query_params.get('phase')
+            if phase is not None and phase is not '':
+                db_filter["attachments"]["$elemMatch"]["phase"] = phase
+
+            activity = query_params.get('activity')
+            if activity is not None and activity is not '':
+                db_filter["attachments"]["$elemMatch"]["activity"] = activity
+
+            task = query_params.get('task')
+            if task is not None and task is not '':
+                db_filter["attachments"]["$elemMatch"]["task"] = task
+
+            db_filter["attachments"]["$elemMatch"] = dict(db_filter["attachments"]["$elemMatch"])
+            db_filter["attachments"] = dict(db_filter["attachments"])
+
+            if len(db_filter["attachments"]["$elemMatch"]) == 0:
+                del (db_filter["attachments"]["$elemMatch"])
+
+            if len(db_filter["attachments"]) == 0:
+                del (db_filter["attachments"])
+
+        return dict(db_filter)
 
 
 #====================== Geographical unit=========================================

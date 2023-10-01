@@ -11,7 +11,7 @@ django-environ==0.9.0
 django-unicorn==0.48.0
 et-xmlfile==1.1.0
 idna==3.4
-mysqlclient==2.1.1
+mysqlclient==2.2.0
 numpy==1.23.3
 openpyxl==3.0.10
 orjson==3.8.0

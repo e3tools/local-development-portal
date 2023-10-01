@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n custom_tags %}
+{% load static i18n humanize bootstrap4 custom_tags %}
 
 {% block extracss %}
 {{ block.super }}
@@ -11,14 +11,11 @@
 <div class="row">
     <div class="col-4">
         <div class="card">
-            
             <div class="card-body">
                 <div class="clearfix"  id="attachments_images"></div>
-
                 <div class="overlay" id="spin-attachments-images">
                     <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                 </div>
-
             </div>
         </div>
     </div>
@@ -28,11 +25,38 @@
                 <h5 class="font-weight-bold">{% translate "Planning status" %}</h5>
             </div>
             <div class="card-body">
-                <div class="clearfix" id="planning_status"></div>
 
-                <div class="overlay" id="spin-spin-planning-status">
-                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                </div>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Current Phase</th>
+                            <td>{{ planning_status.current_phase }}</td>
+                        </tr>
+                        <tr>
+                            <td>Current Activity</td>
+                            <td>{{ planning_status.current_activity }}</td>
+                        </tr>
+                        <tr>
+                            <td>Current Task</td>
+                            <td>{{ planning_status.current_task }}</td>
+                        </tr>
+                        <tr>
+                            <td>Completed</td>
+                            <td>{{ planning_status.completed }}</td>
+                        <tr>
+                            <td>Priorities Identified</td>
+                            <td>{{ planning_status.priorities_identified }}</td>
+                        </tr>
+                        <tr>
+                            <td>Village Development Plan Date</td>
+                            <td>{{ planning_status.village_development_plan_date }}</td>
+                        </tr>
+                        <tr>
+                            <td>Facilitator</td>
+                            <td>{{ planning_status.facilitator }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>
@@ -43,11 +67,46 @@
                 <h5 class="font-weight-bold">{% translate "Population" %}</h5>
             </div>
             <div class="card-body">
-                <div class="clearfix" id="overview"></div>
 
-                <div class="overlay spin">
-                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                </div>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Total Population</th>
+                            <td>{{ population.total_population }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Men</td>
+                            <td>{{ population.population_men }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Women</td>
+                            <td>{{ population.population_women }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Young</td>
+                            <td>{{ population.population_young }}</td>
+                        <tr>
+                            <td>Population Elder</td>
+                            <td>{{ population.population_elder }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Handicap</td>
+                            <td>{{ population.population_handicap }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Agruculture</td>
+                            <td>{{ population.population_agruculture }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Breeders</td>
+                            <td>{{ population.population_breeders }}</td>
+                        </tr>
+                        <tr>
+                            <td>Population Minorities</td>
+                            <td>{{ population.population_minorities }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>
@@ -80,132 +139,45 @@
 
                     <div class="tab-content">
                         <div id="priorities" class="tab-pane active">
-                            <div class="row">
-                                <div class="col-12"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12"></div>
-                            </div>
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="row">
-                                        {% comment %} <div class="col-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="text-center">{% translate "Priority needs" %}</h5>
-                                                    <div id=""></div>
-                                                    <span>{% translate "In construction" %}</span>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-priority-needs">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="text-center">{% translate "Sub-component priorities" %}</h5>
-                                                    <div id=""></div>
-                                                    <span>{% translate "In construction" %}</span>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-Subcomponent-priorities">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="text-center">{% translate "Vision and Obstacles" %}</h5>
-                                                    <div id=""></div>
-                                                    <span>{% translate "In construction" %}</span>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-vision-obstacles">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div> {% endcomment %}
-                                        <div id="accordion">
-                                            <div class="card">
-                                                <div class="card-header" id="headingOne">
-                                                <h5 class="mb-0">
-                                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                        {% translate "Priority needs" %} <span style="font-size:11px;">({% translate "Priorities by sub-component (1.1, 1.2 and 1.3) for CCD discussion at cantonal arbitration meeting" %})</span>
-                                                    </button>
-                                                </h5>
-                                                </div>
-
-                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <div id="priority_needs"></div>
-                                                </div>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-priority-needs">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                            <div class="card">
-                                                <div class="card-header" id="headingTwo">
-                                                <h5 class="mb-0">
-                                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                    {% translate "Sub-component priorities" %}
-                                                    </button>
-                                                </h5>
-                                                </div>
-                                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <div id="subcomponent_priorities"></div>
-                                                </div>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-Subcomponent-priorities">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                            <div class="card">
-                                                <div class="card-header" id="headingThree">
-                                                <h5 class="mb-0">
-                                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                    {% translate "Vision and Obstacles" %}
-                                                    </button>
-                                                </h5>
-                                                </div>
-                                                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <div id="vision_obstacles"></div>
-                                                </div>
-                                                </div>
-                                                
-                                                <div class="overlay" id="spin-vision-obstacles">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h5 class="text-center">{% translate "Subprojects" %}</h5>
-                                            <div id="summary_subprojects"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="overlay" id="spin-summary-subprojects">
-                                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                    </div>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="align-middle" rowspan="2">{% translate "Rank" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Priority to the village" %}</th>
+                                                <th class="align-middle" colspan="4">{% translate "Prioritized by" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Beneficiaries" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Estimate cost" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Fund by" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Contribution to climate" %}</th>
+                                                <th class="align-middle" rowspan="2">{% translate "Actions" %}</th>
+                                            </tr>
+                                            <tr>
+                                              <th class="bg-yellow">J</th>
+                                              <th class="bg-blue">F</th>
+                                              <th class="bg-orange">ME</th>
+                                              <th class="bg-green">AE</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for priority in priorities %}
+                                            <tr>
+                                                <td>{{ priority.ranking }}</td>
+                                                <td>{{ priority.name }}</td>
+                                                <td>{% if priority.votes_young is not None  %}{{ priority.votes_young }}{% endif %}</td>
+                                                <td>{% if priority.votes_woman is not None  %}{{ priority.votes_woman }}{% endif %}</td>
+                                                <td>{% if priority.votes_me is not None  %}{{ priority.votes_me }}{% endif %}</td>
+                                                <td>{% if priority.votes_ae is not None  %}{{ priority.votes_ae }}{% endif %}</td>
+                                                <td>{{ priority.beneficiaries }}</td>
+                                                <td>{{ priority.estimated_cost|intcomma }}</td>
+                                                <td>{{ priority.financed_by }}</td>
+                                                <td>{% if priority.contrubution_to_climate %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</td>
+                                                <td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -297,91 +269,78 @@
 {% endblock %}
 
 
+{% block modals %}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          {% bootstrap_form form %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
 {% block javascript %}
 {{ block.super }}
 
+<!-- Attachments script for carrousel -->
+<script type="text/javascript">
+    let spin_attachments_images = $("#spin-attachments-images");
+    let attachments_images = $("#attachments_images");
+    spin_attachments_images.show();
+    attachments_images.html(`
+    {% if images_data.exists_at_least_image %}
+
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                {% for image in images_data.images %}
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}" {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
+                {% endfor %}
+            </ol>
+            <div class="carousel-inner">
+                {% for image in images_data.images %}
+                    <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
+                        <a href="{% url 'administrativelevels:village_attachments' adm_id %}">
+                            <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
+                            style="height: 225px !important;"
+                            alt="{{ image.task }}">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+    {% else %}
+        <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
+                alt="Card image" style="height: 225px !important;">
+    {% endif %}
+    `);
+    spin_attachments_images.hide();
+
+</script>
 
 <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
 <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        {% get_current_language as lang %}
-        let spin_suprojects_financing = $('#spin-suprojects-financing');
-        spin_suprojects_financing.show();
 
-        let spin = $('.spin');
-
-        spin.show();
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'administrativelevels:components:overview' object.pk %}",
-            data: {
-
-            },
-            success: function (data) {
-                spin.hide();
-                $("#overview").html(data);
-            },
-            error: function (data) {
-                alert(error_server_message + "Error " + data.status);
-            }
-        }).done(function () {
-                spin.hide();
-            }
-        );
-
-
-        //Priorities Sector
-        let spin_sector_priorities = $('#spin-sector-priorities');
-        spin_sector_priorities.show();
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'subprojects:components:by_sector_and_administrative_level' object.pk %}",
-            data: {
-
-            },
-            success: function (data) {
-                spin_sector_priorities.hide();
-                $('#priorities_by_sector').html(data);
-            },
-            error: function (data) {
-                spin_sector_priorities.hide();
-                alert(error_server_message + "Error " + data.status);
-            }
-        }).done(function () {
-                spin_sector_priorities.hide();
-            }
-        );
-        //End priorities Sector
-
-
-        //Summary Subprojects
-        let spin_summary_subprojects = $('#spin-summary-subprojects');
-        spin_summary_subprojects.show();
-        $.ajax({
-            type: 'GET',
-            url: "{% url 'subprojects:components:by_administrative_level' object.pk %}",
-            data: {
-
-            },
-            success: function (data_summary) {
-                spin_summary_subprojects.hide();
-                $('#summary_subprojects').html(data_summary);
-            },
-            error: function (data_summary) {
-                spin_summary_subprojects.hide();
-                alert(error_server_message + "Error " + data_summary.status);
-            }
-            }).done(function () {
-                    spin_summary_subprojects.hide();
-                }
-            );
-        //End Summary Subprojects
-
-
-        
-
-    });
-</script>
 {% endblock %}
