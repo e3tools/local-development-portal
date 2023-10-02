@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 import time
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
+from cloudant.document import Document
 
 class Command(BaseCommand):
     help = 'Description of your command'
@@ -21,12 +22,6 @@ class Command(BaseCommand):
                 "name": "Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage"
             })
             for document in db:
-                priorities = []
-                # if 'form_response' in document:
-                #     for response in document['form_response']:
-                #         if 'sousComposante11' in response:
-                #             priorities = response['sousComposante11']['prioritesDuVillage']
-
                 update_or_create_priorities_document(self.nsc, document)
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))
 
@@ -45,9 +40,10 @@ def update_or_create_priorities_document(client, priorities_document):
     }
     # docs = Result(db.all_docs, include_docs=True, selector=selector).all()
     docs = db.get_query_result(selector)
-    print(docs[0])
-    existing_doc = dict(docs[0]) if docs[0] else None
-
+    existing_doc = False
+    for doc in docs:
+        existing_doc = doc
+        break
     # Extract priorities from the priorities document
     if 'form_response' in priorities_document:
         if priorities_document.get('form_response') and 'sousComposante11' in priorities_document['form_response'][0]:
@@ -73,9 +69,14 @@ def update_or_create_priorities_document(client, priorities_document):
 
     # If the document exists, update it
     if existing_doc:
-        existing_doc['priorities'] = extracted_priorities
-        existing_doc['last_updated'] = priorities_document['last_updated']
-        db.save_document(existing_doc)
+        with Document(db, existing_doc['_id']) as document:
+            # The document is fetched from the remote database
+            # Changes are made locally
+            try:
+                document['priorities'] = extracted_priorities
+                document['last_updated'] = priorities_document['last_updated']
+            except:
+                pass
     # Otherwise, create a new one
     else:
         new_doc = {
