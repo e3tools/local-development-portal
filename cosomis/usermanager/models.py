@@ -1,39 +1,34 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password, check_password
+
+from django import forms
+from django.contrib import admin
 # Create your models here.
 
+class UserPassCode(models.Model):
+    pass_code = models.CharField(max_length=128)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-# class CustomUserManager(BaseUserManager):
-#     def create_user(self, username, email, phone_number, password=None):
-#         if not email:
-#             raise ValueError(_('The Email field must be set'))
-#         email = self.normalize_email(email)
-#         user = self.model(username=username, email=email, phone_number=phone_number)
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
-#
-#     def create_superuser(self, username, email, phone_number, password=None):
-#         user = self.create_user(username, email, phone_number, password)
-#         user.is_staff = True
-#         user.is_superuser = True
-#         user.save(using=self._db)
-#         return user
-#
-# class User(AbstractBaseUser, PermissionsMixin):
-#     username = models.CharField(max_length=30, unique=True)
-#     email = models.EmailField(unique=True)
-#     phone_number = models.CharField(max_length=15, blank=True, null=True)
-#     groups = models.ManyToManyField('auth.Group', blank=True, related_name='auth_group')
-#
-#     is_active = models.BooleanField(default=True)
-#     is_staff = models.BooleanField(default=False)
-#
-#     objects = CustomUserManager()
-#
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = ['username']
-#
-#     def __str__(self):
-#         return self.username
+    def __str__(self) -> str:
+        return self.user.__str__()
+
+class UserPassCodeForm(forms.ModelForm):
+    class Meta:
+        model = UserPassCode
+        exclude = []
+
+class UserPassCodeAdmin(admin.ModelAdmin):
+    form = UserPassCodeForm
+    list_display = ['user', 'pass_code']
+
+    def save_model(self, request, obj, form, change):
+        obj.pass_code = make_password(obj.pass_code)
+        super().save_model(request, obj, form, change)
+
+    def get_readonly_fields(self, request, obj=None):
+        if hasattr(obj, "pass_code"):
+            return ['pass_code']
+        return self.readonly_fields
+
+admin.site.register(UserPassCode, UserPassCodeAdmin)

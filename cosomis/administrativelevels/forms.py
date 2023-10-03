@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import RadioSelect, Select
+
 from .models import GeographicalUnit, CVD, AdministrativeLevel
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import gettext_lazy as _
@@ -73,16 +75,33 @@ class AdministrativeLevelForm(forms.ModelForm):
                 self.fields[label].initial = type
                 print("######### ", parent)
 
-
-
-
-    class Meta:
-        model = AdministrativeLevel
-        exclude  = ['no_sql_db_id','geographical_unit','cvd','latitude','longitude','frontalier','rural'] # specify the fields to be hid
-
 #SearchVillages
 class VillageSearchForm(forms.Form):
     region = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Region"), required=False, empty_label=_("Toutes les régions"))
     prefecture = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Prefecture"), required=False)
     commune = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Commune"), required=False)
     canton = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Canton"), required=False)
+
+
+    class Meta:
+        model = AdministrativeLevel
+        exclude  = ['no_sql_db_id','geographical_unit','cvd','latitude','longitude','frontalier','rural'] # specify the fields to be hid
+
+
+class FinancialPartnerForm(forms.Form):
+    name = forms.CharField()
+    is_full_contribution = forms.BooleanField()
+    potential_date = forms.DateField()
+    commentaries = forms.CharField(widget=forms.Textarea())
+
+
+class AttachmentFilterForm(forms.Form):
+    TYPE_CHOICES = (
+        ("photo", "Photo"),
+        ("document", "Document"),
+        (None, "Both")
+    )
+    type = forms.ChoiceField(choices=TYPE_CHOICES, widget=RadioSelect)
+    phase = forms.ChoiceField(widget=Select, required=False)
+    activity = forms.ChoiceField(widget=Select, required=False)
+    task = forms.ChoiceField(widget=Select, required=False)
