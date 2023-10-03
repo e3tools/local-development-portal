@@ -63,7 +63,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
     financial_partner_form_class = FinancialPartnerForm
     nsc_class = NoSQLClient
     no_sql_db_id = None
-    no_sql_database_name = "administrative_levels"
+    no_sql_database_name = "purs_test"
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
@@ -86,7 +86,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         context['planning_status'] = self._get_planning_status(village_obj)
         images = self._get_images(village_obj)
         context['adm_id'] = village_obj['adm_id']
-        context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0]}
+        context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0] if len(images) > 0 else None}
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
 
@@ -785,7 +785,8 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     title = _("Galerie d'images")
     nsc_class = NoSQLClient
     no_sql_db_id = None
-    no_sql_database_name = "village_attachments"
+    no_sql_database_name = "purs_test"
+    no_sql_type_name = "village_attachments"
 
     def get_context_data(self, **kwargs):
         self.activity_choices: List[Tuple] = [(None, '---')]
@@ -795,7 +796,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         context['attachments'] = []
 
         try:
-            adm_id: int = self.kwargs.get("adm_id")
+            adm_id: str = self.kwargs.get("adm_id")
             query_params: dict = self.request.GET
 
             form = AttachmentFilterForm()
@@ -804,6 +805,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
             db: Any = nsc.get_db(self.no_sql_database_name)
 
             village_attachments_document = db.get_query_result(self.__build_db_filter(adm_id, dict()))[0]
+            print(village_attachments_document)
             if len(village_attachments_document) > 0:
                 self.__get_select_choices(village_attachments_document)
 
@@ -870,7 +872,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
     def __build_db_filter(self, adm_id: int, query_params: dict) -> Dict:
         db_filter: dict = defaultdict(dict)
-        db_filter["type"] = self.no_sql_database_name
+        db_filter["type"] = self.no_sql_type_name
         db_filter["adm_id"] = adm_id
 
         if len(query_params) > 0:
@@ -901,7 +903,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
             if len(db_filter["attachments"]) == 0:
                 del (db_filter["attachments"])
-
+        print(db_filter)
         return dict(db_filter)
 
 

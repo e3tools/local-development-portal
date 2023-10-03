@@ -1,0 +1,55 @@
+from django.core.management.base import BaseCommand, CommandError
+from no_sql_client import NoSQLClient
+from cloudant.result import Result
+from cloudant.document import Document
+
+
+class Command(BaseCommand):
+    help = 'Extract attachments from task documents and save to purs_test database'
+
+    def handle(self, *args, **options):
+        self.nsc = NoSQLClient()
+        facilitator_dbs = self.nsc.list_all_databases('facilitator')
+        for db_name in facilitator_dbs:
+            extracted_attachments = []
+            db = self.nsc.get_db(db_name)
+            task_documents = db.get_query_result({
+                "type": "task"
+            })
+            adm_id = None
+            for doc in task_documents:
+                adm_id = doc['administrative_level_id']
+                break
+            extracted_attachments = get_attachments_from_database(task_documents)
+            if adm_id:
+                save_attachments_to_purs_test(self.nsc, adm_id, extracted_attachments)
+        self.stdout.write(self.style.SUCCESS('Successfully extracted attachments!'))
+
+
+def get_attachments_from_database(task_documents):
+    extracted_attachments = []
+    for document in task_documents:
+        for attachment in document.get('attachments', []):
+            attachment_data = attachment.get('attachment')
+            attachment_uri = attachment_data.get('uri', "") if attachment_data else ""
+            if attachment_uri:
+                extracted_attachments.append({
+                    "type": "photo" if "photo" in attachment['name'].lower() else "document",
+                    "url": attachment_uri,
+                    "phase": document.get('phase_name', ""),
+                    "activity": document.get('activity_name', ""),
+                    "task": document.get('name', "")
+                })
+    return extracted_attachments
+
+def save_attachments_to_purs_test(client, adm_id, extracted_attachments):
+    # Access the 'purs_test' database
+    db = client.get_db('purs_test')
+
+    # Create a new document with the extracted attachments
+    new_doc = {
+        "adm_id": adm_id,
+        "type": "village_attachments",
+        "attachments": extracted_attachments
+    }
+    db.create_document(new_doc)

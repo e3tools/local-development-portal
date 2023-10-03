@@ -21,7 +21,7 @@
             </li>
             <li class="nav-item shadow-sm bg-light rounded" style="margin-left: 25px;">
                 <a class="nav-link font-weight-bold" style="color: #599cf7 !important;">
-                    {{ administrativelevel_village.name }}, {{ administrativelevel_village.parent.name }}, {{ administrativelevel_village.parent.parent.parent.parent.name }} - {% translate 'Project Cycle' %}
+                    {{ administrativelevel_village.name }}, {{ administrativelevel_village.parent.name }}, {{ administrativelevel_village.parent.parent.parent.parent.name }} - {% translate 'Project Cycle' %}-->
                 </a>
             </li>
         {% elif administrativelevel_profile %}
@@ -29,7 +29,7 @@
                 <a class="nav-link font-weight-bold" href="{% url 'administrativelevels:list' %}" 
                 role="button"><i class="fas fa-chevron-left text-primary"></i></a>
             </li>
-            <li class="nav-item shadow-sm bg-light rounded pt-2" style="margin-left: 25px;">
+            <li class="nav-item shadow-sm bg-light rounded pt-2" style="margin-left: 25px; padding-left: 15px; padding-right: 15px;">
                 <a class="font-weight-bold" style="color: #599cf7 !important;">
                     {% if administrativelevel_profile.type == "Village" %}
                     {{ administrativelevel_profile.name }}
@@ -42,7 +42,7 @@
                     {% endif %}
                     , <a style="font-weight:bold; color: #599cf7 !important; text-decoration: underline;" href="{% url 'administrativelevels:detail' administrativelevel_profile.parent.pk %}">{{ administrativelevel_profile.parent.name }}</a>, {{ administrativelevel_profile.parent.parent.parent.parent.name }}
                     {% else %}
-                    {{ administrativelevel_profile.name }}, {{ administrativelevel_profile.parent.parent.name }}, {{ administrativelevel_profile.parent.parent.parent.name }}
+                    {{ administrativelevel_profile.name }}
                     {% endif %}
                 </a>
             </li>

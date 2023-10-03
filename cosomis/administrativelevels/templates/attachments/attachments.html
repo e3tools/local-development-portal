@@ -14,19 +14,20 @@
         }
 
         .attachment-link {
-            width: 90px;
+            width: 80px;
             height: 80px;
             background: #f6f9fb;
             border-radius: 10px;
+            margin-top: 10px;
         }
 
         .attachment-link:nth-child(even) {
-            width: 50px;
+            width: 80px;
         }
 
         .attachment-placeholder {
             height: 80px;
-            width: 100%;
+            width: 80px;
             border-radius: 10px;
         }
 
@@ -205,12 +206,12 @@
                                             <a class="attachment-link" target="_blank"
                                                href="{{ attachment.url|imgAWSS3Filter }}">
                                                 <img class="attachment-placeholder"
-                                                     src="{{ attachment.url }}"
+                                                     src="{{ attachment.url|imgAWSS3Filter }}"
                                                      alt="{{ attachment.task }}">
                                             </a>
                                         {% else %}
                                             <a class="align-items-center justify-content-center attachment-link"
-                                               target="_blank" href="{{ attachment.url }}">
+                                               target="_blank" href="{{ attachment.url|imgAWSS3Filter }}">
                                                 <img class="attachment-placeholder attachment-placeholder--document"
                                                      src="{% static 'images/document-placeholder.png' %}"
                                                      alt="{{ attachment.task }}">

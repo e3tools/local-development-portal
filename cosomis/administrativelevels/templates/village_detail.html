@@ -331,8 +331,11 @@
         </div>
 
     {% else %}
-        <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
-                alt="Card image" style="height: 225px !important;">
+    <a href="{% url 'administrativelevels:village_attachments' adm_id %}">
+                <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
+    alt="Card image" style="height: 225px !important;">
+    </a>
+
     {% endif %}
     `);
     spin_attachments_images.hide();

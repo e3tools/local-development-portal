@@ -40,10 +40,12 @@ def update_or_create_priorities_document(client, priorities_document):
     }
     # docs = Result(db.all_docs, include_docs=True, selector=selector).all()
     docs = db.get_query_result(selector)
+
     existing_doc = False
     for doc in docs:
         existing_doc = doc
         break
+
     # Extract priorities from the priorities document
     if 'form_response' in priorities_document:
         if priorities_document.get('form_response') and 'sousComposante11' in priorities_document['form_response'][0]:
@@ -83,7 +85,9 @@ def update_or_create_priorities_document(client, priorities_document):
             # "_id": db.create_document()['id'],  # Generating a new CouchDB ID
             "adm_id": adm_id,
             "type": "administrative_level",
+            "level": "village",
             "priorities": extracted_priorities,
-            "last_updated": priorities_document['last_updated']
         }
         db.create_document(new_doc)
+    print("adm_id: ", adm_id, " - ", "priorities: ", extracted_priorities)
+    time.sleep(1)
