@@ -17,7 +17,6 @@ class GetAdministrativeLevelForCVDByADLView(AJAXRequestMixin, LoginRequiredMixin
                 d = [{'id': elt.id, 'name': elt.name} for elt in obj.cvd.get_villages()]
 
         return self.render_to_json_response(sorted(d, key=lambda o: o['name']), safe=False)
-    
 
 class GetChoicesForNextAdministrativeLevelNoConditionView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
     def get(self, request, *args, **kwargs):

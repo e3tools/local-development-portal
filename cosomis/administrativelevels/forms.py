@@ -1,6 +1,7 @@
 from django import forms
 from .models import GeographicalUnit, CVD, AdministrativeLevel
 from django.core.exceptions import NON_FIELD_ERRORS
+from django.utils.translation import gettext_lazy as _
 
 class GeographicalUnitForm(forms.ModelForm):
     """
@@ -60,15 +61,28 @@ class CVDForm(forms.ModelForm):
 
 
 class AdministrativeLevelForm(forms.ModelForm):
-    def __init__(self, parent: str = None, *args, **kwargs):
+    def __init__(self, parent: str = None, type: str = None, *args, **kwargs):
         super(AdministrativeLevelForm, self).__init__(*args, **kwargs)
         for label, field in self.fields.items():
             self.fields[label].widget.attrs.update({'class' : 'form-control'})
             if label == "parent":
-                print(parent)
+                print("******* ", parent)
                 self.fields[label].queryset = AdministrativeLevel.objects.filter(type=parent)
                 self.fields[label].label = parent
+            if label == "type":
+                self.fields[label].initial = type
+                print("######### ", parent)
+
+
+
 
     class Meta:
         model = AdministrativeLevel
-        exclude  = ['no_sql_db_id'] # specify the fields to be hid
+        exclude  = ['no_sql_db_id','geographical_unit','cvd','latitude','longitude','frontalier','rural'] # specify the fields to be hid
+
+#SearchVillages
+class VillageSearchForm(forms.Form):
+    region = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Region"), required=False, empty_label=_("Toutes les régions"))
+    prefecture = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Prefecture"), required=False)
+    commune = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Commune"), required=False)
+    canton = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Canton"), required=False)

@@ -16,7 +16,7 @@ from administrativelevels.models import AdministrativeLevel, GeographicalUnit, C
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
-from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm
+from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, VillageSearchForm
 from usermanager.permissions import (
     CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
     AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
@@ -109,10 +109,10 @@ class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissi
 
     form_class = AdministrativeLevelForm # specify the class form to be displayed
     def get_context_data(self, **kwargs):
+        type = self.request.GET.get("type")
         context = super().get_context_data(**kwargs)
-        context['form'] = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")))
+        context['form'] = AdministrativeLevelForm(self.get_parent(type), type)
         return context
-    
     def post(self, request, *args, **kwargs):
         form = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")), request.POST)
         if form.is_valid():
@@ -135,6 +135,7 @@ class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, AdminPermissi
     ]
     def get_parent(self, type: str):
         parent = None
+        type = None
         if type == "Prefecture":
             parent = "Region"
         elif type == "Commune":
@@ -144,6 +145,7 @@ class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, AdminPermissi
         elif type == "Village":
             parent = "Canton"
         return parent
+
 
     form_class = AdministrativeLevelForm # specify the class form to be displayed
     def get_context_data(self, **kwargs):
@@ -342,6 +344,45 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
         # return super().get_queryset()
     def get_context_data(self, **kwargs):
         ctx = super(AdministrativeLevelsListView, self).get_context_data(**kwargs)
+        ctx['search'] = self.request.GET.get("search", None)
+        ctx['type'] = self.request.GET.get("type", "Village")
+        return ctx
+    
+
+class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView):
+    """Display administrative level list by parent choice """
+
+    model = AdministrativeLevel
+    queryset = []
+    template_name = 'administrativelevels_list.html'
+    context_object_name = 'administrativelevels'
+    title = _('Administrative levels')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+
+    def get_queryset(self):
+        search = self.request.GET.get("search", None)
+        page_number = self.request.GET.get("page", None)
+        _type = self.request.GET.get("type", "Village")
+        if search:
+            if search == "All":
+                ads = AdministrativeLevel.objects.filter(type=_type)
+                return Paginator(ads, ads.count()).get_page(page_number)
+            search = search.upper()
+            return Paginator(AdministrativeLevel.objects.filter(type=_type, name__icontains=search), 100).get_page(page_number)
+        else:
+            return Paginator(AdministrativeLevel.objects.filter(type=_type), 100).get_page(page_number)
+
+
+    def get_context_data(self, **kwargs):
+        ctx = super(AdministrativeLevelSearchListView, self).get_context_data(**kwargs)
+        ctx['form'] = VillageSearchForm()
         ctx['search'] = self.request.GET.get("search", None)
         ctx['type'] = self.request.GET.get("type", "Village")
         return ctx

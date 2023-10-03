@@ -67,7 +67,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'administrativelevels:list' %}"
+                    <a 
+                        href="{% url 'administrativelevels:search_village' %}"
+                        {% comment %}href="{% url 'administrativelevels:list' %}"{% endcomment %}
                        class="nav-link {% if active_level1 == 'administrative_levels' %}active{% endif %}">
                         <i class="nav-icon fa fa-home"></i>
                         <p>{% translate "Administrative levels" %}</p>

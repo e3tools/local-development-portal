@@ -98,7 +98,7 @@ class SubprojectsListView(PageMixin, LoginRequiredMixin, generic.ListView):
                     Q(link_to_subproject=None, subproject_sector__icontains=search) | 
                     Q(link_to_subproject=None, type_of_subproject__icontains=search) | 
                     Q(link_to_subproject=None, works_type__icontains=search) | 
-                    Q(link_to_subproject=None, cvd__name__icontains=search) | 
+                    Q(link_to_subproject=None, cvd__name__icontains=search) |
                     Q(link_to_subproject=None, facilitator_name__icontains=search)
                 ), 100).get_page(page_number)
         else:
@@ -121,6 +121,7 @@ class SubprojectsMapView(LoginRequiredMixin, generic.ListView):
     template_name = 'subprojects_map.html'
     context_object_name = 'subprojects'
     title = _('Subprojects')
+
     active_level1 = 'subprojects'
     breadcrumb = [
         {

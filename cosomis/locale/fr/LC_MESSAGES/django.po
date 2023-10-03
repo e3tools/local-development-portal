@@ -2346,3 +2346,16 @@ msgstr "Date d'attribution"
 #: .\subprojects\api
 msgid "Allocation Date after signature of contract(s) (This is only necessary if it's a CVD)"
 msgstr "Date d'attribution après la signature du(des) contrat(s) (Ceci n'est nécessaire que s'il s'agit d'un CVD)"
+
+#: .\subprojects\templates\subproject.html
+msgid "Sectoral ministry"
+msgstr "Ministère sectoriel"
+ #: .\administrativelevels\templates\administrativelevels_list
+msgid "Search a level"
+msgstr "Rechercher un niveau"
+#: .\administrativelevels\templates\administrativelevels_list
+msgid "See village"
+msgstr "Voir le village"
+#: .\administrativelevels\templates\administrativelevels_list
+msgid "Choice the village in canton"
+msgstr "Choisir le village dans le canton"

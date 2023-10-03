@@ -1,6 +1,5 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n custom_tags %}
-
 {% block content %}
     <div class="row">
         <div class="col-12">
@@ -8,29 +7,21 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="text-center">
-                            <a class="btn btn-primary" href="{% url 'administrativelevels:search_village' %}">{% translate 'Administrative levels' %}</a>
-                        </div>
-                    {% comment %}
-                        <div class="btn-group pull-right">
-                            {% if user.is_superuser or user|has_group:"Admin" %}
-                                {% include 'components/upload.html' %}
-                                <div> &nbsp; &nbsp; </div>
-                            {% endif %}
-                            {% include 'components/download.html' with export_url='administrativelevels:download' %}
-                        </div>
-                    {% endcomment %}
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:list' %}">
+                                {% translate 'Administrative levels' %}</a>
+                            </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-8">
-                            <form method="POST" enctype="multipart/form-data">
+                            <form method="GET" >
                                 {% csrf_token %}
 
                                 {% if form.errors %}
                                     <div class="alert alert-danger alert-sm form_alert">{{ form.errors }}</div>
                                 {% endif %}
-                                
+
                                 {% for field in form %}
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label">{{ field.label }}</label>
@@ -43,14 +34,13 @@
                                         <div class="clearfix"></div>
                                     </div>
                                 {% endfor %}
-
                                 <button type="submit" class="btn btn-primary float-right" >{% translate 'Submit' %}</button>
                             </form>
                         </div>
                     </div>
                 </div>
-                
-                
+
+
             </div>
         </div>
     </div>
@@ -73,7 +63,7 @@
             let options = '';
             $.each(data, function (index, value) {
                 let option = '<option value="' + value.id + '">';
-                
+
                 option += value.name + '</option>';
                 options += option
 
@@ -129,7 +119,8 @@
 
 
             });
-            
+
         });
     </script>
 {% endblock %}
+

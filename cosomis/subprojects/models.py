@@ -29,14 +29,15 @@ class CustomQuerySet(models.QuerySet):
         for o in self:
             if o.check_step(step):
                 l.append(o)
-                
         return Type.objects.filter(id__in=[o.id for o in l])
-
-
-
 
 # Create your models here.
 class Subproject(BaseModel):
+    sectoral_ministry = models.ForeignKey('Ministry', blank = True, null=True, on_delete=models.CASCADE,
+                                          verbose_name=_("Sectoral ministry"))
+    component = models.ForeignKey('Component', null=True, on_delete=models.CASCADE,
+                                  verbose_name=_("Component (Subcomponent)"))
+    projects = models.ManyToManyField('Project', default=[], blank=True, verbose_name=_("Projects")) #In Which projects that we finance the subproject
     location_subproject_realized = models.ForeignKey(AdministrativeLevel, null=True, blank=True, on_delete=models.CASCADE, related_name='location_subproject_realized', verbose_name=_("Subproject location"))
     cvd = models.ForeignKey(CVD, null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("CVD"))
     # cvds = models.ManyToManyField(CVD, default=[], blank=True, related_name="cvds_subprojects", verbose_name=_("Beneficiaries CVD"))
@@ -102,14 +103,10 @@ class Subproject(BaseModel):
     direct_beneficiaries_women = models.IntegerField(null=True, blank=True, verbose_name=_("Direct beneficiaries women"))
     indirect_beneficiaries_men = models.IntegerField(null=True, blank=True, verbose_name=_("Indirect beneficiaries men"))
     indirect_beneficiaries_women = models.IntegerField(null=True, blank=True, verbose_name=_("Indirect beneficiaries women"))
-
-    component = models.ForeignKey('Component', null=True, on_delete=models.CASCADE, verbose_name=_("Component (Subcomponent)"))
     priorities = models.ManyToManyField('VillagePriority', default=[], blank=True, related_name='priorities_covered', verbose_name=_("Priorities"))
 
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, verbose_name=_("Latitude"))
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, verbose_name=_("Longitude"))
-
-    projects = models.ManyToManyField('Project', default=[], blank=True, verbose_name=_("Projects")) #In Which projects that we finance the subproject
     financiers = models.ManyToManyField('Financier', default=[], blank=True, verbose_name=_("Financiers")) #Which Financiers finance this subproject (when its project is define, we don't need to specialize this attribute)
 
     #Whose choice this subproject?
@@ -446,6 +443,12 @@ class Component(BaseModel):
     parent = models.ForeignKey('Component', null=True, blank=True, on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+# -----------------------------sectoral ministry------------------------
+class Ministry(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
     def __str__(self):
         return self.name
 
