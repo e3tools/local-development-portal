@@ -8,10 +8,10 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="" style="display: inline-block;">
-                                <button class="btn btn-primary justify-content center" style="display: inline-block;"
-                                    type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {% translate 'Create Administrative level' %}
-                                </button>
+{#                                <button class="btn btn-primary justify-content center" style="display: inline-block;"#}
+{#                                    type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+{#                                    {% translate 'Create Administrative level' %}#}
+{#                                </button>#}
 
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
@@ -81,10 +81,14 @@
                     <div id="search_results">
 
                     </div>
-                    <button class="btn btn-primary pull right" style="display: inline-block;"
-                        type="button" id="seeVillage">
+                    <a
+                        class="btn btn-primary pull right" style="display: none;"
+                        type="button" id="seeVillage"
+                        href="#"
+
+                    >
                         {% translate 'See village' %}
-                    </button>
+                    </a>
 
                 </div>
                 <div>
@@ -176,7 +180,7 @@
 
 
                                         if ( container_txt_html !== ""){
-                                            document.getElementById("seeVillage").style.display = "block";
+                                            {#document.getElementById("seeVillage").style.display = "block";#}
                                             document.getElementById("villages_title").style.display = "block";
                                         }
 
@@ -185,10 +189,12 @@
                                     container.html(container_txt_html);
 
                                     $(".radio-button-search").click(function(event){
-                                       let url = `{% url "administrativelevels:detail" 0 %}?type=Village`.replace('0', this.value);
+                                       let url = `{% url "administrativelevels:detail" 0 %}`.replace('0', this.value);
                                         url_village = url;
+                                        document.getElementById("seeVillage").style.display = "block";
                                         //window.location.href = url;
                                         document.getElementById("seeVillage").disabled = false;
+                                        document.getElementById("seeVillage").setAttribute('href', url);
                                     });
                                     if(url_village == ""){
                                         document.getElementById("seeVillage").disabled = true;

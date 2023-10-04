@@ -104,6 +104,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         # Next, try looking up by primary key.
         pk = self.kwargs.get(self.pk_url_kwarg)
         slug = self.kwargs.get(self.slug_url_kwarg)
+        print(pk, slug)
         if pk is not None:
             try:
                 pk = int(pk)
@@ -136,6 +137,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
                     % {"verbose_name": queryset.model._meta.verbose_name}
                 )
             obj['pk'] = 0
+        obj = self._get_village()
         return obj
 
     def _get_nosql_db(self, name=None):
@@ -146,16 +148,21 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
     def _get_village(self):
         nsc = self.nsc_class()
         db = nsc.get_db(self.no_sql_database_name)
-        _id = self.no_sql_db_id if self.no_sql_db_id is not None else self.kwargs.get(self.pk_url_kwarg)
+        adm_id = self.kwargs.get(self.pk_url_kwarg)
+        print(adm_id)
         village_document = db.get_query_result(
             {
                 "type": "administrative_level",
-                "_id": _id
+                "adm_id": str(adm_id)
             }
-        )[0]
-        if len(village_document) > 0:
-            return village_document[0]
-        return None
+        )
+        print(village_document)
+        result = None
+        for doc in village_document:
+            result = doc
+            break
+        print('resultado', result)
+        return result
 
     def _get_priorities(self, village):
         try:
