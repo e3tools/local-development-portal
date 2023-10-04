@@ -286,6 +286,9 @@ button::-moz-focus-inner,
     padding: 0;
     border-style: none;
 }
+.radio-button_search {
+    margin-right: 10px; /* Ajoutez de l'espace horizontal entre les boutons */
+}
 
 input[type="radio"],
 input[type="checkbox"] {

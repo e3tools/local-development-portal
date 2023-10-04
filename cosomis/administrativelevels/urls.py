@@ -7,6 +7,7 @@ app_name = 'administrativelevels'
 
 urlpatterns = [
     path('', views.AdministrativeLevelsListView.as_view(), name='list'), # Administrative levels list path
+    path('search-village/', views.AdministrativeLevelSearchListView.as_view(), name='search_village'), # Administrative levels path to search a villages
     path('create/', views.AdministrativeLevelCreateView.as_view(), name='create'), # Administrative level path to create
     path('update/<int:pk>/', views.AdministrativeLevelUpdateView.as_view(), name='update'), # Administrative level path to update
     path('village-detail/<int:pk>/', views.VillageDetailView.as_view(), name='village_detail'), #The path of the detail of village

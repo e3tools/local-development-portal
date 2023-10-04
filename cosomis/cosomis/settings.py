@@ -111,7 +111,7 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-EXTERNAL_DATABASE_NAME = 'cdd'
+EXTERNAL_DATABASE_NAME = 'cddp'
 
 DATABASES = {
     'default': env.db(),
@@ -201,7 +201,6 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 AUTHENTICATION_BACKENDS = [
     'usermanager.authentication.PassCodeAuthBackend',
     'django.contrib.auth.backends.ModelBackend',

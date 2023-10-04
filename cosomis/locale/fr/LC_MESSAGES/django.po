@@ -3371,3 +3371,72 @@ msgstr "Connectez-vous pour démarrer votre session"
 
 #~ msgid "Amount-FCFA-TTC"
 #~ msgstr "Montant-FCFA-TTC"
+
+#: .\subprojects\api
+msgid "Total amount allocated in dollars to component 1.2"
+msgstr "Montant total alloué en dollars sur la composante 1.2"
+
+#: .\subprojects\api
+msgid "Total amount allocated in dollars to component 1.3"
+msgstr "Montant total alloué en dollars sur la composante 1.3"
+
+#: .\subprojects\api
+msgid "See Others"
+msgstr "Voir autres"
+
+#: .\subprojects\api
+msgid "See All"
+msgstr "Voir tout"
+
+#: .\subprojects\api
+msgid "Level of realization"
+msgstr "Niveau de réalisation"
+
+#: .\subprojects\api
+msgid "Estimated-cost"
+msgstr "Coût-estimé"
+
+#: .\subprojects\api
+msgid "Amount-FCFA-TTC"
+msgstr "Montant-FCFA-TTC"
+
+#: .\subprojects\api
+msgid "Subprojects by current step"
+msgstr "Sousprojets par étape en cours"
+
+#: .\subprojects\api
+msgid "Subprojects by village, sector and step"
+msgstr "Sous-projets par village, secteur et étape"
+
+#: .\subprojects\api
+msgid "Number of infrastructures"
+msgstr "Nombre d'infrastuctures"
+
+#: .\subprojects\api
+msgid "Amount allocated after signature of contract(s) (This is only necessary if it's a CVD)"
+msgstr "Montant alloué après signature du(des) contrat(s) (Ceci n'est nécessaire que s'il s'agit d'un CVD)"
+
+#: .\subprojects\api
+msgid "Amount allocated in dollars after signature of contract(s) (This is only necessary if it's a CVD)"
+msgstr "Montant alloué en dollars après signature du(des) contrat(s) (Ceci n'est nécessaire que s'il s'agit d'un CVD)"
+
+#: .\subprojects\api
+msgid "Allocation Date"
+msgstr "Date d'attribution"
+
+#: .\subprojects\api
+msgid "Allocation Date after signature of contract(s) (This is only necessary if it's a CVD)"
+msgstr "Date d'attribution après la signature du(des) contrat(s) (Ceci n'est nécessaire que s'il s'agit d'un CVD)"
+
+#: .\subprojects\templates\subproject.html
+msgid "Sectoral ministry"
+msgstr "Ministère sectoriel"
+ #: .\administrativelevels\templates\administrativelevels_list
+msgid "Search a level"
+msgstr "Rechercher un niveau"
+#: .\administrativelevels\templates\administrativelevels_list
+msgid "See village"
+msgstr "Voir le village"
+#: .\administrativelevels\templates\administrativelevels_list
+msgid "Choice the village in canton"
+msgstr "Choisir le village dans le canton"

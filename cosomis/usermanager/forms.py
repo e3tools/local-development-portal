@@ -3,6 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext as _
 
 from django.contrib.auth.models import User
+# from .models import User
 
 
 class EmailAuthenticationForm(AuthenticationForm):
