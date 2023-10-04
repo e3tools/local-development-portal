@@ -191,6 +191,8 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
             resp['population_breeders'] = village_obj['population_breeders']
         if village_obj is not None and 'population_minorities' in village_obj:
             resp['population_minorities'] = village_obj['population_minorities']
+        if village_obj is not None and 'languages' in village_obj:
+            resp['languages'] = village_obj['languages']
 
         return resp
 
