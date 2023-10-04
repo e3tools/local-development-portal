@@ -15,8 +15,8 @@ class AdministrativeLevel(BaseModel):
     geographical_unit = models.ForeignKey('GeographicalUnit', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
     cvd = models.ForeignKey('CVD', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("CVD"))
     type = models.CharField(max_length=255, verbose_name=_("Type"))
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, verbose_name=_("Latitude"))
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, verbose_name=_("Longitude"))
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=_("Latitude"))
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=_("Longitude"))
     frontalier = models.BooleanField(default=True, verbose_name=_("Frontalier"))
     rural = models.BooleanField(default=True, verbose_name=_("Rural"))
     created_date = models.DateTimeField(auto_now_add=True)
@@ -152,12 +152,12 @@ def update_or_create_amd_couch(sender, instance, **kwargs):
     else:
         client.update_administrative_level(instance)
 
-def delete_amd_couch(sender, instance, **kwargs):
-    client = CddClient()
-    client.delete_administrative_level(instance)
+# def delete_amd_couch(sender, instance, **kwargs):
+#     client = CddClient()
+#     client.delete_administrative_level(instance)
 
 
 
-post_save.connect(update_or_create_amd_couch, sender=AdministrativeLevel)
-post_delete.connect(delete_amd_couch, sender=AdministrativeLevel) # POST-DELETE method to delete the administrativelevel in the couchdb
+# post_save.connect(update_or_create_amd_couch, sender=AdministrativeLevel)
+# post_delete.connect(delete_amd_couch, sender=AdministrativeLevel) # POST-DELETE method to delete the administrativelevel in the couchdb
 

@@ -197,6 +197,10 @@
     )
                     .addTo(map);
                 markers.push(marker);  {% endcomment %}
+
+            <!--     ################## ZOOM BUTTON ######################           -->
+                const nav = new mapboxgl.NavigationControl();
+                map.addControl(nav, 'top-right');
         {% for subproject in subprojects %}
             {% if subproject.latitude and subproject.longitude %}
                 {% if subproject.location_subproject_realized %}
@@ -275,6 +279,7 @@
                             )
                         )
                         .addTo(map);
+
                     markers.push(marker);
                 {% endif %}
             {% endif %}

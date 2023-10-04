@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractUser
 
 # from django.forms.models import model_to_dict
 
@@ -25,3 +26,19 @@ class Facilitator(models.Model):
     @property
     def is_active(self):
         return self.active
+
+
+# class CustomUser(AbstractUser):
+#     # Les choix pour le champ "groupe"
+#     AdminPermissionRequiredMixin
+#     GROUP_CHOICES = (
+#         ('admin', 'Administrateur'),
+#         ('moderator', 'Modérateur'),
+#         ('user', 'Utilisateur'),
+#     )
+#
+#     groupe = models.CharField(
+#         max_length=20,
+#         choices=GROUP_CHOICES,
+#         default='user'
+#     )

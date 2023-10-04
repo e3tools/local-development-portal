@@ -29,30 +29,30 @@
                 <table class="table">
                     <tbody>
                         <tr>
-                            <th>Current Phase</th>
+                            <th>{% translate "Current Phase" %}</th>
                             <td>{{ planning_status.current_phase }}</td>
                         </tr>
                         <tr>
-                            <td>Current Activity</td>
+                            <td>{% translate "Current Activity" %}</td>
                             <td>{{ planning_status.current_activity }}</td>
                         </tr>
                         <tr>
-                            <td>Current Task</td>
+                            <td>{% translate "Current Task" %}</td>
                             <td>{{ planning_status.current_task }}</td>
                         </tr>
                         <tr>
-                            <td>Completed</td>
+                            <td>{% translate "Completed" %}</td>
                             <td>{{ planning_status.completed }}</td>
                         <tr>
-                            <td>Priorities Identified</td>
+                            <td>{% translate "Priorities Identified" %}</td>
                             <td>{{ planning_status.priorities_identified }}</td>
                         </tr>
                         <tr>
-                            <td>Village Development Plan Date</td>
+                            <td>{% translate "Village Development Plan Date" %}</td>
                             <td>{{ planning_status.village_development_plan_date }}</td>
                         </tr>
                         <tr>
-                            <td>Facilitator</td>
+                            <td>{% translate "Facilitator" %}</td>
                             <td>{{ planning_status.facilitator }}</td>
                         </tr>
                     </tbody>
@@ -71,39 +71,43 @@
                 <table class="table">
                     <tbody>
                         <tr>
-                            <th>Total Population</th>
+                            <th>{% translate "Total population" %}</th>
                             <td>{{ population.total_population }}</td>
                         </tr>
                         <tr>
-                            <td>Population Men</td>
+                            <td>{% translate "Population Men" %}</td>
                             <td>{{ population.population_men }}</td>
                         </tr>
                         <tr>
-                            <td>Population Women</td>
+                            <td>{% translate "Population Women" %}</td>
                             <td>{{ population.population_women }}</td>
                         </tr>
                         <tr>
-                            <td>Population Young</td>
+                            <td>{% translate "Population Young" %}</td>
                             <td>{{ population.population_young }}</td>
                         <tr>
-                            <td>Population Elder</td>
+                            <td>{% translate "Population Elder" %}</td>
                             <td>{{ population.population_elder }}</td>
                         </tr>
                         <tr>
-                            <td>Population Handicap</td>
+                            <td>{% translate "Population Handicap" %}</td>
                             <td>{{ population.population_handicap }}</td>
                         </tr>
                         <tr>
-                            <td>Population Agruculture</td>
+                            <td>{% translate "Population Agruculture" %}</td>
                             <td>{{ population.population_agruculture }}</td>
                         </tr>
                         <tr>
-                            <td>Population Breeders</td>
+                            <td>{% translate "Population Breeders" %}</td>
                             <td>{{ population.population_breeders }}</td>
                         </tr>
                         <tr>
-                            <td>Population Minorities</td>
+                            <td>{% translate "Population Minorities" %}</td>
                             <td>{{ population.population_minorities }}</td>
+                        </tr>
+                        <tr>
+                            <td>{% translate "Main languages" %}</td>
+                            <td>{{ population.languages }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -331,8 +335,11 @@
         </div>
 
     {% else %}
-        <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
-                alt="Card image" style="height: 225px !important;">
+    <a href="{% url 'administrativelevels:village_attachments' adm_id %}">
+                <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
+    alt="Card image" style="height: 225px !important;">
+    </a>
+
     {% endif %}
     `);
     spin_attachments_images.hide();

@@ -7,11 +7,12 @@ app_name = 'administrativelevels'
 
 urlpatterns = [
     path('', views.AdministrativeLevelsListView.as_view(), name='list'), # Administrative levels list path
+    path('search-village/', views.AdministrativeLevelSearchListView.as_view(), name='search_village'), # Administrative levels path to search a villages
     path('create/', views.AdministrativeLevelCreateView.as_view(), name='create'), # Administrative level path to create
     path('update/<int:pk>/', views.AdministrativeLevelUpdateView.as_view(), name='update'), # Administrative level path to update
     path('village-detail/<int:pk>/', views.VillageDetailView.as_view(), name='village_detail'), #The path of the detail of village
-    path('detail/<slug:pk>/', views.AdministrativeLevelDetailView.as_view(), name='detail'), #The path of the detail
-    path('detail/<int:adm_id>/attachments/', views.AttachmentListView.as_view(), name='village_attachments'), #The path of the attachments list
+    path('detail/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='detail'), #The path of the detail
+    path('detail/<str:adm_id>/attachments/', views.AttachmentListView.as_view(), name='village_attachments'), #The path of the attachments list
     path('upload/', views.UploadCSVView.as_view(), name='upload'), #The path to download CSV/Excel file from db
     path('download/', views.DownloadCSVView.as_view(), name='download'), #The path to upload CSV file and save in db
     path('download-cvd/', views.DownloadCVDCSVView.as_view(), name='download_cvd'), #The path to upload CVD on CSV file and save in db

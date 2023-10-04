@@ -21,7 +21,8 @@ from administrativelevels.models import AdministrativeLevel, GeographicalUnit, C
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
-from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm, AttachmentFilterForm
+
+from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm, AttachmentFilterForm, VillageSearchForm
 from usermanager.permissions import (
     CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
     AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
@@ -63,7 +64,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
     financial_partner_form_class = FinancialPartnerForm
     nsc_class = NoSQLClient
     no_sql_db_id = None
-    no_sql_database_name = "administrative_levels"
+    no_sql_database_name = "purs_test"
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
@@ -86,7 +87,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         context['planning_status'] = self._get_planning_status(village_obj)
         images = self._get_images(village_obj)
         context['adm_id'] = village_obj['adm_id']
-        context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0]}
+        context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0] if len(images) > 0 else None}
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
 
@@ -103,6 +104,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         # Next, try looking up by primary key.
         pk = self.kwargs.get(self.pk_url_kwarg)
         slug = self.kwargs.get(self.slug_url_kwarg)
+        print(pk, slug)
         if pk is not None:
             try:
                 pk = int(pk)
@@ -135,6 +137,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
                     % {"verbose_name": queryset.model._meta.verbose_name}
                 )
             obj['pk'] = 0
+        obj = self._get_village()
         return obj
 
     def _get_nosql_db(self, name=None):
@@ -145,16 +148,21 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
     def _get_village(self):
         nsc = self.nsc_class()
         db = nsc.get_db(self.no_sql_database_name)
-        _id = self.no_sql_db_id if self.no_sql_db_id is not None else self.kwargs.get(self.pk_url_kwarg)
+        adm_id = self.kwargs.get(self.pk_url_kwarg)
+        print(adm_id)
         village_document = db.get_query_result(
             {
                 "type": "administrative_level",
-                "_id": _id
+                "adm_id": str(adm_id)
             }
-        )[0]
-        if len(village_document) > 0:
-            return village_document[0]
-        return None
+        )
+        print(village_document)
+        result = None
+        for doc in village_document:
+            result = doc
+            break
+        print('resultado', result)
+        return result
 
     def _get_priorities(self, village):
         try:
@@ -191,6 +199,8 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
             resp['population_breeders'] = village_obj['population_breeders']
         if village_obj is not None and 'population_minorities' in village_obj:
             resp['population_minorities'] = village_obj['population_minorities']
+        if village_obj is not None and 'languages' in village_obj:
+            resp['languages'] = village_obj['languages']
 
         return resp
 
@@ -256,10 +266,10 @@ class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissi
 
     form_class = AdministrativeLevelForm # specify the class form to be displayed
     def get_context_data(self, **kwargs):
+        type = self.request.GET.get("type")
         context = super().get_context_data(**kwargs)
-        context['form'] = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")))
+        context['form'] = AdministrativeLevelForm(self.get_parent(type), type)
         return context
-    
     def post(self, request, *args, **kwargs):
         form = AdministrativeLevelForm(self.get_parent(self.request.GET.get("type")), request.POST)
         if form.is_valid():
@@ -283,6 +293,7 @@ class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, AdminPermissi
 
     def get_parent(self, type: str):
         parent = None
+        type = None
         if type == "Prefecture":
             parent = "Region"
         elif type == "Commune":
@@ -292,6 +303,7 @@ class AdministrativeLevelUpdateView(PageMixin, LoginRequiredMixin, AdminPermissi
         elif type == "Village":
             parent = "Canton"
         return parent
+
 
     form_class = AdministrativeLevelForm # specify the class form to be displayed
     def get_context_data(self, **kwargs):
@@ -490,6 +502,45 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
         # return super().get_queryset()
     def get_context_data(self, **kwargs):
         ctx = super(AdministrativeLevelsListView, self).get_context_data(**kwargs)
+        ctx['search'] = self.request.GET.get("search", None)
+        ctx['type'] = self.request.GET.get("type", "Village")
+        return ctx
+    
+
+class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView):
+    """Display administrative level list by parent choice """
+
+    model = AdministrativeLevel
+    queryset = []
+    template_name = 'administrativelevels_list.html'
+    context_object_name = 'administrativelevels'
+    title = _('Administrative levels')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+
+    def get_queryset(self):
+        search = self.request.GET.get("search", None)
+        page_number = self.request.GET.get("page", None)
+        _type = self.request.GET.get("type", "Village")
+        if search:
+            if search == "All":
+                ads = AdministrativeLevel.objects.filter(type=_type)
+                return Paginator(ads, ads.count()).get_page(page_number)
+            search = search.upper()
+            return Paginator(AdministrativeLevel.objects.filter(type=_type, name__icontains=search), 100).get_page(page_number)
+        else:
+            return Paginator(AdministrativeLevel.objects.filter(type=_type), 100).get_page(page_number)
+
+
+    def get_context_data(self, **kwargs):
+        ctx = super(AdministrativeLevelSearchListView, self).get_context_data(**kwargs)
+        ctx['form'] = VillageSearchForm()
         ctx['search'] = self.request.GET.get("search", None)
         ctx['type'] = self.request.GET.get("type", "Village")
         return ctx
@@ -785,7 +836,8 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     title = _("Galerie d'images")
     nsc_class = NoSQLClient
     no_sql_db_id = None
-    no_sql_database_name = "village_attachments"
+    no_sql_database_name = "purs_test"
+    no_sql_type_name = "village_attachments"
 
     def get_context_data(self, **kwargs):
         self.activity_choices: List[Tuple] = [(None, '---')]
@@ -795,7 +847,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         context['attachments'] = []
 
         try:
-            adm_id: int = self.kwargs.get("adm_id")
+            adm_id: str = self.kwargs.get("adm_id")
             query_params: dict = self.request.GET
 
             form = AttachmentFilterForm()
@@ -804,6 +856,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
             db: Any = nsc.get_db(self.no_sql_database_name)
 
             village_attachments_document = db.get_query_result(self.__build_db_filter(adm_id, dict()))[0]
+            print(village_attachments_document)
             if len(village_attachments_document) > 0:
                 self.__get_select_choices(village_attachments_document)
 
@@ -870,7 +923,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
     def __build_db_filter(self, adm_id: int, query_params: dict) -> Dict:
         db_filter: dict = defaultdict(dict)
-        db_filter["type"] = self.no_sql_database_name
+        db_filter["type"] = self.no_sql_type_name
         db_filter["adm_id"] = adm_id
 
         if len(query_params) > 0:
@@ -901,7 +954,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
             if len(db_filter["attachments"]) == 0:
                 del (db_filter["attachments"])
-
+        print(db_filter)
         return dict(db_filter)
 
 
