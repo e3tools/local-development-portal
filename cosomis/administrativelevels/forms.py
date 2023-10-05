@@ -74,6 +74,11 @@ class AdministrativeLevelForm(forms.ModelForm):
             if label == "type":
                 self.fields[label].initial = type
                 print("######### ", parent)
+                
+    class Meta:
+        model = AdministrativeLevel
+        exclude  = ['no_sql_db_id','geographical_unit','cvd','latitude','longitude','frontalier','rural'] # specify the fields to be hid
+
 
 #SearchVillages
 class VillageSearchForm(forms.Form):
@@ -83,10 +88,7 @@ class VillageSearchForm(forms.Form):
     canton = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Canton"), required=False)
 
 
-    class Meta:
-        model = AdministrativeLevel
-        exclude  = ['no_sql_db_id','geographical_unit','cvd','latitude','longitude','frontalier','rural'] # specify the fields to be hid
-
+    
 
 class FinancialPartnerForm(forms.Form):
     name = forms.CharField()
