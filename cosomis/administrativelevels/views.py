@@ -1,5 +1,8 @@
+import re
+import requests
+import pandas as pd
 from collections import defaultdict
-from typing import Optional, Dict, List, Tuple, Any
+from typing import Optional, Dict, List, Tuple, Any, re
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -8,8 +11,7 @@ from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from cosomis.constants import OBSTACLES_FOCUS_GROUP, GOALS_FOCUS_GROUP
 from cosomis.mixins import PageMixin
-from django.http import Http404
-import pandas as pd
+from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
@@ -24,7 +26,6 @@ from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Co
 
 from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm, AttachmentFilterForm, VillageSearchForm
 from usermanager.permissions import (
-    CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
     AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
 )
 from administrativelevels import functions_cvd as cvd_functions
@@ -64,7 +65,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
     financial_partner_form_class = FinancialPartnerForm
     nsc_class = NoSQLClient
     no_sql_db_id = None
-    no_sql_database_name = "purs_test"
+    no_sql_database_name = "cos"
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
@@ -836,7 +837,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     title = _("Galerie d'images")
     nsc_class = NoSQLClient
     no_sql_db_id = None
-    no_sql_database_name = "purs_test"
+    no_sql_database_name = "village_attachments"
     no_sql_type_name = "village_attachments"
 
     def get_context_data(self, **kwargs):
@@ -847,7 +848,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         context['attachments'] = []
 
         try:
-            adm_id: str = self.kwargs.get("adm_id")
+            adm_id: int = self.kwargs.get("adm_id")
             query_params: dict = self.request.GET
 
             form = AttachmentFilterForm()
@@ -855,8 +856,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
             nsc: NoSQLClient = self.nsc_class()
             db: Any = nsc.get_db(self.no_sql_database_name)
 
-            village_attachments_document = db.get_query_result(self.__build_db_filter(adm_id, dict()))[0]
-            print(village_attachments_document)
+            village_attachments_document = db.get_query_result(self.__build_db_filter(int(adm_id), dict()))[0]
             if len(village_attachments_document) > 0:
                 self.__get_select_choices(village_attachments_document)
 
@@ -877,6 +877,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
             form.fields.get('activity').initial = query_params.get('activity')
             context['no_results'] = len(context['attachments']) == 0
             context['form'] = form
+            context['adm_id'] = adm_id
 
         except Exception as ex:
             raise Http404
@@ -957,6 +958,27 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         print(db_filter)
         return dict(db_filter)
 
+@login_required
+def attachment_download(self, adm_id: int, url: str):
+    response = requests.get(url)
+    if response.status_code == 200:
+        content_disposition = response.headers.get('content-disposition')
+        filename = url.split("/")[-1]
+        if content_disposition is not None:
+            fname = re.findall("filename=\"(.+)\"", content_disposition)
+
+            if len(fname) != 0:
+                filename = fname[0]
+
+        response = HttpResponse(
+                response.content,
+                content_type=response.headers.get('content-type')
+            )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+    else:
+        return HttpResponse("Failed to download the file.")
 
 #====================== Geographical unit=========================================
 class GeographicalUnitListView(PageMixin, LoginRequiredMixin, ListView):
