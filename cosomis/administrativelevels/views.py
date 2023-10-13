@@ -65,7 +65,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
     financial_partner_form_class = FinancialPartnerForm
     nsc_class = NoSQLClient
     no_sql_db_id = None
-    no_sql_database_name = "cos"
+    no_sql_database_name = "purs_test"
     template_name = 'village_detail.html'
     context_object_name = 'village'
     title = _('Village')
@@ -837,7 +837,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     title = _("Galerie d'images")
     nsc_class = NoSQLClient
     no_sql_db_id = None
-    no_sql_database_name = "village_attachments"
+    no_sql_database_name = "purs_test"
     no_sql_type_name = "village_attachments"
 
     def get_context_data(self, **kwargs):
@@ -847,40 +847,40 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
         context['attachments'] = []
 
-        try:
-            adm_id: int = self.kwargs.get("adm_id")
-            query_params: dict = self.request.GET
+        # try:
+        adm_id: str = self.kwargs.get("adm_id")
+        query_params: dict = self.request.GET
 
-            form = AttachmentFilterForm()
+        form = AttachmentFilterForm()
 
-            nsc: NoSQLClient = self.nsc_class()
-            db: Any = nsc.get_db(self.no_sql_database_name)
+        nsc: NoSQLClient = self.nsc_class()
+        db: Any = nsc.get_db(self.no_sql_database_name)
 
-            village_attachments_document = db.get_query_result(self.__build_db_filter(int(adm_id), dict()))[0]
-            if len(village_attachments_document) > 0:
-                self.__get_select_choices(village_attachments_document)
+        village_attachments_document = db.get_query_result(self.__build_db_filter(str(adm_id), dict()))[0]
+        if len(village_attachments_document) > 0:
+            self.__get_select_choices(village_attachments_document)
 
-            filtered_village_attachments_document = db.get_query_result(
-                self.__build_db_filter(adm_id, query_params))[0]
-            if len(filtered_village_attachments_document) > 0:
-                context['attachments'] = self.__build_lambda_filter(
-                    filtered_village_attachments_document[0].get('attachments', None),
-                    query_params
-                )
+        filtered_village_attachments_document = db.get_query_result(
+            self.__build_db_filter(str(adm_id), query_params))[0]
+        if len(filtered_village_attachments_document) > 0:
+            context['attachments'] = self.__build_lambda_filter(
+                filtered_village_attachments_document[0].get('attachments', None),
+                query_params
+            )
 
-            form.fields.get('type').initial = query_params.get('type')
-            form.fields.get('task').choices = self.task_choices
-            form.fields.get('task').initial = query_params.get('task')
-            form.fields.get('phase').choices = self.phase_choices
-            form.fields.get('phase').initial = query_params.get('phase')
-            form.fields.get('activity').choices = self.activity_choices
-            form.fields.get('activity').initial = query_params.get('activity')
-            context['no_results'] = len(context['attachments']) == 0
-            context['form'] = form
-            context['adm_id'] = adm_id
+        form.fields.get('type').initial = query_params.get('type')
+        form.fields.get('task').choices = self.task_choices
+        form.fields.get('task').initial = query_params.get('task')
+        form.fields.get('phase').choices = self.phase_choices
+        form.fields.get('phase').initial = query_params.get('phase')
+        form.fields.get('activity').choices = self.activity_choices
+        form.fields.get('activity').initial = query_params.get('activity')
+        context['no_results'] = len(context['attachments']) == 0
+        context['form'] = form
+        context['adm_id'] = adm_id
 
-        except Exception as ex:
-            raise Http404
+        # except Exception as ex:
+        #     raise Http404
         return context
 
     def __get_select_choices(self, village_attachments_document) -> None:
@@ -922,11 +922,10 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         except StopIteration:
             return None
 
-    def __build_db_filter(self, adm_id: int, query_params: dict) -> Dict:
+    def __build_db_filter(self, adm_id: str, query_params: dict) -> Dict:
         db_filter: dict = defaultdict(dict)
         db_filter["type"] = self.no_sql_type_name
         db_filter["adm_id"] = adm_id
-
         if len(query_params) > 0:
             db_filter["attachments"] = defaultdict(dict)
             db_filter["attachments"]["$elemMatch"] = defaultdict(dict)
@@ -955,7 +954,6 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
             if len(db_filter["attachments"]) == 0:
                 del (db_filter["attachments"])
-        print(db_filter)
         return dict(db_filter)
 
 @login_required
