@@ -58,30 +58,26 @@
         }
 
         #attachmentModal {
-            .attachment-link {
-                width: calc(100% - 135px);
-                height: 130px;
+            .attachment-modal-link {
+                width: calc(100% - 120px);
+                height: 50vh;
                 margin: auto;
                 display: flex;
             }
 
             .attachment-placeholder {
-                height: 130px;
-            }
-
-            .attachment-placeholder--document {
-                height: 90px;
-                width: 50px;
+                height: 50vh;
+                width: 100%;
+                margin: auto;
             }
 
             .carousel-control-next, .carousel-control-prev {
-                bottom: -10px;
+                bottom: -50px;
             }
 
             .carousel-control-next-icon, .carousel-control-prev-icon {
                 border-radius: 50%;
                 background-color: #599cf7;
-
                 padding: 5px !important;
                 background-size: 10px;
                 height: 25px;
@@ -95,6 +91,12 @@
 
             .carousel-indicators li {
                 background-color: #599cf7;
+            }
+
+            .download {
+                display: inline-flex;
+                width: calc(100% - 25px);
+                justify-content: flex-end;
             }
         }
 
@@ -190,51 +192,7 @@
                     </button>
                 </div>
                 <div class="card-body mb-5">
-                    <div class="clearfix" id="attachments">
-                        <div id="carouselIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
-                            <ol class="carousel-indicators">
-                                {% for attachment in attachments %}
-                                    <li data-target="#carouselIndicators" #selectorId{{ forloop.counter0 }}
-                                        data-slide-to="{{ forloop.counter }}"
-                                        {% if attachment.url == selectedAttachmentUrl %}class="active"{% endif %}></li>
-                                {% endfor %}
-                            </ol>
-                            <div class="carousel-inner">
-                                {% for attachment in attachments %}
-                                    <div class="carousel-item" #slideid{{ forloop.counter0 }}>
-                                        {% if attachment.type == 'photo' %}
-                                            <a class="attachment-link" target="_blank"
-                                               href="{{ attachment.url|imgAWSS3Filter }}">
-                                                <img class="attachment-placeholder"
-                                                     src="{{ attachment.url|imgAWSS3Filter }}"
-                                                     alt="{{ attachment.task }}">
-                                            </a>
-                                        {% else %}
-                                            <a class="align-items-center justify-content-center attachment-link"
-                                               target="_blank" href="{{ attachment.url|imgAWSS3Filter }}">
-                                                <img class="attachment-placeholder attachment-placeholder--document"
-                                                     src="{% static 'images/document-placeholder.png' %}"
-                                                     alt="{{ attachment.task }}">
-                                            </a>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            <a class="carousel-control-prev" href="#carouselIndicators" role="button"
-                               data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselIndicators" role="button"
-                               data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="overlay" id="spin-attachments">
-                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -306,6 +264,54 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('.attachment-link').click(function () {
+                $("#attachmentModal .card-body").html(`
+                <div class="clearfix" id="attachments">
+                        <div id="carouselIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
+                            <ol class="carousel-indicators">
+                                {% for attachment in attachments %}
+                                    <li data-target="#carouselIndicators" #selectorId{{ forloop.counter0 }}
+                                        data-slide-to="{{ forloop.counter0 }}"
+                                        {% if attachment.url == selectedAttachmentUrl %}class="active"{% endif %}></li>
+                                {% endfor %}
+                            </ol>
+                            <div class="carousel-inner">
+                                {% for attachment in attachments %}
+                                    <div class="carousel-item" #slideid{{ forloop.counter0 }}>
+                                        {% if attachment.type == 'photo' %}
+                                            <a class="attachment-modal-link" target="_blank"
+                                               href="{{ attachment.url|imgAWSS3Filter }}">
+                                                <img class="attachment-placeholder"
+                                                     src="{{ attachment.url|imgAWSS3Filter }}"
+                                                     alt="{{ attachment.task }}">
+                                            </a>
+                                        {% else %}
+                                            <a class="align-items-center justify-content-center attachment-modal-link"
+                                               target="_blank" href="{{ attachment.url|imgAWSS3Filter }}">
+                                                <embed src="{{ attachment.url }}" type="application/pdf" height="100%">
+                                            </a>
+                                        {% endif %}
+                                       <a class="download" href="{% url 'administrativelevels:village_attachment_download' adm_id=adm_id url=attachment.url %}">
+                                           <img width="30px" height="auto" src="{% static 'images/download_icon.svg' %}" alt="download">
+                                       </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselIndicators" role="button"
+                               data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselIndicators" role="button"
+                               data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="overlay" id="spin-attachments">
+                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                    </div>
+                  `);
                 let spin_attachments = $("#spin-attachments");
                 spin_attachments.show();
                 const count = $(this).data('count');

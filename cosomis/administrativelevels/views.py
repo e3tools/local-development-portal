@@ -1,5 +1,8 @@
+import re
+import requests
+import pandas as pd
 from collections import defaultdict
-from typing import Optional, Dict, List, Tuple, Any
+from typing import Optional, Dict, List, Tuple, Any, re
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -8,8 +11,7 @@ from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from cosomis.constants import OBSTACLES_FOCUS_GROUP, GOALS_FOCUS_GROUP
 from cosomis.mixins import PageMixin
-from django.http import Http404
-import pandas as pd
+from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
@@ -24,7 +26,6 @@ from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Co
 
 from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm, AttachmentFilterForm, VillageSearchForm
 from usermanager.permissions import (
-    CDDSpecialistPermissionRequiredMixin, SuperAdminPermissionRequiredMixin,
     AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
 )
 from administrativelevels import functions_cvd as cvd_functions
@@ -846,40 +847,40 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
         context['attachments'] = []
 
-        try:
-            adm_id: str = self.kwargs.get("adm_id")
-            query_params: dict = self.request.GET
+        # try:
+        adm_id: str = self.kwargs.get("adm_id")
+        query_params: dict = self.request.GET
 
-            form = AttachmentFilterForm()
+        form = AttachmentFilterForm()
 
-            nsc: NoSQLClient = self.nsc_class()
-            db: Any = nsc.get_db(self.no_sql_database_name)
+        nsc: NoSQLClient = self.nsc_class()
+        db: Any = nsc.get_db(self.no_sql_database_name)
 
-            village_attachments_document = db.get_query_result(self.__build_db_filter(adm_id, dict()))[0]
-            print(village_attachments_document)
-            if len(village_attachments_document) > 0:
-                self.__get_select_choices(village_attachments_document)
+        village_attachments_document = db.get_query_result(self.__build_db_filter(str(adm_id), dict()))[0]
+        if len(village_attachments_document) > 0:
+            self.__get_select_choices(village_attachments_document)
 
-            filtered_village_attachments_document = db.get_query_result(
-                self.__build_db_filter(adm_id, query_params))[0]
-            if len(filtered_village_attachments_document) > 0:
-                context['attachments'] = self.__build_lambda_filter(
-                    filtered_village_attachments_document[0].get('attachments', None),
-                    query_params
-                )
+        filtered_village_attachments_document = db.get_query_result(
+            self.__build_db_filter(str(adm_id), query_params))[0]
+        if len(filtered_village_attachments_document) > 0:
+            context['attachments'] = self.__build_lambda_filter(
+                filtered_village_attachments_document[0].get('attachments', None),
+                query_params
+            )
 
-            form.fields.get('type').initial = query_params.get('type')
-            form.fields.get('task').choices = self.task_choices
-            form.fields.get('task').initial = query_params.get('task')
-            form.fields.get('phase').choices = self.phase_choices
-            form.fields.get('phase').initial = query_params.get('phase')
-            form.fields.get('activity').choices = self.activity_choices
-            form.fields.get('activity').initial = query_params.get('activity')
-            context['no_results'] = len(context['attachments']) == 0
-            context['form'] = form
+        form.fields.get('type').initial = query_params.get('type')
+        form.fields.get('task').choices = self.task_choices
+        form.fields.get('task').initial = query_params.get('task')
+        form.fields.get('phase').choices = self.phase_choices
+        form.fields.get('phase').initial = query_params.get('phase')
+        form.fields.get('activity').choices = self.activity_choices
+        form.fields.get('activity').initial = query_params.get('activity')
+        context['no_results'] = len(context['attachments']) == 0
+        context['form'] = form
+        context['adm_id'] = adm_id
 
-        except Exception as ex:
-            raise Http404
+        # except Exception as ex:
+        #     raise Http404
         return context
 
     def __get_select_choices(self, village_attachments_document) -> None:
@@ -921,11 +922,10 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         except StopIteration:
             return None
 
-    def __build_db_filter(self, adm_id: int, query_params: dict) -> Dict:
+    def __build_db_filter(self, adm_id: str, query_params: dict) -> Dict:
         db_filter: dict = defaultdict(dict)
         db_filter["type"] = self.no_sql_type_name
         db_filter["adm_id"] = adm_id
-
         if len(query_params) > 0:
             db_filter["attachments"] = defaultdict(dict)
             db_filter["attachments"]["$elemMatch"] = defaultdict(dict)
@@ -954,9 +954,29 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
             if len(db_filter["attachments"]) == 0:
                 del (db_filter["attachments"])
-        print(db_filter)
         return dict(db_filter)
 
+@login_required
+def attachment_download(self, adm_id: int, url: str):
+    response = requests.get(url)
+    if response.status_code == 200:
+        content_disposition = response.headers.get('content-disposition')
+        filename = url.split("/")[-1]
+        if content_disposition is not None:
+            fname = re.findall("filename=\"(.+)\"", content_disposition)
+
+            if len(fname) != 0:
+                filename = fname[0]
+
+        response = HttpResponse(
+                response.content,
+                content_type=response.headers.get('content-type')
+            )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+    else:
+        return HttpResponse("Failed to download the file.")
 
 #====================== Geographical unit=========================================
 class GeographicalUnitListView(PageMixin, LoginRequiredMixin, ListView):
