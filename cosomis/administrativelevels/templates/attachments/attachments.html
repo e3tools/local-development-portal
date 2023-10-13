@@ -287,12 +287,12 @@
                                         {% else %}
                                             <a class="align-items-center justify-content-center attachment-modal-link"
                                                target="_blank" href="{{ attachment.url|imgAWSS3Filter }}">
-                                                <embed src="{{ attachment.url }}" type="application/pdf" height="100%">
+                                                <embed src="{{ attachment.url|imgAWSS3Filter }}" type="application/pdf" height="100%">
                                             </a>
                                         {% endif %}
-                                       <a class="download" href="{% url 'administrativelevels:village_attachment_download' adm_id=adm_id url=attachment.url %}">
-                                           <img width="30px" height="auto" src="{% static 'images/download_icon.svg' %}" alt="download">
-                                       </a>
+                                       {#<a target="_blank" class="download" href="{% url 'administrativelevels:village_attachment_download' adm_id=adm_id url=attachment.url %}">#}
+                                       {#    <img width="30px" height="auto" src="{% static 'images/download_icon.svg' %}" alt="download">#}
+                                       {#</a>#}
                                     </div>
                                 {% endfor %}
                             </div>
