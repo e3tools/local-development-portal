@@ -272,6 +272,9 @@ class Attachment(BaseModel):
     )
     url = models.URLField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=DOCUMENT)
+    task = models.CharField(max_length=10, blank=True)
+    activity = models.CharField(max_length=10, blank=True)
+    phase = models.CharField(max_length=10, blank=True)
 
 
 def update_or_create_amd_couch(sender, instance, **kwargs):
