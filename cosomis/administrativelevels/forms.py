@@ -107,3 +107,4 @@ class AttachmentFilterForm(forms.Form):
     phase = forms.ChoiceField(widget=Select, required=False)
     activity = forms.ChoiceField(widget=Select, required=False)
     task = forms.ChoiceField(widget=Select, required=False)
+    administrative_level = forms.ChoiceField(widget=Select, required=False)

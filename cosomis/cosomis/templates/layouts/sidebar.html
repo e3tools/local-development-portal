@@ -110,6 +110,13 @@
                         <p>{% translate "Reports" %}</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{% url 'administrativelevels:attachments' %}"
+                       class="nav-link {% if active_level1 == 'attachments' %}active{% endif %}">
+                        <i class="nav-icon fa fa-images"></i>
+                        <p>{% translate "Gallerie d'images" %}</p>
+                    </a>
+                </li>
             </ul>
         </nav>
 
