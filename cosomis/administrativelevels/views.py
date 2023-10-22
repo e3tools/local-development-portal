@@ -836,7 +836,6 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     context_object_name = 'attachments'
     title = _("Galerie d'images")
     model = Attachment
-    active_level1 = 'attachments'
 
     def get_context_data(self, **kwargs):
         self.activity_choices: List[Tuple] = [(None, '---')]
@@ -850,8 +849,6 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         form = AttachmentFilterForm()
 
         adm_id: Optional[int] = self.kwargs.get("adm_id", None)
-        if adm_id is not None:
-            active_level1 = None
         context['attachments']: List[Attachment] = self.__build_db_filter(query_params, adm_id)
         self.__get_select_choices(context['attachments'])
 
