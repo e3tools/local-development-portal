@@ -3,7 +3,7 @@ import zipfile
 from io import BytesIO
 import requests
 import pandas as pd
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -841,16 +841,19 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         self.activity_choices: List[Tuple] = [(None, '---')]
         self.task_choices: List[Tuple] = [(None, '---')]
         self.phase_choices: List[Tuple] = [(None, '---')]
+        self.administrative_level_choices: List[Tuple] = [(None, '---')]
         context = super(AttachmentListView, self).get_context_data(**kwargs)
 
-        adm_id: int = self.kwargs.get("adm_id")
         query_params: dict = self.request.GET
 
         form = AttachmentFilterForm()
 
-        context['attachments']: List[Attachment] = self.__build_db_filter(adm_id, query_params)
+        adm_id: Optional[int] = self.kwargs.get("adm_id", None)
+        context['attachments']: List[Attachment] = self.__build_db_filter(query_params, adm_id)
         self.__get_select_choices(context['attachments'])
 
+        form.fields.get('administrative_level').initial = query_params.get('administrative_level')
+        form.fields.get('administrative_level').choices = self.administrative_level_choices
         form.fields.get('type').initial = query_params.get('type')
         form.fields.get('phase').initial = query_params.get('phase')
         form.fields.get('phase').choices = self.phase_choices
@@ -861,7 +864,6 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
         context['no_results'] = len(context['attachments']) == 0
         context['form'] = form
-        context['adm_id'] = adm_id
 
         return context
 
@@ -881,8 +883,20 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
                     attachments
                     ))))
 
-    def __build_db_filter(self, adm_id: int, query_params: dict) -> List[Attachment]:
-        query: QuerySet = Attachment.objects.filter(adm_id=adm_id)
+        self.administrative_level_choices = self.administrative_level_choices + (list(
+            set(map(lambda administrative_level: (administrative_level.name, administrative_level.name),
+                    AdministrativeLevel.objects.all()
+                    ))))
+
+    def __build_db_filter(self, query_params: dict, adm_id: Optional[int]) -> List[Attachment]:
+        query: QuerySet = Attachment.objects
+
+        if adm_id is not None and adm_id is not '':
+            query = query.filter(adm_id=adm_id)
+
+        administrative_level: str = query_params.get('administrative_level')
+        if administrative_level is not None and administrative_level is not '':
+            query = query.filter(adm__administrativelevel__name=administrative_level)
 
         attachment_type: str = query_params.get('type')
         if attachment_type is not None and attachment_type is not '':
