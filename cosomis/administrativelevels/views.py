@@ -1,8 +1,9 @@
 import re
+import zipfile
+from io import BytesIO
 import requests
 import pandas as pd
-from collections import defaultdict
-from typing import Optional, Dict, List, Tuple, Any, re
+from typing import List, Tuple
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -15,11 +16,10 @@ from django.http import Http404, HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
-from django.db.models import Q
-
+from django.db.models import Q, QuerySet
 from no_sql_client import NoSQLClient
 
-from administrativelevels.models import AdministrativeLevel, GeographicalUnit, CVD
+from administrativelevels.models import AdministrativeLevel, GeographicalUnit, CVD, Attachment
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
@@ -835,126 +835,72 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     template_name = 'attachments/attachments.html'
     context_object_name = 'attachments'
     title = _("Galerie d'images")
-    nsc_class = NoSQLClient
-    no_sql_db_id = None
-    no_sql_database_name = "purs_test"
-    no_sql_type_name = "village_attachments"
+    model = Attachment
 
     def get_context_data(self, **kwargs):
         self.activity_choices: List[Tuple] = [(None, '---')]
         self.task_choices: List[Tuple] = [(None, '---')]
         self.phase_choices: List[Tuple] = [(None, '---')]
         context = super(AttachmentListView, self).get_context_data(**kwargs)
-        context['attachments'] = []
 
-        # try:
-        adm_id: str = self.kwargs.get("adm_id")
+        adm_id: int = self.kwargs.get("adm_id")
         query_params: dict = self.request.GET
 
         form = AttachmentFilterForm()
 
-        nsc: NoSQLClient = self.nsc_class()
-        db: Any = nsc.get_db(self.no_sql_database_name)
-
-        village_attachments_document = db.get_query_result(self.__build_db_filter(str(adm_id), dict()))[0]
-        if len(village_attachments_document) > 0:
-            self.__get_select_choices(village_attachments_document)
-
-        filtered_village_attachments_document = db.get_query_result(
-            self.__build_db_filter(str(adm_id), query_params))[0]
-        if len(filtered_village_attachments_document) > 0:
-            context['attachments'] = self.__build_lambda_filter(
-                filtered_village_attachments_document[0].get('attachments', None),
-                query_params
-            )
+        context['attachments']: List[Attachment] = self.__build_db_filter(adm_id, query_params)
+        self.__get_select_choices(context['attachments'])
 
         form.fields.get('type').initial = query_params.get('type')
-        form.fields.get('task').choices = self.task_choices
-        form.fields.get('task').initial = query_params.get('task')
-        form.fields.get('phase').choices = self.phase_choices
         form.fields.get('phase').initial = query_params.get('phase')
-        form.fields.get('activity').choices = self.activity_choices
+        form.fields.get('phase').choices = self.phase_choices
+        form.fields.get('task').initial = query_params.get('task')
+        form.fields.get('task').choices = self.task_choices
         form.fields.get('activity').initial = query_params.get('activity')
+        form.fields.get('activity').choices = self.activity_choices
+
         context['no_results'] = len(context['attachments']) == 0
         context['form'] = form
         context['adm_id'] = adm_id
 
-        # except Exception as ex:
-        #     raise Http404
         return context
 
-    def __get_select_choices(self, village_attachments_document) -> None:
-        village_attachments = village_attachments_document[0].get('attachments', None)
+    def __get_select_choices(self, attachments: List[Attachment]) -> None:
         self.activity_choices = self.activity_choices + (list(
-            set(map(lambda attachment: (attachment.get('activity'), attachment.get('activity')),
-                    village_attachments
+            set(map(lambda attachment: (attachment.activity, attachment.activity),
+                    attachments
                     ))))
+
         self.task_choices = self.task_choices + (list(
-            set(map(lambda attachment: (attachment.get('task'), attachment.get('task')),
-                    village_attachments
+            set(map(lambda attachment: (attachment.task, attachment.task),
+                    attachments
                     ))))
+
         self.phase_choices = self.phase_choices + (list(
-            set(map(lambda attachment: (attachment.get('phase'), attachment.get('phase')),
-                    village_attachments
+            set(map(lambda attachment: (attachment.phase, attachment.phase),
+                    attachments
                     ))))
 
-    def __build_lambda_filter(self, attachments: List[any], query_params: dict) -> Optional[List]:
-        filters = []
+    def __build_db_filter(self, adm_id: int, query_params: dict) -> List[Attachment]:
+        query: QuerySet = Attachment.objects.filter(adm_id=adm_id)
 
-        type_of_document = query_params.get('type')
-        if type_of_document is not None and type_of_document is not '':
-            filters.append(lambda p: p.get('type') == type_of_document)
+        attachment_type: str = query_params.get('type')
+        if attachment_type is not None and attachment_type is not '':
+            query = query.filter(type == attachment_type)
 
-        phase = query_params.get('phase')
-        if phase is not None and phase is not '':
-            filters.append(lambda p: p.get('phase') == phase)
-
-        activity = query_params.get('activity')
-        if activity is not None and activity is not '':
-            filters.append(lambda p: p.get('activity') == activity)
-
-        task = query_params.get('task')
+        task: str = query_params.get('task')
         if task is not None and task is not '':
-            filters.append(lambda p: p.get('task') == task)
+            query = query.filter(task=task)
 
-        try:
-            return list(filter(lambda p: all(f(p) for f in filters), attachments))
-        except StopIteration:
-            return None
+        phase: str = query_params.get('phase')
+        if phase is not None and phase is not '':
+            query = query.filter(phase=phase)
 
-    def __build_db_filter(self, adm_id: str, query_params: dict) -> Dict:
-        db_filter: dict = defaultdict(dict)
-        db_filter["type"] = self.no_sql_type_name
-        db_filter["adm_id"] = adm_id
-        if len(query_params) > 0:
-            db_filter["attachments"] = defaultdict(dict)
-            db_filter["attachments"]["$elemMatch"] = defaultdict(dict)
+        activity: str = query_params.get('activity')
+        if activity is not None and activity is not '':
+            query = query.filter(activity=activity)
 
-            type_of_document = query_params.get('type')
-            if type_of_document is not None and type_of_document is not '':
-                db_filter["attachments"]["$elemMatch"]["type"] = type_of_document
-
-            phase = query_params.get('phase')
-            if phase is not None and phase is not '':
-                db_filter["attachments"]["$elemMatch"]["phase"] = phase
-
-            activity = query_params.get('activity')
-            if activity is not None and activity is not '':
-                db_filter["attachments"]["$elemMatch"]["activity"] = activity
-
-            task = query_params.get('task')
-            if task is not None and task is not '':
-                db_filter["attachments"]["$elemMatch"]["task"] = task
-
-            db_filter["attachments"]["$elemMatch"] = dict(db_filter["attachments"]["$elemMatch"])
-            db_filter["attachments"] = dict(db_filter["attachments"])
-
-            if len(db_filter["attachments"]["$elemMatch"]) == 0:
-                del (db_filter["attachments"]["$elemMatch"])
-
-            if len(db_filter["attachments"]) == 0:
-                del (db_filter["attachments"])
-        return dict(db_filter)
+        return list(query.all())
 
 @login_required
 def attachment_download(self, adm_id: int, url: str):
@@ -963,10 +909,13 @@ def attachment_download(self, adm_id: int, url: str):
         content_disposition = response.headers.get('content-disposition')
         filename = url.split("/")[-1]
         if content_disposition is not None:
-            fname = re.findall("filename=\"(.+)\"", content_disposition)
+            try:
+                fname = re.findall("filename=\"(.+)\"", content_disposition)
 
-            if len(fname) != 0:
-                filename = fname[0]
+                if len(fname) != 0:
+                    filename = fname[0]
+            except:
+                pass
 
         response = HttpResponse(
                 response.content,
@@ -977,6 +926,37 @@ def attachment_download(self, adm_id: int, url: str):
 
     else:
         return HttpResponse("Failed to download the file.")
+
+@login_required
+def attachment_download_zip(self, adm_id: int):
+    ids = self.GET.get('ids').split(',')
+
+    buffer = BytesIO()
+    zip_file = zipfile.ZipFile(buffer, 'w')
+    for id in ids:
+        url = Attachment.objects.get(id=int(id)).url
+        response = requests.get(url)
+        if response.status_code == 200:
+            content_disposition = response.headers.get('content-disposition')
+            filename = url.split("/")[-1]
+            if content_disposition is not None:
+                try:
+                    fname = re.findall("filename=\"(.+)\"", content_disposition)
+
+                    if len(fname) != 0:
+                        filename = fname[0]
+                except:
+                    pass
+        zip_file.writestr(filename, response.content)
+
+    zip_file.close()
+
+
+    response = HttpResponse(buffer.getvalue())
+    response['Content-Type'] = 'application/x-zip-compressed'
+    response['Content-Disposition'] = 'attachment; filename=attachments.zip'
+
+    return response
 
 #====================== Geographical unit=========================================
 class GeographicalUnitListView(PageMixin, LoginRequiredMixin, ListView):
