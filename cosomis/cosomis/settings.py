@@ -62,6 +62,7 @@ CREATED_APPS = [
     'financial',
     'process_manager',
     'custom_file',
+    'investments',
 ]
 
 THIRD_PARTY_APPS = [
