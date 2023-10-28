@@ -916,6 +916,18 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
         return list(query.all())
 
+class VillageAttachmentListView(AttachmentListView):
+    title = _("Galerie d'images")
+
+    def get_context_data(self, **kwargs):
+        context = super(VillageAttachmentListView, self).get_context_data(**kwargs)
+        village_exist = AdministrativeLevel.objects.filter(id=context.get("adm_id"), type="Village")
+
+        if len(village_exist) == 0:
+            raise Http404
+
+        return context
+
 @login_required
 def attachment_download(self, adm_id: int, url: str):
     response = requests.get(url)
@@ -1356,8 +1368,6 @@ class DownloadCVDCSVView(PageMixin, LoginRequiredMixin, TemplateView):
 
 # Commune
 class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
-    """Class to present the detail page of a commune"""
-
     model = AdministrativeLevel
     template_name = 'commune/commune_detail.html'
     context_object_name = 'commune'
@@ -1373,6 +1383,47 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(CommuneDetailView, self).get_context_data(**kwargs)
         if context.get("object") and context.get(
-                "object").type == "Commune":  # Verify if the administrativeLevel type is Village
+                "object").type == "Commune":
             return context
         raise Http404
+
+class CommuneAttachmentListView(AttachmentListView):
+    def get_context_data(self, **kwargs):
+        context = super(CommuneAttachmentListView, self).get_context_data(**kwargs)
+        commune_exist = AdministrativeLevel.objects.filter(id=context.get("adm_id"), type="Commune")
+
+        if len(commune_exist) == 0:
+            raise Http404
+
+        return context
+
+# Canton
+class CantonDetailView(PageMixin, LoginRequiredMixin, DetailView):
+    model = AdministrativeLevel
+    template_name = 'canton/canton_detail.html'
+    context_object_name = 'canton'
+    title = _('Canton')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def get_context_data(self, **kwargs):
+        context = super(CantonDetailView, self).get_context_data(**kwargs)
+        if context.get("object") and context.get(
+                "object").type == "Canton":
+            return context
+        raise Http404
+
+class CantonAttachmentListView(AttachmentListView):
+    def get_context_data(self, **kwargs):
+        context = super(CantonAttachmentListView, self).get_context_data(**kwargs)
+        canton_exist = AdministrativeLevel.objects.filter(id=context.get("adm_id"), type="Canton")
+
+        if len(canton_exist) == 0:
+            raise Http404
+
+        return context
