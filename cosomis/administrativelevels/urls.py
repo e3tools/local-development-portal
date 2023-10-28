@@ -20,7 +20,7 @@ urlpatterns = [
     path('commune/<int:pk>/', views.CommuneDetailView.as_view(), name='commune_detail'),
     path('commune/<int:adm_id>/attachments/', views.CommuneAttachmentListView.as_view(), name='commune_attachments'),
 
-    path('canton/<int:pk>/', views.CommuneDetailView.as_view(), name='commune_detail'),
+    path('canton/<int:pk>/', views.CantonDetailView.as_view(), name='canton_detail'),
     path('canton/<int:adm_id>/attachments/', views.CantonAttachmentListView.as_view(), name='canton_attachments'),
 
     # The path of the detail of village
