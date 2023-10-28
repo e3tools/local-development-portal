@@ -1353,4 +1353,26 @@ class DownloadCVDCSVView(PageMixin, LoginRequiredMixin, TemplateView):
                 file_path,
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-    
+
+# Commune
+class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
+    """Class to present the detail page of a commune"""
+
+    model = AdministrativeLevel
+    template_name = 'commune/commune_detail.html'
+    context_object_name = 'commune'
+    title = _('Commune')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def get_context_data(self, **kwargs):
+        context = super(CommuneDetailView, self).get_context_data(**kwargs)
+        if context.get("object") and context.get(
+                "object").type == "Commune":  # Verify if the administrativeLevel type is Village
+            return context
+        raise Http404

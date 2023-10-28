@@ -178,8 +178,8 @@
                             </button>
                         </div>
                         {% if no_results == True %}
-                            <div>No attachments</div>
-                        {% endif %}
+                        <div>No attachments</div>
+                        {% else %}
                         <form class="form-attachment d-inline-flex">
                             {% for attachment in attachments %}
                                 {% if attachment.type == 'photo' %}
@@ -202,10 +202,11 @@
                         {% endfor %}
                         </form>
                         <div class="col-12 mt-3 p-0">
-                            <button class="download-all">
-                                Download Images
-                            </button>
+                             <button class="download-all">
+                                  Download Images
+                             </button>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -1,7 +1,5 @@
-from email.policy import default
 from django.db import models
 from cdd_client import CddClient
-from django.db.models.signals import post_save, post_delete
 from django.utils.translation import gettext_lazy as _
 
 from financial.models.bank import Bank

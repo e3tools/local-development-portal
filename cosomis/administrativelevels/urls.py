@@ -17,6 +17,10 @@ urlpatterns = [
     path('detail/<int:adm_id>/attachments/download-zip/', views.attachment_download_zip,
          name='village_attachment_download_zip'),
 
+    path('commune/<int:pk>/', views.CommuneDetailView.as_view(), name='commune_detail'),
+    path('commune/<int:adm_id>/attachments/', views.AttachmentListView.as_view(), name='commune_attachments'),
+
+    # The path of the detail of village
     path('attachments/', views.AttachmentListView.as_view(), name='attachments'), # The path of the attachments list
 
     # The path to delete obstacle
