@@ -53,7 +53,7 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
-        if context.get("object") and context.get("object").type == "Village" : # Verify if the administrativeLevel type is Village
+        if context.get("object") and context.get("object").is_village() is True:
             return context
         raise Http404
 
@@ -838,11 +838,17 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     model = Attachment
 
     def get_context_data(self, **kwargs):
+        context = super(AttachmentListView, self).get_context_data(**kwargs)
+        administrative_level = AdministrativeLevel.objects.filter(id=context.get("adm_id"))
+
+        if len(administrative_level) == 0:
+            raise Http404
+
+        context['administrative_level'] = administrative_level[0]
         self.activity_choices: List[Tuple] = [(None, '---')]
         self.task_choices: List[Tuple] = [(None, '---')]
         self.phase_choices: List[Tuple] = [(None, '---')]
         self.administrative_level_choices: List[Tuple] = [(None, '---')]
-        context = super(AttachmentListView, self).get_context_data(**kwargs)
 
         query_params: dict = self.request.GET
 
@@ -921,9 +927,8 @@ class VillageAttachmentListView(AttachmentListView):
 
     def get_context_data(self, **kwargs):
         context = super(VillageAttachmentListView, self).get_context_data(**kwargs)
-        village_exist = AdministrativeLevel.objects.filter(id=context.get("adm_id"), type="Village")
 
-        if len(village_exist) == 0:
+        if context['administrative_level'].is_village() is False:
             raise Http404
 
         return context
@@ -1383,16 +1388,15 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(CommuneDetailView, self).get_context_data(**kwargs)
         if context.get("object") and context.get(
-                "object").type == "Commune":
+                "object").is_commune() is True:
             return context
         raise Http404
 
 class CommuneAttachmentListView(AttachmentListView):
     def get_context_data(self, **kwargs):
         context = super(CommuneAttachmentListView, self).get_context_data(**kwargs)
-        commune_exist = AdministrativeLevel.objects.filter(id=context.get("adm_id"), type="Commune")
 
-        if len(commune_exist) == 0:
+        if  context['administrative_level'].is_commune() is False:
             raise Http404
 
         return context
@@ -1414,16 +1418,58 @@ class CantonDetailView(PageMixin, LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(CantonDetailView, self).get_context_data(**kwargs)
         if context.get("object") and context.get(
-                "object").type == "Canton":
+                "object").is_canton() is True:
             return context
         raise Http404
 
 class CantonAttachmentListView(AttachmentListView):
     def get_context_data(self, **kwargs):
         context = super(CantonAttachmentListView, self).get_context_data(**kwargs)
-        canton_exist = AdministrativeLevel.objects.filter(id=context.get("adm_id"), type="Canton")
 
-        if len(canton_exist) == 0:
+        if context['administrative_level'].is_canton() is False:
             raise Http404
 
         return context
+
+# Region
+class RegionDetailView(PageMixin, LoginRequiredMixin, DetailView):
+    model = AdministrativeLevel
+    template_name = 'region/region_detail.html'
+    context_object_name = 'region'
+    title = _('Region')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def get_context_data(self, **kwargs):
+        context = super(RegionDetailView, self).get_context_data(**kwargs)
+        if context.get("object") and context.get(
+                "object").is_region() is True:
+            return context
+        raise Http404
+
+
+# Prefecture
+class PrefectureDetailView(PageMixin, LoginRequiredMixin, DetailView):
+    model = AdministrativeLevel
+    template_name = 'prefecture/prefecture_detail.html'
+    context_object_name = 'prefecture'
+    title = _('Prefecture')
+    active_level1 = 'administrative_levels'
+    breadcrumb = [
+        {
+            'url': '',
+            'title': title
+        },
+    ]
+
+    def get_context_data(self, **kwargs):
+        context = super(PrefectureDetailView, self).get_context_data(**kwargs)
+        if context.get("object") and context.get(
+                "object").is_prefecture() is True:
+            return context
+        raise Http404

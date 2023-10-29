@@ -57,8 +57,11 @@
                             {% for field in form %}
                             <div class="form-group row">
                                 <label class="col-3 col-form-label">{{ field.label }}</label>
-                                <div class="col-6" >
+                                <div class="col-6">
                                     {{ field }}
+                                </div>
+                                <div class="col-3">
+                                 <a id="check_{{ field.name }}" href="" class="btn btn-primary" style="display: none;">Check</a>
                                 </div>
                                 {% comment%}
                                 <div class="col-3" >
@@ -140,8 +143,12 @@
 
                 $('.adl-filter select').on("change", function () {
                     let elt_id = $(this).attr('id');
-                    if(elt_id && administrative_level_ids.includes(elt_id) && $(this).val() && $(this).val() != ''){
-
+                    if(elt_id && administrative_level_ids.includes(elt_id) && $(this).val() && $(this).val() != '') {
+                        const type = elt_id.split('_')[1].toLowerCase();
+                        const identifier = `check_`+ type ;
+                        document.getElementById(identifier).style.display = "block";
+                        let url = `{% url 'administrativelevels:list' %}` + type + '/' + $(this).val();
+                        document.getElementById(identifier).setAttribute('href', url);
 
                         $.ajax({
                             type: 'GET',
@@ -168,8 +175,6 @@
                                     set_datas($(`#id_canton`), data);
                                 }
                                 else if (elt_id == "id_canton") {
-                                    //console.log(data);
-                                    //set_datas($(`#search_results`), data);
                                     let container = $("#search_results")
                                     container.html('');
                                     let container_txt_html = "";
@@ -203,21 +208,14 @@
 
                                     $("#seeVillage").click(function(event){
                                         window.location.href = url_village;
-
                                     });
-
+                                    container[0].style.display = "block";
                                 }
                                 let i_start = 0
                                 if(next_index_adl_id !== null ){
                                     $(`#${administrative_level_ids[next_index_adl_id]}`).prop('disabled', false);
                                     i_start = next_index_adl_id+1;
                                 }
-                                for(let i=i_start; i < administrative_level_ids_length; i++){
-                                    $(`#${administrative_level_ids[i]}`).val(null).trigger('change.select2');
-                                    $(`#${administrative_level_ids[i]}`).prop('disabled', true);
-                                }
-
-
                             },
                             error: function (data) {
                                 alert(error_server_message + "Error " + data.status);
@@ -225,10 +223,25 @@
                             }
                         }).done(function () {
                             $(`#${elt_id}`).attr('disabled', false);
+                        });
+                    } else {
+                        const next_index = administrative_level_ids.indexOf(elt_id);
+
+                        for(let i=next_index; i < administrative_level_ids_length; i++) {
+                            const elt_id = administrative_level_ids[i]
+                            const type = elt_id.split('_')[1].toLowerCase();
+                            const identifier = `check_`+ type ;
+
+                            $(`#${elt_id}`).val(null).trigger('change.select2');
+                            document.getElementById(identifier).style.display = "none";
+                            if (i !== next_index) {
+                                $(`#${elt_id}`).prop('disabled', true);
+                            }
+                            if (i == administrative_level_ids_length - 1) {
+                                document.getElementById("villages_title").style.display = "none";
+                                document.getElementById("search_results").style.display = "none";
+                            }
                         }
-                        );
-                    }else{
-                        $(`#${elt_id}`).val(null).trigger('change.select2');
                     }
 
                 });
@@ -244,23 +257,23 @@
     $("#id_region").select2({
         placeholder: "{% translate 'Region' %}",
         allowClear: true,
-        width: '300px'
+        width: 'inherit'
     });
     $("#id_prefecture").select2({
         placeholder: "{% translate 'Prefecture' %}",
         allowClear: true,
-        width: '300px'
+        width: 'inherit'
 
     });
     $("#id_commune").select2({
         placeholder: "{% translate 'Commune' %}",
         allowClear: true,
-        width: '300px'
+        width: 'inherit'
     });
     $("#id_canton").select2({
         placeholder: "{% translate 'Canton' %}",
         allowClear: true,
-        width: '300px'
+        width: 'inherit'
     });
 
     $('b[role="presentation"]').hide();

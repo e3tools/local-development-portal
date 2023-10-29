@@ -33,11 +33,13 @@ class AdministrativeLevel(BaseModel):
     CANTON = 'canton'
     COMMUNE = 'commune'
     REGION = 'region'
+    PREFECTURE = 'prefecture'
     TYPE = (
         (VILLAGE, _('Village')),
         (CANTON, _('Canton')),
         (COMMUNE, _('Commune')),
         (REGION, _('Region')),
+        (PREFECTURE, _('Prefecture'))
     )
     parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"))
     geographical_unit = models.ForeignKey('GeographicalUnit', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
@@ -90,7 +92,22 @@ class AdministrativeLevel(BaseModel):
         for assign in self.assignadministrativeleveltofacilitator_set.get_queryset().filter(project_id__in=projects_ids, activated=True):
             return assign.facilitator
         return None
-    
+
+    def is_village(self):
+        return self.type.lower() == self.VILLAGE
+
+    def is_canton(self):
+        return self.type.lower() == self.CANTON
+
+    def is_commune(self):
+        return self.type.lower() == self.COMMUNE
+
+    def is_region(self):
+        return self.type.lower() == self.REGION
+
+    def is_prefecture(self):
+        return self.type.lower() == self.PREFECTURE
+
     @property
     def children(self):
         return self.administrativelevel_set.get_queryset()
