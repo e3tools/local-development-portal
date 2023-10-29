@@ -22,7 +22,7 @@ def reverse_init_administrative_level(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('administrativelevels', '0019_category_investment_project_and_more'),
+        ('administrativelevels', '0021_auto_20231022_1549'),
     ]
 
     operations = [

@@ -19,6 +19,7 @@
             background: #f6f9fb;
             border-radius: 10px;
             margin-top: 10px;
+            position: relative;
         }
 
         .attachment-link:nth-child(even) {
@@ -55,6 +56,17 @@
                 margin-left: auto;
                 outline: transparent;
             }
+        }
+
+        .checkbox {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+        }
+
+        .form-attachment {
+            gap: 0 20px;
+            flex-wrap: wrap;
         }
 
         #attachmentModal {
@@ -135,6 +147,18 @@
             }
         }
 
+        .download-all {
+            background-color: #599cf7;
+            outline: transparent;
+            border-radius: 4px;
+            padding: 5px 10px 3px 10px;
+            border: 0;
+        }
+
+        .download-all, .download-all:focus, .download-all:hover {
+            color: white;
+        }
+
     </style>
 {% endblock %}
 
@@ -156,23 +180,32 @@
                         {% if no_results == True %}
                             <div>No attachments</div>
                         {% endif %}
-                        {% for attachment in attachments %}
-                            {% if attachment.type == 'photo' %}
-                                <div class="d-inline-block attachment-link" data-toggle="modal"
-                                     data-target="#attachmentModal" data-count="{{ forloop.counter0 }}">
-                                    <img class="attachment-placeholder" src="{{ attachment.url|imgAWSS3Filter }}"
-                                         alt="{{ attachment.task }}">
-                                </div>
-                            {% else %}
-                                <div class="d-inline-flex align-items-center justify-content-center attachment-link"
-                                     data-toggle="modal" data-target="#attachmentModal"
-                                     data-count="{{ forloop.counter0 }}">
-                                    <img class=" attachment-placeholder attachment-placeholder--document" src="
-                                {% static 'images/document-placeholder.png' %}"
-                                         alt="{{ attachment.task }}">
-                                </div>
-                            {% endif %}
+                        <form class="form-attachment d-inline-flex">
+                            {% for attachment in attachments %}
+                                {% if attachment.type == 'photo' %}
+                                    <div class="d-inline-block attachment-link" data-toggle="modal"
+                                         data-target="#attachmentModal" data-count="{{ forloop.counter0 }}">
+                                        <input class="checkbox" type="checkbox" name="{{ forloop.counter0 }}" value="{{ attachment.id }}" />
+                                        <img class="attachment-placeholder" src="{{ attachment.url|imgAWSS3Filter }}"
+                                             alt="{{ attachment.task }}">
+                                    </div>
+                                {% else %}
+                                    <div class="d-inline-flex align-items-center justify-content-center attachment-link"
+                                         data-toggle="modal" data-target="#attachmentModal"
+                                         data-count="{{ forloop.counter0 }}">
+                                        <input class="checkbox" type="checkbox" name="{{ forloop.counter0 }}" value="{{ attachment.id }}" />
+                                        <img class=" attachment-placeholder attachment-placeholder--document" src="
+                                    {% static 'images/document-placeholder.png' %}"
+                                             alt="{{ attachment.task }}">
+                                    </div>
+                                {% endif %}
                         {% endfor %}
+                        </form>
+                        <div class="col-12 mt-3 p-0">
+                            <button class="download-all">
+                                Download Images
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -223,7 +256,16 @@
                                 {% endfor %}
                             </div>
                         </div>
-
+                        {% if adm_id is None %}
+                          <div class="form-group">
+                            <div class="form-label">
+                                {{ form.administrative_level.label_tag }}
+                            </div>
+                            <div class="form-select-row">
+                                {{ form.administrative_level }}
+                            </div>
+                          </div>
+                        {% endif %}
                         <div class="form-group">
                             <div class="form-label">
                                 {{ form.phase.label_tag }}
@@ -249,7 +291,6 @@
                                 {{ form.task }}
                             </div>
                         </div>
-
                         <input type="submit" class="btn btn-primary" value=Apply>
                     </form>
                 </div>
@@ -260,9 +301,35 @@
 
 {% block javascript %}
     {{ block.super }}
-    <!-- Script for carrousel -->
-    <script type="text/javascript">
+    <script type="text/javascript" data-attachments="{{ attachments }}">
+        var current_page = "{{ request.path }}";
+        var csrf_token = "{{ csrf_token }}";
+
         $(document).ready(function () {
+
+            $('input[type=checkbox]').click(function(event) {
+              if (event.stopPropagation) {
+                   event.stopPropagation();
+               } else {
+                    event.cancelBubble = true;
+               }
+            });
+
+            $('.download-all').click(function (event) {
+                var formArray = $('.form-attachment').serializeArray();
+                let ids = '';
+                formArray.forEach((input, index) => {
+                    if (index != 0) {
+                        ids = ids + ','
+                    }
+                  ids =  ids + input.value;
+                });
+                if(ids.length != 0) {
+                    window.location =  current_page + 'download-zip/?ids=' +  ids;
+                }
+            });
+
+            <!-- Script for carrousel -->
             $('.attachment-link').click(function () {
                 $("#attachmentModal .card-body").html(`
                 <div class="clearfix" id="attachments">

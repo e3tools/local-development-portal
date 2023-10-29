@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('administrativelevels', '0020_investment_administrative_level'),
+        ('administrativelevels', '0022_investment_administrative_level'),
         ('investments', '0001_initial'),
     ]
 

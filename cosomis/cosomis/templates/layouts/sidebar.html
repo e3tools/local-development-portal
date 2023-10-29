@@ -25,6 +25,7 @@
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
+            {% with request.resolver_match.url_name as url_name %}
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
 
 
@@ -61,7 +62,7 @@
 
                 <li class="nav-item">
                     <a href="{% url 'subprojects:list' %}"
-                       class="nav-link {% if active_level1 == 'subprojects' %}active{% endif %}">
+                       class="nav-link {% if url_name == 'list' %}active{% endif %}">
                         <i class="nav-icon fa fa-project-diagram"></i>
                         <p>{% translate "Subprojects" %}</p>
                     </a>
@@ -70,14 +71,14 @@
                     <a 
                         href="{% url 'administrativelevels:search_village' %}"
                         {% comment %}href="{% url 'administrativelevels:list' %}"{% endcomment %}
-                       class="nav-link {% if active_level1 == 'administrative_levels' %}active{% endif %}">
+                       class="nav-link {% if url_name == 'search_village' %}active{% endif %}">
                         <i class="nav-icon fa fa-home"></i>
                         <p>{% translate "Administrative levels" %}</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'financial:financials' %}"
-                       class="nav-link {% if active_level1 == 'financial' %}active{% endif %}">
+                       class="nav-link {% if url_name == 'financials' %}active{% endif %}">
                         <i class="nav-icon fa fa-money"></i>
                         <p>{% translate "Financial" %}</p>
                     </a>
@@ -110,7 +111,15 @@
                         <p>{% translate "Reports" %}</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{% url 'administrativelevels:attachments' %}"
+                       class="nav-link {% if url_name == 'attachments' %}active{% endif %}">
+                        <i class="nav-icon fa fa-images"></i>
+                        <p>{% translate "Gallerie d'images" %}</p>
+                    </a>
+                </li>
             </ul>
+            {% endwith %}
         </nav>
 
         <nav class="toogle-sidebar-button">

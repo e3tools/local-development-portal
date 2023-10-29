@@ -12,8 +12,13 @@ urlpatterns = [
     path('update/<int:pk>/', views.AdministrativeLevelUpdateView.as_view(), name='update'), # Administrative level path to update
     path('village-detail/<int:pk>/', views.VillageDetailView.as_view(), name='village_detail'), #The path of the detail of village
     path('detail/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='detail'), #The path of the detail
-    path('detail/<int:adm_id>/attachments/', views.AttachmentListView.as_view(), name='village_attachments'), #The path of the attachments list
+    path('detail/<int:adm_id>/attachments/', views.AttachmentListView.as_view(), name='village_attachments'), #The path of the village attachments list
     path('detail/<int:adm_id>/attachments/<path:url>/download/', views.attachment_download, name='village_attachment_download'),
+    path('detail/<int:adm_id>/attachments/download-zip/', views.attachment_download_zip,
+         name='village_attachment_download_zip'),
+
+    path('attachments/', views.AttachmentListView.as_view(), name='attachments'), # The path of the attachments list
+
     # The path to delete obstacle
 
     path('upload/', views.UploadCSVView.as_view(), name='upload'), #The path to download CSV/Excel file from db

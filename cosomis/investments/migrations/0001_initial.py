@@ -41,12 +41,49 @@ def migrate_investments(apps, schema_editor):
             )
 
 
+def revert_migrate_investments(apps, schema_editor):
+    adm_Investment = apps.get_model("administrativelevels", "Investment")
+    adm_Attachment = apps.get_model("administrativelevels", "Attachment")
+
+    inv_Investment = apps.get_model("investments", "Investment")
+
+    inv_inv_qs = inv_Investment.objects.all()
+
+    for inv in inv_inv_qs:
+        inv_new_obj = adm_Investment.objects.create(
+            title=inv.title,
+            responsible_structure=inv.responsible_structure,
+            administrative_level=inv.administrative_level,
+            sector=inv.sector,
+            estimated_cost=inv.estimated_cost,
+            start_date=inv.start_date,
+            duration=inv.duration,
+            delays_consumed=inv.delays_consumed,
+            physical_execution_rate=inv.physical_execution_rate,
+            financial_implementation_rate=inv.financial_implementation_rate,
+            investment_status=inv.investment_status,
+            project_status=inv.project_status,
+            endorsed_by_youth=inv.endorsed_by_youth,
+            endorsed_by_women=inv.endorsed_by_women,
+            endorsed_by_agriculturist=inv.endorsed_by_agriculturist,
+            endorsed_by_pastoralist=inv.endorsed_by_pastoralist,
+        )
+        att_qs = inv.attachments.all()
+        for att_obj in att_qs:
+            att_new_obj = adm_Attachment.objects.create(
+                adm=att_obj.adm,
+                investment=inv_new_obj,
+                url=att_obj.url,
+                type=att_obj.type,
+            )
+
+
 class Migration(migrations.Migration):
 
     initial = True
 
     dependencies = [
-        ('administrativelevels', '0020_investment_administrative_level'),
+        ('administrativelevels', '0022_investment_administrative_level'),
     ]
 
     operations = [
@@ -108,5 +145,5 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
         ),
-        migrations.RunPython(migrate_investments)
+        migrations.RunPython(migrate_investments, revert_migrate_investments)
     ]
