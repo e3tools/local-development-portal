@@ -3,7 +3,8 @@ import zipfile
 from io import BytesIO
 import requests
 import pandas as pd
-from typing import List, Tuple, Optional
+from collections import defaultdict
+from typing import Optional, Dict, List, Tuple, Any
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -19,10 +20,11 @@ from django.core.paginator import Paginator
 from django.db.models import Q, QuerySet
 from no_sql_client import NoSQLClient
 
-from administrativelevels.models import AdministrativeLevel, GeographicalUnit, CVD, Attachment
+from administrativelevels.models import AdministrativeLevel, GeographicalUnit, CVD
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
+from investments.models import Attachment, Investment
 
 from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm, AttachmentFilterForm, VillageSearchForm
 from usermanager.permissions import (
@@ -82,12 +84,10 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         context['title'] = _type
         context['hide_content_header'] = True
         context['administrativelevel_profile'] = context['object']
-        village_obj = self._get_village()
-        context['priorities'] = self._get_priorities(village_obj)
-        context['population'] = self._get_population_data(village_obj)
-        context['planning_status'] = self._get_planning_status(village_obj)
-        images = self._get_images(village_obj)
-        context['adm_id'] = village_obj['adm_id']
+        context['priorities'] = Investment.objects.filter(administrative_level=self.object)
+        context['planning_status'] = []
+        images = self._get_images(None)
+        context['adm_id'] = 1
         context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0] if len(images) > 0 else None}
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
@@ -98,48 +98,48 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         """Return the form class to use."""
         return self.financial_partner_form_class
 
-    def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.get_queryset()
-
-        # Next, try looking up by primary key.
-        pk = self.kwargs.get(self.pk_url_kwarg)
-        slug = self.kwargs.get(self.slug_url_kwarg)
-        print(pk, slug)
-        if pk is not None:
-            try:
-                pk = int(pk)
-                queryset = queryset.filter(pk=pk)
-            except ValueError:
-                pass
-
-        # Next, try looking up by slug.
-        if slug is not None and (pk is None or self.query_pk_and_slug):
-            slug_field = self.get_slug_field()
-            queryset = queryset.filter(**{slug_field: slug})
-
-        # If none of those are defined, it's an error.
-        if pk is None and slug is None:
-            raise AttributeError(
-                "Generic detail view %s must be called with either an object "
-                "pk or a slug in the URLconf." % self.__class__.__name__
-            )
-
-        try:
-            # Get the single item from the filtered queryset
-            obj = queryset.get()
-            self.no_sql_db_id = obj.no_sql_db_id
-        except (queryset.model.DoesNotExist,  queryset.model.MultipleObjectsReturned):
-            self.no_sql_db_id = pk
-            obj = self._get_village()
-            if obj is None:
-                raise Http404(
-                    _("No %(verbose_name)s found matching the query")
-                    % {"verbose_name": queryset.model._meta.verbose_name}
-                )
-            obj['pk'] = 0
-        obj = self._get_village()
-        return obj
+    # def get_object(self, queryset=None):
+    #     if queryset is None:
+    #         queryset = self.get_queryset()
+    #
+    #     # Next, try looking up by primary key.
+    #     pk = self.kwargs.get(self.pk_url_kwarg)
+    #     slug = self.kwargs.get(self.slug_url_kwarg)
+    #     print(pk, slug)
+    #     if pk is not None:
+    #         try:
+    #             pk = int(pk)
+    #             queryset = queryset.filter(pk=pk)
+    #         except ValueError:
+    #             pass
+    #
+    #     # Next, try looking up by slug.
+    #     if slug is not None and (pk is None or self.query_pk_and_slug):
+    #         slug_field = self.get_slug_field()
+    #         queryset = queryset.filter(**{slug_field: slug})
+    #
+    #     # If none of those are defined, it's an error.
+    #     if pk is None and slug is None:
+    #         raise AttributeError(
+    #             "Generic detail view %s must be called with either an object "
+    #             "pk or a slug in the URLconf." % self.__class__.__name__
+    #         )
+    #
+    #     try:
+    #         # Get the single item from the filtered queryset
+    #         obj = queryset.get()
+    #         self.no_sql_db_id = obj.no_sql_db_id
+    #     except (queryset.model.DoesNotExist,  queryset.model.MultipleObjectsReturned):
+    #         self.no_sql_db_id = pk
+    #         obj = self._get_village()
+    #         if obj is None:
+    #             raise Http404(
+    #                 _("No %(verbose_name)s found matching the query")
+    #                 % {"verbose_name": queryset.model._meta.verbose_name}
+    #             )
+    #         obj['pk'] = 0
+    #     obj = self._get_village()
+    #     return obj
 
     def _get_nosql_db(self, name=None):
         name = name if name is not None else self.no_sql_database_name
@@ -150,29 +150,17 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         nsc = self.nsc_class()
         db = nsc.get_db(self.no_sql_database_name)
         adm_id = self.kwargs.get(self.pk_url_kwarg)
-        print(adm_id)
         village_document = db.get_query_result(
             {
                 "type": "administrative_level",
                 "adm_id": str(adm_id)
             }
         )
-        print(village_document)
         result = None
         for doc in village_document:
             result = doc
             break
-        print('resultado', result)
         return result
-
-    def _get_priorities(self, village):
-        try:
-            village_obj = village
-            if village_obj is not None and 'priorities' in village_obj:
-                return village_obj['priorities']
-            return []
-        except Exception as e:
-            return []
 
     def _get_population_data(self, village):
         try:
@@ -239,7 +227,8 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
             return []
         except Exception as e:
             return []
-        
+
+
 class AdministrativeLevelCreateView(PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView):
     model = AdministrativeLevel
     template_name = 'administrativelevel_create.html'
@@ -891,11 +880,11 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     def __build_db_filter(self, query_params: dict, adm_id: Optional[int]) -> List[Attachment]:
         query: QuerySet = Attachment.objects
 
-        if adm_id is not None and adm_id is not '':
+        if adm_id is not None and adm_id != '':
             query = query.filter(adm_id=adm_id)
 
         administrative_level: str = query_params.get('administrative_level')
-        if administrative_level is not None and administrative_level is not '':
+        if administrative_level is not None and administrative_level != '':
             query = query.filter(adm__administrativelevel__name=administrative_level)
 
         attachment_type: str = query_params.get('type')
@@ -903,15 +892,15 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
             query = query.filter(type=attachment_type)
 
         task: str = query_params.get('task')
-        if task is not None and task is not '':
+        if task is not None and task != '':
             query = query.filter(task=task)
 
         phase: str = query_params.get('phase')
-        if phase is not None and phase is not '':
+        if phase is not None and phase != '':
             query = query.filter(phase=phase)
 
         activity: str = query_params.get('activity')
-        if activity is not None and activity is not '':
+        if activity is not None and activity != '':
             query = query.filter(activity=activity)
 
         return list(query.all())

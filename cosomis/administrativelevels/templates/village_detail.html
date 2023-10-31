@@ -72,42 +72,42 @@
                     <tbody>
                         <tr>
                             <th>{% translate "Total population" %}</th>
-                            <td>{{ population.total_population }}</td>
+                            <td>{{ object.total_population }}</td>
                         </tr>
                         <tr>
                             <td>{% translate "Population Men" %}</td>
-                            <td>{{ population.population_men }}</td>
+                            <td>{{ object.population_men }}</td>
                         </tr>
                         <tr>
                             <td>{% translate "Population Women" %}</td>
-                            <td>{{ population.population_women }}</td>
+                            <td>{{ object.population_women }}</td>
                         </tr>
                         <tr>
                             <td>{% translate "Population Young" %}</td>
-                            <td>{{ population.population_young }}</td>
+                            <td>{{ object.population_young }}</td>
                         <tr>
                             <td>{% translate "Population Elder" %}</td>
-                            <td>{{ population.population_elder }}</td>
+                            <td>{{ object.population_elder }}</td>
                         </tr>
                         <tr>
                             <td>{% translate "Population Handicap" %}</td>
-                            <td>{{ population.population_handicap }}</td>
+                            <td>{{ object.population_handicap }}</td>
                         </tr>
                         <tr>
                             <td>{% translate "Population Agruculture" %}</td>
-                            <td>{{ population.population_agruculture }}</td>
+                            <td>{{ object.population_agriculturist }}</td>
                         </tr>
                         <tr>
                             <td>{% translate "Population Breeders" %}</td>
-                            <td>{{ population.population_breeders }}</td>
+                            <td>{{ object.population_pastoralist }}</td>
                         </tr>
                         <tr>
                             <td>{% translate "Population Minorities" %}</td>
-                            <td>{{ population.population_minorities }}</td>
+                            <td>{{ object.population_minorities }}</td>
                         </tr>
                         <tr>
                             <td>{% translate "Main languages" %}</td>
-                            <td>{{ population.languages }}</td>
+                            <td>{{ object.main_languages }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -168,14 +168,14 @@
                                         {% for priority in priorities %}
                                             <tr>
                                                 <td>{{ priority.ranking }}</td>
-                                                <td>{{ priority.name }}</td>
-                                                <td>{% if priority.votes_young is not None  %}{{ priority.votes_young }}{% endif %}</td>
-                                                <td>{% if priority.votes_woman is not None  %}{{ priority.votes_woman }}{% endif %}</td>
-                                                <td>{% if priority.votes_me is not None  %}{{ priority.votes_me }}{% endif %}</td>
-                                                <td>{% if priority.votes_ae is not None  %}{{ priority.votes_ae }}{% endif %}</td>
+                                                <td>{{ priority.title }}</td>
+                                                <td>{% if priority.endorsed_by_youth is not None  %}{{ priority.votes_young }}{% endif %}</td>
+                                                <td>{% if priority.endorsed_by_women is not None  %}{{ priority.votes_woman }}{% endif %}</td>
+                                                <td>{% if priority.endorsed_by_agriculturist is not None  %}{{ priority.votes_me }}{% endif %}</td>
+                                                <td>{% if priority.endorsed_by_pastoralist is not None  %}{{ priority.votes_ae }}{% endif %}</td>
                                                 <td>{{ priority.beneficiaries }}</td>
                                                 <td>{{ priority.estimated_cost|intcomma }}</td>
-                                                <td>{{ priority.financed_by }}</td>
+                                                <td>{{ priority.responsible_structure }}</td>
                                                 <td>{% if priority.contrubution_to_climate %}{% translate "Yes" %}{% else %}{% translate "No" %}{% endif %}</td>
                                                 <td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
                                             </tr>
