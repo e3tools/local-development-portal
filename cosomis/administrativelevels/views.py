@@ -24,7 +24,7 @@ from administrativelevels.models import AdministrativeLevel, GeographicalUnit, C
 from administrativelevels.libraries import convert_file_to_dict, download_file
 from administrativelevels import functions as administrativelevels_functions
 from subprojects.models import VillageObstacle, VillageGoal, VillagePriority, Component
-from investments.models import Attachment
+from investments.models import Attachment, Investment
 
 from .forms import GeographicalUnitForm, CVDForm, AdministrativeLevelForm, FinancialPartnerForm, AttachmentFilterForm, VillageSearchForm
 from usermanager.permissions import (
