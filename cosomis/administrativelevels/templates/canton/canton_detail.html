@@ -1,0 +1,12 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block extracss %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'plugins/datepicker/date-picker.css' %}" />
+{% endblock %}
+
+
+{% block content %}
+Canton
+{% endblock %}
