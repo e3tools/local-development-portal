@@ -888,8 +888,8 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
             query = query.filter(adm__administrativelevel__name=administrative_level)
 
         attachment_type: str = query_params.get('type')
-        if attachment_type is not None and attachment_type != '':
-            query = query.filter(type == attachment_type)
+        if attachment_type is not None and attachment_type is not '':
+            query = query.filter(type=attachment_type)
 
         task: str = query_params.get('task')
         if task is not None and task != '':
