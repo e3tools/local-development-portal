@@ -3,6 +3,8 @@ import time
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
+from investments.models import Investment
+from administrativelevels.models import Category, AdministrativeLevel
 
 class Command(BaseCommand):
     help = 'Description of your command'
@@ -22,14 +24,11 @@ class Command(BaseCommand):
                 "name": "Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage"
             })
             for document in db:
-                update_or_create_priorities_document(self.nsc, document)
+                update_or_create_priorities_document(document)
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))
 
 
-def update_or_create_priorities_document(client, priorities_document):
-    # Access the 'purs_test' database
-    db = client.get_db('purs_test')
-
+def update_or_create_priorities_document(priorities_document):
     # Extract the administrative_level_id from the priorities document
     adm_id = priorities_document['administrative_level_id']
 
@@ -38,56 +37,44 @@ def update_or_create_priorities_document(client, priorities_document):
         "adm_id": adm_id,
         "type": "administrative_level"
     }
-    # docs = Result(db.all_docs, include_docs=True, selector=selector).all()
-    docs = db.get_query_result(selector)
-
-    existing_doc = False
-    for doc in docs:
-        existing_doc = doc
-        break
-
+    administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
+    existing_doc = Investment.objects.filter(no_sql_id=adm_id)
+    # TODO Complete Sector Allocation
     # Extract priorities from the priorities document
     if 'form_response' in priorities_document:
         if priorities_document.get('form_response') and 'sousComposante11' in priorities_document['form_response'][0]:
-            extracted_priorities = [
-                {
-                    "ranking": idx + 1,
-                    "name": priority["priorite"],
-                    "votes_young": None,  # Placeholder as it's not clear where to get this from
-                    "votes_woman": None,  # Placeholder
-                    "votes_me": None,  # Placeholder
-                    "votes_ae": None,  # Placeholder
-                    "beneficiaries": priority.get("nombreEstimeDeBeneficiaires"),
-                    "estimated_cost": priority.get("coutEstime"),
-                    "financed_by": None,  # Placeholder
-                    "contrubution_to_climate": True if priority.get("contributionClimatique") else False
-                } for idx, priority in
-                enumerate(priorities_document['form_response'][0]['sousComposante11']['prioritesDuVillage'])
-            ]
-        else:
-            extracted_priorities = []
-    else:
-        extracted_priorities = []
+            for idx, priority in enumerate(priorities_document['form_response'][0]['sousComposante11']['prioritesDuVillage']):
+                print(idx)
+                Investment.objects.create(
+                    ranking=idx + 1,
+                    title=priority["priorite"],
+                    estimated_cost=priority.get("coutEstime"),
+                    sector=Category.objects.get(id=1),
+                    delays_consumed=0,
+                    duration=0,
+                    financial_implementation_rate=0,
+                    physical_execution_rate=0,
+                    administrative_level=administrative_level,
+                    #beneficiaries= priority.get("nombreEstimeDeBeneficiaires"),
+                )
 
+            # extracted_priorities = [
+            #     {
+            #         "ranking": idx + 1,
+            #         "name": priority["priorite"],
+            #         "votes_young": None,  # Placeholder as it's not clear where to get this from
+            #         "votes_woman": None,  # Placeholder
+            #         "votes_me": None,  # Placeholder
+            #         "votes_ae": None,  # Placeholder
+            #         "beneficiaries": priority.get("nombreEstimeDeBeneficiaires"),
+            #         "estimated_cost": priority.get("coutEstime"),
+            #         "financed_by": None,  # Placeholder
+            #         "contrubution_to_climate": True if priority.get("contributionClimatique") else False
+            #     } for idx, priority in
+            #     enumerate(priorities_document['form_response'][0]['sousComposante11']['prioritesDuVillage'])
+            # ]
     # If the document exists, update it
-    if existing_doc:
-        with Document(db, existing_doc['_id']) as document:
-            # The document is fetched from the remote database
-            # Changes are made locally
-            try:
-                document['priorities'] = extracted_priorities
-                document['last_updated'] = priorities_document['last_updated']
-            except:
-                pass
+
     # Otherwise, create a new one
-    else:
-        new_doc = {
-            # "_id": db.create_document()['id'],  # Generating a new CouchDB ID
-            "adm_id": adm_id,
-            "type": "administrative_level",
-            "level": "village",
-            "priorities": extracted_priorities,
-        }
-        db.create_document(new_doc)
-    print("adm_id: ", adm_id, " - ", "priorities: ", extracted_priorities)
+    print("adm_id: ", adm_id)
     time.sleep(1)

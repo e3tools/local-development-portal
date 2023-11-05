@@ -3,6 +3,7 @@ import time
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
+from administrativelevels.models import AdministrativeLevel
 
 class Command(BaseCommand):
     help = 'Description of your command'
@@ -28,8 +29,6 @@ class Command(BaseCommand):
 def update_or_create_adm_document(client, population_document):
 
     # Access the 'purs_test' database
-    db = client.get_db('purs_test')
-    db_administrative_level = client.get_db('administrative_levels')
 
     # Extract the administrative_level_id from the priorities document
     adm_id = population_document['administrative_level_id']
@@ -40,23 +39,8 @@ def update_or_create_adm_document(client, population_document):
         "type": "administrative_level"
     }
     # docs = Result(db.all_docs, include_docs=True, selector=selector).all()
-    docs = db.get_query_result(selector)
 
-    adm_object = db_administrative_level.get_query_result({
-        "administrative_id": adm_id,
-        "type": "administrative_level"
-    })
-
-    existing_adm = False
-    adm_name = None
-    for adm in adm_object:
-        adm_name = adm['name']
-        break
-
-    existing_doc = False
-    for doc in docs:
-        existing_doc = doc
-        break
+    adm_object = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
 
     extracted_population_data = None
 
@@ -69,43 +53,17 @@ def update_or_create_adm_document(client, population_document):
         return
 
     # If the document exists, update it
-    if existing_doc:
-        with Document(db, existing_doc['_id']) as document:
-            # The document is fetched from the remote database
-            # Changes are made locally
-            # update the document with "total_population": 0,
-            try:
-                document['name'] = adm_name
-                document['total_population'] = extracted_population_data['total_population']
-                document['population_men'] = extracted_population_data['population_men']
-                document['population_women'] = extracted_population_data['population_women']
-                document['population_young'] = extracted_population_data['population_young']
-                document['population_elder'] = extracted_population_data['population_elder']
-                document['population_handicap'] = extracted_population_data['population_handicap']
-                document['population_agriculture'] = extracted_population_data['population_agriculture']
-                document['population_breeders'] = extracted_population_data['population_breeders']
-                document['population_minorities'] = extracted_population_data['population_minorities']
-            except:
-                pass
-    # Otherwise, create a new one
-    else:
-        new_doc = {
-            # "_id": db.create_document()['id'],  # Generating a new CouchDB ID
-            "adm_id": adm_id,
-            "type": "administrative_level",
-            "level": "village",
-            "name": adm_name,
-            'total_population': extracted_population_data['total_population'],
-            'population_men': extracted_population_data['population_men'],
-            'population_women': extracted_population_data['population_women'],
-            'population_young': extracted_population_data['population_young'],
-            'population_elder': extracted_population_data['population_elder'],
-            'population_handicap': extracted_population_data['population_handicap'],
-            'population_agriculture': extracted_population_data['population_agriculture'],
-            'population_breeders': extracted_population_data['population_breeders'],
-            'population_minorities': extracted_population_data['population_minorities']
-        }
-        db.create_document(new_doc)
+    if adm_object:
+        adm_object.total_population = extracted_population_data['total_population']
+        adm_object.population_men = extracted_population_data['population_men']
+        adm_object.population_women = extracted_population_data['population_women']
+        adm_object.population_young = extracted_population_data['population_young']
+        adm_object.population_elder = extracted_population_data['population_elder']
+        adm_object.population_handicap = extracted_population_data['population_handicap']
+        adm_object.population_agriculture = extracted_population_data['population_agriculture']
+        adm_object.population_breeders = extracted_population_data['population_breeders']
+        adm_object.population_minorities = extracted_population_data['population_minorities']
+        adm_object.save()
 
 
 def extract_population_data(form_response):

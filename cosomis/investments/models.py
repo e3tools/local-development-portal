@@ -21,7 +21,7 @@ class Investment(BaseModel):  # Investment module
         (PRIORITY, _('Priority')),
         (SUBPROJECT, _('SubProject'))
     )
-
+    ranking = models.PositiveIntegerField(null=True, blank=True)
     title = models.CharField(max_length=255)
     responsible_structure = models.CharField(max_length=255, null=True, blank=True)
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
@@ -39,6 +39,7 @@ class Investment(BaseModel):  # Investment module
     endorsed_by_women = models.BooleanField(default=False)
     endorsed_by_agriculturist = models.BooleanField(default=False)
     endorsed_by_pastoralist = models.BooleanField(default=False)
+    no_sql_id = models.CharField(max_length=255)
 
 
 class Package(BaseModel):  # investments module (orden de compra(kart de invesments(products)))
