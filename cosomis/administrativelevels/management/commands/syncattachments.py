@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand, CommandError
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
+from administrativelevels.models import AdministrativeLevel
+from investments.models import Attachment
 
 
 class Command(BaseCommand):
@@ -22,7 +24,8 @@ class Command(BaseCommand):
                 break
             extracted_attachments = get_attachments_from_database(task_documents)
             if adm_id:
-                save_attachments_to_purs_test(self.nsc, adm_id, extracted_attachments)
+                adm = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
+                save_attachments_to_purs_test(adm, extracted_attachments)
         self.stdout.write(self.style.SUCCESS('Successfully extracted attachments!'))
 
 
@@ -42,14 +45,14 @@ def get_attachments_from_database(task_documents):
                 })
     return extracted_attachments
 
-def save_attachments_to_purs_test(client, adm_id, extracted_attachments):
+def save_attachments_to_purs_test(adm, extracted_attachments):
     # Access the 'purs_test' database
-    db = client.get_db('purs_test')
 
     # Create a new document with the extracted attachments
-    new_doc = {
-        "adm_id": adm_id,
-        "type": "village_attachments",
-        "attachments": extracted_attachments
-    }
-    db.create_document(new_doc)
+    for attachment in extracted_attachments:
+        print(attachment)
+        Attachment.objects.create(
+            adm=adm,
+            type=attachment.get('type').capitalize(),
+            url=attachment.get('url')
+        )

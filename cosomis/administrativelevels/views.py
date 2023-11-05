@@ -87,7 +87,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
         context['priorities'] = Investment.objects.filter(administrative_level=self.object)
         context['planning_status'] = []
         images = self._get_images(None)
-        context['adm_id'] = 1
+        context['adm_id'] = self.object.id
         context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0, 'first_image': images[0] if len(images) > 0 else None}
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
@@ -916,7 +916,7 @@ class VillageAttachmentListView(AttachmentListView):
 
     def get_context_data(self, **kwargs):
         context = super(VillageAttachmentListView, self).get_context_data(**kwargs)
-
+        print(context['administrative_level'])
         if context['administrative_level'].is_village() is False:
             raise Http404
 
