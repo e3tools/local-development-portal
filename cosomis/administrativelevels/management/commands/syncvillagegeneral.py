@@ -3,6 +3,8 @@ import time
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
+from administrativelevels.models import AdministrativeLevel
+
 
 class Command(BaseCommand):
     help = 'Description of your command'
@@ -17,56 +19,65 @@ class Command(BaseCommand):
         db = self.nsc.get_db('administrative_levels')
         selector = {
             "type": "administrative_level",
-            "administrative_level": "Village"
+            "administrative_level": "Country"
         }
-        # docs = Result(db.all_docs, include_docs=True, selector=selector).all()
         docs = db.get_query_result(selector)
         for document in docs:
-            update_document(self.nsc, document)
+            create_or_update_adm(document)
+            recursive_administrative_level(document, db)
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))
 
-def update_document(client, administrative_level):
 
-    # Access the 'purs_test' database
-    db = client.get_db('purs_test')
-
-    # Extract the administrative_level_id from the priorities document
-    adm_id = administrative_level['administrative_id']
-
-    # Check if a document with the given adm_id exists in the 'purs_test' database
+def recursive_administrative_level(administrative_level, database):
+    print(
+        administrative_level['name'],
+        administrative_level['administrative_level'],
+        administrative_level['administrative_id']
+    )
     selector = {
-        "adm_id": adm_id,
-        "type": "administrative_level"
+        "type": "administrative_level",
+        "parent_id": administrative_level['administrative_id']
     }
+    docs = database.get_query_result(selector)
+    for document in docs:
+        create_or_update_adm(document)
+        recursive_administrative_level(document, database)
 
-    docs = db.get_query_result(selector)
 
-    adm_name = administrative_level['name']
-    adm_parent = administrative_level['parent_id']
+def create_or_update_adm(administrative_level_data):
+    # Extract the administrative_level_id and other fields from the data
+    adm_id = administrative_level_data.get('administrative_id')
+    adm_name = administrative_level_data.get('name')
+    adm_parent_id = administrative_level_data.get('parent_id')
+    adm_type = administrative_level_data.get('administrative_level')
+    # Other fields can be added as needed
 
-    existing_doc = False
-    for doc in docs:
-        existing_doc = doc
-        break
-    # If the document exists, update it
-    if existing_doc:
-        with Document(db, existing_doc['_id']) as document:
-            # The document is fetched from the remote database
-            # Changes are made locally
-            # update the document with "total_population": 0,
-            try:
-                document['name'] = adm_name
-                document['parent_id'] = adm_parent
-            except:
-                pass
-    # Otherwise, create a new one
-    else:
-        new_doc = {
-            # "_id": db.create_document()['id'],  # Generating a new CouchDB ID
-            "adm_id": adm_id,
-            "type": "administrative_level",
-            "level": "village",
-            "name": adm_name,
-            'parent_id': adm_parent
-        }
-        db.create_document(new_doc)
+    # Check if an AdministrativeLevel with the given adm_id exists
+    try:
+        adm_level = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
+        # If the record exists, update it
+        adm_level.name = adm_name
+        adm_level.type = adm_type
+        if adm_parent_id:
+            # Set the parent if a parent_id is provided, otherwise leave it unchanged
+            parent = AdministrativeLevel.objects.get(no_sql_db_id=adm_parent_id)
+            adm_level.parent = parent
+        # You can add more fields to update as necessary
+        adm_level.save()
+    except AdministrativeLevel.DoesNotExist:
+        # If the record does not exist, create a new one
+        parent = None
+        if adm_parent_id:
+            # Set the parent if a parent_id is provided, otherwise leave it unchanged
+            parent = AdministrativeLevel.objects.get(no_sql_db_id=adm_parent_id)
+        adm_level = AdministrativeLevel(
+            no_sql_db_id=adm_id,
+            name=adm_name,
+            # Assuming the 'parent' field is a ForeignKey to another AdministrativeLevel
+            parent=parent,
+            type=adm_type,
+            # Set other fields with defaults or extract from administrative_level_data
+        )
+        adm_level.save()
+
+    # The record is now saved or updated in the Django model
