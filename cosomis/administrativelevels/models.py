@@ -50,6 +50,7 @@ class AdministrativeLevel(BaseModel):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=_("Latitude"))
     longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name=_("Longitude"))
     name = models.CharField(max_length=255, verbose_name=_("Name"))
+    rank = models.PositiveIntegerField(null=True, blank=True)
     # adm_0_id to adm_n_id
     status_color = models.CharField(max_length=20, choices=STATUS_COLORS, default=LIME_GREEN)
     status_description = models.CharField(max_length=15, choices=STATUS_DESCRIPTION, default=NORMAL)

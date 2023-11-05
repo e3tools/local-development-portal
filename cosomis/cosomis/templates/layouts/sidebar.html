@@ -118,6 +118,13 @@
                         <p>{% translate "Gallerie d'images" %}</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{% url 'investments:home_investments' %}"
+                       class="nav-link {% if url_name == 'home_investments' %}active{% endif %}">
+                        <i class="nav-icon fa fa-comments-dollar"></i>
+                        <p>{% translate "Investments" %}</p>
+                    </a>
+                </li>
             </ul>
             {% endwith %}
         </nav>
