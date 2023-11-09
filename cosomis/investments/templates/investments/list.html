@@ -345,7 +345,7 @@
             let funding = 0;
             for(i=0; i<selected.length; i++){
                 let subproject_data = table.row( $(selected[i]).parents('tr') ).data();
-                funding = funding + subproject_data[3]["@data-order"]
+                funding = parseInt(funding) + parseInt(subproject_data[3]["@data-order"])
 
                 if (!villages.includes(subproject_data[4])) {
                     villages.push(subproject_data[4])
