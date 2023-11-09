@@ -18,7 +18,7 @@ class IndexListView(PageMixin, generic.edit.BaseFormView, generic.ListView):
         final_querystring = request.GET.copy()
 
         for key, value in request.GET.items():
-            if key in request.POST:
+            if key in request.POST and value != request.POST[key] and request.POST[key] != '':
                 final_querystring.pop(key)
 
         post_dict = request.POST.copy()
