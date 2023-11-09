@@ -252,29 +252,27 @@
                 <div class="row">
                     <div class="col-12 mb-3">
 
-                        <span class="badge badge-pill badge-info mr-1 dismiss-filter" data-filter="filter-a"
-                              style="font-size: 12px; padding: 10px;">Secondary</span>
+                        {% for key, value in query_strings.items %}
                         <span class="badge badge-pill badge-info mr-1"
-                              style="font-size: 12px; padding: 10px;">Secondary</span>
-                        <span class="badge badge-pill badge-info mr-1"
-                              style="font-size: 12px; padding: 10px;">Secondary</span>
+                              style="font-size: 12px; padding: 10px;">{{ key }}: {{ value }}</span>
+                        {% endfor %}
 
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-3">
                         <p class="text-sm"># Villages:
-                            <b class="d-block">###.###.###</b>
+                            <b class="d-block total-villages-display">0</b>
                         </p>
                     </div>
                     <div class="col-3">
                         <p class="text-sm"># Sub-projects:
-                            <b class="d-block">###.###.###</b>
+                            <b class="d-block total-subprojects-display">0</b>
                         </p>
                     </div>
                     <div class="col-3">
                         <p class="text-sm">Total funding selected:
-                            <b class="d-block">Tony Chicken</b>
+                            <b class="d-block total-funding-display">0</b>
                         </p>
                     </div>
                 </div>
@@ -296,7 +294,9 @@
                     <tbody>
                     {% for investment in object_list %}
                     <tr>
-                        <td><input class="form-check-input" id="{{ investment.id }}" type="checkbox"></td>
+                        <td class="d-flex align-items-center justify-content-center">
+                            <input class="form-check-input project-table-check align-self-center p-2" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox">
+                        </td>
                         <td>{{ investment.title }}</td>
                         <td>{{ investment.administrative_level.type }}</td>
                         <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
@@ -334,9 +334,27 @@
 
 {% block javascript %}
 {{ block.super }}
+<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
         var table = $(".datatable").DataTable();
+
+        $('.project-table-check').on('change', function() {
+            let selected = $('.project-table-check:checked');
+            let villages = [];
+            let funding = 0;
+            for(i=0; i<selected.length; i++){
+                let subproject_data = table.row( $(selected[i]).parents('tr') ).data();
+                funding = funding + subproject_data[3]["@data-order"]
+
+                if (!villages.includes(subproject_data[4])) {
+                    villages.push(subproject_data[4])
+                }
+            }
+            $('.total-funding-display').html(numeral(funding).format('0,0'));
+            $('.total-villages-display').html(numeral(villages.length).format('0,0'));
+            $('.total-subprojects-display').html(numeral(selected.length).format('0,0'));
+        });
 
         $('.column-switch').on('change', function (e) {
 
