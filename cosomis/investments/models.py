@@ -24,7 +24,7 @@ class Investment(BaseModel):  # Investment module
     ranking = models.PositiveIntegerField(null=True, blank=True)
     title = models.CharField(max_length=255)
     responsible_structure = models.CharField(max_length=255, null=True, blank=True)
-    administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE)
+    administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE, related_name='investments')
     sector = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='investments')
     estimated_cost = models.PositiveBigIntegerField()
     start_date = models.DateField(null=True)
