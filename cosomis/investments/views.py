@@ -138,4 +138,6 @@ class IndexListView(PageMixin, generic.edit.BaseFormView, generic.ListView):
                 resp['Sectors'] = ', '.join(Category.objects.filter(
                     id__in=value,
                 ).values_list('name', flat=True))
+            if key == 'subpopulation-filter':
+                resp['Subpopulations'] = ' '.join(value.split('_'))
         return resp
