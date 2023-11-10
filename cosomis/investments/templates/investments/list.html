@@ -343,7 +343,20 @@
 <script type="text/javascript">
     $( document ).ready(function() {
         var table = $(".datatable").DataTable();
-        sum_subprojects($('.project-table-check'));
+
+        let villages = [];
+        let funding = 0;
+        let rows = table.rows().data();
+        for(i=0; i<rows.length; i++){
+            funding = parseInt(funding) + parseInt(rows[i][3]["@data-order"])
+
+            if (!villages.includes(rows[i][4])) {
+                villages.push(rows[i][4])
+            }
+        }
+        $('.total-funding-display').html(numeral(funding).format('0,0'));
+        $('.total-villages-display').html(numeral(villages.length).format('0,0'));
+        $('.total-subprojects-display').html(numeral(rows.length).format('0,0'));
 
         $('.project-table-check').on('change', function() {
             sum_subprojects($('.project-table-check:checked'));
