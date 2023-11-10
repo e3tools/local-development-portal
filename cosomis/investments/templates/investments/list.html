@@ -58,9 +58,10 @@
                                                 <select class="form-control" name="subpopulation-filter"
                                                         style="width: 100%;">
                                                     <option value=''>Sub-population</option>
-                                                    {% for prefecture in prefectures %}
-                                                    <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
-                                                    {% endfor %}
+                                                    <option value="endorsed_by_youth">Endorsed by youth</option>
+                                                    <option value="endorsed_by_women">Endorsed by women</option>
+                                                    <option value="endorsed_by_agriculturist">Endorsed by agriculturist</option>
+                                                    <option value="endorsed_by_pastoralist">Endorsed by pastoralist</option>
                                                 </select>
                                             </div>
                                         </div>

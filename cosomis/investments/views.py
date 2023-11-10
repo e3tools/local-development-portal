@@ -103,6 +103,11 @@ class IndexListView(PageMixin, generic.edit.BaseFormView, generic.ListView):
                 sector__id=self.request.GET['sector-filter']
             )
 
+        if 'subpopulation-filter' in self.request.GET and self.request.GET['subpopulation-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                **{self.request.GET['subpopulation-filter']: True}
+            )
+
         return queryset
 
     def get_query_strings_context(self):
