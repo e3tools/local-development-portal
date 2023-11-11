@@ -39,10 +39,8 @@ from financial import function_allocation
 
 
 class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
-    """Class to present the detail page of one village"""
-
     model = AdministrativeLevel
-    template_name = 'village_detail.html'
+    template_name = 'village/village_detail.html'
     context_object_name = 'village'
     title = _('Village')
     active_level1 = 'administrative_levels'
@@ -52,13 +50,18 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
             'title': title
         },
     ]
-    
+
     def get_context_data(self, **kwargs):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
-        if context.get("object") and context.get("object").is_village() is True:
+        admin_level = context.get("object")
+        if admin_level and admin_level.is_village() is True:
+            images = Attachment.objects.filter(adm=admin_level.id, type=Attachment.PHOTO).all()
+            context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0,
+                                      'first_image': images[0] if len(images) > 0 else None}
+            investments = Investment.objects.filter(administrative_level=admin_level.id).all()
+            context['investments'] = investments
             return context
         raise Http404
-
 
 class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView, DetailView):
     """Class to present the detail page of one village"""
@@ -68,7 +71,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredMixin, BaseFormView,
     nsc_class = NoSQLClient
     no_sql_db_id = None
     no_sql_database_name = "purs_test"
-    template_name = 'village_detail.html'
+    template_name = 'village/village_detail.html'
     context_object_name = 'village'
     title = _('Village')
     active_level1 = 'administrative_levels'
@@ -916,7 +919,6 @@ class VillageAttachmentListView(AttachmentListView):
 
     def get_context_data(self, **kwargs):
         context = super(VillageAttachmentListView, self).get_context_data(**kwargs)
-        print(context['administrative_level'])
         if context['administrative_level'].is_village() is False:
             raise Http404
 
