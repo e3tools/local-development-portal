@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import RadioSelect, Select
 
+from investments.models import Attachment
 from .models import GeographicalUnit, CVD, AdministrativeLevel
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import gettext_lazy as _
@@ -99,9 +100,9 @@ class FinancialPartnerForm(forms.Form):
 
 class AttachmentFilterForm(forms.Form):
     TYPE_CHOICES = (
-        ("photo", "Photo"),
-        ("document", "Document"),
-        (None, "Both")
+        (Attachment.PHOTO, _('Photo')),
+        (Attachment.DOCUMENT, _('Document')),
+        (None, _("Both"))
     )
     type = forms.ChoiceField(choices=TYPE_CHOICES, widget=RadioSelect)
     phase = forms.ChoiceField(widget=Select, required=False)

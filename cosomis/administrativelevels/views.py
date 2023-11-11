@@ -863,20 +863,20 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         return context
 
     def __get_select_choices(self, attachments: List[Attachment]) -> None:
-        self.activity_choices = self.activity_choices + (list(
-            set(map(lambda attachment: (attachment.activity, attachment.activity),
-                    attachments
-                    ))))
+        # self.activity_choices = self.activity_choices + (list(
+        #      set(map(lambda attachment: (attachment.activity, attachment.activity),
+        #             attachments
+        #             ))))
 
-        self.task_choices = self.task_choices + (list(
-            set(map(lambda attachment: (attachment.task, attachment.task),
-                    attachments
-                    ))))
+        # self.task_choices = self.task_choices + (list(
+        #     set(map(lambda attachment: (attachment.task, attachment.task),
+        #             attachments
+        #             ))))
 
-        self.phase_choices = self.phase_choices + (list(
-            set(map(lambda attachment: (attachment.phase, attachment.phase),
-                    attachments
-                    ))))
+        # self.phase_choices = self.phase_choices + (list(
+        #      set(map(lambda attachment: (attachment.phase, attachment.phase),
+        #             attachments
+        #             ))))
 
         self.administrative_level_choices = self.administrative_level_choices + (list(
             set(map(lambda administrative_level: (administrative_level.name, administrative_level.name),
@@ -897,17 +897,17 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         if attachment_type is not None and attachment_type != '':
             query = query.filter(type=attachment_type)
 
-        task: str = query_params.get('task')
-        if task is not None and task != '':
-            query = query.filter(task=task)
+        # task: str = query_params.get('task')
+        # if task is not None and task != '':
+        #     query = query.filter(task=task)
 
-        phase: str = query_params.get('phase')
-        if phase is not None and phase != '':
-            query = query.filter(phase=phase)
+        # phase: str = query_params.get('phase')
+        # if phase is not None and phase != '':
+        #     query = query.filter(phase=phase)
 
-        activity: str = query_params.get('activity')
-        if activity is not None and activity != '':
-            query = query.filter(activity=activity)
+        # activity: str = query_params.get('activity')
+        # if activity is not None and activity != '':
+        #     query = query.filter(activity=activity)
 
         return list(query.all())
 

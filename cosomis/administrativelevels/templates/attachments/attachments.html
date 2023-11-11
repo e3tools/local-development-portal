@@ -182,7 +182,7 @@
                         {% else %}
                         <form class="form-attachment d-inline-flex">
                             {% for attachment in attachments %}
-                                {% if attachment.type == 'photo' %}
+                                {% if attachment.type == 'Photo' %}
                                     <div class="d-inline-block attachment-link" data-toggle="modal"
                                          data-target="#attachmentModal" data-count="{{ forloop.counter0 }}">
                                         <input class="checkbox" type="checkbox" name="{{ forloop.counter0 }}" value="{{ attachment.id }}" />
@@ -345,7 +345,7 @@
                             <div class="carousel-inner">
                                 {% for attachment in attachments %}
                                     <div class="carousel-item" #slideid{{ forloop.counter0 }}>
-                                        {% if attachment.type == 'photo' %}
+                                        {% if attachment.type == 'Photo' %}
                                             <a class="attachment-modal-link" target="_blank"
                                                href="{{ attachment.url|imgAWSS3Filter }}">
                                                 <img class="attachment-placeholder"
