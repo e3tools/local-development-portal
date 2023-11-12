@@ -194,7 +194,7 @@
                                     container.html(container_txt_html);
 
                                     $(".radio-button-search").click(function(event){
-                                       let url = `{% url "administrativelevels:detail" 0 %}`.replace('0', this.value);
+                                       let url = `{% url "administrativelevels:village_detail" 0 %}`.replace('0', this.value);
                                         url_village = url;
                                         document.getElementById("seeVillage").style.display = "block";
                                         //window.location.href = url;

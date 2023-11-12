@@ -1378,8 +1378,13 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CommuneDetailView, self).get_context_data(**kwargs)
-        if context.get("object") and context.get(
-                "object").is_commune() is True:
+        admin_level = context.get("object")
+        if admin_level and admin_level.is_commune() is True:
+            images = Attachment.objects.filter(adm=admin_level.id, type=Attachment.PHOTO).all()
+            context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0,
+                                      'first_image': images[0] if len(images) > 0 else None}
+            investments = Investment.objects.filter(administrative_level=admin_level.id).all()
+            context['investments'] = investments
             return context
         raise Http404
 
@@ -1408,8 +1413,13 @@ class CantonDetailView(PageMixin, LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CantonDetailView, self).get_context_data(**kwargs)
-        if context.get("object") and context.get(
-                "object").is_canton() is True:
+        admin_level = context.get("object")
+        if admin_level and admin_level.is_canton() is True:
+            images = Attachment.objects.filter(adm=admin_level.id, type=Attachment.PHOTO).all()
+            context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0,
+                                      'first_image': images[0] if len(images) > 0 else None}
+            investments = Investment.objects.filter(administrative_level=admin_level.id).all()
+            context['investments'] = investments
             return context
         raise Http404
 
@@ -1438,8 +1448,13 @@ class RegionDetailView(PageMixin, LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(RegionDetailView, self).get_context_data(**kwargs)
-        if context.get("object") and context.get(
-                "object").is_region() is True:
+        admin_level = context.get("object")
+        if admin_level and admin_level.is_region() is True:
+            images = Attachment.objects.filter(adm=admin_level.id, type=Attachment.PHOTO).all()
+            context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0,
+                                      'first_image': images[0] if len(images) > 0 else None}
+            investments = Investment.objects.filter(administrative_level=admin_level.id).all()
+            context['investments'] = investments
             return context
         raise Http404
 
@@ -1460,7 +1475,12 @@ class PrefectureDetailView(PageMixin, LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PrefectureDetailView, self).get_context_data(**kwargs)
-        if context.get("object") and context.get(
-                "object").is_prefecture() is True:
+        admin_level = context.get("object")
+        if admin_level and admin_level.is_prefecture() is True:
+            images = Attachment.objects.filter(adm=admin_level.id, type=Attachment.PHOTO).all()
+            context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0,
+                                      'first_image': images[0] if len(images) > 0 else None}
+            investments = Investment.objects.filter(administrative_level=admin_level.id).all()
+            context['investments'] = investments
             return context
         raise Http404
