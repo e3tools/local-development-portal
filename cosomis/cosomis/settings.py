@@ -114,9 +114,17 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 
 EXTERNAL_DATABASE_NAME = 'cddp'
 
+# DATABASES = {
+#     'default': env.db(),
+#     EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
+# }
+
 DATABASES = {
-    'default': env.db(),
-    EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'database.db',  # This is where you put the name of the db file.
+        # If one doesn't exist, it will be created at migration time.
+    }
 }
 
 

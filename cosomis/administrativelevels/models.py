@@ -29,11 +29,11 @@ class AdministrativeLevel(BaseModel):
         (BLOCKED, _('Blocked'))
     )
 
-    VILLAGE = 'village'
-    CANTON = 'canton'
-    COMMUNE = 'commune'
-    REGION = 'region'
-    PREFECTURE = 'prefecture'
+    VILLAGE = 'Village'
+    CANTON = 'Canton'
+    COMMUNE = 'Commune'
+    REGION = 'Region'
+    PREFECTURE = 'Prefecture'
     TYPE = (
         (VILLAGE, _('Village')),
         (CANTON, _('Canton')),
@@ -211,6 +211,12 @@ class Project(BaseModel):
 class Category(BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
+
+
+class Sector(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 def update_or_create_amd_couch(sender, instance, **kwargs):
