@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import include
 
-from administrativelevels import views, views_json
+from administrativelevels import views
 
 app_name = 'administrativelevels'
 
@@ -9,15 +9,13 @@ urlpatterns = [
     path('', views.AdministrativeLevelsListView.as_view(), name='list'), # Administrative levels list path
     path('search/', views.AdministrativeLevelSearchListView.as_view(), name='search'), # Administrative levels path to search
     path('create/', views.AdministrativeLevelCreateView.as_view(), name='create'), # Administrative level path to create
-    path('update/<int:pk>/', views.AdministrativeLevelUpdateView.as_view(), name='update'), # Administrative level path to update
+    # path('update/<int:pk>/', views.AdministrativeLevelUpdateView.as_view(), name='update'), # Administrative level path to update
+    path('village-detail/<int:pk>/', views.VillageDetailView.as_view(), name='village_detail'), #The path of the detail of village
     path('detail/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='detail'), #The path of the detail
-    path('detail/<int:adm_id>/attachments/<path:url>/download/', views.attachment_download,
-         name='attachment_download'),
+    path('detail/<int:adm_id>/attachments/', views.VillageAttachmentListView.as_view(), name='village_attachments'), #The path of the village attachments list
+    path('detail/<int:adm_id>/attachments/<path:url>/download/', views.attachment_download, name='village_attachment_download'),
     path('detail/<int:adm_id>/attachments/download-zip/', views.attachment_download_zip,
-         name='attachment_download_zip'),
-
-    path('village/<int:pk>/', views.VillageDetailView.as_view(), name='village_detail'),
-    path('village/<int:adm_id>/attachments/', views.VillageAttachmentListView.as_view(), name='village_attachments'),
+         name='village_attachment_download_zip'),
 
     path('commune/<int:pk>/', views.CommuneDetailView.as_view(), name='commune_detail'),
     path('commune/<int:adm_id>/attachments/', views.CommuneAttachmentListView.as_view(), name='commune_attachments'),
@@ -30,33 +28,10 @@ urlpatterns = [
     # The path of the detail of village
     path('attachments/', views.AttachmentListView.as_view(), name='attachments'), # The path of the attachments list
 
-    # The path to delete obstacle
-
-    path('upload/', views.UploadCSVView.as_view(), name='upload'), #The path to download CSV/Excel file from db
-    path('download/', views.DownloadCSVView.as_view(), name='download'), #The path to upload CSV file and save in db
-    path('download-cvd/', views.DownloadCVDCSVView.as_view(), name='download_cvd'), #The path to upload CVD on CSV file and save in db
-    path('village/<int:administrative_level_id>/obstacles', views.ObstaclesListView.as_view(), name='priorities_obstacles'),
-    path('village/obstacles/<int:obstacle_id>/delete', views.obstacle_delete, name='obstacle_delete'), #The path to delete obstacle
-    path('village/<int:administrative_level_id>/goals', views.GoalsListView.as_view(), name='priorities_goals'),
-    path('village/goals/<int:goal_id>/delete', views.goal_delete, name='goal_delete'), #The path to delete goal
-    path('village/<int:administrative_level_id>/priorities', views.PrioritiesListView.as_view(), name='priorities_priorities'),
-    path('village/priorities/<int:priority_id>/delete', views.priority_delete, name='priority_delete'), #The path to delete priority
-    path('geographical-units', views.GeographicalUnitListView.as_view(), name='geographical_units_list'), # Geographical units list path    
-    path('geographical-unit/create', views.GeographicalUnitCreateView.as_view(), name='geographical_unit_create'), #The path to create Geographical unit
-    path('geographical-unit-detail/<int:pk>/', views.GeographicalUnitDetailView.as_view(), name='geographical_unit_detail'), #The path of the detail of Geographical unit
-    path('geographical-unit-update/<int:pk>/', views.GeographicalUnitUpdateView.as_view(), name='geographical_unit_update'), #The path of to update Geographical unit
-
-    path('cvds', views.CVDListView.as_view(), name='cvds_list'), # CVD list path    
-    path('cvd/create', views.CVDCreateView.as_view(), name='cvd_create'), #The path to create cvd
-    path('cvd-detail/<int:pk>/', views.CVDDetailView.as_view(), name='cvd_detail'), #The path of the detail of cvd
-    path('cvd-update/<int:pk>/', views.CVDUpdateView.as_view(), name='cvd_update'), #The path to update cvd
-
     path('utils/', include('administrativelevels.utils.urls')),
-    path('components/', include('administrativelevels.urls_component')),
-
-
-    path('get-administrative-level-by-type-view/', views_json.GetAdministrativeLevelByTypeView.as_view(), name='get_administrative_level_by_type'), #Get AdministrativeLevel by type
 
 ]
+
+
 
 

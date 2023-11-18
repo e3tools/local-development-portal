@@ -52,16 +52,8 @@ INSTALLED_APPS = [
 
 CREATED_APPS = [
     'usermanager',
-    'subprojects',
     'administrativelevels',
-    'unicorn',
-    'kobotoolbox',
     'authentication',
-    'assignments',
-    'dashboard',
-    'financial',
-    'process_manager',
-    'custom_file',
     'investments',
 ]
 
@@ -154,7 +146,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/'
 
-LOGIN_REDIRECT_URL = 'dashboard:dashboard'
+LOGIN_REDIRECT_URL = 'administrativelevels:search'
 
 LOGOUT_REDIRECT_URL = LOGIN_URL
 # Mapbox

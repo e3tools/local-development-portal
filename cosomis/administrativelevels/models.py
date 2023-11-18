@@ -1,11 +1,8 @@
 from django.db import models
-from cdd_client import CddClient
 from django.utils.translation import gettext_lazy as _
-
-from financial.models.bank import Bank
 from cosomis.models_base import BaseModel
 
-    
+
 class AdministrativeLevel(BaseModel):
     LIME_GREEN = 'lime_green'
     DARK_GREEN = 'dark_green'
@@ -43,7 +40,6 @@ class AdministrativeLevel(BaseModel):
     )
     parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"))
     geographical_unit = models.ForeignKey('GeographicalUnit', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
-    cvd = models.ForeignKey('CVD', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("CVD"))
     frontalier = models.BooleanField(default=True, verbose_name=_("Frontalier"))
     rural = models.BooleanField(default=True, verbose_name=_("Rural"))
 
@@ -147,59 +143,6 @@ class GeographicalUnit(BaseModel):
     
     def __str__(self):
         return self.get_name()
-    
-
-class CVD(BaseModel):
-    name = models.CharField(max_length=255, verbose_name=_("Name"))
-    geographical_unit = models.ForeignKey('GeographicalUnit', on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
-    headquarters_village = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, related_name='headquarters_village_of_the_cvd', verbose_name=_("Headquarters village"))
-    attributed_number_in_canton = models.IntegerField(null=True, blank=True, verbose_name=_("Attributed number in canton"))
-    unique_code = models.CharField(max_length=100, verbose_name=_("Unique code"))
-    bank = models.ForeignKey(Bank, null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Bank"))
-    bank_code = models.CharField(max_length=10, verbose_name=_("Bank code"), null=True, blank=True)
-    guichet_code = models.CharField(max_length=10, verbose_name=_("Guichet code"), null=True, blank=True)
-    account_number = models.CharField(max_length=100, verbose_name=_("Account number"), null=True, blank=True)
-    rib = models.CharField(max_length=2, verbose_name=_("RIB"), null=True, blank=True)
-    president_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("President name of the CVD"))
-    president_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True, verbose_name=_("President phone of the CVD"))
-    treasurer_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Treasurer name of the CVD"))
-    treasurer_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True, verbose_name=_("Treasurer phone of the CVD"))
-    secretary_name_of_the_cvd = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Secretary name of the CVD"))
-    secretary_phone_of_the_cvd = models.CharField(max_length=15, null=True, blank=True, verbose_name=_("Secretary phone of the CVD"))
-    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
-
-    def get_name(self):
-        administrativelevels = self.get_villages()
-        if self.name:
-            return self.name
-        
-        name = ""
-        count = 1
-        length = len(administrativelevels)
-        for adl in administrativelevels:
-            name += adl.name
-            if length != count:
-                name += "/"
-            count += 1
-        return name if name else self.unique_code
-    
-    def get_villages(self):
-        return self.administrativelevel_set.get_queryset()
-    
-    def get_canton(self):
-        if self.headquarters_village:
-            return self.headquarters_village.parent
-            
-        for obj in self.get_villages():
-            return obj.parent
-        return None
-    
-    def get_list_subprojects(self):
-        """Method to get the list of the all subprojects"""
-        return self.subproject_set.get_queryset()
-    
-    def __str__(self):
-        return self.get_name()
 
 
 class Project(BaseModel):
@@ -211,22 +154,6 @@ class Project(BaseModel):
 class Category(BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
-
-
-def update_or_create_amd_couch(sender, instance, **kwargs):
-    print("test", instance.id, kwargs['created'])
-    client = CddClient()
-    if kwargs['created']:
-        couch_object_id = client.create_administrative_level(instance)
-        to_update = AdministrativeLevel.objects.filter(id=instance.id)
-        to_update.update(no_sql_db_id=couch_object_id)
-    else:
-        client.update_administrative_level(instance)
-
-# def delete_amd_couch(sender, instance, **kwargs):
-#     client = CddClient()
-#     client.delete_administrative_level(instance)
-
 
 
 # post_save.connect(update_or_create_amd_couch, sender=AdministrativeLevel)
