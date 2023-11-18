@@ -26,11 +26,11 @@ class AdministrativeLevel(BaseModel):
         (BLOCKED, _('Blocked'))
     )
 
-    VILLAGE = 'village'
-    CANTON = 'canton'
-    COMMUNE = 'commune'
-    REGION = 'region'
-    PREFECTURE = 'prefecture'
+    VILLAGE = 'Village'
+    CANTON = 'Canton'
+    COMMUNE = 'Commune'
+    REGION = 'Region'
+    PREFECTURE = 'Prefecture'
     TYPE = (
         (VILLAGE, _('Village')),
         (CANTON, _('Canton')),
@@ -154,6 +154,28 @@ class Project(BaseModel):
 class Category(BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
+
+
+class Sector(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+
+def update_or_create_amd_couch(sender, instance, **kwargs):
+    print("test", instance.id, kwargs['created'])
+    client = CddClient()
+    if kwargs['created']:
+        couch_object_id = client.create_administrative_level(instance)
+        to_update = AdministrativeLevel.objects.filter(id=instance.id)
+        to_update.update(no_sql_db_id=couch_object_id)
+    else:
+        client.update_administrative_level(instance)
+
+# def delete_amd_couch(sender, instance, **kwargs):
+#     client = CddClient()
+#     client.delete_administrative_level(instance)
+
 
 
 # post_save.connect(update_or_create_amd_couch, sender=AdministrativeLevel)
