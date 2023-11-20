@@ -37,17 +37,17 @@
                 <td>{{ investment.ranking }}</td>
                 <td class="border-sides--light">{{ investment.title }}</td>
                 <td class="border-sides--light">
-                    {% if investment.endorsed_by_youth is not None %}
-                        {{ investment.votes_young }}{% endif %}</td>
+                    {% if investment.endorsed_by_youth %}
+                        <span>&#10003;</span>{% endif %}</td>
                 <td class="border-sides--light">
-                    {% if investment.endorsed_by_women is not None %}
-                        {{ investment.votes_woman }}{% endif %}</td>
+                    {% if investment.endorsed_by_women %}
+                        <span>&#10003;</span>{% endif %}</td>
                 <td class="border-sides--light">
-                    {% if investment.endorsed_by_agriculturist is not None %}
-                        {{ investment.votes_me }}{% endif %}</td>
+                    {% if investment.endorsed_by_agriculturist %}
+                        <span>&#10003;</span>{% endif %}</td>
                 <td class="border-sides--light">
-                    {% if investment.endorsed_by_pastoralist is not None %}
-                        {{ investment.votes_ae }}{% endif %}</td>
+                    {% if investment.endorsed_by_pastoralist %}
+                        <span>&#10003;</span>{% endif %}</td>
                 <td class="border-sides--light">{{ investment.beneficiaries }}</td>
                 <td class="border-sides--light">{{ investment.estimated_cost|intcomma }}</td>
                 <td class="border-sides--light">{{ investment.responsible_structure }}</td>

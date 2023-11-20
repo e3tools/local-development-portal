@@ -48,6 +48,7 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
         if context.get("object") and context.get("object").is_village() is True:
+            context['investments'] = Investment.objects.filter(administrative_level=self.object)
             return context
         raise Http404
 
