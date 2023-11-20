@@ -304,10 +304,13 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
-        administrative_level = AdministrativeLevel.objects.filter(id=context.get("adm_id"))
+        if context.get("adm_id"):
+            administrative_level = AdministrativeLevel.objects.filter(id=context.get("adm_id"))
+        else:
+            administrative_level = AdministrativeLevel.objects.all()
 
-        if len(administrative_level) == 0:
-            raise Http404
+        # if len(administrative_level) == 0:
+        #     raise Http404
 
         context['administrative_level'] = administrative_level[0]
         self.activity_choices: List[Tuple] = [(None, '---')]

@@ -91,19 +91,19 @@ class AdministrativeLevel(BaseModel):
         return None
 
     def is_village(self):
-        return self.type.lower() == self.VILLAGE
+        return self.type.lower() == self.VILLAGE.lower()
 
     def is_canton(self):
-        return self.type.lower() == self.CANTON
+        return self.type.lower() == self.CANTON.lower()
 
     def is_commune(self):
-        return self.type.lower() == self.COMMUNE
+        return self.type.lower() == self.COMMUNE.lower()
 
     def is_region(self):
-        return self.type.lower() == self.REGION
+        return self.type.lower() == self.REGION.lower()
 
     def is_prefecture(self):
-        return self.type.lower() == self.PREFECTURE
+        return self.type.lower() == self.PREFECTURE.lower()
 
     @property
     def children(self):

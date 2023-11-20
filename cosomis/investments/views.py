@@ -65,7 +65,6 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
 
     def get_context_data(self, **kwargs):
         adm_queryset = AdministrativeLevel.objects.all()
-        print(adm_queryset)
         kwargs['regions'] = adm_queryset.filter(type=AdministrativeLevel.REGION)
         kwargs['prefectures'] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
         kwargs['communes'] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
@@ -107,14 +106,21 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
     def get_queryset(self):
         queryset = super().get_queryset()
         if 'region-filter' in self.request.GET and self.request.GET['region-filter'] not in ['', None]:
+            print('here', self.request.GET['region-filter'])
             queryset = queryset.filter(
-                administrative_level__parent__parent__parent__id=self.request.GET['region-filter'],
-                administrative_level__parent__parent__parent__type=AdministrativeLevel.REGION
+                administrative_level__parent__parent__parent__parent__id=self.request.GET['region-filter'],
+                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION
             )
+            print(queryset)
         if 'prefecture-filter' in self.request.GET and self.request.GET['prefecture-filter'] not in ['', None]:
             queryset = queryset.filter(
-                administrative_level__parent__parent__id=self.request.GET['prefecture-filter'],
-                administrative_level__parent__parent__type=AdministrativeLevel.PREFECTURE
+                administrative_level__parent__parent__parent__id=self.request.GET['prefecture-filter'],
+                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE
+            )
+        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__id=self.request.GET['canton-filter'],
+                administrative_level__parent__parent__type=AdministrativeLevel.CANTON
             )
         if 'commune-filter' in self.request.GET and self.request.GET['commune-filter'] not in ['', None]:
             queryset = queryset.filter(
