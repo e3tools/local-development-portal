@@ -151,17 +151,6 @@ class Project(BaseModel):
     implementation_agency = models.CharField(max_length=255)
 
 
-class Category(BaseModel):
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255, blank=True, null=True)
-
-
-class Sector(BaseModel):
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255, blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-
 def update_or_create_amd_couch(sender, instance, **kwargs):
     print("test", instance.id, kwargs['created'])
     client = CddClient()

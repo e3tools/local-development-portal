@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.mixins import LoginRequiredMixin
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
-from administrativelevels.models import AdministrativeLevel, Category
-from .models import Investment, Package
+from administrativelevels.models import AdministrativeLevel
+from .models import Investment, Package, Category
 from .forms import InvestmentsForm
 
 
@@ -65,6 +65,7 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
 
     def get_context_data(self, **kwargs):
         adm_queryset = AdministrativeLevel.objects.all()
+        print(adm_queryset)
         kwargs['regions'] = adm_queryset.filter(type=AdministrativeLevel.REGION)
         kwargs['prefectures'] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
         kwargs['communes'] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)

@@ -241,12 +241,14 @@
                     <div class="col-12 mb-3">
 
                         {% for key, value in query_strings.items %}
-                        <span class="badge badge-pill badge-info mr-1"
-                              style="font-size: 12px; padding: 10px;">{{ key }}: {{ value }}
-                            <button type="button" class="close align-middle" aria-label="Close" style="font-size: 1rem; margin-left: 4px;">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </span>
+<span class="badge badge-pill badge-info mr-1" style="font-size: 12px; line-height: 20px; display: inline-flex; align-items: center;">
+    <span style="padding: 0 10px;">{{ key }}: {{ value }}</span>
+    <button type="button" class="close" aria-label="Close" style="line-height: 20px; padding: 0; margin-left: 5px;">
+        <span aria-hidden="true" style="font-size: 20px;">&times;</span>
+    </button>
+</span>
+
+
                         {% endfor %}
 
                     </div>
