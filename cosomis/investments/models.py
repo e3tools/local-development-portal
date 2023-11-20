@@ -1,8 +1,35 @@
 from django.db import models
+from django.contrib.auth.models import User
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
 
-from administrativelevels.models import AdministrativeLevel, Category, Project
+from administrativelevels.models import AdministrativeLevel, Project
+
+
+class PackageQuerySet(models.QuerySet):
+    def get_active_cart(self, user):
+        """Get active invoice for user"""
+        qs = self.filter(user=user, status=Package.PENDING_APPROVAL)
+        package = qs.last()
+        if qs.count() > 1:
+            qs = qs.exclude(id=package.id)
+            for obj in qs:
+                obj.status = Package.REJECTED
+                obj.save()
+        elif qs.count() < 1:
+            return self.create(user=user, status=Package.PENDING_APPROVAL)
+        return package
+
+
+class Category(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+
+
+class Sector(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Investment(BaseModel):  # Investment module
@@ -25,7 +52,7 @@ class Investment(BaseModel):  # Investment module
     title = models.CharField(max_length=255)
     responsible_structure = models.CharField(max_length=255, null=True, blank=True)
     administrative_level = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE, related_name='investments')
-    sector = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='investments')
+    sector = models.ForeignKey(Sector, on_delete=models.CASCADE, related_name='investments')
     estimated_cost = models.PositiveBigIntegerField()
     start_date = models.DateField(null=True)
     duration = models.PositiveIntegerField(help_text=_('In days'))
@@ -54,7 +81,10 @@ class Package(BaseModel):  # investments module (orden de compra(kart de invesme
         (UNDER_EXECUTION, _('Under Execution'))
     )
 
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='packages')
+    objects = PackageQuerySet.as_manager()
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='packages', null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='packages')
     source = models.CharField(
         max_length=255,
         help_text=_('Source of the funding, e.g., a particular organization or grant'),

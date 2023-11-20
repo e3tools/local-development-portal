@@ -12,7 +12,7 @@
                     <h5 class="mb-0">
                         <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link"
                                 data-target="#collapseOne" data-toggle="collapse">
-                            Collapsible Group Item #1
+                            Choose filters
                         </button>
                     </h5>
                 </div>
@@ -27,6 +27,9 @@
                                             <div class="form-group">
                                                 <select class="form-control" name="sector-filter" style="width: 100%;">
                                                     <option selected value="">Sector</option>
+                                                    {% for sector in sectors %}
+                                                    <option value="{{ sector.id }}">{{ sector.name }}</option>
+                                                    {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
@@ -34,33 +37,18 @@
                                             <div class="form-group">
                                                 <select class="form-control" name="type-filter" style="width: 100%;">
                                                     <option selected value="">Type</option>
-                                                    {% for village in villages %}
-                                                    <option value="{{ village.id }}">{{ village.name }}</option>
-                                                    {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="financial-situation-filter"
-                                                        style="width: 100%;">
-                                                    <option selected value="">Financial Situation</option>
-                                                    {% for commune in communes %}
-                                                    <option value="{{ commune.id }}">{{ commune.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="subpopulation-filter"
                                                         style="width: 100%;">
                                                     <option value=''>Sub-population</option>
-                                                    {% for prefecture in prefectures %}
-                                                    <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
-                                                    {% endfor %}
+                                                    <option value="endorsed_by_youth">Endorsed by youth</option>
+                                                    <option value="endorsed_by_women">Endorsed by women</option>
+                                                    <option value="endorsed_by_agriculturist">Endorsed by agriculturist</option>
+                                                    <option value="endorsed_by_pastoralist">Endorsed by pastoralist</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -69,8 +57,8 @@
                                 <div class="col-3">
                                     <div class="row">
                                         <div class="col-12">
-                                            <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-primary submit-reset" value="{% translate 'Reset' %}"/>
+                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
+                                            <input type="button" class="btn btn-success submit-reset" value="{% translate 'Reset' %}"/>
                                             <input type="hidden" id="reset-hidden-id" name="reset-hidden" value="">
                                         </div>
                                     </div>
@@ -228,8 +216,8 @@
                                 <div class="col-3">
                                     <div class="row">
                                         <div class="col-12">
-                                            <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-primary adm-submit-reset" value="{% translate 'Reset' %}"/>
+                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
+                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Reset' %}"/>
                                             <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
                                         </div>
                                     </div>
@@ -253,10 +241,10 @@
                     <div class="col-12 mb-3">
 
                         {% for key, value in query_strings.items %}
-                        <span class="badge badge-pill badge-info mr-1"
-                              style="font-size: 12px; padding: 10px;">{{ key }}: {{ value }}</span>
+                            <span class="filter-badge" style="font-size: 12px; line-height: 20px; display: inline-flex; align-items: center;">
+                                <span class="filter-badge-label">{{ key }}: {{ value }}</span>
+                            </span>
                         {% endfor %}
-
                     </div>
                 </div>
                 <div class="row">
@@ -275,56 +263,63 @@
                             <b class="d-block total-funding-display">0</b>
                         </p>
                     </div>
+                    <div class="col-3">
+                        <input type="submit" class="btn btn-success btn-sm pull-right" value="Add to Cart" id="investments-submit" name="investments-submit">
+                    </div>
                 </div>
             </div>
             <div class="card-body">
-                <table class="table datatable display" style="100%">
-                    <thead>
-                    <th></th>
-                    <th>{% translate 'Name' %}</th>
-                    <th>{% translate 'Subproject type' %}</th>
-                    <th>{% translate 'Estimate cost' %}</th>
-                    <th>{% translate 'Village' %}</th>
-                    <th>{% translate 'Community' %}</th>
-                    <th>{% translate 'Prefecture' %}</th>
-                    <th>{% translate 'Region' %}</th>
-                    <th>{% translate 'Village priority' %}</th>
-                    <th>{% translate 'Population priority' %}</th>
-                    </thead>
-                    <tbody>
-                    {% for investment in object_list %}
-                    <tr>
-                        <td class="d-flex align-items-center justify-content-center">
-                            <input class="form-check-input project-table-check align-self-center p-2" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox">
-                        </td>
-                        <td>{{ investment.title }}</td>
-                        <td>{{ investment.administrative_level.type }}</td>
-                        <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
-                            {{ investment.estimated_cost|intcomma }}
-                        </td>
-                        <td>{{ investment.administrative_level.name }}</td>
-                        <td>{{ investment.administrative_level.parent.name }}</td>
-                        <td>{{ investment.administrative_level.parent.parent.name }}</td>
-                        <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
-                        <td>{{ investment.administrative_level.rank }}</td>
-                        <td>
-                            {% if investment.endorsed_by_youth %}
-                            J,
-                            {% endif %}
-                            {% if investment.endorsed_by_women %}
-                            F,
-                            {% endif %}
-                            {% if investment.endorsed_by_agriculturist %}
-                            AG,
-                            {% endif %}
-                            {% if investment.endorsed_by_pastoralist %}
-                            PA
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <form action="" method="POST" id="investment-form" name="investments-form">
+                    {% csrf_token %}
+                    <table class="table datatable display" style="100%">
+                        <thead>
+                        <th><input class="" id="checkbox-select-all" type="checkbox" checked></th>
+                        <th>{% translate 'Name' %}</th>
+                        <th>{% translate 'Subproject type' %}</th>
+                        <th>{% translate 'Estimate cost' %}</th>
+                        <th>{% translate 'Village' %}</th>
+                        <th>{% translate 'Community' %}</th>
+                        <th>{% translate 'Prefecture' %}</th>
+                        <th>{% translate 'Region' %}</th>
+                        <th>{% translate 'Village priority' %}</th>
+                        <th>{% translate 'Population priority' %}</th>
+                        </thead>
+                        <tbody>
+                        {% for investment in object_list %}
+                        <tr>
+                            <td>
+                                <input class="project-table-check" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox" checked>
+                            </td>
+                            <td>{{ investment.title }}</td>
+                            <td>{{ investment.administrative_level.type }}</td>
+                            <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
+                                {{ investment.estimated_cost|intcomma }}
+                            </td>
+                            <td>{{ investment.administrative_level.name }}</td>
+                            <td>{{ investment.administrative_level.parent.name }}</td>
+                            <td>{{ investment.administrative_level.parent.parent.name }}</td>
+                            <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
+                            <td>{{ investment.administrative_level.rank }}</td>
+                            <td>
+                                {% if investment.endorsed_by_youth %}
+                                J,
+                                {% endif %}
+                                {% if investment.endorsed_by_women %}
+                                F,
+                                {% endif %}
+                                {% if investment.endorsed_by_agriculturist %}
+                                AG,
+                                {% endif %}
+                                {% if investment.endorsed_by_pastoralist %}
+                                PA
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <input type="hidden" id="investments-input-id" value="" name="investments">
+                </form>
             </div>
         </div>
     </div>
@@ -339,21 +334,18 @@
     $( document ).ready(function() {
         var table = $(".datatable").DataTable();
 
-        $('.project-table-check').on('change', function() {
-            let selected = $('.project-table-check:checked');
-            let villages = [];
-            let funding = 0;
-            for(i=0; i<selected.length; i++){
-                let subproject_data = table.row( $(selected[i]).parents('tr') ).data();
-                funding = funding + subproject_data[3]["@data-order"]
+        sum_subprojects();
 
-                if (!villages.includes(subproject_data[4])) {
-                    villages.push(subproject_data[4])
-                }
-            }
-            $('.total-funding-display').html(numeral(funding).format('0,0'));
-            $('.total-villages-display').html(numeral(villages.length).format('0,0'));
-            $('.total-subprojects-display').html(numeral(selected.length).format('0,0'));
+        table.on('click', 'tr', function(){
+            sum_subprojects();
+        });
+
+        $('#checkbox-select-all').on('change', function() {
+            var select_all_state = $(this).is(':checked')
+            table.rows().every( function ( rowIdx ) {
+                $( this.node() ).first().find('input').prop('checked', select_all_state);
+            } );
+            sum_subprojects();
         });
 
         $('.column-switch').on('change', function (e) {
@@ -363,10 +355,6 @@
 
             // Toggle the visibility
             column.visible(!column.visible());
-        });
-
-        $('.dismiss-filter').on('click', function (e) {
-            alert("eyy");
         });
 
         $('.submit-reset').on('click', function() {
@@ -379,6 +367,48 @@
             $('#adm-filter-form').submit();
         });
 
+        function sum_subprojects() {
+            let rows = table.rows()
+            let villages = [];
+            let funding = 0;
+            let subprojects = 0;
+
+             $('#investments-input-id').val('');
+
+            table.rows().every( function ( rowIdx ) {
+                let firstVal = $( this.node() ).first().find('input:checked').val();
+
+                if (firstVal != undefined) {
+                    let subproject_data = table.row( rowIdx ).data();
+                    subprojects += 1;
+
+                    $('#investments-input-id').val($('#investments-input-id').val() + ',' + firstVal);
+
+                    funding = parseInt(funding) + parseInt(subproject_data[3]["@data-order"])
+
+                    if (!villages.includes(subproject_data[4])) {
+                        villages.push(subproject_data[4])
+                    }
+                }
+            } );
+
+            $('.total-funding-display').html(numeral(funding).format('0,0'));
+            $('.total-villages-display').html(numeral(villages.length).format('0,0'));
+            $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
+
+        };
+    });
+
+        // When the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the 'Add to Cart' button by ID
+        var addToCartBtn = document.getElementById('investments-submit');
+
+        // When the 'Add to Cart' button is clicked
+        addToCartBtn.addEventListener('click', function () {
+            // Submit the form with the ID 'investment-form'
+            document.getElementById('investment-form').submit();
+        });
     });
 </script>
 {% endblock %}

@@ -52,16 +52,8 @@ INSTALLED_APPS = [
 
 CREATED_APPS = [
     'usermanager',
-    'subprojects',
     'administrativelevels',
-    'unicorn',
-    'kobotoolbox',
     'authentication',
-    'assignments',
-    'dashboard',
-    'financial',
-    'process_manager',
-    'custom_file',
     'investments',
 ]
 
@@ -114,9 +106,17 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 
 EXTERNAL_DATABASE_NAME = 'cddp'
 
+# DATABASES = {
+#     'default': env.db(),
+#     EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
+# }
+
 DATABASES = {
-    'default': env.db(),
-    EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'database.db',  # This is where you put the name of the db file.
+        # If one doesn't exist, it will be created at migration time.
+    }
 }
 
 
@@ -154,7 +154,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/'
 
-LOGIN_REDIRECT_URL = 'dashboard:dashboard'
+LOGIN_REDIRECT_URL = 'administrativelevels:search'
 
 LOGOUT_REDIRECT_URL = LOGIN_URL
 # Mapbox

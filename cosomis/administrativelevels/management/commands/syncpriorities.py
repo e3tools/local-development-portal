@@ -4,7 +4,8 @@ from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
 from investments.models import Investment
-from administrativelevels.models import Category, AdministrativeLevel
+from administrativelevels.models import AdministrativeLevel
+from investments.models import Category, Sector
 
 class Command(BaseCommand):
     help = 'Description of your command'
@@ -49,7 +50,7 @@ def update_or_create_priorities_document(priorities_document):
                     ranking=idx + 1,
                     title=priority["priorite"],
                     estimated_cost=priority.get("coutEstime"),
-                    sector=Category.objects.get(id=1),
+                    sector=Sector.objects.get(id=1),
                     delays_consumed=0,
                     duration=0,
                     financial_implementation_rate=0,

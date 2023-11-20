@@ -1,19 +1,29 @@
 from django.views import generic
 from django.shortcuts import redirect
 from django.urls import reverse
-from urllib.parse import urlencode
+from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.mixins import LoginRequiredMixin
+from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
-from administrativelevels.models import AdministrativeLevel, Category
-from .models import Investment
+from administrativelevels.models import AdministrativeLevel
+from .models import Investment, Package, Category
+from .forms import InvestmentsForm
 
 
-class IndexListView(PageMixin, generic.edit.BaseFormView, generic.ListView):
+class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, generic.ListView):
     template_name = 'investments/list.html'
     queryset = Investment.objects.filter(investment_status=Investment.PRIORITY)
+    form_class = InvestmentsForm
     title = _('Investments')
 
     def post(self, request, *args, **kwargs):
+        if 'investments' in request.POST:
+            form = self.get_form()
+            if form.is_valid():
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
         url = reverse('investments:home_investments')
         final_querystring = request.GET.copy()
 
@@ -34,6 +44,24 @@ class IndexListView(PageMixin, generic.edit.BaseFormView, generic.ListView):
         if final_querystring:
             url = '{}?{}'.format(url, urlencode(final_querystring))
         return redirect(url)
+
+    def get_form_kwargs(self):
+        kwargs = {
+            "initial": self.get_initial(),
+            "prefix": self.get_prefix(),
+            "context": {
+                "user": self.request.user
+            },
+        }
+
+        if self.request.method in ("POST", "PUT"):
+            kwargs.update(
+                {
+                    "data": self.request.POST,
+                    "files": self.request.FILES,
+                }
+            )
+        return kwargs
 
     def get_context_data(self, **kwargs):
         adm_queryset = AdministrativeLevel.objects.all()
@@ -78,14 +106,21 @@ class IndexListView(PageMixin, generic.edit.BaseFormView, generic.ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if 'region-filter' in self.request.GET and self.request.GET['region-filter'] not in ['', None]:
+            print('here', self.request.GET['region-filter'])
             queryset = queryset.filter(
-                administrative_level__parent__parent__parent__id=self.request.GET['region-filter'],
-                administrative_level__parent__parent__parent__type=AdministrativeLevel.REGION
+                administrative_level__parent__parent__parent__parent__id=self.request.GET['region-filter'],
+                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION
             )
+            print(queryset)
         if 'prefecture-filter' in self.request.GET and self.request.GET['prefecture-filter'] not in ['', None]:
             queryset = queryset.filter(
-                administrative_level__parent__parent__id=self.request.GET['prefecture-filter'],
-                administrative_level__parent__parent__type=AdministrativeLevel.PREFECTURE
+                administrative_level__parent__parent__parent__id=self.request.GET['prefecture-filter'],
+                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE
+            )
+        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__id=self.request.GET['canton-filter'],
+                administrative_level__parent__parent__type=AdministrativeLevel.CANTON
             )
         if 'commune-filter' in self.request.GET and self.request.GET['commune-filter'] not in ['', None]:
             queryset = queryset.filter(
@@ -101,6 +136,11 @@ class IndexListView(PageMixin, generic.edit.BaseFormView, generic.ListView):
         if 'sector-filter' in self.request.GET and self.request.GET['sector-filter'] not in ['', None]:
             queryset = queryset.filter(
                 sector__id=self.request.GET['sector-filter']
+            )
+
+        if 'subpopulation-filter' in self.request.GET and self.request.GET['subpopulation-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                **{self.request.GET['subpopulation-filter']: True}
             )
 
         return queryset
@@ -133,4 +173,37 @@ class IndexListView(PageMixin, generic.edit.BaseFormView, generic.ListView):
                 resp['Sectors'] = ', '.join(Category.objects.filter(
                     id__in=value,
                 ).values_list('name', flat=True))
+            if key == 'subpopulation-filter':
+                resp['Subpopulations'] = ' '.join(value.split('_'))
         return resp
+
+    def get_success_url(self):
+        return reverse('investments:cart')
+
+
+class CartView(LoginRequiredMixin, PageMixin, generic.DeleteView):
+    template_name = 'investments/cart.html'
+    queryset = Package.objects.filter(status=Package.PENDING_APPROVAL)
+    title = _('Your cart')
+
+    def get_object(self, queryset=None):
+        """
+        Return the object the view is displaying.
+
+        Require `self.queryset` and a `pk` or `slug` argument in the URLconf.
+        Subclasses can override this to return any object.
+        """
+        # Use a custom queryset if provided; this is required for subclasses
+        # like DateDetailView
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        try:
+            # Get the single item from the filtered queryset
+            obj = queryset.get_active_cart(self.request.user)
+        except queryset.model.DoesNotExist:
+            raise Http404(
+                _("No %(verbose_name)s found matching the query")
+                % {"verbose_name": queryset.model._meta.verbose_name}
+            )
+        return obj

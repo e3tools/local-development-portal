@@ -2864,15 +2864,14 @@ fieldset:disabled a.btn {
 
 .btn-success {
     color: #ffffff;
-    background-color: #28a745;
-    border-color: #28a745;
+    background-color: #599cf7;
+    border-color: #599cf7;
     box-shadow: none;
 }
 
 .btn-success:hover {
-    color: #ffffff;
-    background-color: #218838;
-    border-color: #1e7e34;
+    background-color: hsl(217, 89%, 58%);
+    border-color: hsl(217, 89%, 58%);
 }
 
 .btn-success:focus, .btn-success.focus {
@@ -21595,7 +21594,7 @@ html.maximized-card {
     padding-left: 0;
     height: auto;
     margin-top: -3px;
-    color: #26bb83;
+    color: #4b4b4b;
 }
 
 .select2-container--default[dir="rtl"] .select2-selection--single .select2-selection__rendered {
@@ -33021,4 +33020,30 @@ a.text-muted:hover {
 
 .gray-color {
     color: #707070;
+}
+
+
+/* Extra css */
+
+.filter-badge {
+  width: 206px;
+  height: 35px;
+  margin: 12px 20px 18px 0;
+  padding: 6px 18px 8px 22px;
+  border-radius: 14px;
+  background-color: #f6f9fb;
+}
+
+.filter-badge-label {
+  width: 166px;
+  height: 21px;
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: left;
+  color: #4b4b4b;
 }
