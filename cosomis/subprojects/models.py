@@ -33,8 +33,7 @@ class CustomQuerySet(models.QuerySet):
 
 # Create your models here.
 class Subproject(BaseModel):
-    sectoral_ministry = models.ForeignKey('Ministry', blank = True, null=True, on_delete=models.CASCADE,
-                                          verbose_name=_("Sectoral ministry"))
+
     component = models.ForeignKey('Component', null=True, on_delete=models.CASCADE,
                                   verbose_name=_("Component (Subcomponent)"))
     projects = models.ManyToManyField('Project', default=[], blank=True, verbose_name=_("Projects")) #In Which projects that we finance the subproject
@@ -445,13 +444,6 @@ class Component(BaseModel):
 
     def __str__(self):
         return self.name
-# -----------------------------sectoral ministry------------------------
-class Ministry(BaseModel):
-    name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
-    def __str__(self):
-        return self.name
-
 
 class SubprojectImage(BaseModel):
     subproject = models.ForeignKey(Subproject, null=True, blank=True, on_delete=models.CASCADE)

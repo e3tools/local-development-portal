@@ -53,31 +53,64 @@
                     </div>
                     <div class="col-9 justify-content-left">
                     <div class="row">
-                        <div class="col-12 adl-filter">
-                            {% for field in form %}
-                            <div class="form-group row">
-                                <label class="col-3 col-form-label">{{ field.label }}</label>
-                                <div class="col-6" >
-                                    {{ field }}
-                                </div>
-                                {% comment%}
-                                <div class="col-3" >
-                                    <span class="_mobile"><i class="fa fa-eye"></i></span>
-                                    <a id="profil">{{field.label}}</a>
-                                </div>
-                                {% endcomment %}
-                                {% if field.errors %}
-                                <div class="alert alert-danger alert-sm form_alert">{{ field.errors }}</div>
-                                {% endif %}
-                                <div class="clearfix"></div>
+                       <div class="col-12 adl-filter">
+                        <div class="form-group row">
+                            <label class="col-3 col-form-label">{{ form.region.label }}</label>
+                            <div class="col-6 admLevel">
+                                {{ form.region }}
                             </div>
-                            {% endfor %}
+                            <div class="col-3" id="showRegion">
+                            </div>
+                            {% if form.region.errors %}
+                                <div class="alert alert-danger alert-sm form_alert">{{ form.region.errors }}</div>
+                            {% endif %}
+                            <div class="clearfix"></div>
                         </div>
 
-                    </div>
+                        <div class="form-group row">
+                            <label class="col-3 col-form-label">{{ form.prefecture.label }}</label>
+                            <div class="col-6 admLevel">
+                                {{ form.prefecture }}
+                            </div>
+
+                            <div class="col-3" id="showPrefecture">
+                            </div>
+                            {% if form.prefecture.errors %}
+                                <div class="alert alert-danger alert-sm form_alert">{{ form.prefecture.errors }}</div>
+                            {% endif %}
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-3 col-form-label">{{ form.commune.label }}</label>
+                            <div class="col-6 admLevel">
+                                {{ form.commune }}
+                            </div>
+                            <div class="col-3" id="showCommune">
+                            </div>
+                            {% if form.commune.errors %}
+                                <div class="alert alert-danger alert-sm form_alert">{{ form.commune.errors }}</div>
+                            {% endif %}
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-3 col-form-label">{{ form.canton.label }}</label>
+                            <div class="col-6 admLevel">
+                                {{ form.canton }}
+                            </div>
+                            <div class="col-3" id="showCanton">
+                            </div>
+                            {% if form.canton.errors %}
+                                <div class="alert alert-danger alert-sm form_alert">{{ form.canton.errors }}</div>
+                            {% endif %}
+                            <div class="clearfix"></div>
+                        </div>
                     </div>
 
-                     <strong id="villages_title">{% translate 'Choice the village in canton' %} : </strong><br>
+                    </div>
+
+                     <strong id="villages_title">{% translate 'Choice the village in canton' %} <span id="selectedCantonName"></span> : </strong><br><br>
                     <div id="search_results">
 
                     </div>
@@ -123,8 +156,8 @@
         }
 
 
-        var administrative_level_ids = ["id_region", "id_prefecture", "id_commune", "id_canton"];
-        var administrative_level_ids_length = administrative_level_ids.length;
+        let administrative_level_ids = ["id_region", "id_prefecture", "id_commune", "id_canton"];
+        let administrative_level_ids_length = administrative_level_ids.length;
          document.getElementById("seeVillage").style.display = "none";
          document.getElementById("villages_title").style.display = "none"
           // Parcourir les identifiants et griser les champs sauf id_region
@@ -137,6 +170,49 @@
           });
 
         $(document).ready(function () {
+
+                        let cantonSelect = $('#id_canton');
+                 // Sélectionnez l'élément <span> où vous afficherez le nom du canton sélectionné
+                        let selectedCantonName = $('#selectedCantonName');
+
+                        // Surveillez les changements dans le champ de sélection du canton
+                        cantonSelect.on('change', function() {
+                            // Récupérez le nom du canton sélectionné
+                            var selectedCanton = cantonSelect.find('option:selected').text();
+
+                            // Mettez à jour le contenu de l'élément <span> avec le nom du canton sélectionné
+                            selectedCantonName.text(selectedCanton);
+                        });
+
+                //************* Generic function for viewing administrativelevels profiles********************
+
+                function handleSelectChange(selectedElement, containerId) {
+                    selectedElement.on('change', function() {
+                        let selectedValue = $(this).val();
+                        var cantonSelect = $('#id_canton');
+                        if (selectedValue !== null) {
+                            let type = selectedElement.data('type');
+                            //console.log(`La sélection : ${selectedValue}`);
+                            //console.log(`Type sélectionné : ${type}`);
+                            let container = $(`#${containerId}`);
+                            container.html('');
+                            let url = `{% url "administrativelevels:detail" 0 %}?type=${type}`.replace('0', selectedValue);
+                            let link = $('<a>', {
+                                href: url,
+                                text: `Voir ${type}`,
+                                class: 'btn btn-primary',
+                            });
+                            container.append(link);
+                        }
+                    });
+                }
+
+                // Using the function to manage select elements
+
+                handleSelectChange($('#id_region'), 'showRegion');
+                handleSelectChange($('#id_prefecture'), 'showPrefecture');
+                handleSelectChange($('#id_commune'), 'showCommune');
+                handleSelectChange($('#id_canton'), 'showCanton');
 
                 $('.adl-filter select').on("change", function () {
                     let elt_id = $(this).attr('id');
@@ -176,7 +252,7 @@
                                     data.forEach(function (item, index) {
 
                                         container_txt_html += `<input type='radio' class='radio-button-search' name='options' value="${item.id}" id="${item.id}">`;
-                                        container_txt_html += `<label for="${item.id}">${item.name}</label> &nbsp; &nbsp; &nbsp; `;
+                                        container_txt_html += `<label for="${item.id}"> &nbsp; ${item.name}</label> &nbsp; &nbsp; &nbsp; `;
 
 
                                         if ( container_txt_html !== ""){

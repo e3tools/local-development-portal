@@ -13,6 +13,5 @@ admin.site.register([
     Financier,
     Project,
     Step,
-    Ministry
 
 ])

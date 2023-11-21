@@ -87,6 +87,13 @@ class VillageSearchForm(forms.Form):
     commune = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Commune"), required=False)
     canton = forms.ModelChoiceField(queryset=AdministrativeLevel.objects.filter(type="Canton"), required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(VillageSearchForm, self).__init__(*args, **kwargs)
+
+        # Set data-type attribute for each select field
+        for label, field in self.fields.items():
+            field.widget.attrs['data-type'] = label
+            # field.widget.attrs['data-user-selected'] = 'false'
 
     
 
