@@ -12,7 +12,7 @@
                     <h5 class="mb-0">
                         <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link"
                                 data-target="#collapseOne" data-toggle="collapse">
-                            Choose filters
+                            {% translate 'Choose filters' %}
                         </button>
                     </h5>
                 </div>
@@ -26,7 +26,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="sector-filter" style="width: 100%;">
-                                                    <option selected value="">Sector</option>
+                                                    <option selected value="">{% translate 'Sector' %}</option>
                                                     {% for sector in sectors %}
                                                     <option value="{{ sector.id }}">{{ sector.name }}</option>
                                                     {% endfor %}
@@ -36,7 +36,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="type-filter" style="width: 100%;">
-                                                    <option selected value="">Type</option>
+                                                    <option selected value="">{% translate 'Type' %}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -44,11 +44,11 @@
                                             <div class="form-group">
                                                 <select class="form-control" name="subpopulation-filter"
                                                         style="width: 100%;">
-                                                    <option value=''>Sub-population</option>
-                                                    <option value="endorsed_by_youth">Endorsed by youth</option>
-                                                    <option value="endorsed_by_women">Endorsed by women</option>
-                                                    <option value="endorsed_by_agriculturist">Endorsed by agriculturist</option>
-                                                    <option value="endorsed_by_pastoralist">Endorsed by pastoralist</option>
+                                                    <option value=''>{% translate '' %}Sub-population</option>
+                                                    <option value="endorsed_by_youth">{% translate 'Endorsed by youth' %}</option>
+                                                    <option value="endorsed_by_women">{% translate 'Endorsed by women' %}</option>
+                                                    <option value="endorsed_by_agriculturist">{% translate 'Endorsed by agriculturist' %}</option>
+                                                    <option value="endorsed_by_pastoralist">{% translate 'Endorsed by pastoralist' %}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -162,7 +162,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="region-filter" style="width: 100%;">
-                                                    <option selected value="">Region</option>
+                                                    <option selected value="">{% translate 'Region' %}</option>
                                                     {% for region in regions %}
                                                     <option value="{{ region.id }}">{{ region.name }}</option>
                                                     {% endfor %}
@@ -172,7 +172,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="commune-filter" style="width: 100%;">
-                                                    <option selected value="">Commune</option>
+                                                    <option selected value="">{% translate 'Commune' %}</option>
                                                     {% for commune in communes %}
                                                     <option value="{{ commune.id }}">{{ commune.name }}</option>
                                                     {% endfor %}
@@ -182,7 +182,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="village-filter" style="width: 100%;">
-                                                    <option selected value="">Village</option>
+                                                    <option selected value="">{% translate 'Village' %}</option>
                                                     {% for village in villages %}
                                                     <option value="{{ village.id }}">{{ village.name }}</option>
                                                     {% endfor %}
@@ -194,7 +194,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="prefecture-filter" style="width: 100%;">
-                                                    <option selected value="">Prefecture</option>
+                                                    <option selected value="">{% translate 'Prefecture' %}</option>
                                                     {% for prefecture in prefectures %}
                                                     <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
                                                     {% endfor %}
@@ -204,7 +204,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="canton-filter" style="width: 100%;">
-                                                    <option selected value="">Canton</option>
+                                                    <option selected value="">{% translate 'Canton' %}</option>
                                                     {% for canton in cantons %}
                                                     <option value="{{ canton.id }}">{{ canton.name }}</option>
                                                     {% endfor %}
@@ -253,17 +253,17 @@
                 </div>
                 <div class="row">
                     <div class="col-3">
-                        <p class="text-sm"># Villages:
+                        <p class="text-sm"># {% translate 'Villages' %}:
                             <b class="d-block total-villages-display">0</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <p class="text-sm"># Sub-projects:
+                        <p class="text-sm"># {% translate 'Sub-projects' %}:
                             <b class="d-block total-subprojects-display">0</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <p class="text-sm">Total funding selected:
+                        <p class="text-sm">{% translate 'Total funding selected' %}:
                             <b class="d-block total-funding-display">0</b>
                         </p>
                     </div>
@@ -320,7 +320,7 @@
                         </tbody>
                     </table>
                     <input type="hidden" id="investments-input-id" value="" name="investments">
-                    <input type="submit" value="buy" name="investments-submit">
+                    <input type="submit" value="{% translate 'buy' %}" name="investments-submit">
                 </form>
             </div>
         </div>
@@ -334,7 +334,30 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        var table = $(".datatable").DataTable();
+        var table = $(".datatable").DataTable({
+            "language": {
+                "processing":     "Traitement en cours...",
+                "search":         "Rechercher&nbsp;:",
+                "lengthMenu":    "Afficher _MENU_ &eacute;l&eacute;ments",
+                "info":           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+                "infoEmpty":      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+                "infoFiltered":   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+                "infoPostFix":    "",
+                "loadingRecords": "Chargement en cours...",
+                "zeroRecords":    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+                "emptyTable":     "Aucune donnée disponible dans le tableau",
+                "paginate": {
+                    "first":      "Premier",
+                    "previous":   "Pr&eacute;c&eacute;dent",
+                    "next":       "Suivant",
+                    "last":       "Dernier"
+                },
+                "aria": {
+                    "sortAscending":  ": activer pour trier la colonne par ordre croissant",
+                    "sortDescending": ": activer pour trier la colonne par ordre décroissant"
+                }
+            }
+        });
 
         sum_subprojects();
 
