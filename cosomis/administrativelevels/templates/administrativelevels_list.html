@@ -8,29 +8,8 @@
                 <div class="card-header">
                     <div class="col-md-12">
                         <div class="" style="display: inline-block;">
-{#                                <button class="btn btn-primary justify-content center" style="display: inline-block;"#}
-{#                                    type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
-{#                                    {% translate 'Create Administrative level' %}#}
-{#                                </button>#}
 
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Village">
-                                    Village
-                                    </a>
-                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Canton">
-                                    Canton
-                                    </a>
-                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Commune">
-                                    Commune
-                                    </a>
-                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Prefecture">
-                                    Prefecture
-                                    </a>
-                                    <a class="dropdown-item" href="{% url 'administrativelevels:create' %}?type=Region">
-                                    Region
-                                    </a>
-                                </div>
                             </div>
 
 
@@ -194,7 +173,7 @@
                                     container.html(container_txt_html);
 
                                     $(".radio-button-search").click(function(event){
-                                       let url = `{% url "administrativelevels:detail" 0 %}`.replace('0', this.value);
+                                       let url = `{% url "administrativelevels:village_detail" 0 %}`.replace('0', this.value);
                                         url_village = url;
                                         document.getElementById("seeVillage").style.display = "block";
                                         //window.location.href = url;

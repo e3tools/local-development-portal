@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.mixins import LoginRequiredMixin
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
-from administrativelevels.models import AdministrativeLevel, Category
-from .models import Investment, Package
+from administrativelevels.models import AdministrativeLevel
+from .models import Investment, Package, Category
 from .forms import InvestmentsForm
 
 
@@ -107,13 +107,18 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
         queryset = super().get_queryset()
         if 'region-filter' in self.request.GET and self.request.GET['region-filter'] not in ['', None]:
             queryset = queryset.filter(
-                administrative_level__parent__parent__parent__id=self.request.GET['region-filter'],
-                administrative_level__parent__parent__parent__type=AdministrativeLevel.REGION
+                administrative_level__parent__parent__parent__parent__id=self.request.GET['region-filter'],
+                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION
             )
         if 'prefecture-filter' in self.request.GET and self.request.GET['prefecture-filter'] not in ['', None]:
             queryset = queryset.filter(
-                administrative_level__parent__parent__id=self.request.GET['prefecture-filter'],
-                administrative_level__parent__parent__type=AdministrativeLevel.PREFECTURE
+                administrative_level__parent__parent__parent__id=self.request.GET['prefecture-filter'],
+                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE
+            )
+        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__id=self.request.GET['canton-filter'],
+                administrative_level__parent__parent__type=AdministrativeLevel.CANTON
             )
         if 'commune-filter' in self.request.GET and self.request.GET['commune-filter'] not in ['', None]:
             queryset = queryset.filter(

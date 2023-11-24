@@ -38,18 +38,8 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('usermanager.urls')),
-    path('subprojects/', include('subprojects.urls')),
     path('administrative-levels/', include('administrativelevels.urls')),
-    path('unicorn/', include('django_unicorn.urls')),
-    path('kobotoolbox/', include('kobotoolbox.urls')),
-    path('dashboard/', include('dashboard.urls')),
-    path('financial/', include('financial.urls')),
     path('investments/', include('investments.urls')),
-    path('custom-file/', include('custom_file.urls')),
-
-    path('services/', include('administrativelevels.libraries.services.urls')),
-
-    path('delete-object/<int:object_id>/<str:type>/', views.DeleteObjectFormView.as_view(), name='object_deletion_form'),
 )
 
 

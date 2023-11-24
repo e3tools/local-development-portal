@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
 
-from administrativelevels.models import AdministrativeLevel, Sector, Category, Project
+from administrativelevels.models import AdministrativeLevel, Project
 
 
 class PackageQuerySet(models.QuerySet):
@@ -19,6 +19,17 @@ class PackageQuerySet(models.QuerySet):
         elif qs.count() < 1:
             return self.create(user=user, status=Package.PENDING_APPROVAL)
         return package
+
+
+class Category(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+
+
+class Sector(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Investment(BaseModel):  # Investment module
