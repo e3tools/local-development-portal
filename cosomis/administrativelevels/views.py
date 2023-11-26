@@ -2,23 +2,18 @@ import re
 import zipfile
 from io import BytesIO
 import requests
-import pandas as pd
-from collections import defaultdict
-from typing import Optional, Dict, List, Tuple, Any
+from typing import Optional, List, Tuple
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
-from django.contrib import messages
-from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView
+from django.views.generic import DetailView, TemplateView, ListView, CreateView
 from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usermanager.permissions import (
-    AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
+    AdminPermissionRequiredMixin
 )
-from .forms import AdministrativeLevelForm, VillageSearchForm
-from cosomis.constants import OBSTACLES_FOCUS_GROUP, GOALS_FOCUS_GROUP
+from .forms import AdministrativeLevelForm
 from cosomis.mixins import PageMixin
 from django.http import Http404, HttpResponse
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
 from django.db.models import Q, QuerySet
@@ -49,6 +44,13 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
         if context.get("object") and context.get("object").is_village() is True:
             context['investments'] = Investment.objects.filter(administrative_level=self.object)
+        admin_level = context.get("object")
+        if admin_level and admin_level.is_village() is True:
+            images = Attachment.objects.filter(adm=admin_level.id, type=Attachment.PHOTO).all()
+            context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0,
+                                      'first_image': images[0] if len(images) > 0 else None}
+            investments = Investment.objects.filter(administrative_level=admin_level.id).all()
+            context['investments'] = investments
             return context
         raise Http404
 
