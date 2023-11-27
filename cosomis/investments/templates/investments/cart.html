@@ -48,7 +48,30 @@
             </div>
             </div>
             <div class="card-footer">
-                test
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <h6>{% translate 'Sectors' %} ({{ sectors|length }}):</h6>
+
+                        {% for sector in sectors %}
+                        <span class="badge badge-pill badge-info mr-1"
+                              style="font-size: 12px; padding: 10px;">{{ sector.name }}
+                        </span>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <h6>{% translate 'Categories' %} ({{ categories|length }}):</h6>
+
+                        {% for category in categories %}
+                        <span class="badge badge-pill badge-info mr-1"
+                              style="font-size: 12px; padding: 10px;">{{ category.name }}
+                        </span>
+                        {% endfor %}
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -91,7 +114,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-12">
-                        <a class="btn btn-block btn-primary">{% translate 'buy' %}</a>
+                        <input type="submit" class="btn btn-success btn-block" value="{% translate 'Request Invest' %}" id="investments-submit" name="investments-submit">
                     </div>
                 </div>
             </div>
@@ -109,20 +132,11 @@
                 <div class="row">
                     <div class="col-12 mb-3">
 
-                        {% for key, value in query_strings.items %}
-                        <span class="badge badge-pill badge-info mr-1"
-                              style="font-size: 12px; padding: 10px;">{{ key }}: {{ value }}
-                            <button type="button" class="close align-middle" aria-label="Close" style="font-size: 1rem; margin-left: 4px;">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </span>
-                        {% endfor %}
-
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <form action="" method="POST" name="investments-form">
+                <form action="" method="POST" name="investments-form" id="investment-form">
                     {% csrf_token %}
                     <table class="table datatable display" style="100%">
                         <thead>
@@ -172,7 +186,6 @@
                         </tbody>
                     </table>
                     <input type="hidden" id="investments-input-id" value="" name="investments">
-                    <input type="submit" value="{% translate 'buy' %}" name="investments-submit">
                 </form>
             </div>
         </div>
@@ -268,6 +281,15 @@
             $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
 
         };
+
+        // Get the 'Check out' button by ID
+        var checkOut = document.getElementById('investments-submit');
+
+        // When the 'Add to Cart' button is clicked
+        checkOut.addEventListener('click', function () {
+            // Submit the form with the ID 'investment-form'
+            document.getElementById('investment-form').submit();
+        });
     });
 </script>
 {% endblock %}

@@ -179,10 +179,16 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
         return reverse('investments:cart')
 
 
-class CartView(LoginRequiredMixin, PageMixin, generic.DeleteView):
+class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
     template_name = 'investments/cart.html'
-    queryset = Package.objects.filter(status=Package.PENDING_APPROVAL)
+    queryset = Package.objects.filter(status=Package.PENDING_SUBMISSION)
     title = _('Your cart')
+
+    def post(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.status = Package.PENDING_APPROVAL
+        obj.save()
+        return redirect(reverse('investments:home_investments'))
 
     def get_object(self, queryset=None):
         """
@@ -205,3 +211,16 @@ class CartView(LoginRequiredMixin, PageMixin, generic.DeleteView):
                 % {"verbose_name": queryset.model._meta.verbose_name}
             )
         return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(CartView, self).get_context_data(**kwargs)
+        sectors = list()
+        categories = list()
+
+        for inv in context["object"].funded_investments.all():
+            sectors.append(inv.sector)
+            categories.append(inv.sector.category)
+
+        kwargs['sectors'] = dict.fromkeys(sectors)
+        kwargs['categories'] = dict.fromkeys(categories)
+        return super(CartView, self).get_context_data(**kwargs)
