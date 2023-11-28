@@ -164,27 +164,51 @@
                                                 <select class="form-control" name="region-filter" style="width: 100%;">
                                                     <option selected value="">{% translate 'Region' %}</option>
                                                     {% for region in regions %}
-                                                    <option value="{{ region.id }}">{{ region.name }}</option>
+                                                        {% if 'region-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'region-filter' == region.id %}
+                                                            <option value="{{ region.id }}" selected>{{ region.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ region.id }}">{{ region.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ region.id }}">{{ region.name }}</option>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="commune-filter" style="width: 100%;">
+                                                <select class="form-control" name="commune-filter" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Commune' %}</option>
                                                     {% for commune in communes %}
-                                                    <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                        {% if 'commune-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'commune-filter' == commune.id %}
+                                                            <option value="{{ commune.id }}" selected>{{ commune.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="village-filter" style="width: 100%;">
+                                                <select class="form-control" name="village-filter" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Village' %}</option>
                                                     {% for village in villages %}
-                                                    <option value="{{ village.id }}">{{ village.name }}</option>
+                                                        {% if 'village-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'village-filter' == village.id %}
+                                                            <option value="{{ village.id }}" selected>{{ village.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ village.id }}">{{ village.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ village.id }}">{{ village.name }}</option>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -193,20 +217,36 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="prefecture-filter" style="width: 100%;">
+                                                <select class="form-control" name="prefecture-filter" style="width: 100%;" {% if not 'region-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Prefecture' %}</option>
                                                     {% for prefecture in prefectures %}
-                                                    <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                        {% if 'prefecture-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'prefecture-filter' == prefecture.id %}
+                                                            <option value="{{ prefecture.id }}" selected>{{ prefecture.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="canton-filter" style="width: 100%;">
+                                                <select class="form-control" name="canton-filter" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Canton' %}</option>
                                                     {% for canton in cantons %}
-                                                    <option value="{{ canton.id }}">{{ canton.name }}</option>
+                                                        {% if 'canton-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'canton-filter' == canton.id %}
+                                                            <option value="{{ canton.id }}" selected>{{ canton.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ canton.id }}">{{ canton.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ canton.id }}">{{ canton.name }}</option>
+                                                        {% endif %}
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -296,9 +336,9 @@
                                 {{ investment.estimated_cost|intcomma }}
                             </td>
                             <td>{{ investment.administrative_level.name }}</td>
-                            <td>{{ investment.administrative_level.parent.name }}</td>
                             <td>{{ investment.administrative_level.parent.parent.name }}</td>
                             <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
+                            <td>{{ investment.administrative_level.parent.parent.parent.parent.name }}</td>
                             <td>{{ investment.administrative_level.rank }}</td>
                             <td>
                                 {% if investment.endorsed_by_youth %}

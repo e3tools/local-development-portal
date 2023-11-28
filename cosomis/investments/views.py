@@ -66,11 +66,25 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
     def get_context_data(self, **kwargs):
         adm_queryset = AdministrativeLevel.objects.all()
         kwargs['regions'] = adm_queryset.filter(type=AdministrativeLevel.REGION)
+
         kwargs['prefectures'] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
+        if 'region-filter' in self.request.GET:
+            kwargs['prefectures'] = kwargs['prefectures'].filter(parent__id=self.request.GET['region-filter'])
+
         kwargs['communes'] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
+        if 'prefecture-filter' in self.request.GET:
+            kwargs['communes'] = kwargs['communes'].filter(parent__id=self.request.GET['prefecture-filter'])
+
         kwargs['cantons'] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
+        if 'commune-filter' in self.request.GET:
+            kwargs['cantons'] = kwargs['cantons'].filter(parent__id=self.request.GET['commune-filter'])
+
         kwargs['villages'] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
+        if 'cantons-filter' in self.request.GET:
+            kwargs['villages'] = kwargs['villages'].filter(parent__id=self.request.GET['cantons-filter'])
+
         kwargs['query_strings'] = self.get_query_strings_context()
+        kwargs['query_strings_raw'] = self.request.GET.copy()
 
         kwargs['sectors'] = Category.objects.all()
         kwargs.setdefault("view", self)
@@ -115,15 +129,15 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
                 administrative_level__parent__parent__parent__id=self.request.GET['prefecture-filter'],
                 administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE
             )
-        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
-            queryset = queryset.filter(
-                administrative_level__parent__parent__id=self.request.GET['canton-filter'],
-                administrative_level__parent__parent__type=AdministrativeLevel.CANTON
-            )
         if 'commune-filter' in self.request.GET and self.request.GET['commune-filter'] not in ['', None]:
             queryset = queryset.filter(
-                administrative_level__parent__id=self.request.GET['commune-filter'],
-                administrative_level__parent__type=AdministrativeLevel.COMMUNE
+                administrative_level__parent__parent__id=self.request.GET['commune-filter'],
+                administrative_level__parent__parent__type=AdministrativeLevel.COMMUNE
+            )
+        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__id=self.request.GET['canton-filter'],
+                administrative_level__parent__type=AdministrativeLevel.CANTON
             )
         if 'village-filter' in self.request.GET and self.request.GET['village-filter'] not in ['', None]:
             queryset = queryset.filter(
