@@ -24,7 +24,7 @@
     --white: #ffffff;
     --gray: #6c757d;
     --gray-dark: #343a40;
-    --primary: #219565;
+    --primary: #599cf7;
     --secondary: #6c757d;
     --success: #28a745;
     --info: #17a2b8;
@@ -165,7 +165,7 @@ a {
 }
 
 a:hover {
-    color: #219565;
+    opacity: 0.8;
     text-decoration: none;
 }
 
@@ -2764,6 +2764,7 @@ textarea.form-control {
 
 .btn:hover {
     color: #212529;
+    opacity: 0.8;
     text-decoration: none;
 }
 
@@ -2795,14 +2796,13 @@ fieldset:disabled a.btn {
 
 .btn-primary:hover {
     color: #ffffff;
-    background-color: #1fa181;
-    border-color: #219565;
+    opacity: 0.8;
 }
 
 .btn-primary:focus, .btn-primary.focus {
     color: #ffffff;
-    background-color: #1fa181;
-    border-color: #219565;
+    background-color: #599cf7;
+    border-color: #599cf7;
     box-shadow: none, 0 0 0 0 rgba(33, 149, 101, 0.5);
 }
 
@@ -3352,7 +3352,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-link:hover {
-    color: #219565;
+    color: #599cf7;
     text-decoration: none;
 }
 
@@ -5302,7 +5302,7 @@ input[type="button"].btn-block {
 
 .page-link:hover {
     z-index: 2;
-    color: #219565;
+    color: #599cf7;
     text-decoration: none;
     background-color: #f7f7f7;
     border-color: #efefef;
@@ -28910,13 +28910,13 @@ blockquote.quote-gray-dark h6 {
 }
 
 .bg-primary.btn:hover {
-    border-color: #219565;
+    border-color: #599cf7;
     color: #ececec;
 }
 
 .bg-primary.btn:not(:disabled):not(.disabled):active, .bg-primary.btn:not(:disabled):not(.disabled).active, .bg-primary.btn:active, .bg-primary.btn.active {
-    background-color: #219565 !important;
-    border-color: #1fa181;
+    background-color: #599cf7 !important;
+    border-color: #599cf7;
     color: #ffffff;
 }
 

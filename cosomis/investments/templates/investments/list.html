@@ -1,6 +1,18 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n humanize custom_tags %}
 
+{% block extracss %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+    <style>
+        .table th {
+            padding: 5px 30px 0 30px;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.025);
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
 
@@ -271,19 +283,22 @@
             <div class="card-body">
                 <form action="" method="POST" id="investment-form" name="investments-form">
                     {% csrf_token %}
-                    <table class="table datatable display" style="100%">
-                        <thead>
-                        <th><input class="" id="checkbox-select-all" type="checkbox" checked></th>
-                        <th>{% translate 'Name' %}</th>
-                        <th>{% translate 'Subproject type' %}</th>
-                        <th>{% translate 'Estimate cost' %}</th>
-                        <th>{% translate 'Village' %}</th>
-                        <th>{% translate 'Community' %}</th>
-                        <th>{% translate 'Prefecture' %}</th>
-                        <th>{% translate 'Region' %}</th>
-                        <th>{% translate 'Village priority' %}</th>
-                        <th>{% translate 'Population priority' %}</th>
-                        </thead>
+                    {% if investments.count == 0 %}
+                        {% translate 'You have no investments' %}
+                    {% else %}
+                        <table class="table rounded-table table-striped">
+                            <thead>
+                            <th class="align-middle border-top-left-corner"><input class="" id="checkbox-select-all" type="checkbox" checked></th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Subproject type' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Community' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
+                            <th class="align-middle border-top-right-corner border-bottom-0">{% translate 'Population priority' %}</th>
+                            </thead>
                         <tbody>
                         {% for investment in object_list %}
                         <tr>
@@ -318,6 +333,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                    {% endif %}
                     <input type="hidden" id="investments-input-id" value="" name="investments">
                 </form>
             </div>
@@ -332,7 +348,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        var table = $(".datatable").DataTable();
+        var table = $(".table").DataTable();
 
         sum_subprojects();
 

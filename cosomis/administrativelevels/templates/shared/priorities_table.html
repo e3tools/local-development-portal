@@ -1,64 +1,47 @@
-{% load static i18n humanize %}
-
+{% load static i18n humanize custom_tags %}
 {% if investments.count == 0 %}
-
     {% translate 'You have no priorities' %}
 {% else %}
     <table class="table rounded-table">
-        <thead>
+    <thead>
+    <tr>
+        <th class="align-middle border-top-left-corner" rowspan="2">{% translate "Rank" %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate "Priority to the village" %}</th>
+        <th class="align-middle border-bottom-0 rounded-0" colspan="4">{% translate "Prioritized by" %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate "Beneficiaries" %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate "Estimate cost" %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate "Fund by" %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate "Contribution to climate" %}</th>
+        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">{% translate "Actions" %}</th>
+    </tr>
+    <tr>
+        <th class="bg-yellow rounded-0 border-sides-0 white-font">J</th>
+        <th class="bg-blue rounded-0 border-sides-0 white-font">F</th>
+        <th class="bg-orange rounded-0 border-sides-0 white-font">ME</th>
+        <th class="bg-green rounded-0 border-sides-0 white-font">AE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for investment in investments %}
         <tr>
-            <th class="align-middle border-top-left-corner"
-                rowspan="2">{% translate "Rank" %}</th>
-            <th class="align-middle rounded-0 border-bottom-0"
-                rowspan="2">{% translate "Priority to the village" %}</th>
-            <th class="align-middle border-bottom-0 rounded-0"
-                colspan="4">{% translate "Prioritized by" %}</th>
-            <th class="align-middle rounded-0 border-bottom-0"
-                rowspan="2">{% translate "Beneficiaries" %}</th>
-            <th class="align-middle rounded-0 border-bottom-0"
-                rowspan="2">{% translate "Estimate cost" %}</th>
-            <th class="align-middle rounded-0 border-bottom-0"
-                rowspan="2">{% translate "Fund by" %}</th>
-            <th class="align-middle rounded-0 border-bottom-0"
-                rowspan="2">{% translate "Contribution to climate" %}</th>
-            <th class="align-middle border-top-right-corner border-bottom-0"
-                rowspan="2">{% translate "Actions" %}</th>
+            <td>{{ investment.ranking }}</td>
+            <td class="border-sides--light">{{ investment.title }}</td>
+            <td class="border-sides--light">
+                {% if investment.endorsed_by_youth is not None %}{{ investment.votes_young }}{% endif %}</td>
+            <td class="border-sides--light">
+                {% if investment.endorsed_by_women is not None %}{{ investment.votes_woman }}{% endif %}</td>
+            <td class="border-sides--light">
+                {% if investment.endorsed_by_agriculturist is not None %}{{ investment.votes_me }}{% endif %}</td>
+            <td class="border-sides--light">
+                {% if investment.endorsed_by_pastoralist is not None %}{{ investment.votes_ae }}{% endif %}</td>
+            <td class="border-sides--light">{{ investment.beneficiaries }}</td>
+            <td class="border-sides--light">{{ investment.estimated_cost|intcomma }}</td>
+            <td class="border-sides--light">{{ investment.responsible_structure }}</td>
+            <td class="border-sides--light">{% if investment.contribution_to_climate %}{% translate "Yes" %}{% else %}
+                {% translate "No" %}{% endif %}</td>
+            <td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
         </tr>
-        <tr>
-            <th class="bg-yellow rounded-0 border-sides-0 white-font">J</th>
-            <th class="bg-blue rounded-0 border-sides-0 white-font">F</th>
-            <th class="bg-orange rounded-0 border-sides-0 white-font">ME</th>
-            <th class="bg-green rounded-0 border-sides-0 white-font">AE</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for investment in investments %}
-            <tr>
-                <td>{{ investment.ranking }}</td>
-                <td class="border-sides--light">{{ investment.title }}</td>
-                <td class="border-sides--light">
-                    {% if investment.endorsed_by_youth %}
-                        <span>&#10003;</span>{% endif %}</td>
-                <td class="border-sides--light">
-                    {% if investment.endorsed_by_women %}
-                        <span>&#10003;</span>{% endif %}</td>
-                <td class="border-sides--light">
-                    {% if investment.endorsed_by_agriculturist %}
-                        <span>&#10003;</span>{% endif %}</td>
-                <td class="border-sides--light">
-                    {% if investment.endorsed_by_pastoralist %}
-                        <span>&#10003;</span>{% endif %}</td>
-                <td class="border-sides--light">{{ investment.beneficiaries }}</td>
-                <td class="border-sides--light">{{ investment.estimated_cost|intcomma }}</td>
-                <td class="border-sides--light">{{ investment.responsible_structure }}</td>
-                <td class="border-sides--light">
-                    {% if investment.contribution_to_climate %}
-                        {% translate "Yes" %}{% else %}
-                        {% translate "No" %}{% endif %}</td>
-                <td><i class="nav-icon fa fa-bars" data-toggle="modal"
-                       data-target="#exampleModal"></i></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% endfor %}
+    </tbody>
+</table>
 {% endif %}

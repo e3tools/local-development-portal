@@ -2,23 +2,18 @@ import re
 import zipfile
 from io import BytesIO
 import requests
-import pandas as pd
-from collections import defaultdict
-from typing import Optional, Dict, List, Tuple, Any
+from typing import Optional, List, Tuple
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
-from django.contrib import messages
-from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView
+from django.views.generic import DetailView, TemplateView, ListView, CreateView
 from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usermanager.permissions import (
-    AdminPermissionRequiredMixin, AccountantPermissionRequiredMixin
+    AdminPermissionRequiredMixin
 )
-from .forms import AdministrativeLevelForm, VillageSearchForm
-from cosomis.constants import OBSTACLES_FOCUS_GROUP, GOALS_FOCUS_GROUP
+from .forms import AdministrativeLevelForm
 from cosomis.mixins import PageMixin
 from django.http import Http404, HttpResponse
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
 from django.db.models import Q, QuerySet
@@ -49,6 +44,13 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
         if context.get("object") and context.get("object").is_village() is True:
             context['investments'] = Investment.objects.filter(administrative_level=self.object)
+        admin_level = context.get("object")
+        if admin_level and admin_level.is_village() is True:
+            images = Attachment.objects.filter(adm=admin_level.id, type=Attachment.PHOTO).all()
+            context['images_data'] = {'images': images, "exists_at_least_image": len(images) != 0,
+                                      'first_image': images[0] if len(images) > 0 else None}
+            investments = Investment.objects.filter(administrative_level=admin_level.id).all()
+            context['investments'] = investments
             return context
         raise Http404
 
@@ -306,14 +308,15 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
         if context.get("adm_id"):
-            administrative_level = AdministrativeLevel.objects.filter(id=context.get("adm_id"))
+            administrative_levels = AdministrativeLevel.objects.filter(id=context.get("adm_id"))
+            administrative_levels = administrative_levels[0]
         else:
-            administrative_level = AdministrativeLevel.objects.all()
+            administrative_levels = AdministrativeLevel.objects.all()
 
         # if len(administrative_level) == 0:
         #     raise Http404
 
-        context['administrative_level'] = administrative_level[0]
+        context['administrative_level'] = administrative_levels
         self.activity_choices: List[Tuple] = [(None, '---')]
         self.task_choices: List[Tuple] = [(None, '---')]
         self.phase_choices: List[Tuple] = [(None, '---')]
@@ -324,8 +327,8 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         form = AttachmentFilterForm()
 
         adm_id: Optional[int] = self.kwargs.get("adm_id", None)
-        context['attachments']: List[Attachment] = self.__build_db_filter(query_params, adm_id)
-        self.__get_select_choices(context['attachments'])
+        paginator: Paginator = self.__build_db_filter(query_params, adm_id)
+        self.__get_select_choices(paginator.object_list)
 
         form.fields.get('administrative_level').initial = query_params.get('administrative_level')
         form.fields.get('administrative_level').choices = self.administrative_level_choices
@@ -337,7 +340,10 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         form.fields.get('activity').initial = query_params.get('activity')
         form.fields.get('activity').choices = self.activity_choices
 
-        context['no_results'] = len(context['attachments']) == 0
+        context['no_results'] = paginator.count == 0
+
+        page_number = query_params.get('page', 1)
+        context['attachments'] = paginator.get_page(page_number)
         context['form'] = form
 
         return context
@@ -363,7 +369,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
                     AdministrativeLevel.objects.all()
                     ))))
 
-    def __build_db_filter(self, query_params: dict, adm_id: Optional[int]) -> List[Attachment]:
+    def __build_db_filter(self, query_params: dict, adm_id: Optional[int]) -> Paginator:
         query: QuerySet = Attachment.objects
 
         if adm_id is not None and adm_id != '':
@@ -389,7 +395,10 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
         # if activity is not None and activity != '':
         #     query = query.filter(activity=activity)
 
-        return list(query.all())
+        query = query.order_by('created_date')
+        paginator = Paginator(query, 36)
+
+        return paginator
 
 
 class VillageAttachmentListView(AttachmentListView):

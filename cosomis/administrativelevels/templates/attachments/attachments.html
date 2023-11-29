@@ -12,7 +12,16 @@
                 gap: 10px;
             }
         }
-
+        .attachment-link-container {
+            width: 120px;
+            text-align: center;
+             &:nth-child(even) .attachment-link {
+                width: 120px;
+                 .attachment-placeholder:not(.attachment-placeholder--document) {
+                      width: 120px;
+                 }
+            }
+        }
         .attachment-link {
             width: 80px;
             height: 80px;
@@ -20,10 +29,6 @@
             border-radius: 10px;
             margin-top: 10px;
             position: relative;
-        }
-
-        .attachment-link:nth-child(even) {
-            width: 80px;
         }
 
         .attachment-placeholder {
@@ -69,6 +74,9 @@
             flex-wrap: wrap;
         }
 
+        .pagination {
+            font-size: 13px;
+        }
         #attachmentModal {
             .attachment-modal-link {
                 width: calc(100% - 120px);
@@ -158,6 +166,9 @@
         .download-all, .download-all:focus, .download-all:hover {
             color: white;
         }
+        .download-all:focus, .download-all:hover {
+            opacity: 0.8;
+        }
 
     </style>
 {% endblock %}
@@ -182,30 +193,52 @@
                         {% else %}
                         <form class="form-attachment d-inline-flex">
                             {% for attachment in attachments %}
-                                {% if attachment.type == 'Photo' %}
-                                    <div class="d-inline-block attachment-link" data-toggle="modal"
-                                         data-target="#attachmentModal" data-count="{{ forloop.counter0 }}">
-                                        <input class="checkbox" type="checkbox" name="{{ forloop.counter0 }}" value="{{ attachment.id }}" />
-                                        <img class="attachment-placeholder" src="{{ attachment.url|imgAWSS3Filter }}"
-                                             alt="{{ attachment.task }}">
-                                    </div>
-                                {% else %}
-                                    <div class="d-inline-flex align-items-center justify-content-center attachment-link"
-                                         data-toggle="modal" data-target="#attachmentModal"
-                                         data-count="{{ forloop.counter0 }}">
-                                        <input class="checkbox" type="checkbox" name="{{ forloop.counter0 }}" value="{{ attachment.id }}" />
-                                        <img class=" attachment-placeholder attachment-placeholder--document" src="
-                                    {% static 'images/document-placeholder.png' %}"
-                                             alt="{{ attachment.task }}">
-                                    </div>
-                                {% endif %}
+                                <div class="d-inline-block attachment-link-container">
+                                        {% if attachment.type == 'Photo' %}
+                                            <div class="d-inline-block attachment-link" data-toggle="modal"
+                                                 data-target="#attachmentModal" data-count="{{ forloop.counter0 }}">
+                                                <input class="checkbox" type="checkbox" name="{{ forloop.counter0 }}" value="{{ attachment.id }}" />
+                                                <img class="attachment-placeholder" src="{{ attachment.url|imgAWSS3Filter }}"
+                                                     alt="{{ attachment.task }}">
+                                            </div>
+                                        {% else %}
+                                            <div class="d-inline-flex align-items-center justify-content-center attachment-link"
+                                                 data-toggle="modal" data-target="#attachmentModal"
+                                                 data-count="{{ forloop.counter0 }}">
+                                                <input class="checkbox" type="checkbox" name="{{ forloop.counter0 }}" value="{{ attachment.id }}" />
+                                                <img class=" attachment-placeholder attachment-placeholder--document" src="
+                                            {% static 'images/document-placeholder.png' %}"
+                                                     alt="{{ attachment.task }}">
+                                            </div>
+                                        {% endif %}
+                                </div>
                         {% endfor %}
                         </form>
-                        <div class="col-12 mt-3 p-0">
+                        <div class="d-flex justify-content-between col-12 mt-3 p-0">
                              <button class="download-all">
                                   Download Images
                              </button>
+                             <div class="pagination">
+                            <span class="step-links">
+                                {% if attachments.has_previous %}
+                                    <a href="?page={{ attachments.previous_page_number }}">
+                                        <i class="fa fa-arrow-circle-left"></i>
+                                    </a>
+                                {% endif %}
+
+                                <span class="current">
+                                    {{ attachments.number }} of {{ attachments.paginator.num_pages }}
+                                </span>
+
+                                {% if attachments.has_next %}
+                                    <a href="?page={{ attachments.next_page_number }}">
+                                            <i class="fa fa-arrow-circle-right"></i>
+                                    </a>
+                                {% endif %}
+                            </span>
                         </div>
+                        </div>
+
                         {% endif %}
                     </div>
                 </div>
