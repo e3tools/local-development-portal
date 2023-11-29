@@ -1079,7 +1079,7 @@ msgstr "Unités géographiques"
 #: administrativelevels/templates/geographical_unit_detail.html:165
 #: administrativelevels/templates/geographical_unit_detail.html:195
 msgid "Detail"
-msgstr ""
+msgstr "Détail"
 
 #: administrativelevels/templates/cvds_list.html:40
 #: administrativelevels/templates/geographical_unit_create.html:15
@@ -1091,7 +1091,7 @@ msgstr "Créer CVD"
 #: administrativelevels/templates/cvds_list.html:63
 #: administrativelevels/templates/geographical_unit_list.html:57
 msgid "Code"
-msgstr ""
+msgstr "Code"
 
 #: administrativelevels/templates/priorities/goals.html:14
 #: administrativelevels/templates/priorities/layouts/base_priorities.html:39
@@ -1315,7 +1315,7 @@ msgstr "Financé par"
 
 #: administrativelevels/templates/village_detail.html:157
 msgid "Contribution to climate"
-msgstr ""
+msgstr "Contribution au climat"
 
 #: administrativelevels/templates/village_detail.html:158
 #, fuzzy
@@ -1388,7 +1388,7 @@ msgstr "Priorité supprimée avec succès"
 
 #: administrativelevels/views.py:787
 msgid "Galerie d'images"
-msgstr ""
+msgstr "Galérie d'images"
 
 #: administrativelevels/views.py:1024
 msgid "Update geographical unit"
@@ -1413,11 +1413,11 @@ msgstr "Ancien"
 
 #: authentication/models.py:10
 msgid "username"
-msgstr ""
+msgstr "Nom d'utilisateur"
 
 #: authentication/models.py:11
 msgid "password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: authentication/models.py:12
 #, fuzzy
@@ -1433,11 +1433,11 @@ msgstr "Activités"
 
 #: authentication/models.py:14 authentication/models.py:15
 msgid "test mode"
-msgstr ""
+msgstr "Mode Teste"
 
 #: authentication/models.py:17
 msgid "name"
-msgstr ""
+msgstr "Nom"
 
 #: authentication/models.py:18
 #, fuzzy
@@ -1447,11 +1447,11 @@ msgstr "E-mail"
 
 #: authentication/models.py:19
 msgid "phone"
-msgstr ""
+msgstr "Téléphone"
 
 #: authentication/models.py:20
 msgid "sex"
-msgstr ""
+msgstr "Sexe"
 
 #: cosomis/constants.py:36
 msgid "Identified"
@@ -1682,7 +1682,7 @@ msgstr "Veuillez remplir tous les champs"
 #: dashboard/templates/dashboard_administrativelevels.html:27
 #: dashboard/templates/dashboard_subprojects.html:27
 msgid "Clear all filters"
-msgstr ""
+msgstr "Supprimer les filtres"
 
 #: dashboard/templates/dashboard_administrativelevels.html:41
 #: dashboard/templates/dashboard_administrativelevels.html:52
@@ -1828,7 +1828,7 @@ msgstr "Date de fin"
 #: dashboard/views_administrativelevels.py:354
 #: dashboard/views_administrativelevels.py:355
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #: dashboard/views_administrativelevels.py:393
 #: dashboard/views_administrativelevels.py:416
@@ -1920,7 +1920,7 @@ msgstr "Nombre de Sous-projets"
 #: dashboard/views_subprojects.py:415 dashboard/views_subprojects.py:430
 #: dashboard/views_subprojects.py:457 dashboard/views_subprojects.py:461
 msgid "N°"
-msgstr ""
+msgstr "N°"
 
 #: dashboard/views_subprojects.py:417 dashboard/views_subprojects.py:439
 #: dashboard/views_subprojects.py:463
@@ -2191,7 +2191,7 @@ msgstr "Détails de l'allocation"
 #: financial/templates/allocation_list.html:189
 #: financial/templates/bank_transfer_list.html:58
 msgid "Date"
-msgstr ""
+msgstr "Date"
 
 #: financial/templates/bank_transfer_list.html:44
 #: financial/views_bank_transfer.py:27
@@ -2886,7 +2886,7 @@ msgstr "Téléversez le fichier Image"
 #: subprojects/templates/components/image_add.html:37
 #: subprojects/templates/subproject.html:668
 msgid "Order"
-msgstr ""
+msgstr "Commande"
 
 #: subprojects/templates/components/image_add.html:42
 #: subprojects/templates/subproject.html:673
@@ -2967,7 +2967,7 @@ msgstr ""
 #: subprojects/templates/components/subcomponent_priorities.html:23
 #: subprojects/templates/components/subcomponent_priority.html:17
 msgid "Score"
-msgstr ""
+msgstr "Score"
 
 #: subprojects/templates/components/subproject_tracking_add.html:10
 msgid "step"
@@ -3046,11 +3046,11 @@ msgstr "Date signature contrat entreprises de travaux (ET)"
 
 #: subprojects/templates/subproject.html:622
 msgid "Images"
-msgstr ""
+msgstr "Images"
 
 #: subprojects/templates/subproject.html:687
 msgid "Delete"
-msgstr ""
+msgstr "Effacer"
 
 #: subprojects/templates/subproject_create.html:11
 #: subprojects/templates/subprojects_map.html:27
@@ -3145,7 +3145,7 @@ msgstr ""
 
 #: subprojects/templatetags/custom_tags.py:63
 msgid "User"
-msgstr ""
+msgstr "Utilisateur"
 
 #: subprojects/templatetags/custom_tags.py:134
 msgid "and"
@@ -3251,7 +3251,7 @@ msgstr "E-mail"
 
 #: usermanager/forms.py:32
 msgid "Pass Code"
-msgstr ""
+msgstr "Code Secret"
 
 #: usermanager/permissions.py:33 usermanager/permissions.py:52
 #: usermanager/permissions.py:76 usermanager/permissions.py:97
@@ -3431,7 +3431,7 @@ msgstr "Date d'attribution après la signature du(des) contrat(s) (Ceci n'est n�
 #: .\subprojects\templates\subproject.html
 msgid "Sectoral ministry"
 msgstr "Ministère sectoriel"
- #: .\administrativelevels\templates\administrativelevels_list
+#: .\administrativelevels\templates\administrativelevels_list
 msgid "Search a level"
 msgstr "Rechercher un niveau"
 #: .\administrativelevels\templates\administrativelevels_list
@@ -3440,3 +3440,51 @@ msgstr "Voir le village"
 #: .\administrativelevels\templates\administrativelevels_list
 msgid "Choice the village in canton"
 msgstr "Choisir le village dans le canton"
+
+msgid "Choose filters"
+msgstr "Choisir les filtres"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Endorsed by"
+msgstr "Soutenu par"
+
+msgid "Endorsed by youth"
+msgstr "Soutenu par les jeunes"
+
+msgid "Endorsed by women"
+msgstr "Soutenu pas le femmes"
+
+msgid "Endorsed by agriculturist"
+msgstr "Soutenu par le agriculteurs"
+
+msgid "Endorsed by pastoralist"
+msgstr "Soutenu par les éléveur"
+
+msgid "Choose the columns to displaylage"
+msgstr "Choisir les colonnes à afficher"
+
+msgid "Community"
+msgstr "Communauté"
+
+msgid "Village priority"
+msgstr "Priorité du village"
+
+msgid "Population priority"
+msgstr "Priorité de la population"
+
+msgid "Results"
+msgstr "Résultats"
+
+msgid "# Villages:"
+msgstr "# Villages:"
+
+msgid "# Sub-projects:"
+msgstr "# Sous-projets:"
+
+msgid "# Total funding sélectionné:"
+msgstr "# Financement total:"
+
+msgid "Add to Cart"
+msgstr "Ajouter au Panier"
