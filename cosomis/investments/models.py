@@ -9,7 +9,7 @@ from administrativelevels.models import AdministrativeLevel, Project
 class PackageQuerySet(models.QuerySet):
     def get_active_cart(self, user):
         """Get active invoice for user"""
-        qs = self.filter(user=user, status=Package.PENDING_APPROVAL)
+        qs = self.model.objects.filter(user=user, status=Package.PENDING_SUBMISSION)
         package = qs.last()
         if qs.count() > 1:
             qs = qs.exclude(id=package.id)
@@ -17,7 +17,7 @@ class PackageQuerySet(models.QuerySet):
                 obj.status = Package.REJECTED
                 obj.save()
         elif qs.count() < 1:
-            return self.create(user=user, status=Package.PENDING_APPROVAL)
+            return self.model.objects.create(user=user, status=Package.PENDING_SUBMISSION)
         return package
 
 
@@ -69,12 +69,14 @@ class Investment(BaseModel):  # Investment module
     no_sql_id = models.CharField(max_length=255)
 
 
-class Package(BaseModel):  # investments module (orden de compra(kart de invesments(products)))
+class Package(BaseModel):  # investments module (orden de compra(cart de invesments(products)))
+    PENDING_SUBMISSION = 'PS'
     PENDING_APPROVAL = 'P'
     APPROVED = 'A'
     REJECTED = 'R'
     UNDER_EXECUTION = 'E'
     STATUS = (
+        (PENDING_SUBMISSION, _('Pending Submission')),
         (PENDING_APPROVAL, _('Pending Approval')),
         (APPROVED, _('Approved')),
         (REJECTED, _('Rejected')),
@@ -92,7 +94,7 @@ class Package(BaseModel):  # investments module (orden de compra(kart de invesme
     )
     funded_investments = models.ManyToManyField(Investment, related_name='packages')
     draft_status = models.BooleanField(default=True)
-    status = models.CharField(max_length=50, choices=STATUS, default=PENDING_APPROVAL)
+    status = models.CharField(max_length=50, choices=STATUS, default=PENDING_SUBMISSION)
 
 
 class Attachment(BaseModel):

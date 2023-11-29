@@ -213,3 +213,8 @@ def call_method(obj, method_name, *args):
 @register.filter
 def get_step_color(key):
     return SUB_PROJECT_STATUS_COLOR.get(key, '#000000')
+
+
+@register.filter
+def get_item(dictionary, key):
+    return int(dictionary.get(key))
