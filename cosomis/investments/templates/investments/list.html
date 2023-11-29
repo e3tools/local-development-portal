@@ -161,7 +161,7 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="region-filter" style="width: 100%;">
+                                                <select class="form-control" name="region-filter" empty-option="{% translate 'Region' %}" style="width: 100%;" id="region-select-id">
                                                     <option selected value="">{% translate 'Region' %}</option>
                                                     {% for region in regions %}
                                                         {% if 'region-filter' in query_strings_raw %}
@@ -179,7 +179,7 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="commune-filter" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
+                                                <select class="form-control" name="commune-filter" id="commune-select-id" empty-option="{% translate 'Commune' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Commune' %}</option>
                                                     {% for commune in communes %}
                                                         {% if 'commune-filter' in query_strings_raw %}
@@ -197,7 +197,7 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="village-filter" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
+                                                <select class="form-control" name="village-filter" id="village-select-id" empty-option="{% translate 'Village' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Village' %}</option>
                                                     {% for village in villages %}
                                                         {% if 'village-filter' in query_strings_raw %}
@@ -217,7 +217,7 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="prefecture-filter" style="width: 100%;" {% if not 'region-filter' in query_strings_raw %}disabled{% endif %}>
+                                                <select class="form-control" name="prefecture-filter" id="prefecture-select-id" empty-option="{% translate 'Prefecture' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Prefecture' %}</option>
                                                     {% for prefecture in prefectures %}
                                                         {% if 'prefecture-filter' in query_strings_raw %}
@@ -235,7 +235,7 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="canton-filter" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                                <select class="form-control" name="canton-filter" id="canton-select-id" empty-option="{% translate 'Canton' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Canton' %}</option>
                                                     {% for canton in cantons %}
                                                         {% if 'canton-filter' in query_strings_raw %}
@@ -430,6 +430,31 @@
             $('#adm-filter-form').submit();
         });
 
+        $('#region-select-id').on('change', function(){
+            change_selects(
+                $(this), $('#prefecture-select-id'),
+                [$('#commune-select-id'), $('#canton-select-id'), $('#village-select-id')]
+            )
+        });
+
+        $('#prefecture-select-id').on('change', function(){
+            change_selects(
+                $(this), $('#commune-select-id'),
+                [$('#canton-select-id'), $('#village-select-id')]
+            )
+        });
+
+        $('#commune-select-id').on('change', function(){
+            change_selects(
+                $(this), $('#canton-select-id'),
+                [$('#village-select-id')]
+            )
+        });
+
+        $('#canton-select-id').on('change', function(){
+            change_selects($(this), $('#village-select-id'), [])
+        });
+
         function sum_subprojects() {
             let rows = table.rows()
             let villages = [];
@@ -460,10 +485,38 @@
             $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
 
         };
-    });
 
-        // When the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', function () {
+        function change_selects(select_input, select_to_fill, other_selects){
+            let selected_value = select_input.find(":selected").val();
+
+            if (selected_value != '') {
+                let base_url = window.location.href.split('?')[0]
+                $.ajax({
+                    type : "POST",
+                    url: base_url + "ajax/test",
+                    data: {
+                      value: selected_value,
+                      csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function(response){
+                        select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                        response.values.forEach((element) => {
+                            select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                        })
+                    }
+                });
+                select_to_fill.prop('disabled', false);
+            }
+            else {
+                select_to_fill.prop('disabled', 'disabled');
+                select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+            }
+            other_selects.forEach((select) => {
+                select.prop('disabled', 'disabled');
+                select.html("<option selected value=''>" + select.attr('empty-option') + "</option>");
+            });
+        };
+
         // Get the 'Add to Cart' button by ID
         var addToCartBtn = document.getElementById('investments-submit');
 
