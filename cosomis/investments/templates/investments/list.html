@@ -318,18 +318,19 @@
                             <td>{{ investment.ranking }}</td>
                             <td>
                                 {% if investment.endorsed_by_youth %}
-                                J,
+                                    J{% if investment.endorsed_by_women or investment.endorsed_by_agriculturist or investment.endorsed_by_pastoralist %},{% endif %}
                                 {% endif %}
                                 {% if investment.endorsed_by_women %}
-                                F,
+                                    F{% if investment.endorsed_by_agriculturist or investment.endorsed_by_pastoralist %},{% endif %}
                                 {% endif %}
                                 {% if investment.endorsed_by_agriculturist %}
-                                AG,
+                                    AG{% if investment.endorsed_by_pastoralist %},{% endif %}
                                 {% endif %}
                                 {% if investment.endorsed_by_pastoralist %}
-                                PA
+                                    PA
                                 {% endif %}
                             </td>
+
                         </tr>
                         {% endfor %}
                         </tbody>
