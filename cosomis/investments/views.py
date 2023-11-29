@@ -150,28 +150,28 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
         for key, value in self.request.GET.items():
             if key == 'region-filter':
                 resp['Regions'] = ', '.join(AdministrativeLevel.objects.filter(
-                    id__in=value,
+                    id__in=[int(value)],
                     type=AdministrativeLevel.REGION
                 ).values_list('name', flat=True))
             if key == 'prefecture-filter':
                 resp['Prefectures'] = ', '.join(AdministrativeLevel.objects.filter(
-                    id__in=value,
+                    id__in=[int(value)],
                     type=AdministrativeLevel.PREFECTURE
                 ).values_list('name', flat=True))
             if key == 'commune-filter':
                 resp['Communes'] = ', '.join(AdministrativeLevel.objects.filter(
-                    id__in=value,
+                    id__in=[int(value)],
                     type=AdministrativeLevel.COMMUNE
                 ).values_list('name', flat=True))
             if key == 'village-filter':
                 resp['Villages'] = ', '.join(AdministrativeLevel.objects.filter(
-                    id__in=value,
+                    id__in=[int(value)],
                     type=AdministrativeLevel.VILLAGE
                 ).values_list('name', flat=True))
 
             if key == 'sector-filter':
                 resp['Sectors'] = ', '.join(Category.objects.filter(
-                    id__in=value,
+                    id__in=[int(value)],
                 ).values_list('name', flat=True))
             if key == 'subpopulation-filter':
                 resp['Subpopulations'] = ' '.join(value.split('_'))
