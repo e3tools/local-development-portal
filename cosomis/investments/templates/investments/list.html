@@ -15,7 +15,6 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="row">
     <div class="col-12">
 
@@ -24,7 +23,7 @@
                     <h5 class="mb-0">
                         <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link"
                                 data-target="#collapseOne" data-toggle="collapse">
-                            Choose filters
+                            {% translate 'Choose filters' %}
                         </button>
                     </h5>
                 </div>
@@ -48,7 +47,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="type-filter" style="width: 100%;">
-                                                    <option selected value="">Type</option>
+                                                    <option selected value="">{% translate 'Type' %}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -56,11 +55,11 @@
                                             <div class="form-group">
                                                 <select class="form-control" name="subpopulation-filter"
                                                         style="width: 100%;">
-                                                    <option value=''>Sub-population</option>
-                                                    <option value="endorsed_by_youth">Endorsed by youth</option>
-                                                    <option value="endorsed_by_women">Endorsed by women</option>
-                                                    <option value="endorsed_by_agriculturist">Endorsed by agriculturist</option>
-                                                    <option value="endorsed_by_pastoralist">Endorsed by pastoralist</option>
+                                                    <option value=''>{% translate "Endorsed by" %}</option>
+                                                    <option value="endorsed_by_youth">{% translate "Endorsed by youth" %}</option>
+                                                    <option value="endorsed_by_women">{% translate "Endorsed by women" %}</option>
+                                                    <option value="endorsed_by_agriculturist">{% translate "Endorsed by agriculturist" %}</option>
+                                                    <option value="endorsed_by_pastoralist">{% translate "Endorsed by pastoralist" %}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -80,6 +79,94 @@
                     </form>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-header" id="headingAdministrativeLevel">
+                    <h5 class="mb-0">
+                        <button aria-controls="collapseAdministrativeLevel" aria-expanded="false"
+                                class="btn btn-link collapsed" data-target="#collapseAdministrativeLevel"
+                                data-toggle="collapse">
+                            {% translate 'Choose the Administrative level' %}
+                        </button>
+                    </h5>
+                </div>
+                <div aria-labelledby="headingAdministrativeLevel" class="collapse show"
+                     id="collapseAdministrativeLevel">
+                    <form action="" method="POST" id="adm-filter-form">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="region-filter" style="width: 100%;">
+                                                    <option selected value="">{% translate "Region" %}</option>
+                                                    {% for region in regions %}
+                                                    <option value="{{ region.id }}">{{ region.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="commune-filter" style="width: 100%;">
+                                                    <option selected value="">Commune</option>
+                                                    {% for commune in communes %}
+                                                    <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="village-filter" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Village' %}</option>
+                                                    {% for village in villages %}
+                                                    <option value="{{ village.id }}">{{ village.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="prefecture-filter" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Prefecture' %}</option>
+                                                    {% for prefecture in prefectures %}
+                                                    <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="canton-filter" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Canton' %}</option>
+                                                    {% for canton in cantons %}
+                                                    <option value="{{ canton.id }}">{{ canton.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
+                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Reset' %}"/>
+                                            <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
 
             <div class="card">
                 <div class="card-header" id="headingColumns">
@@ -153,92 +240,6 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header" id="headingAdministrativeLevel">
-                    <h5 class="mb-0">
-                        <button aria-controls="collapseAdministrativeLevel" aria-expanded="false"
-                                class="btn btn-link collapsed" data-target="#collapseAdministrativeLevel"
-                                data-toggle="collapse">
-                            {% translate 'Choose the Administrative level' %}
-                        </button>
-                    </h5>
-                </div>
-                <div aria-labelledby="headingAdministrativeLevel" class="collapse show"
-                     id="collapseAdministrativeLevel">
-                    <form action="" method="POST" id="adm-filter-form">
-                        {% csrf_token %}
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-9">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="region-filter" style="width: 100%;">
-                                                    <option selected value="">Region</option>
-                                                    {% for region in regions %}
-                                                    <option value="{{ region.id }}">{{ region.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="commune-filter" style="width: 100%;">
-                                                    <option selected value="">Commune</option>
-                                                    {% for commune in communes %}
-                                                    <option value="{{ commune.id }}">{{ commune.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="village-filter" style="width: 100%;">
-                                                    <option selected value="">Village</option>
-                                                    {% for village in villages %}
-                                                    <option value="{{ village.id }}">{{ village.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="prefecture-filter" style="width: 100%;">
-                                                    <option selected value="">Prefecture</option>
-                                                    {% for prefecture in prefectures %}
-                                                    <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="canton-filter" style="width: 100%;">
-                                                    <option selected value="">Canton</option>
-                                                    {% for canton in cantons %}
-                                                    <option value="{{ canton.id }}">{{ canton.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Reset' %}"/>
-                                            <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
     </div>
 </div>
 
@@ -247,7 +248,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <h6>Results</h6>
+                    <h6>{% translate 'Results' %}</h6>
                 </div>
                 <div class="row">
                     <div class="col-12 mb-3">
@@ -261,22 +262,22 @@
                 </div>
                 <div class="row">
                     <div class="col-3">
-                        <p class="text-sm"># Villages:
+                        <p class="text-sm">{% translate '# Villages:' %}
                             <b class="d-block total-villages-display">0</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <p class="text-sm"># Sub-projects:
+                        <p class="text-sm">{% translate '# Sub-projects:' %}
                             <b class="d-block total-subprojects-display">0</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <p class="text-sm">Total funding selected:
-                            <b class="d-block total-funding-display">0</b>
+                        <p class="text-sm">{% translate 'Total funding selected:' %}
+                            <b class="d-block total-funding-display">0 FCFA</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <input type="submit" class="btn btn-success btn-sm pull-right" value="Add to Cart" id="investments-submit" name="investments-submit">
+                        <input type="submit" class="btn btn-success btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
                     </div>
                 </div>
             </div>
@@ -308,7 +309,7 @@
                             <td>{{ investment.title }}</td>
                             <td>{{ investment.administrative_level.type }}</td>
                             <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
-                                {{ investment.estimated_cost|intcomma }}
+                                {{ investment.estimated_cost|intcomma }} FCFA
                             </td>
                             <td>{{ investment.administrative_level.name }}</td>
                             <td>{{ investment.administrative_level.parent.name }}</td>
@@ -345,7 +346,7 @@
 
 {% block javascript %}
 {{ block.super }}
-<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+<script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
         var table = $(".table").DataTable();
@@ -408,7 +409,7 @@
                 }
             } );
 
-            $('.total-funding-display').html(numeral(funding).format('0,0'));
+            $('.total-funding-display').html(numeral(funding).format('0,0') + ' FCFA');
             $('.total-villages-display').html(numeral(villages.length).format('0,0'));
             $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
 

@@ -174,7 +174,7 @@
 
 {% block javascript %}
 {{ block.super }}
-<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+<script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
         var table = $(".datatable").DataTable();
