@@ -3440,7 +3440,7 @@ msgstr "Voir le village"
 #: .\administrativelevels\templates\administrativelevels_list
 msgid "Choice the village in canton"
 msgstr "Choisir le village dans le canton"
-
+#: .\administrativelevels\templates\administrativelevels_list
 msgid "Choose filters"
 msgstr "Choisir les filtres"
 
@@ -3462,7 +3462,7 @@ msgstr "Soutenu par le agriculteurs"
 msgid "Endorsed by pastoralist"
 msgstr "Soutenu par les éléveur"
 
-msgid "Choose the columns to displaylage"
+msgid "Choose the columns to display"
 msgstr "Choisir les colonnes à afficher"
 
 msgid "Community"
