@@ -5,6 +5,8 @@
 !.elasticbeanstalk/*.global.yml
 /cosomis/.develop.env
 
+# Environment variables
+/cosomis/.env
 
 #media
 /media/
