@@ -37,7 +37,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="sector-filter" style="width: 100%;">
-                                                    <option selected value="">Sector</option>
+                                                    <option selected value="">{% translate 'Sector' %}</option>
                                                     {% for sector in sectors %}
                                                     <option value="{{ sector.id }}">{{ sector.name }}</option>
                                                     {% endfor %}
@@ -69,7 +69,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-success submit-reset" value="{% translate 'Reset' %}"/>
+                                            <input type="button" class="btn btn-success submit-reset" value="{% translate 'Réinitialiser' %}"/>
                                             <input type="hidden" id="reset-hidden-id" name="reset-hidden" value="">
                                         </div>
                                     </div>
@@ -155,8 +155,8 @@
                                 <div class="col-3">
                                     <div class="row">
                                         <div class="col-12">
-                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Reset' %}"/>
+                                            <input type="submit" class="btn btn-success" value="{% translate 'Appliquer' %}">
+                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Réinitialiser' %}"/>
                                             <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
                                         </div>
                                     </div>
@@ -208,7 +208,7 @@
                                         <div class="custom-control custom-switch">
                                             <input checked class="custom-control-input column-switch"
                                                    data-column="5" id="customSwitchCommunity" type="checkbox">
-                                            <label class="custom-control-label" for="customSwitchCommunity">{% translate 'Community' %}</label>
+                                            <label class="custom-control-label" for="customSwitchCommunity">{% translate 'Commune' %}</label>
                                         </div>
                                         <div class="custom-control custom-switch">
                                             <input checked class="custom-control-input column-switch"
@@ -267,7 +267,7 @@
                         </p>
                     </div>
                     <div class="col-3">
-                        <p class="text-sm">{% translate '# Sub-projects:' %}
+                        <p class="text-sm">{% translate '# Sub-projects' %}:
                             <b class="d-block total-subprojects-display">0</b>
                         </p>
                     </div>
@@ -294,7 +294,7 @@
                             <th class="align-middle rounded-0 border-0">{% translate 'Subproject type' %}</th>
                             <th class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
                             <th class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
-                            <th class="align-middle rounded-0 border-0">{% translate 'Community' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
                             <th class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
                             <th class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
                             <th class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
@@ -350,7 +350,7 @@
 <script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        var table = $(".table").DataTable();
+        var table = $(".table").DataTable({{ datatable_config | safe }});
 
         sum_subprojects();
 

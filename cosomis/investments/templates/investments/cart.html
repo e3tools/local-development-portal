@@ -7,14 +7,10 @@
 <div class="row mb-3">
     <div class="col-8">
         <div class="card h-100">
-            <div class="card-header">
-                test
-            </div>
             <div class="card-body">
-
                 <div class="row">
                     <div class="col-4">
-                        <p class="text-sm">Total funding selected:</p>
+                        <p class="text-sm">{% translate 'Total funding selected' %}:</p>
                     </div>
                     <div class="col-8">
                         <p class="text-sm">
@@ -24,7 +20,7 @@
                 </div>
                 <div class="row">
                     <div class="col-4">
-                        <p class="text-sm"># Sub-projects:</p>
+                        <p class="text-sm">{% translate '# Sub-projects' %}:</p>
                     </div>
                     <div class="col-8">
                         <p class="text-sm">
@@ -34,7 +30,7 @@
                 </div>
                 <div class="row">
                 <div class="col-4">
-                    <p class="text-sm"># Villages:</p>
+                    <p class="text-sm">{% translate '# Villages' %}:</p>
                 </div>
                 <div class="col-8">
                     <p class="text-sm">
@@ -43,20 +39,17 @@
                 </div>
             </div>
             </div>
-            <div class="card-footer">
-                test
-            </div>
         </div>
     </div>
     <div class="col-4">
         <div class="card h-100">
             <div class="card-body">
                 <h6>
-                    <i class="fa fa-shopping-cart"></i> Cart Total
+                    <i class="fa fa-shopping-cart"></i> Total Panier
                 </h6>
                 <div class="row">
                     <div class="col-8">
-                        <p class="text-sm float-right">Total funding selected:</p>
+                        <p class="text-sm float-right">Financement total sélectionné:</p>
                     </div>
                     <div class="col-4">
                         <p class="text-sm">
@@ -66,7 +59,7 @@
                 </div>
                 <div class="row">
                     <div class="col-8">
-                        <p class="text-sm float-right"># Sub-projects:</p>
+                        <p class="text-sm float-right">{% translate '# Subprojects' %}:</p>
                     </div>
                     <div class="col-4">
                         <p class="text-sm">
@@ -95,7 +88,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <h6>Results</h6>
+                    <h6>{% translate 'Results' %}</h6>
                 </div>
                 <div class="row">
                     <div class="col-12 mb-3">
@@ -108,7 +101,7 @@
                             </button>
                         </span>
                         {% endfor %}
-                        <input type="submit" class="btn btn-success pull-right" value="buy" name="investments-submit">
+                        <input type="submit" class="btn btn-success pull-right" value="{% translate 'Submit' %}" name="investments-submit">
                     </div>
                 </div>
             </div>
@@ -122,7 +115,7 @@
                         <th>{% translate 'Subproject type' %}</th>
                         <th>{% translate 'Estimate cost' %}</th>
                         <th>{% translate 'Village' %}</th>
-                        <th>{% translate 'Community' %}</th>
+                        <th>{% translate 'Commune' %}</th>
                         <th>{% translate 'Prefecture' %}</th>
                         <th>{% translate 'Region' %}</th>
                         <th>{% translate 'Village priority' %}</th>
@@ -176,7 +169,8 @@
 <script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        var table = $(".datatable").DataTable();
+        console.log({{ datatable_config |safe }})
+        var table = $(".datatable").DataTable({{ datatable_config | safe }});
 
         sum_subprojects();
 
