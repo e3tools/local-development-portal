@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-01 10:42+0100\n"
+"POT-Creation-Date: 2023-12-01 22:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,18 @@ msgstr ""
 
 msgid "Toutes les régions"
 msgstr ""
+
+msgid "Region"
+msgstr "Région"
+
+msgid "Prefecture"
+msgstr "Préfecture"
+
+msgid "Commune"
+msgstr "Commune"
+
+msgid "Canton"
+msgstr "Canton"
 
 msgid "Photo"
 msgstr ""
@@ -77,18 +89,6 @@ msgstr ""
 
 msgid "Village"
 msgstr "Village"
-
-msgid "Canton"
-msgstr "Canton"
-
-msgid "Commune"
-msgstr "Commune"
-
-msgid "Region"
-msgstr "Région"
-
-msgid "Prefecture"
-msgstr "Préfecture"
 
 msgid "Parent"
 msgstr "Parent"
@@ -188,6 +188,8 @@ msgstr "Voir le village"
 msgid "No attachment"
 msgstr "Aucun document"
 
+#, fuzzy
+#| msgid "Download"
 msgid "download"
 msgstr "Télécharger"
 
@@ -591,14 +593,24 @@ msgstr "Vue d'ensemble du canton"
 msgid "You have no priorities"
 msgstr "Priorités identifiées"
 
+msgid "Planning Cycle"
+msgstr "Cycle de Planification"
+
 msgid "Completed"
 msgstr "Achevé"
 
+#, fuzzy
+#| msgid "Priorities Order"
+msgid "Priorities Identified"
+msgstr "Classement des priorités"
+
+#, fuzzy
+#| msgid "Village Development Plan"
+msgid "Village Development Plan Date"
+msgstr "Plan de Développement du Village"
+
 msgid "Village population"
 msgstr "Population du Village"
-
-msgid "Planning Cycle"
-msgstr "Cycle de Planification"
 
 msgid "Principal Administrator"
 msgstr "Administrateur principal"
@@ -645,8 +657,8 @@ msgstr "et"
 msgid "Create Administrative level"
 msgstr "Créer niveau administratif"
 
-msgid "Galerie d'images"
-msgstr "Galérie d'images"
+msgid "Gallery"
+msgstr "Galerie"
 
 msgid "username"
 msgstr "Nom d'utilisateur"
@@ -798,11 +810,6 @@ msgstr "Bienvenu(e)"
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#, fuzzy
-#| msgid "Galerie d'images"
-msgid "Gallerie d'images"
-msgstr "Galérie d'images"
-
 msgid "Investments"
 msgstr "Investissements"
 
@@ -901,8 +908,6 @@ msgstr "Reste après coût estimé"
 msgid "Remaining amount"
 msgstr "Montant restant"
 
-#, fuzzy
-#| msgid "download"
 msgid "Download"
 msgstr "Télécharger"
 
@@ -1000,6 +1005,11 @@ msgid "# Villages"
 msgstr "# Villages"
 
 #, fuzzy
+#| msgid "Total"
+msgid "Total cart"
+msgstr "Total Panier"
+
+#, fuzzy
 #| msgid "# Sub-projects"
 msgid "# Subprojects"
 msgstr "# Sous-projets"
@@ -1021,6 +1031,12 @@ msgstr "Priorité du village"
 msgid "Population priority"
 msgstr "Priorité de la population"
 
+msgid "Choose filters"
+msgstr "Choisir les filtres"
+
+msgid "Endorsed by"
+msgstr "Soutenu par"
+
 msgid "Endorsed by youth"
 msgstr "Soutenu par les jeunes"
 
@@ -1033,16 +1049,22 @@ msgstr "Soutenu par le agriculteurs"
 msgid "Endorsed by pastoralist"
 msgstr "Soutenu par les éléveur"
 
-msgid "Réinitialiser"
-msgstr ""
+msgid "Reset"
+msgstr "Réinitialiser"
 
-msgid "Appliquer"
-msgstr ""
+msgid "Choose the administrative level"
+msgstr "Choisissez les niveaux administratifs"
+
+msgid "Choose the columns to display"
+msgstr "Choisir les documents à visualiser"
 
 #, fuzzy
 #| msgid "# Villages"
 msgid "# Villages:"
 msgstr "# Villages"
+
+msgid "Add to Cart"
+msgstr "Ajouter une priorité"
 
 #, fuzzy
 #| msgid "Identified priorities"

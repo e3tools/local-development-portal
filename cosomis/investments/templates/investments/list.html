@@ -23,7 +23,7 @@
                     <h5 class="mb-0">
                         <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link"
                                 data-target="#collapseOne" data-toggle="collapse">
-                            Choisir les filtres
+                             {% translate 'Choose filters' %}
                         </button>
                     </h5>
                 </div>
@@ -55,7 +55,7 @@
                                             <div class="form-group">
                                                 <select class="form-control" name="subpopulation-filter"
                                                         style="width: 100%;">
-                                                    <option value=''>Soutenu par</option>
+                                                    <option value=''>{% translate "Endorsed by" %}</option>
                                                     <option value="endorsed_by_youth">{% translate "Endorsed by youth" %}</option>
                                                     <option value="endorsed_by_women">{% translate "Endorsed by women" %}</option>
                                                     <option value="endorsed_by_agriculturist">{% translate "Endorsed by agriculturist" %}</option>
@@ -69,7 +69,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-success submit-reset" value="{% translate 'Réinitialiser' %}"/>
+                                            <input type="button" class="btn btn-success submit-reset" value="{% translate 'Reset' %}"/>
                                             <input type="hidden" id="reset-hidden-id" name="reset-hidden" value="">
                                         </div>
                                     </div>
@@ -86,7 +86,7 @@
                         <button aria-controls="collapseAdministrativeLevel" aria-expanded="false"
                                 class="btn btn-link collapsed" data-target="#collapseAdministrativeLevel"
                                 data-toggle="collapse">
-                            Choisissez les niveaux administratifs
+                                {% translate 'Choose the administrative level' %}
                         </button>
                     </h5>
                 </div>
@@ -155,8 +155,8 @@
                                 <div class="col-3">
                                     <div class="row">
                                         <div class="col-12">
-                                            <input type="submit" class="btn btn-success" value="{% translate 'Appliquer' %}">
-                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Réinitialiser' %}"/>
+                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
+                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Reset' %}"/>
                                             <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
                                         </div>
                                     </div>
@@ -173,7 +173,7 @@
                     <h5 class="mb-0">
                         <button aria-controls="collapseColumns" aria-expanded="false" class="btn btn-link collapsed"
                                 data-target="#collapseColumns" data-toggle="collapse">
-                            Choisissez les colonnes à afficher
+                            {% translate 'Choose the columns to display' %}
                         </button>
                     </h5>
                 </div>
@@ -272,12 +272,12 @@
                         </p>
                     </div>
                     <div class="col-3">
-                        <p class="text-sm">Financement total sélectionné:
+                        <p class="text-sm">{% translate 'Total funding selected' %}
                             <b class="d-block total-funding-display">0 FCFA</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <input type="submit" class="btn btn-success btn-sm pull-right" value="Ajouter au panier" id="investments-submit" name="investments-submit">
+                        <input type="submit" class="btn btn-success btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
                     </div>
                 </div>
             </div>

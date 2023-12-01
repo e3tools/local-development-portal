@@ -68,32 +68,32 @@
         </div>
         <div class="card col-12">
             <div class="card-header pb-0">
-                <h5 class="font-weight-bold mb-0">Cycle de Planification</h5>
+                <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
             </div>
             <div class="card-body p-2">
                 <table class="table">
                     <tbody>
                         <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">Phase</td>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase }}</td>
                         </tr>
                         <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">Activité</td>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity }}</td>
                         </tr>
                         <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">Tâche</td>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed }}</td>
                         <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">Classement des priorités</td>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified }}</td>
                         </tr>
                         <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">Plan de Développement du Village</td>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan Date" %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.village_development_plan_date  }}</td>
                         </tr>
                         <tr>
