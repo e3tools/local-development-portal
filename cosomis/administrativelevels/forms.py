@@ -46,8 +46,8 @@ class AttachmentFilterForm(forms.Form):
         (Attachment.DOCUMENT, _('Document')),
         (None, _("Both"))
     )
-    type = forms.ChoiceField(choices=TYPE_CHOICES, widget=RadioSelect)
-    phase = forms.ChoiceField(widget=Select, required=False)
-    activity = forms.ChoiceField(widget=Select, required=False)
-    task = forms.ChoiceField(widget=Select, required=False)
-    administrative_level = forms.ChoiceField(widget=Select, required=False)
+    type = forms.ChoiceField(choices=TYPE_CHOICES, widget=RadioSelect, label=_("Type"))
+    phase = forms.ChoiceField(widget=Select, required=False, label=_("Phase"))
+    activity = forms.ChoiceField(widget=Select, required=False, label=_("Activity"))
+    task = forms.ChoiceField(widget=Select, required=False, label=_("Task"))
+    administrative_level = forms.ChoiceField(widget=Select, required=False, label=_("Administrative level"))
