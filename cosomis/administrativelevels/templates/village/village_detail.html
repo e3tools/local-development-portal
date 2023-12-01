@@ -264,7 +264,7 @@ let spin_attachments_images = $("#spin-attachments-images");
         </div>
 
     {% else %}
-    <a href="{% url 'administrativelevels:village_attachments' object.id %}">
+    <a href="{% url 'administrativelevels:village_attachments' object.id %}?type=Photo">
                 <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
     alt="Card image">
     </a>

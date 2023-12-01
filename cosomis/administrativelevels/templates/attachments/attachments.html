@@ -189,7 +189,7 @@
                             </button>
                         </div>
                         {% if no_results == True %}
-                        <div>No attachments</div>
+                        <div>{% translate 'No attachment' %}</div>
                         {% else %}
                         <form class="form-attachment d-inline-flex">
                             {% for attachment in attachments %}
@@ -216,7 +216,7 @@
                         </form>
                         <div class="d-flex justify-content-between col-12 mt-3 p-0">
                              <button class="download-all">
-                                  Download Images
+                                  {% translate 'download' %}
                              </button>
                              <div class="pagination">
                             <span class="step-links">
@@ -227,7 +227,7 @@
                                 {% endif %}
 
                                 <span class="current">
-                                    {{ attachments.number }} of {{ attachments.paginator.num_pages }}
+                                    {{ attachments.number }} {% translate 'of' %} {{ attachments.paginator.num_pages }}
                                 </span>
 
                                 {% if attachments.has_next %}
@@ -271,7 +271,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Choose attachments to view</h5>
+                    <h5>{% translate 'Choose attachments to view' %}</h5>
                     <button type="button" class="close btn-closeModal" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -325,7 +325,7 @@
                                 {{ form.task }}
                             </div>
                         </div>
-                        <input type="submit" class="btn btn-primary" value=Apply>
+                        <input type="submit" class="btn btn-primary" value={% translate 'Apply' %}>
                     </form>
                 </div>
             </div>

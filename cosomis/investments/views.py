@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
 from administrativelevels.models import AdministrativeLevel
+from static.config.datatable import get_datatable_config
 from .models import Investment, Package, Category
 from .forms import InvestmentsForm
 
@@ -99,6 +100,8 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
             }
         if context_object_name is not None:
             context[context_object_name] = queryset
+
+        context['datatable_config'] = get_datatable_config()
         context.update(kwargs)
 
         return context
@@ -184,7 +187,7 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
 class CartView(LoginRequiredMixin, PageMixin, generic.DeleteView):
     template_name = 'investments/cart.html'
     queryset = Package.objects.filter(status=Package.PENDING_APPROVAL)
-    title = _('Your cart')
+    title = _('Votre panier')
 
     def get_object(self, queryset=None):
         """
@@ -207,3 +210,8 @@ class CartView(LoginRequiredMixin, PageMixin, generic.DeleteView):
                 % {"verbose_name": queryset.model._meta.verbose_name}
             )
         return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['datatable_config'] = get_datatable_config()
+        return context
