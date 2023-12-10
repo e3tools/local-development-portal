@@ -207,7 +207,11 @@
                                 </div>
                             </div>
                             <div id="planning_cycle" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% include 'village/tabs/planning_cycle.html' %}
+                                    </div>
+                                </div>
                             </div>
                             <div id="financial_informations" class="tab-pane fade">
                                 <h3>{% translate "In construction" %}</h3>
@@ -289,5 +293,31 @@
     <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
     <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
     <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
+
+    <!-- Planning cycle script -->
+    <script type="text/javascript">
+        $( document ).ready(function(){
+            $(".pc-btn").on('click', function(){
+
+                let phase_id = $(this).attr("id").split("-")[3];
+                let activity_buttons = $("#v-phase-" + phase_id + "-pills-tab").children();
+                let has_selected = false;
+                $(".tasks-pane").removeClass("active show");
+                activity_buttons.each(function(){
+                    if( $( this ).hasClass("active") ){
+                        let activity_id = $( this ).attr("id").split("-")[3];
+                        $("#activity-" + activity_id + "-content").tab("show");
+                        has_selected = true;
+                    }
+                });
+                if( !has_selected ){
+                    let single_button = $("#v-phase-" + phase_id + "-pills-tab").children(":first-child");
+                    let activity_id = single_button.attr("id").split("-")[3];
+                    single_button.addClass("active")
+                    $("#activity-" + activity_id + "-content").tab("show");
+                }
+            });
+        });
+    </script>
 
 {% endblock %}
