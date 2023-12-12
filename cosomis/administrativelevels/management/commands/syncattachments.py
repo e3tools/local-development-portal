@@ -9,23 +9,38 @@ from investments.models import Attachment
 class Command(BaseCommand):
     help = 'Extract attachments from task documents and save to purs_test database'
 
+    def check_for_valid_facilitator(self, facilitator):
+        db = self.nsc.get_db(facilitator).get_query_result({
+            "type": "facilitator"
+        })
+        for document in db:
+            print("Facilitator", document)
+            try:
+                if not document['develop_mode'] and not document["training_mode"]:
+                    print("Facilitator is valid", document)
+                    return True
+            except:
+                return False
+        return False
+
     def handle(self, *args, **options):
         self.nsc = NoSQLClient()
         facilitator_dbs = self.nsc.list_all_databases('facilitator')
         for db_name in facilitator_dbs:
-            extracted_attachments = []
-            db = self.nsc.get_db(db_name)
-            task_documents = db.get_query_result({
-                "type": "task"
-            })
-            adm_id = None
-            for doc in task_documents:
-                adm_id = doc['administrative_level_id']
-                break
-            extracted_attachments = get_attachments_from_database(task_documents)
-            if adm_id:
-                adm = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
-                save_attachments_to_purs_test(adm, extracted_attachments)
+            if self.check_for_valid_facilitator(db_name):
+                extracted_attachments = []
+                db = self.nsc.get_db(db_name)
+                task_documents = db.get_query_result({
+                    "type": "task"
+                })
+                adm_id = None
+                for doc in task_documents:
+                    adm_id = doc['administrative_level_id']
+                    break
+                extracted_attachments = get_attachments_from_database(task_documents)
+                if adm_id:
+                    adm = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
+                    save_attachments_to_purs_test(adm, extracted_attachments)
         self.stdout.write(self.style.SUCCESS('Successfully extracted attachments!'))
 
 

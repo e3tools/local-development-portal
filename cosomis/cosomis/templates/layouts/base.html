@@ -1,7 +1,8 @@
-{% load static %}
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     {% include 'layouts/head.html' %}
     {% block extracss %}{% endblock %}
@@ -92,10 +93,12 @@
     {% block select2 %}
         <script type="text/javascript">
             $(document).ready(function () {
-                $("select").select2()
+                var language = '{{ LANGUAGE_CODE }}'
+                $("select").select2({ language });
             });
         </script>
-    {% endblock select2 %}
+        <script src="{% static '\admin\js\vendor\select2\i18n\fr.js' %}"></script>
+{% endblock select2 %}
 {% endblock javascript %}
 </body>
 
