@@ -8,22 +8,33 @@ from administrativelevels.models import AdministrativeLevel
 class Command(BaseCommand):
     help = 'Description of your command'
 
-    def add_arguments(self, parser):
-        # You can add command-line arguments here, if needed
-        pass
+    def check_for_valid_facilitator(self, facilitator):
+        db = self.nsc.get_db(facilitator).get_query_result({
+            "type": "facilitator"
+        })
+        for document in db:
+            print("Facilitator", document)
+            try:
+                if not document['develop_mode'] and not document["training_mode"]:
+                    print("Facilitator is valid", document)
+                    return True
+            except:
+                return False
+        return False
 
     def handle(self, *args, **options):
         # Your command logic here
         self.nsc = NoSQLClient()
         facilitator_dbs = self.nsc.list_all_databases('facilitator')
         for db_name in facilitator_dbs:
-            db = self.nsc.get_db(db_name).get_query_result({
-                "type": "task",
-                "phase_name": "VISITES PREALABLES",
-                "name": "Etablissement du profil du village",
-            })
-            for document in db:
-                update_or_create_adm_document(self.nsc, document)
+            if self.check_for_valid_facilitator(db_name):
+                db = self.nsc.get_db(db_name).get_query_result({
+                    "type": "task",
+                    "phase_name": "VISITES PREALABLES",
+                    "name": "Etablissement du profil du village",
+                })
+                for document in db:
+                    update_or_create_adm_document(self.nsc, document)
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))
 
 def update_or_create_adm_document(client, population_document):

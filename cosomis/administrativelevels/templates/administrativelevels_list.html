@@ -7,16 +7,9 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-md-12">
-                        <div class="" style="display: inline-block;">
-
-
-                            </div>
-
-
+                        <div class="" style="display: inline-block;"></div>
                     </div>
                 </div>
-
-
 
                 <div class="card-body">
                     <div class="col-3 pull-right" style="inline-block">
@@ -40,7 +33,7 @@
                                     {{ field }}
                                 </div>
                                 <div class="col-3">
-                                 <a id="check_{{ field.name }}" href="" class="btn btn-primary" style="display: none;">Check</a>
+                                 <a id="check_{{ field.name }}" href="" class="btn btn-primary" style="display: none;">{% translate 'Check' %}</a>
                                 </div>
                                 {% comment%}
                                 <div class="col-3" >
@@ -230,27 +223,30 @@
         });
     </script>
 {% endblock %}
-
 {% block select2 %}
+<script src="{% static '\admin\js\vendor\select2\i18n\fr.js' %}"></script>
 <script type="text/javascript">
     $("#id_region").select2({
+        language: '{{ current_language }}',
         placeholder: "{% translate 'Region' %}",
         allowClear: true,
         width: 'inherit'
     });
     $("#id_prefecture").select2({
         placeholder: "{% translate 'Prefecture' %}",
+        language: '{{ current_language }}',
         allowClear: true,
         width: 'inherit'
-
     });
     $("#id_commune").select2({
         placeholder: "{% translate 'Commune' %}",
+        language: '{{ current_language }}',
         allowClear: true,
         width: 'inherit'
     });
     $("#id_canton").select2({
         placeholder: "{% translate 'Canton' %}",
+        language: '{{ current_language }}',
         allowClear: true,
         width: 'inherit'
     });

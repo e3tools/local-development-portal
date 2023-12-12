@@ -1,9 +1,20 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n humanize custom_tags %}
 
+{% block extracss %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+    <style>
+        .table th {
+            padding: 5px 30px 0 30px;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.025);
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-
 <div class="row">
     <div class="col-12">
 
@@ -12,7 +23,7 @@
                     <h5 class="mb-0">
                         <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link"
                                 data-target="#collapseOne" data-toggle="collapse">
-                            Choose filters
+                             {% translate 'Choose filters' %}
                         </button>
                     </h5>
                 </div>
@@ -26,7 +37,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="sector-filter" style="width: 100%;">
-                                                    <option selected value="">Sector</option>
+                                                    <option selected value="">{% translate 'Sector' %}</option>
                                                     {% for sector in sectors %}
                                                     <option value="{{ sector.id }}">{{ sector.name }}</option>
                                                     {% endfor %}
@@ -36,7 +47,7 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <select class="form-control" name="type-filter" style="width: 100%;">
-                                                    <option selected value="">Type</option>
+                                                    <option selected value="">{% translate 'Type' %}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -44,11 +55,11 @@
                                             <div class="form-group">
                                                 <select class="form-control" name="subpopulation-filter"
                                                         style="width: 100%;">
-                                                    <option value=''>Sub-population</option>
-                                                    <option value="endorsed_by_youth">Endorsed by youth</option>
-                                                    <option value="endorsed_by_women">Endorsed by women</option>
-                                                    <option value="endorsed_by_agriculturist">Endorsed by agriculturist</option>
-                                                    <option value="endorsed_by_pastoralist">Endorsed by pastoralist</option>
+                                                    <option value=''>{% translate "Endorsed by" %}</option>
+                                                    <option value="endorsed_by_youth">{% translate "Endorsed by youth" %}</option>
+                                                    <option value="endorsed_by_women">{% translate "Endorsed by women" %}</option>
+                                                    <option value="endorsed_by_agriculturist">{% translate "Endorsed by agriculturist" %}</option>
+                                                    <option value="endorsed_by_pastoralist">{% translate "Endorsed by pastoralist" %}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -68,6 +79,94 @@
                     </form>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-header" id="headingAdministrativeLevel">
+                    <h5 class="mb-0">
+                        <button aria-controls="collapseAdministrativeLevel" aria-expanded="false"
+                                class="btn btn-link collapsed" data-target="#collapseAdministrativeLevel"
+                                data-toggle="collapse">
+                                {% translate 'Choose the administrative level' %}
+                        </button>
+                    </h5>
+                </div>
+                <div aria-labelledby="headingAdministrativeLevel" class="collapse show"
+                     id="collapseAdministrativeLevel">
+                    <form action="" method="POST" id="adm-filter-form">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="region-filter" style="width: 100%;">
+                                                    <option selected value="">{% translate "Region" %}</option>
+                                                    {% for region in regions %}
+                                                    <option value="{{ region.id }}">{{ region.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="commune-filter" style="width: 100%;">
+                                                    <option selected value="">Commune</option>
+                                                    {% for commune in communes %}
+                                                    <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="village-filter" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Village' %}</option>
+                                                    {% for village in villages %}
+                                                    <option value="{{ village.id }}">{{ village.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="prefecture-filter" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Prefecture' %}</option>
+                                                    {% for prefecture in prefectures %}
+                                                    <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <select class="form-control" name="canton-filter" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Canton' %}</option>
+                                                    {% for canton in cantons %}
+                                                    <option value="{{ canton.id }}">{{ canton.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
+                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Reset' %}"/>
+                                            <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
 
             <div class="card">
                 <div class="card-header" id="headingColumns">
@@ -109,7 +208,7 @@
                                         <div class="custom-control custom-switch">
                                             <input checked class="custom-control-input column-switch"
                                                    data-column="5" id="customSwitchCommunity" type="checkbox">
-                                            <label class="custom-control-label" for="customSwitchCommunity">{% translate 'Community' %}</label>
+                                            <label class="custom-control-label" for="customSwitchCommunity">{% translate 'Commune' %}</label>
                                         </div>
                                         <div class="custom-control custom-switch">
                                             <input checked class="custom-control-input column-switch"
@@ -141,92 +240,6 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header" id="headingAdministrativeLevel">
-                    <h5 class="mb-0">
-                        <button aria-controls="collapseAdministrativeLevel" aria-expanded="false"
-                                class="btn btn-link collapsed" data-target="#collapseAdministrativeLevel"
-                                data-toggle="collapse">
-                            {% translate 'Choose the Administrative level' %}
-                        </button>
-                    </h5>
-                </div>
-                <div aria-labelledby="headingAdministrativeLevel" class="collapse show"
-                     id="collapseAdministrativeLevel">
-                    <form action="" method="POST" id="adm-filter-form">
-                        {% csrf_token %}
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-9">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="region-filter" style="width: 100%;">
-                                                    <option selected value="">Region</option>
-                                                    {% for region in regions %}
-                                                    <option value="{{ region.id }}">{{ region.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="commune-filter" style="width: 100%;">
-                                                    <option selected value="">Commune</option>
-                                                    {% for commune in communes %}
-                                                    <option value="{{ commune.id }}">{{ commune.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="village-filter" style="width: 100%;">
-                                                    <option selected value="">Village</option>
-                                                    {% for village in villages %}
-                                                    <option value="{{ village.id }}">{{ village.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="prefecture-filter" style="width: 100%;">
-                                                    <option selected value="">Prefecture</option>
-                                                    {% for prefecture in prefectures %}
-                                                    <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="form-group">
-                                                <select class="form-control" name="canton-filter" style="width: 100%;">
-                                                    <option selected value="">Canton</option>
-                                                    {% for canton in cantons %}
-                                                    <option value="{{ canton.id }}">{{ canton.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Reset' %}"/>
-                                            <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
     </div>
 </div>
 
@@ -235,7 +248,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <h6>Results</h6>
+                    <h6>{% translate 'Results' %}</h6>
                 </div>
                 <div class="row">
                     <div class="col-12 mb-3">
@@ -249,41 +262,44 @@
                 </div>
                 <div class="row">
                     <div class="col-3">
-                        <p class="text-sm"># Villages:
+                        <p class="text-sm">{% translate '# Villages:' %}
                             <b class="d-block total-villages-display">0</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <p class="text-sm"># Sub-projects:
+                        <p class="text-sm">{% translate '# Sub-projects' %}:
                             <b class="d-block total-subprojects-display">0</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <p class="text-sm">Total funding selected:
-                            <b class="d-block total-funding-display">0</b>
+                        <p class="text-sm">{% translate 'Total funding selected' %}
+                            <b class="d-block total-funding-display">0 FCFA</b>
                         </p>
                     </div>
                     <div class="col-3">
-                        <input type="submit" class="btn btn-success btn-sm pull-right" value="Add to Cart" id="investments-submit" name="investments-submit">
+                        <input type="submit" class="btn btn-success btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
                     </div>
                 </div>
             </div>
             <div class="card-body">
                 <form action="" method="POST" id="investment-form" name="investments-form">
                     {% csrf_token %}
-                    <table class="table datatable display" style="100%">
-                        <thead>
-                        <th><input class="" id="checkbox-select-all" type="checkbox" checked></th>
-                        <th>{% translate 'Name' %}</th>
-                        <th>{% translate 'Subproject type' %}</th>
-                        <th>{% translate 'Estimate cost' %}</th>
-                        <th>{% translate 'Village' %}</th>
-                        <th>{% translate 'Community' %}</th>
-                        <th>{% translate 'Prefecture' %}</th>
-                        <th>{% translate 'Region' %}</th>
-                        <th>{% translate 'Village priority' %}</th>
-                        <th>{% translate 'Population priority' %}</th>
-                        </thead>
+                    {% if investments.count == 0 %}
+                        {% translate 'You have no investments' %}
+                    {% else %}
+                        <table class="table rounded-table table-striped">
+                            <thead>
+                            <th class="align-middle border-top-left-corner"><input class="" id="checkbox-select-all" type="checkbox" checked></th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Subproject type' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
+                            <th class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
+                            <th class="align-middle border-top-right-corner border-bottom-0">{% translate 'Population priority' %}</th>
+                            </thead>
                         <tbody>
                         {% for investment in object_list %}
                         <tr>
@@ -293,31 +309,33 @@
                             <td>{{ investment.title }}</td>
                             <td>{{ investment.administrative_level.type }}</td>
                             <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
-                                {{ investment.estimated_cost|intcomma }}
+                                {{ investment.estimated_cost|intcomma }} FCFA
                             </td>
                             <td>{{ investment.administrative_level.name }}</td>
                             <td>{{ investment.administrative_level.parent.name }}</td>
                             <td>{{ investment.administrative_level.parent.parent.name }}</td>
                             <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
-                            <td>{{ investment.administrative_level.rank }}</td>
+                            <td>{{ investment.ranking }}</td>
                             <td>
                                 {% if investment.endorsed_by_youth %}
-                                J,
+                                    J{% if investment.endorsed_by_women or investment.endorsed_by_agriculturist or investment.endorsed_by_pastoralist %},{% endif %}
                                 {% endif %}
                                 {% if investment.endorsed_by_women %}
-                                F,
+                                    F{% if investment.endorsed_by_agriculturist or investment.endorsed_by_pastoralist %},{% endif %}
                                 {% endif %}
                                 {% if investment.endorsed_by_agriculturist %}
-                                AG,
+                                    AG{% if investment.endorsed_by_pastoralist %},{% endif %}
                                 {% endif %}
                                 {% if investment.endorsed_by_pastoralist %}
-                                PA
+                                    PA
                                 {% endif %}
                             </td>
+
                         </tr>
                         {% endfor %}
                         </tbody>
                     </table>
+                    {% endif %}
                     <input type="hidden" id="investments-input-id" value="" name="investments">
                 </form>
             </div>
@@ -329,10 +347,10 @@
 
 {% block javascript %}
 {{ block.super }}
-<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+<script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        var table = $(".datatable").DataTable();
+        var table = $(".table").DataTable({{ datatable_config | safe }});
 
         sum_subprojects();
 
@@ -392,7 +410,7 @@
                 }
             } );
 
-            $('.total-funding-display').html(numeral(funding).format('0,0'));
+            $('.total-funding-display').html(numeral(funding).format('0,0') + ' FCFA');
             $('.total-villages-display').html(numeral(villages.length).format('0,0'));
             $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
 
