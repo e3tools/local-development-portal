@@ -2,6 +2,7 @@ from django import template
 from django.utils.translation import gettext_lazy
 
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
+from administrativelevels.models import Task
 
 register = template.Library()
 
@@ -213,3 +214,16 @@ def call_method(obj, method_name, *args):
 @register.filter
 def get_step_color(key):
     return SUB_PROJECT_STATUS_COLOR.get(key, '#000000')
+
+
+@register.filter
+def get_item(dictionary, key):
+    return int(dictionary.get(key))
+
+
+@register.filter
+def vpc_status(phase_or_activity):
+    """
+    Village Planification Cycle object status getter
+    """
+    return phase_or_activity.get_status()

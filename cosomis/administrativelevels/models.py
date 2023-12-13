@@ -151,6 +151,131 @@ class Project(BaseModel):
     implementation_agency = models.CharField(max_length=255)
 
 
+class Phase(BaseModel):
+    village = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE, related_name='phases')
+    order = models.PositiveIntegerField(blank=True, null=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
+    class Meta:
+        unique_together = ['village', 'order']
+
+    def __str__(self):
+        return '%s. %s(%s)' % (self.order, self.name, self.village)
+
+    def get_status(self):
+        completed = self.activities.filter(
+            tasks__id__in=models.Subquery(
+                Task.objects.filter(status=Task.COMPLETED).values('id')
+            )
+        ).exists()
+        not_started = self.activities.filter(
+            tasks__id__in=models.Subquery(
+                Task.objects.filter(status=Task.NOT_STARTED).values('id')
+            )
+        ).exists()
+        if not_started and not completed:
+            return Task.NOT_STARTED
+        elif not not_started and completed:
+            return Task.COMPLETED
+        elif self.activities.filter(
+                tasks__id__in=models.Subquery(
+                    Task.objects.filter(status=Task.ERROR).values('id')
+                )
+        ).exists():
+            return Task.ERROR
+        return Task.IN_PROGRESS
+
+    def get_order(self):
+        last_phase = self.__class__.objects.filter(
+            village=self.village
+        ).aggregate(
+            last_phase=models.Max('order')
+        )['last_phase'] or 0
+        return last_phase + 1
+
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            self.order = self.get_order()
+        return super(Phase, self).save(*args, **kwargs)
+
+
+class Activity(BaseModel):
+    phase = models.ForeignKey(Phase, on_delete=models.CASCADE, related_name='activities')
+    order = models.PositiveIntegerField(blank=True, null=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
+    class Meta:
+        unique_together = ['phase', 'order']
+
+    def __str__(self):
+        return '%s. %s(%s)' % (self.order, self.name, self.phase)
+
+    def get_status(self):
+        not_started = self.tasks.filter(status=Task.NOT_STARTED).exists()
+        completed = self.tasks.filter(status=Task.COMPLETED).exists()
+        if not_started and not completed:
+            return Task.NOT_STARTED
+        elif not not_started and completed:
+            return Task.COMPLETED
+        elif self.tasks.filter(status=Task.ERROR).exists():
+            return Task.ERROR
+        return Task.IN_PROGRESS
+
+    def get_order(self):
+        last_activity = self.__class__.objects.filter(
+            phase=self.phase
+        ).aggregate(
+            last_activity=models.Max('order')
+        )['last_activity'] or 0
+        return last_activity + 1
+
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            self.order = self.get_order()
+        return super(Activity, self).save(*args, **kwargs)
+
+
+class Task(BaseModel):
+    NOT_STARTED = 'not started'
+    IN_PROGRESS = 'in progress'
+    COMPLETED = 'completed'
+    ERROR = 'error'
+
+    STATUS = [
+        (NOT_STARTED, _(NOT_STARTED)),
+        (IN_PROGRESS, _(IN_PROGRESS)),
+        (COMPLETED, _(COMPLETED)),
+        (ERROR, _(ERROR)),
+    ]
+
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='tasks')
+    order = models.PositiveIntegerField(blank=True, null=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    status = models.CharField(max_length=127, choices=STATUS, default=NOT_STARTED)
+
+    class Meta:
+        unique_together = ['activity', 'order']
+
+    def __str__(self):
+        return '%s. %s(%s) - %s' % (self.order, self.name, str(self.activity.id), self.status)
+
+    def get_order(self):
+        last_task = self.__class__.objects.filter(
+            activity=self.activity
+        ).aggregate(
+            last_task=models.Max('order')
+        )['last_task'] or 0
+        return last_task + 1
+
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            self.order = self.get_order()
+        return super(Task, self).save(*args, **kwargs)
+
+
 def update_or_create_amd_couch(sender, instance, **kwargs):
     print("test", instance.id, kwargs['created'])
     client = CddClient()
