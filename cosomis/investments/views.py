@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
@@ -10,6 +11,29 @@ from administrativelevels.models import AdministrativeLevel
 from static.config.datatable import get_datatable_config
 from .models import Investment, Package, Category
 from .forms import InvestmentsForm
+
+
+class ProfileTemplateView(LoginRequiredMixin, PageMixin, generic.DetailView):
+    template_name = 'investments/profile.html'
+    queryset = User.objects.all()
+    extra_context = {
+        'datatable_config': get_datatable_config()
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileTemplateView, self).get_context_data(**kwargs)
+        context['packages'] = self.request.user.packages.exclude(status=Package.REJECTED).order_by('created_date')
+        context['investments'] = []
+        return context
+
+    def get_object(self, queryset=None):
+        """
+        Return the object the view is displaying.
+
+        Require `self.queryset` and a `pk` or `slug` argument in the URLconf.
+        Subclasses can override this to return any object.
+        """
+        return self.request.user
 
 
 class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, generic.ListView):
@@ -184,7 +208,7 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
         return reverse('investments:cart')
 
 
-class CartView(LoginRequiredMixin, PageMixin, generic.DeleteView):
+class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
     template_name = 'investments/cart.html'
     queryset = Package.objects.filter(status=Package.PENDING_APPROVAL)
     title = _('Votre panier')
