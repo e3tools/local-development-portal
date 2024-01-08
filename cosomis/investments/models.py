@@ -94,6 +94,11 @@ class Package(BaseModel):  # investments module (orden de compra(kart de invesme
     draft_status = models.BooleanField(default=True)
     status = models.CharField(max_length=50, choices=STATUS, default=PENDING_APPROVAL)
 
+    def estimated_final_cost(self):
+        return self.funded_investments.all().aggregate(
+            estimated_final_cost=models.Sum('estimated_cost')
+        )['estimated_final_cost']
+
 
 class Attachment(BaseModel):
     PHOTO = 'Photo'
