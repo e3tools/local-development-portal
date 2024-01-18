@@ -12,5 +12,6 @@ class UserPassCode(models.Model):
 
 
 class UserAdditionalConfig(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_conf',)
+    organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, related_name='user_conf',
+                                     blank=True, null=True)

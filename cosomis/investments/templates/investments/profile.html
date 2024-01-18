@@ -51,16 +51,21 @@
 
                     <div class="card-body">
                         <strong><i class="fas fa-map-marker-alt mr-1"></i> {% translate 'Name' %}</strong>
-                        <p class="text-muted">Malibu, California</p>
+                        <p class="text-muted">{{ organization.name }}</p>
                         <hr>
                         <strong><i class="fas fa-book mr-1"></i> UNHCR</strong>
                         <p class="text-muted">
-                            B.S. in Computer Science from the University of Tennessee at Knoxville
+                            {{ organization.description }}
                         </p>
                         <hr>
                         <strong><i class="fas fa-pencil-alt mr-1"></i> {% translate 'Total investments' %}</strong>
                         <p class="text-muted">
-
+                            {{ organization.total_investments|intcomma }}
+                        </p>
+                        <hr>
+                        <strong><i class="fas fa-pencil-alt mr-1"></i> {% translate 'Total investments amount' %}</strong>
+                        <p class="text-muted">
+                            {{ organization.total_investments_amount|intcomma }}
                         </p>
                     </div>
 

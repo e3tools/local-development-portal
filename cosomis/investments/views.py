@@ -5,6 +5,7 @@ from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Subquery, Sum
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
 from administrativelevels.models import AdministrativeLevel
@@ -27,6 +28,16 @@ class ProfileTemplateView(LoginRequiredMixin, PageMixin, generic.DetailView):
         for package in context['packages']:
             inv_ids += package.funded_investments.all().values_list('id', flat=True)
         context['investments'] = Investment.objects.filter(id__in=inv_ids)
+        try:
+            context['organization'] = self.request.user.user_conf.get().organization
+        except self.request.user.user_conf.model.DoesNotExist as e:
+            context['organization'] = None
+
+        if context['organization'] is not None:
+            user_qs = context['organization'].user_conf.all().values_list('user__id')
+            investments_qs = Investment.objects.filter(packages__user__id__in=Subquery(user_qs))
+            context['organization'].total_investments = investments_qs.count()
+            context['organization'].total_investments_amount = investments_qs.aggregate(Sum('estimated_cost'))['estimated_cost__sum']
         return context
 
     def get_object(self, queryset=None):
