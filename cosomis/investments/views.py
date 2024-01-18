@@ -23,7 +23,10 @@ class ProfileTemplateView(LoginRequiredMixin, PageMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProfileTemplateView, self).get_context_data(**kwargs)
         context['packages'] = self.request.user.packages.exclude(status=Package.REJECTED).order_by('created_date')
-        context['investments'] = []
+        inv_ids = list()
+        for package in context['packages']:
+            inv_ids += package.funded_investments.all().values_list('id', flat=True)
+        context['investments'] = Investment.objects.filter(id__in=inv_ids)
         return context
 
     def get_object(self, queryset=None):

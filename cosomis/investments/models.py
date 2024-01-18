@@ -32,6 +32,11 @@ class Sector(BaseModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
+class Organization(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+
+
 class Investment(BaseModel):  # Investment module
     NOT_FUNDED = 'N'
     IN_PROGRESS = 'P'
