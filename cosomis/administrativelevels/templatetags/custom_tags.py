@@ -218,7 +218,10 @@ def get_step_color(key):
 
 @register.filter
 def get_item(dictionary, key):
-    return int(dictionary.get(key))
+    try:
+        return int(dictionary.get(key))
+    except ValueError:
+        return dictionary.get(key)
 
 
 @register.filter

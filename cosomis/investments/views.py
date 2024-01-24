@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
 from administrativelevels.models import AdministrativeLevel
 from static.config.datatable import get_datatable_config
-from .models import Investment, Package, Category
+from .models import Investment, Package, Category, Sector
 from .forms import InvestmentsForm
 
 
@@ -105,13 +105,47 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
     def get_context_data(self, **kwargs):
         adm_queryset = AdministrativeLevel.objects.all()
         kwargs['regions'] = adm_queryset.filter(type=AdministrativeLevel.REGION)
-        kwargs['prefectures'] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
-        kwargs['communes'] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
-        kwargs['cantons'] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
-        kwargs['villages'] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
-        kwargs['query_strings'] = self.get_query_strings_context()
 
-        kwargs['sectors'] = Category.objects.all()
+        kwargs['prefectures'] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
+        if 'region-filter' in self.request.GET:
+            kwargs['prefectures'] = kwargs['prefectures'].filter(parent__id=self.request.GET['region-filter'])
+
+        kwargs['communes'] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
+        if 'prefecture-filter' in self.request.GET:
+            kwargs['communes'] = kwargs['communes'].filter(parent__id=self.request.GET['prefecture-filter'])
+
+        kwargs['cantons'] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
+        if 'commune-filter' in self.request.GET:
+            kwargs['cantons'] = kwargs['cantons'].filter(parent__id=self.request.GET['commune-filter'])
+
+        kwargs['villages'] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
+        if 'cantons-filter' in self.request.GET:
+            kwargs['villages'] = kwargs['villages'].filter(parent__id=self.request.GET['cantons-filter'])
+
+        kwargs['query_strings'] = self.get_query_strings_context()
+        kwargs['query_strings_raw'] = self.request.GET.copy()
+
+        kwargs['categories'] = Category.objects.all()
+        if 'category-filter' in self.request.GET:
+            kwargs['sectors'] = Sector.objects.filter(category=self.request.GET['category-filter'])
+        kwargs['subpopulations'] = [
+            {
+                'id': 'endorsed_by_youth',
+                'name': _('Endorsed by youth')
+            },
+            {
+                'id': 'endorsed_by_women',
+                'name': _('Endorsed by women')
+            },
+            {
+                'id': 'endorsed_by_agriculturist',
+                'name': _('Endorsed by agriculturist')
+            },
+            {
+                'id': 'endorsed_by_pastoralist',
+                'name': _('Endorsed by pastoralist')
+            },
+        ]
         kwargs.setdefault("view", self)
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
@@ -140,6 +174,19 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
             context[context_object_name] = queryset
 
         context['datatable_config'] = get_datatable_config()
+        context['datatable_config']['responsive'] = 'true'
+        context['datatable_config']['columnDefs'] = [
+                {'responsivePriority': 1, 'targets': 0},
+                {'responsivePriority': 2, 'targets': 1},
+                {'responsivePriority': 3, 'targets': 2},
+                {'responsivePriority': 4, 'targets': 3},
+                {'responsivePriority': 5, 'targets': 4},
+                {'responsivePriority': 6, 'targets': 5},
+                {'responsivePriority': 7, 'targets': 6},
+                {'responsivePriority': 8, 'targets': 7},
+                {'responsivePriority': 9, 'targets': 8},
+                {'responsivePriority': 10, 'targets': 9}
+            ]
         context.update(kwargs)
 
         return context
@@ -147,26 +194,24 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
     def get_queryset(self):
         queryset = super().get_queryset()
         if 'region-filter' in self.request.GET and self.request.GET['region-filter'] not in ['', None]:
-            print('here', self.request.GET['region-filter'])
             queryset = queryset.filter(
                 administrative_level__parent__parent__parent__parent__id=self.request.GET['region-filter'],
                 administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION
             )
-            print(queryset)
         if 'prefecture-filter' in self.request.GET and self.request.GET['prefecture-filter'] not in ['', None]:
             queryset = queryset.filter(
                 administrative_level__parent__parent__parent__id=self.request.GET['prefecture-filter'],
                 administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE
             )
-        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
-            queryset = queryset.filter(
-                administrative_level__parent__parent__id=self.request.GET['canton-filter'],
-                administrative_level__parent__parent__type=AdministrativeLevel.CANTON
-            )
         if 'commune-filter' in self.request.GET and self.request.GET['commune-filter'] not in ['', None]:
             queryset = queryset.filter(
-                administrative_level__parent__id=self.request.GET['commune-filter'],
-                administrative_level__parent__type=AdministrativeLevel.COMMUNE
+                administrative_level__parent__parent__id=self.request.GET['commune-filter'],
+                administrative_level__parent__parent__type=AdministrativeLevel.COMMUNE
+            )
+        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__id=self.request.GET['canton-filter'],
+                administrative_level__parent__type=AdministrativeLevel.CANTON
             )
         if 'village-filter' in self.request.GET and self.request.GET['village-filter'] not in ['', None]:
             queryset = queryset.filter(
@@ -177,6 +222,10 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
         if 'sector-filter' in self.request.GET and self.request.GET['sector-filter'] not in ['', None]:
             queryset = queryset.filter(
                 sector__id=self.request.GET['sector-filter']
+            )
+        if 'category-filter' in self.request.GET and self.request.GET['category-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                sector__category__id=self.request.GET['category-filter']
             )
 
         if 'subpopulation-filter' in self.request.GET and self.request.GET['subpopulation-filter'] not in ['', None]:
@@ -210,8 +259,12 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
                     type=AdministrativeLevel.VILLAGE
                 ).values_list('name', flat=True))
 
+            if key == 'category-filter':
+                resp['Categories'] = ', '.join(Category.objects.filter(
+                    id__in=[int(value)],
+                ).values_list('name', flat=True))
             if key == 'sector-filter':
-                resp['Sectors'] = ', '.join(Category.objects.filter(
+                resp['Sectors'] = ', '.join(Sector.objects.filter(
                     id__in=[int(value)],
                 ).values_list('name', flat=True))
             if key == 'subpopulation-filter':
@@ -225,7 +278,13 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
 class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
     template_name = 'investments/cart.html'
     queryset = Package.objects.filter(status=Package.PENDING_APPROVAL)
-    title = _('Votre panier')
+    title = _('Your cart')
+
+    def post(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.status = Package.PENDING_APPROVAL
+        obj.save()
+        return redirect(reverse('investments:home_investments'))
 
     def get_object(self, queryset=None):
         """
@@ -250,6 +309,15 @@ class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
         return obj
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data()
+        context = super(CartView, self).get_context_data(**kwargs)
         context['datatable_config'] = get_datatable_config()
-        return context
+        sectors = list()
+        categories = list()
+
+        for inv in context["object"].funded_investments.all():
+            sectors.append(inv.sector)
+            categories.append(inv.sector.category)
+
+        kwargs['sectors'] = dict.fromkeys(sectors)
+        kwargs['categories'] = dict.fromkeys(categories)
+        return super(CartView, self).get_context_data(**kwargs)
