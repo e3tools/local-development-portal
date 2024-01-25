@@ -1,0 +1,343 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize custom_tags %}
+
+{% block extracss %}
+    {{ block.super }}
+    <link href="{% static 'AdminLTE/plugins/jqvmap/jqvmap.css' %}" media="screen" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+    <style>
+        .table th {
+            padding: 5px 30px 0 30px;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.025);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            <img alt="User profile picture" class="profile-user-img img-fluid img-circle"
+                                 src="/static/images/default-avatar.jpg">
+                        </div>
+                        <h3 class="profile-username text-center">Nina Mcintire</h3>
+                        <p class="text-muted text-center">Software Engineer</p>
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>{% translate 'Total investments' %}</b> <a class="float-right">1,322</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>{% translate 'Total committed funds' %}</b> <a class="float-right">13,287</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>{% translate 'Total target communities' %}</b> <a class="float-right">543</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">{% translate 'About Organization' %}</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <strong><i class="fas fa-map-marker-alt mr-1"></i> {% translate 'Name' %}</strong>
+                        <p class="text-muted">{{ organization.name }}</p>
+                        <hr>
+                        <strong><i class="fas fa-book mr-1"></i> UNHCR</strong>
+                        <p class="text-muted">
+                            {{ organization.description }}
+                        </p>
+                        <hr>
+                        <strong><i class="fas fa-pencil-alt mr-1"></i> {% translate 'Total investments' %}</strong>
+                        <p class="text-muted">
+                            {{ organization.total_investments|intcomma }}
+                        </p>
+                        <hr>
+                        <strong><i class="fas fa-pencil-alt mr-1"></i> {% translate 'Total investments amount' %}</strong>
+                        <p class="text-muted">
+                            {{ organization.total_investments_amount|intcomma }}
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#investments_map">{% translate 'Investments map' %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#investments_list">{% translate 'Investments list' %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#packages">{% translate 'Packages' %}</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#timeline">Timeline</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">Settings</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="investments_map">
+
+                                <div class="col-12">
+                                    <div id="world-map" style="height: 650px; width: 100%; position: relative; overflow: hidden; background-color: transparent;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="investments_list">
+
+                                <table class="table datatable display" style="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>{% translate 'Name' %}</th>
+                                            <th>{% translate 'Estimate cost' %}</th>
+                                            <th>{% translate 'Village' %}</th>
+                                            <th>{% translate 'Commune' %}</th>
+                                            <th>{% translate 'Prefecture' %}</th>
+                                            <th>{% translate 'Region' %}</th>
+                                            <th>{% translate 'Village priority' %}</th>
+                                            <th>{% translate 'Population priority' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for investment in investments.all %}
+                                    <tr>
+                                        <td>{{ investment.title }}</td>
+                                        <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
+                                            {{ investment.estimated_cost|intcomma }}
+                                        </td>
+                                        <td>{{ investment.administrative_level.name }}</td>
+                                        <td>{{ investment.administrative_level.parent.name }}</td>
+                                        <td>{{ investment.administrative_level.parent.parent.name }}</td>
+                                        <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
+                                        <td>{{ investment.administrative_level.rank }}</td>
+                                        <td>
+                                            {% if investment.endorsed_by_youth %}
+                                            J,
+                                            {% endif %}
+                                            {% if investment.endorsed_by_women %}
+                                            F,
+                                            {% endif %}
+                                            {% if investment.endorsed_by_agriculturist %}
+                                            AG,
+                                            {% endif %}
+                                            {% if investment.endorsed_by_pastoralist %}
+                                            PA
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="tab-pane" id="packages">
+                                <table class="table datatable display" style="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>{% translate 'Status' %}</th>
+                                            <th>{% translate 'Date' %}</th>
+                                            <th>{% translate 'Estimate cost' %}</th>
+                                            <th>{% translate 'Actions' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for package in packages %}
+                                    <tr>
+                                        <td>{{ package.status }}</td>
+                                        <td data-order="{{ package.created_date|date:'U' }}" data-search="{{ package.created_date|date:'U' }}">
+                                            {{ package.created_date }}
+                                        </td>
+                                        <td data-order="{{ package.estimated_final_cost }}" data-search="{{ package.estimated_final_cost }}">
+                                            {{ package.estimated_final_cost|intcomma }}
+                                        </td>
+                                        <td><a class="btn btn-sm btn-primary">{% translate 'Detail' %}</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="tab-pane" id="timeline">
+
+                                <div class="timeline timeline-inverse">
+
+                                    <div class="time-label">
+                                        <span class="bg-danger">
+                                        10 Feb. 2014
+                                        </span>
+                                    </div>
+
+
+                                    <div>
+                                        <i class="fas fa-envelope bg-primary"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="far fa-clock"></i> 12:05</span>
+                                            <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email
+                                            </h3>
+                                            <div class="timeline-body">
+                                                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                                                weebly ning heekya handango imeem plugg dopplr jibjab, movity
+                                                jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+                                                quora plaxo ideeli hulu weebly balihoo...
+                                            </div>
+                                            <div class="timeline-footer">
+                                                <a class="btn btn-primary btn-sm" href="#">Read more</a>
+                                                <a class="btn btn-danger btn-sm" href="#">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <i class="fas fa-user bg-info"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="far fa-clock"></i> 5 mins ago</span>
+                                            <h3 class="timeline-header border-0"><a href="#">Sarah Young</a> accepted
+                                                your friend request
+                                            </h3>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <i class="fas fa-comments bg-warning"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
+                                            <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post
+                                            </h3>
+                                            <div class="timeline-body">
+                                                Take me to your leader!
+                                                Switzerland is small and neutral!
+                                                We are more like Germany, ambitious and misunderstood!
+                                            </div>
+                                            <div class="timeline-footer">
+                                                <a class="btn btn-warning btn-flat btn-sm" href="#">View comment</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="time-label">
+                                        <span class="bg-success">
+                                        3 Jan. 2014
+                                        </span>
+                                    </div>
+
+
+                                    <div>
+                                        <i class="fas fa-camera bg-purple"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
+                                            <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos
+                                            </h3>
+                                            <div class="timeline-body">
+                                                <img alt="..." src="https://placehold.it/150x100">
+                                                <img alt="..." src="https://placehold.it/150x100">
+                                                <img alt="..." src="https://placehold.it/150x100">
+                                                <img alt="..." src="https://placehold.it/150x100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <i class="far fa-clock bg-gray"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="settings">
+                                <form class="form-horizontal">
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label" for="inputName">Name</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" id="inputName" placeholder="Name" type="email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label" for="inputEmail">Email</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" id="inputEmail" placeholder="Email"
+                                                   type="email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label" for="inputName2">Name</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" id="inputName2" placeholder="Name" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label" for="inputExperience">Experience</label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" id="inputExperience"
+                                                      placeholder="Experience"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label" for="inputSkills">Skills</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" id="inputSkills" placeholder="Skills"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="offset-sm-2 col-sm-10">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox"> I agree to the <a href="#">terms and
+                                                    conditions</a>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="offset-sm-2 col-sm-10">
+                                            <button class="btn btn-danger" type="submit">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/jquery.vmap.js' %}"></script>
+<script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/maps/continents/jquery.vmap.africa.js' %}"></script>
+<script type="text/javascript">
+
+    $( document ).ready(function() {
+
+        $('#world-map').vectorMap({ map: 'africa_en' });
+        var table = $(".datatable").DataTable({{ datatable_config | safe }});
+
+    });
+</script>
+
+{% endblock %}

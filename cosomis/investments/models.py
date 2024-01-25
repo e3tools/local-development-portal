@@ -9,7 +9,7 @@ from administrativelevels.models import AdministrativeLevel, Project
 class PackageQuerySet(models.QuerySet):
     def get_active_cart(self, user):
         """Get active invoice for user"""
-        qs = self.filter(user=user, status=Package.PENDING_APPROVAL)
+        qs = self.model.objects.filter(user=user, status=Package.PENDING_SUBMISSION)
         package = qs.last()
         if qs.count() > 1:
             qs = qs.exclude(id=package.id)
@@ -17,7 +17,7 @@ class PackageQuerySet(models.QuerySet):
                 obj.status = Package.REJECTED
                 obj.save()
         elif qs.count() < 1:
-            return self.create(user=user, status=Package.PENDING_APPROVAL)
+            return self.model.objects.create(user=user, status=Package.PENDING_SUBMISSION)
         return package
 
 
@@ -30,6 +30,11 @@ class Sector(BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+
+class Organization(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
 
 
 class Investment(BaseModel):  # Investment module
@@ -69,12 +74,14 @@ class Investment(BaseModel):  # Investment module
     no_sql_id = models.CharField(max_length=255)
 
 
-class Package(BaseModel):  # investments module (orden de compra(kart de invesments(products)))
+class Package(BaseModel):  # investments module (orden de compra(cart de invesments(products)))
+    PENDING_SUBMISSION = 'PS'
     PENDING_APPROVAL = 'P'
     APPROVED = 'A'
     REJECTED = 'R'
     UNDER_EXECUTION = 'E'
     STATUS = (
+        (PENDING_SUBMISSION, _('Pending Submission')),
         (PENDING_APPROVAL, _('Pending Approval')),
         (APPROVED, _('Approved')),
         (REJECTED, _('Rejected')),
@@ -92,7 +99,12 @@ class Package(BaseModel):  # investments module (orden de compra(kart de invesme
     )
     funded_investments = models.ManyToManyField(Investment, related_name='packages')
     draft_status = models.BooleanField(default=True)
-    status = models.CharField(max_length=50, choices=STATUS, default=PENDING_APPROVAL)
+    status = models.CharField(max_length=50, choices=STATUS, default=PENDING_SUBMISSION)
+
+    def estimated_final_cost(self):
+        return self.funded_investments.all().aggregate(
+            estimated_final_cost=models.Sum('estimated_cost')
+        )['estimated_final_cost']
 
 
 class Attachment(BaseModel):
