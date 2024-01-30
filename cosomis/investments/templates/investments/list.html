@@ -36,6 +36,7 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
+                                                <label for="category-select-id">{% translate 'Category' %}</label>
                                                 <select class="form-control" name="category-filter" id="category-select-id" empty-option="{% translate 'Type' %}" style="width: 100%;">
                                                     <option selected value="">{% translate 'Type' %}</option>
                                                     {% for category in categories %}
@@ -54,6 +55,7 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
+                                                <label for="sector-select-id">{% translate 'Sector' %}</label>
                                                 <select class="form-control" name="sector-filter" id="sector-select-id" empty-option="{% translate 'Sector' %}" style="width: 100%;" {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Sector' %}</option>
                                                     {% for sector in sectors %}
@@ -72,7 +74,8 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <select class="form-control" name="subpopulation-filter"
+                                                <label for="endorse-by-select-id">{% translate 'Endorsed by' %}</label>
+                                                <select class="form-control" name="subpopulation-filter" id="endorse-by-select-id"
                                                         style="width: 100%;">
                                                     <option value=''>{% translate "Endorsed by" %}</option>
                                                     {% for subpopulation in subpopulations %}
@@ -94,8 +97,8 @@
                                 <div class="col-3">
                                     <div class="row">
                                         <div class="col-12">
-                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-success submit-reset" value="{% translate 'Reset' %}"/>
+                                            <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}" style="margin-bottom: 3px;">
+                                            <input type="button" class="btn btn-primary submit-reset" value="{% translate 'Reset' %}" style="margin-bottom: 3px;"/>
                                             <input type="hidden" id="reset-hidden-id" name="reset-hidden" value="">
                                         </div>
                                     </div>
@@ -127,6 +130,7 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
+                                                <label for="region-select-id">{% translate 'Region' %}</label>
                                                 <select class="form-control" name="region-filter" empty-option="{% translate 'Region' %}" style="width: 100%;" id="region-select-id">
                                                     <option selected value="">{% translate 'Region' %}</option>
                                                     {% for region in regions %}
@@ -145,6 +149,7 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
+                                                <label for="commune-select-id">{% translate 'Commune' %}</label>
                                                 <select class="form-control" name="commune-filter" id="commune-select-id" empty-option="{% translate 'Commune' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Commune' %}</option>
                                                     {% for commune in communes %}
@@ -163,6 +168,7 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
+                                                <label for="village-select-id">{% translate 'Village' %}</label>
                                                 <select class="form-control" name="village-filter" id="village-select-id" empty-option="{% translate 'Village' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Village' %}</option>
                                                     {% for village in villages %}
@@ -183,6 +189,7 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
+                                                <label for="prefecture-select-id">{% translate 'Prefecture' %}</label>
                                                 <select class="form-control" name="prefecture-filter" id="prefecture-select-id" empty-option="{% translate 'Prefecture' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Prefecture' %}</option>
                                                     {% for prefecture in prefectures %}
@@ -201,6 +208,7 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
+                                                <label for="canton-select-id">{% translate 'Canton' %}</label>
                                                 <select class="form-control" name="canton-filter" id="canton-select-id" empty-option="{% translate 'Canton' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                     <option selected value="">{% translate 'Canton' %}</option>
                                                     {% for canton in cantons %}
@@ -222,8 +230,8 @@
                                 <div class="col-3">
                                     <div class="row">
                                         <div class="col-12">
-                                            <input type="submit" class="btn btn-success" value="{% translate 'Apply' %}">
-                                            <input type="button" class="btn btn-success adm-submit-reset" value="{% translate 'Reset' %}"/>
+                                            <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}" style="margin-bottom: 3px;">
+                                            <input type="button" class="btn btn-primary adm-submit-reset" value="{% translate 'Reset' %}" style="margin-bottom: 3px;"/>
                                             <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
                                         </div>
                                     </div>
@@ -342,7 +350,7 @@
                         </p>
                     </div>
                     <div class="col-3">
-                        <input type="submit" class="btn btn-success btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
+                        <input type="submit" class="btn btn-primary btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
                     </div>
                 </div>
             </div>

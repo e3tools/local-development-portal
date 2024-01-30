@@ -9,15 +9,19 @@
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
+            <a href="{% url 'investments:profile' %}" class="image">
                 {% if user.photo %}
                     <img src="{{ user.photo.url }}" class="img-circle" alt="User Image"/>
                 {% else %}
                     <img src="{% static 'images/default-avatar.jpg' %}" class="img-circle" alt="User Image"/>
                 {% endif %}
-            </div>
+            </a>
             <div class="info">
-                <a href="#" class="d-block name">{{ user.first_name }} {{ user.last_name }}</a>
+                {% if user.first_name != "" or user.first_name != "" %}
+                <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.first_name }} {{ user.last_name }}</a>
+                {% else %}
+                <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.username }}</a>
+                {% endif %}
                 <p class="email">{{ user.email | truncatechars:22 }}</p>
                 <p class="">{{ user|get_group_high }}</p>
             </div>

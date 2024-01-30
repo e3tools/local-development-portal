@@ -311,6 +311,19 @@ class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
         context['datatable_config'] = get_datatable_config()
+        context['datatable_config']['responsive'] = 'true'
+        context['datatable_config']['columnDefs'] = [
+                {'responsivePriority': 1, 'targets': 0},
+                {'responsivePriority': 2, 'targets': 1},
+                {'responsivePriority': 3, 'targets': 2},
+                {'responsivePriority': 4, 'targets': 3},
+                {'responsivePriority': 5, 'targets': 4},
+                {'responsivePriority': 6, 'targets': 5},
+                {'responsivePriority': 7, 'targets': 6},
+                {'responsivePriority': 8, 'targets': 7},
+                {'responsivePriority': 9, 'targets': 8},
+                {'responsivePriority': 10, 'targets': 9}
+            ]
         sectors = list()
         categories = list()
 
@@ -318,6 +331,6 @@ class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
             sectors.append(inv.sector)
             categories.append(inv.sector.category)
 
-        kwargs['sectors'] = dict.fromkeys(sectors)
-        kwargs['categories'] = dict.fromkeys(categories)
-        return super(CartView, self).get_context_data(**kwargs)
+        context['sectors'] = dict.fromkeys(sectors)
+        context['categories'] = dict.fromkeys(categories)
+        return super(CartView, self).get_context_data(**context)
