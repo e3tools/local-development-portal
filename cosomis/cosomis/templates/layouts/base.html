@@ -30,25 +30,6 @@
                     <div class="col-sm-6">
                         <div class="m-0 main-title">{{ title | safe }}</div>
                     </div>
-                    <!-- /.col -->
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            {% for item in breadcrumb %}
-                                {% if item.url %}
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ item.url }}">{{ item.title }}</a>
-                                    </li>
-                                {% else %}
-                                    <li class="breadcrumb-item {% if item == breadcrumb|last %}active{% endif %}">
-                                        {{ item.title }}
-                                    </li>
-                                {% endif %}
-                            {% empty %}
-                                <li class="breadcrumb-item active">{{ title }}</li>
-                            {% endfor %}
-                        </ol>
-                    </div>
-                    <!-- /.col -->
                     {% endif %}
 
                 </div>
