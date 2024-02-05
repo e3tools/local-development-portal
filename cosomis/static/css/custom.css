@@ -2794,31 +2794,6 @@ fieldset:disabled a.btn {
     box-shadow: none;
 }
 
-.btn-primary:hover {
-    color: #ffffff;
-    opacity: 0.8;
-}
-
-.btn-primary:focus, .btn-primary.focus {
-    color: #ffffff;
-    background-color: #599cf7;
-    border-color: #599cf7;
-    box-shadow: none, 0 0 0 0 rgba(33, 149, 101, 0.5);
-}
-
-.btn-primary.disabled, .btn-primary:disabled {
-    color: #707070;
-    background-color: #dedede;
-    border-color: #dedede;
-}
-
-.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
-.show > .btn-primary.dropdown-toggle {
-    color: #ffffff;
-    background-color: #1fa181;
-    border-color: #219565;
-}
-
 .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
 .show > .btn-primary.dropdown-toggle:focus {
     box-shadow: 0 0 0 0 rgba(36, 195, 139, 0.5);
@@ -4557,10 +4532,6 @@ input[type="button"].btn-block {
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
     border-right: 4px solid #599CF7
-}
-
-.nav-pills .nav-link.active i, .nav-pills .show > .nav-link i {
-    color: #599CF7;
 }
 
 .nav-fill .nav-item {
@@ -13043,10 +13014,6 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
     color: #212529;
 }
 
-[class*='sidebar-light-'] .nav-sidebar > .nav-item > .nav-link.active {
-    color: #707070;
-}
-
 [class*='sidebar-light-'] .nav-sidebar > .nav-item > .nav-treeview {
     background: transparent;
 }
@@ -13057,7 +13024,6 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
 }
 
 [class*='sidebar-light-'] .sidebar a {
-    color: #dedede;
     font-size: 12px;
 }
 
@@ -14768,10 +14734,6 @@ body.text-sm .control-sidebar {
 
 .form-group-sm .form-control + .form-control-feedback.fa, .form-group-sm .form-control + .form-control-feedback.fas, .form-group-sm .form-control + .form-control-feedback.far, .form-group-sm .form-control + .form-control-feedback.fab, .form-group-sm .form-control + .form-control-feedback.glyphicon, .form-group-sm .form-control + .form-control-feedback.ion {
     line-height: calc(1.8125rem + 2px);
-}
-
-label:not(.form-check-label):not(.custom-file-label) {
-    font-weight: 700;
 }
 
 .warning-feedback {

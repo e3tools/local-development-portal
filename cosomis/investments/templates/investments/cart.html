@@ -200,7 +200,6 @@
 <script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        console.log({{ datatable_config |safe }})
         var table = $(".datatable").DataTable({{ datatable_config | safe }});
 
         sum_subprojects();

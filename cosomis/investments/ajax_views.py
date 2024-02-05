@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views import generic
 
 from administrativelevels.models import AdministrativeLevel
-from .models import Category, Sector
+from .models import Sector
 
 
 class FillAdmLevelsSelectFilters(generic.View):

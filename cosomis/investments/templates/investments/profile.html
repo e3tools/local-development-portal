@@ -104,17 +104,17 @@
 
                             <div class="tab-pane" id="investments_list">
 
-                                <table class="table datatable display" style="100%">
+                                <table class="table investments-datatable rounded-table table-striped" style="100%">
                                     <thead>
                                         <tr>
-                                            <th>{% translate 'Name' %}</th>
-                                            <th>{% translate 'Estimate cost' %}</th>
-                                            <th>{% translate 'Village' %}</th>
-                                            <th>{% translate 'Commune' %}</th>
-                                            <th>{% translate 'Prefecture' %}</th>
-                                            <th>{% translate 'Region' %}</th>
-                                            <th>{% translate 'Village priority' %}</th>
-                                            <th>{% translate 'Population priority' %}</th>
+                                            <th data-priority="1" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
+                                            <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
+                                            <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
+                                            <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
+                                            <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
+                                            <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
+                                            <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
+                                            <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Population priority' %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -128,7 +128,7 @@
                                         <td>{{ investment.administrative_level.parent.name }}</td>
                                         <td>{{ investment.administrative_level.parent.parent.name }}</td>
                                         <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
-                                        <td>{{ investment.administrative_level.rank }}</td>
+                                        <td>{{ investment.ranking }}</td>
                                         <td>
                                             {% if investment.endorsed_by_youth %}
                                             J,
@@ -151,7 +151,7 @@
                             </div>
 
                             <div class="tab-pane" id="packages">
-                                <table class="table datatable display" style="100%">
+                                <table class="table packages-datatable display" style="100%">
                                     <thead>
                                         <tr>
                                             <th>{% translate 'Status' %}</th>
@@ -334,8 +334,12 @@
 
     $( document ).ready(function() {
 
+        console.log({{ investments_datatable_config | safe }});
+        console.log({{ packages_datatable_config | safe }});
+
+        var table = $(".investments-datatable").DataTable({{ investments_datatable_config | safe }});
+        var table = $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
         $('#world-map').vectorMap({ map: 'africa_en' });
-        var table = $(".datatable").DataTable({{ datatable_config | safe }});
 
     });
 </script>

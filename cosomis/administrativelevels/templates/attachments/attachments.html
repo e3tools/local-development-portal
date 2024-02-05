@@ -262,7 +262,7 @@
     <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog"
          aria-labelledby="attachmentModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close btn-closeModal" data-dismiss="modal" aria-label="Close">
@@ -390,9 +390,9 @@
                                         {% if attachment.type == 'Photo' %}
                                             <a class="attachment-modal-link" target="_blank"
                                                href="{{ attachment.url|imgAWSS3Filter }}">
-                                                <img class="attachment-placeholder"
+                                                <img class="attachment-placeholder img-fluid"
                                                      src="{{ attachment.url|imgAWSS3Filter }}"
-                                                     alt="{{ attachment.task }}">
+                                                     alt="{{ attachment.task }}" style="max-width: 100%; height: auto;">
                                             </a>
                                         {% else %}
                                             <a class="align-items-center justify-content-center attachment-modal-link"
