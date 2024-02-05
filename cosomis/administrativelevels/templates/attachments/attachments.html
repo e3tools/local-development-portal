@@ -37,7 +37,7 @@
 
         .attachment-placeholder {
             height: 80px;
-            width: 80px;
+            width: auto;
             border-radius: 10px;
         }
 
@@ -262,15 +262,14 @@
     <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog"
          aria-labelledby="attachmentModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close btn-closeModal" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="card-body mb-5">
-
+                <div class="modal-body mb-5">
                 </div>
             </div>
         </div>
@@ -336,7 +335,7 @@
                                 {{ form.task }}
                             </div>
                         </div>
-                        <input type="submit" class="btn btn-primary" value={% translate 'Apply' %}>
+                        <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}">
                     </form>
                 </div>
             </div>
@@ -374,7 +373,7 @@
 
             <!-- Script for carrousel -->
             $('.attachment-link').click(function () {
-                $("#attachmentModal .card-body").html(`
+                $("#attachmentModal .modal-body").html(`
                 <div class="clearfix" id="attachments">
                         <div id="carouselIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
                             <ol class="carousel-indicators">
@@ -386,11 +385,11 @@
                             </ol>
                             <div class="carousel-inner">
                                 {% for attachment in attachments %}
-                                    <div class="carousel-item" #slideid{{ forloop.counter0 }}>
+                                    <div class="carousel-item text-center" #slideid{{ forloop.counter0 }}>
                                         {% if attachment.type == 'Photo' %}
                                             <a class="attachment-modal-link" target="_blank"
                                                href="{{ attachment.url|imgAWSS3Filter }}">
-                                                <img class="attachment-placeholder img-fluid"
+                                                <img class="img-fluid mx-auto d-block"
                                                      src="{{ attachment.url|imgAWSS3Filter }}"
                                                      alt="{{ attachment.task }}" style="max-width: 100%; height: auto;">
                                             </a>
