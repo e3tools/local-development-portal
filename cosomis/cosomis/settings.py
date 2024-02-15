@@ -92,7 +92,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                'cosomis.services.overall_variables' #Called the function which presents the globals variables
+                'cosomis.services.overall_variables',  # Called the function which presents the globals variables
+                'investments.context_processors.notifications',
+                'investments.context_processors.cart_items'
             ],
         },
     },

@@ -54,6 +54,13 @@
                         <p>{% translate "Investments" %}</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{% url 'investments:profile' %}"
+                       class="nav-link {% if url_name == 'profile' %}active{% endif %}">
+                        <i class="nav-icon fa fa-user"></i>
+                        <p>{% translate "Profile" %}</p>
+                    </a>
+                </li>
             </ul>
             {% endwith %}
         </nav>

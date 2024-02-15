@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load humanize static i18n %}
 
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -83,6 +83,22 @@
 {#                {% translate 'Help / FAQ' %}#}
 {#            </a>#}
 {#        </li>#}
+        <li class="nav-item">
+            <a href="{% url 'investments:notifications' %}" class="nav-link">
+                <i class="fa fa-bell"></i>
+                {% if pending_packages > 0 %}
+                <span class="badge badge-danger navbar-badge">{{ pending_packages }}</span>
+                {% endif %}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'investments:cart' %}" class="nav-link">
+                <i class="fa fa-shopping-cart"></i>
+                {% if cart_items > 0 %}
+                <span class="badge badge-success navbar-badge">{{ cart_items|intcomma }}</span>
+                {% endif %}
+            </a>
+        </li>
         {% if OTHER_LANGUAGES %}
             {% include 'layouts/language_dropdown.html' %}
         {% endif %}

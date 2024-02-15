@@ -11,6 +11,14 @@
         .table-striped tbody tr:nth-of-type(odd) {
             background-color: rgba(0, 0, 0, 0.025);
         }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control::before {
+            content: '>';
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before {
+            content: '-';
+        }
     </style>
 {% endblock %}
 
