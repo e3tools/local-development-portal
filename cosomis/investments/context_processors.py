@@ -9,9 +9,14 @@ def notifications(request):  # If moderator
 
 
 def cart_items(request):
-    package = Package.objects.get_active_cart(
-        user=request.user
-    )
-    return {
-        'cart_items': package.funded_investments.all().count()
-    }
+    try:
+        package = Package.objects.get_active_cart(
+            user=request.user
+        )
+        return {
+            'cart_items': package.funded_investments.all().count()
+        }
+    except TypeError:
+        return {
+            'cart_items': 0
+        }
