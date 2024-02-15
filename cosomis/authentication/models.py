@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 # from django.forms.models import model_to_dict
 
+
 class Facilitator(models.Model):
     no_sql_user = models.CharField(max_length=150, unique=True)
     no_sql_pass = models.CharField(max_length=128)

@@ -298,12 +298,15 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
 class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
     template_name = 'investments/cart.html'
     queryset = Package.objects.filter(status=Package.PENDING_APPROVAL)
-    title = _('Your cart')
+    title = _('Your package')
 
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
-        obj.status = Package.PENDING_APPROVAL
-        obj.save()
+        if 'clear-package-input' in request.POST:
+            obj.funded_investments.clear()
+        else:
+            obj.status = Package.PENDING_APPROVAL
+            obj.save()
         return redirect(reverse('investments:home_investments'))
 
     def get_object(self, queryset=None):
@@ -354,3 +357,21 @@ class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
         context['sectors'] = dict.fromkeys(sectors)
         context['categories'] = dict.fromkeys(categories)
         return super(CartView, self).get_context_data(**context)
+
+
+class ModeratorPackageList(LoginRequiredMixin, PageMixin, generic.ListView):
+    template_name = 'investments/moderator/packages_list.html'
+    model = Package
+    ordering = ['status', '-created_date']
+
+    def get_queryset(self):
+        queryset = self.model._default_manager.exclude(
+            status=Package.PENDING_SUBMISSION
+        ).order_by('created_date', 'status')
+        ordering = self.get_ordering()
+        if ordering:
+            if isinstance(ordering, str):
+                ordering = (ordering,)
+            queryset = queryset.order_by(*ordering)
+
+        return queryset

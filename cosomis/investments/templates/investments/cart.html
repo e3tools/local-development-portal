@@ -1,6 +1,27 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n humanize custom_tags %}
 
+{% block extracss %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+    <style>
+        .table th {
+            padding: 5px 30px 0 30px;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.025);
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control::before {
+            content: '>';
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before {
+            content: '-';
+        }
+    </style>
+{% endblock %}
+
 
 {% block content %}
 
@@ -71,7 +92,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <h6>
-                    <i class="fa fa-shopping-cart"></i>{% translate 'Total cart' %}
+                    {% translate 'Total fundings to commit' %}
                 </h6>
                 <div class="row">
                     <div class="col-8">
@@ -106,7 +127,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-12">
-                        <input type="submit" class="btn btn-success btn-block" value="{% translate 'Request Invest' %}" id="investments-submit" name="investments-submit">
+                        <input type="submit" class="btn btn-success btn-block" value="{% translate 'Submit Package' %}" id="investments-submit" name="investments-submit">
                     </div>
                 </div>
             </div>
@@ -119,7 +140,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <h6>{% translate 'Results' %}</h6>
+                    <h6>{% translate 'Investments in your package' %}</h6>
                 </div>
                 <div class="row">
                     <div class="col-12 mb-3">
@@ -132,7 +153,9 @@
                             </button>
                         </span>
                         {% endfor %}
-                        <input type="submit" class="btn btn-success pull-right" value="{% translate 'Submit' %}" name="investments-submit">
+                        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#clearPackageModal">
+                            {% translate 'Clear Package' %}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -195,6 +218,29 @@
 
 {% endblock %}
 
+{% block modals %}
+<div class="modal fade" id="clearPackageModal" tabindex="-1" role="dialog" aria-labelledby="clearPackageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" name="clear-package-form" id="clear-package-form-id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clearPackageModalLabel">{% translate 'Are you sure do you want to clear the package?' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    {% csrf_token %}
+                    <input type="hidden" name="clear-package-input">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+                    <input type="submit" class="btn btn-danger" name="clear-package-submit" value="{% translate 'Clear Package' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block javascript %}
 {{ block.super }}
 <script src="{% static 'js/numeral.min.js' %}"></script>
@@ -215,10 +261,6 @@
 
             // Toggle the visibility
             column.visible(!column.visible());
-        });
-
-        $('.dismiss-filter').on('click', function (e) {
-            alert("eyy");
         });
 
         $('.submit-reset').on('click', function() {
