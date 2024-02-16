@@ -47,7 +47,8 @@
 
             <form method="post">
                 {% csrf_token %}
-                {% bootstrap_form form %}
+                {% bootstrap_field form.email %}
+                {% bootstrap_field form.password %}
                 <div class="row">
                     <!-- /.col -->
                     <div class="col-12">

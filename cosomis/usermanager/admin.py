@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django import forms
 from django.contrib import admin
 
-from .models import UserPassCode, UserAdditionalConfig
+from .models import UserPassCode, Organization, User
 
 
 class UserPassCodeForm(forms.ModelForm):
@@ -27,4 +27,5 @@ class UserPassCodeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserPassCode, UserPassCodeAdmin)
-admin.site.register(UserAdditionalConfig)
+admin.site.register(Organization)
+admin.site.register(User)

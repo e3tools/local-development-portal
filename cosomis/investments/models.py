@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
 
 from administrativelevels.models import AdministrativeLevel, Project
+from usermanager.models import User
 
 
 class PackageQuerySet(models.QuerySet):
@@ -30,11 +30,6 @@ class Sector(BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-
-class Organization(BaseModel):
-    name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
 
 
 class Investment(BaseModel):  # Investment module
@@ -100,6 +95,9 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     funded_investments = models.ManyToManyField(Investment, related_name='packages')
     draft_status = models.BooleanField(default=True)
     status = models.CharField(max_length=50, choices=STATUS, default=PENDING_SUBMISSION)
+
+    no_resubmission = models.BooleanField(default=False)
+    rejection_reason = models.TextField(null=True, blank=True)
 
     def estimated_final_cost(self):
         return self.funded_investments.all().aggregate(

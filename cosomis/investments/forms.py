@@ -25,3 +25,9 @@ class InvestmentsForm(forms.Form):
             package.funded_investments.add(inv)
         return data
 
+
+class PackageApprovalForm(forms.Form):
+    package = forms.ModelChoiceField(queryset=Package.objects.filter(status=Package.PENDING_APPROVAL))
+    approve = forms.BooleanField()
+    no_resubmission = forms.BooleanField(widget=forms.CheckboxInput())
+    reject_reason = forms.CharField(widget=forms.Textarea())

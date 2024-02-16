@@ -80,6 +80,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'cosomis.urls'
 
+AUTH_USER_MODEL = 'usermanager.User'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -116,10 +118,12 @@ EXTERNAL_DATABASE_NAME = 'cddp'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'database.db',  # This is where you put the name of the db file.
+        'NAME': 'database1.db',  # This is where you put the name of the db file.
         # If one doesn't exist, it will be created at migration time.
     }
 }
+
+MAX_RESPONSE_DAYS = 3
 
 
 # Internationalization
@@ -205,6 +209,5 @@ REST_FRAMEWORK = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = [
-    'usermanager.authentication.PassCodeAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
