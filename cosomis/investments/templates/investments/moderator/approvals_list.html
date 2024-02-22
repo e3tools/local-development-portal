@@ -30,16 +30,8 @@
                             </thead>
                             <tbody>
                             {% for user in user_list %}
-                                {% if package.status == package.PENDING_APPROVAL %}
-                                <tr class="table-danger">
-                                {% elif package.status == package.REJECTED %}
-                                <tr class="text-muted">
-                                {% elif package.status == package.APPROVED %}
-                                <tr class="table-success">
-                                {% else %}
                                 <tr>
-                                {% endif %}
-                                    <td>{{ user.date_joined }}</td>
+                                    <td>{{ user.date_joined|date:"d/m/Y" }}</td>
                                     <td>{{ user.email }}</td>
                                     <td>{{ user.organization }}</td>
                                     <td>
@@ -84,16 +76,8 @@
                             </thead>
                             <tbody>
                             {% for package in package_list %}
-                                {% if package.status == package.PENDING_APPROVAL %}
-                                <tr class="table-danger">
-                                {% elif package.status == package.REJECTED %}
-                                <tr class="text-muted">
-                                {% elif package.status == package.APPROVED %}
-                                <tr class="table-success">
-                                {% else %}
                                 <tr>
-                                {% endif %}
-                                    <td>{{ package.created_date|date:"M d, Y" }}</td>
+                                    <td>{{ package.created_date|date:"d/m/Y" }}</td>
                                     <td>{{ package.updated_date|date:"d/m/Y" }}</td>
                                     <td>{{ package.funded_investments.all.count|intcomma }}</td>
                                     <td>{{ package.estimated_final_cost|intcomma }} FCFA</td>

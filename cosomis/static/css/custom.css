@@ -32999,7 +32999,7 @@ a.text-muted:hover {
 .filter-badge-label {
   width: 166px;
   height: 21px;
-  font-family: Roboto;
+  font-family: poppinsmedium, "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 16px;
   font-weight: normal;
   font-stretch: normal;

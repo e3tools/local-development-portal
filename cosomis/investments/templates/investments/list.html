@@ -45,8 +45,8 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <label for="category-select-id">{% translate 'Category' %}</label>
-                                                <select class="form-control" name="category-filter" id="category-select-id" empty-option="{% translate 'Type' %}" style="width: 100%;">
-                                                    <option selected value="">{% translate 'Type' %}</option>
+                                                <select class="form-control" name="category-filter" id="category-select-id" empty-option="{% translate 'Category' %}" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Category' %}</option>
                                                     {% for category in categories %}
                                                         {% if 'category-filter' in query_strings_raw %}
                                                             {% if query_strings_raw|get_item:'category-filter' == category.id %}

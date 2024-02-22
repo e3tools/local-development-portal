@@ -2,7 +2,7 @@ from django.db import models
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
 
-from administrativelevels.models import AdministrativeLevel, Project
+from administrativelevels.models import AdministrativeLevel, Project, Task
 from usermanager.models import User
 
 
@@ -106,6 +106,9 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
 
 
 class Attachment(BaseModel):
+    """
+    parent info and tasks info
+    """
     PHOTO = 'Photo'
     DOCUMENT = 'Document'
     TYPE_CHOICES = (
@@ -120,5 +123,6 @@ class Attachment(BaseModel):
         blank=True,
         related_name='attachments'
     )
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
     url = models.URLField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=DOCUMENT)

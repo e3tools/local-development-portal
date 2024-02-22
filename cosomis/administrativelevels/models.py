@@ -4,6 +4,10 @@ from cosomis.models_base import BaseModel
 
 
 class AdministrativeLevel(BaseModel):
+    """
+    field -> priority identified (date)
+    Set an Attr(model) as default image
+    """
     LIME_GREEN = 'lime_green'
     DARK_GREEN = 'dark_green'
     ORANGE = 'orange'
@@ -40,6 +44,7 @@ class AdministrativeLevel(BaseModel):
     )
     parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"))
     geographical_unit = models.ForeignKey('GeographicalUnit', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
+    default_image = models.ForeignKey('investments.Attachment', on_delete=models.SET_NULL, null=True, blank=True)
     frontalier = models.BooleanField(default=True, verbose_name=_("Frontalier"))
     rural = models.BooleanField(default=True, verbose_name=_("Rural"))
 
@@ -61,6 +66,7 @@ class AdministrativeLevel(BaseModel):
     population_pastoralist = models.IntegerField(default=0)
     population_minorities = models.IntegerField(default=0)
     main_languages = models.CharField(max_length=50, blank=True, null=True)
+    identified_priority = models.DateField(null=True, blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)

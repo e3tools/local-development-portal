@@ -20,7 +20,7 @@ from django.db.models import Q, QuerySet
 from no_sql_client import NoSQLClient
 
 from administrativelevels.models import AdministrativeLevel
-from investments.models import Attachment, Investment
+from investments.models import Attachment, Investment, Task
 
 from .forms import FinancialPartnerForm, AttachmentFilterForm, VillageSearchForm
 
@@ -40,11 +40,31 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
 
-        if context.get("object") and context.get("object").is_village() is True:
-            context["investments"] = Investment.objects.filter(
-                administrative_level=self.object
-            )
+        if 'object' in context:
+            context['title'] = context['object'].name
+            if context['object'].is_village() is True:
+                context["investments"] = Investment.objects.filter(
+                    administrative_level=self.object
+                )
         admin_level = context.get("object")
+
+        tasks_qs = Task.objects.filter(activity__phase__village=context['object'])
+        current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
+        current_phase = current_task.activity.phase
+        current_activity = current_task.activity
+
+        task_number = tasks_qs.count()
+        tasks_done = tasks_qs.filter(status=Task.COMPLETED).count()
+        context["planning_status"] = {
+            'current_phase': current_phase,
+            'current_activity': current_activity,
+            'current_task': current_task,
+            'completed': round(float(tasks_done) * 100 / float(task_number), 2),
+            'priorities_identified': context['object'].identified_priority,
+            'village_development_plan_date': '',
+            'facilitator': '',
+        }
+
         if admin_level and admin_level.is_village() is True:
             images = Attachment.objects.filter(
                 adm=admin_level.id, type=Attachment.PHOTO

@@ -10,7 +10,9 @@
 {% block content %}
 <div class="row mb-4">
     <div class="col-md-8 col-12">
-        <div class="clearfix" id="attachments_images"></div>
+        <div class="clearfix" id="attachments_images">
+
+        </div>
         <div class="overlay" id="spin-attachments-images">
             <i class="fas fa-2x fa-sync-alt fa-spin"></i>
         </div>
@@ -75,19 +77,19 @@
                     <tbody>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity.name }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task.name }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified }}</td>
@@ -194,7 +196,6 @@
                                         </div>
                                     </div>
                                 </div>
-<<<<<<< HEAD
                             </div>{% endcomment %}
                         </div>
                         <div id="planning_cycle" class="tab-pane fade">
@@ -221,6 +222,35 @@
     </div>
 </div>
 
+
+
+{% endblock %}
+
+{% block modals %}
+{{ block.super }}
+
+<div class="modal fade" id="taskModalLong" tabindex="-1" role="dialog" aria-labelledby="taskModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-primary" id="taskModalTitle">...</h4>
+
+                <span class="badge badge-pill badge-lg badge-info ml-1" id="taskModalStatus">...</span>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="taskModalDescription">
+                    ...
+                </p>
+                <br>
+                <div id="taskModalAttrs"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
@@ -306,6 +336,33 @@ let spin_attachments_images = $("#spin-attachments-images");
                 $("#activity-" + activity_id + "-content").tab("show");
             }
         });
+
+        $('#taskModalLong').on('shown.bs.modal', function (e) {
+            let pk = e.relatedTarget.id.split('-')[3];
+            let base_url = "{% url 'administrativelevels:utils:task_detail' 0 %}";
+            base_url = base_url.replace(0, pk);
+            $.ajax({
+                type : "GET",
+                url: base_url,
+                success: function(response){
+                    let attr_container = $('#taskModalAttrs');
+                    $('#taskModalTitle').html(response.name);
+                    $('#taskModalDescription').html(response.description);
+                    $('#taskModalStatus').html(response.status);
+                    attr_container.html('');
+                    for (const [key, value] of Object.entries(response.meta)) {
+                        attr_container.html(attr_container.html() + `<div class="form-group">
+                            <label>${key}</label>
+                            <input type="text" class="form-control" aria-describedby="emailHelp" value="${value}">
+                            <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                          </div>
+                          <br>
+                        `);
+
+                    }
+                }
+            });
+        })
     });
 </script>
 {% endblock %}
