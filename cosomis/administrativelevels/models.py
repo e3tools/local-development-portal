@@ -1,3 +1,4 @@
+import json
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from cosomis.models_base import BaseModel
@@ -262,6 +263,8 @@ class Task(BaseModel):
     description = models.TextField()
     status = models.CharField(max_length=127, choices=STATUS, default=NOT_STARTED)
 
+    form_responses = models.TextField(null=True, blank=True, help_text='This is a json field that needs to be parsed.')
+
     class Meta:
         unique_together = ['activity', 'order']
 
@@ -280,6 +283,10 @@ class Task(BaseModel):
         if self.order is None:
             self.order = self.get_order()
         return super(Task, self).save(*args, **kwargs)
+
+    @property
+    def dict_form_responses(self):
+        return json.loads(str(self.form_responses))
 
 
 def update_or_create_amd_couch(sender, instance, **kwargs):
