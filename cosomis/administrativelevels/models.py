@@ -163,6 +163,7 @@ class Phase(BaseModel):
     order = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
+    no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
 
     class Meta:
         unique_together = ['village', 'order']
@@ -212,6 +213,7 @@ class Activity(BaseModel):
     order = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
+    no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
 
     class Meta:
         unique_together = ['phase', 'order']
@@ -262,7 +264,7 @@ class Task(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
     status = models.CharField(max_length=127, choices=STATUS, default=NOT_STARTED)
-
+    no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
     form_responses = models.TextField(null=True, blank=True, help_text='This is a json field that needs to be parsed.')
 
     class Meta:
