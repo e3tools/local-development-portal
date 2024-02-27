@@ -165,9 +165,6 @@ class Phase(BaseModel):
     description = models.TextField()
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
 
-    class Meta:
-        unique_together = ['village', 'order']
-
     def __str__(self):
         return '%s. %s(%s)' % (self.order, self.name, self.village)
 
@@ -214,9 +211,6 @@ class Activity(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
-
-    class Meta:
-        unique_together = ['phase', 'order']
 
     def __str__(self):
         return '%s. %s(%s)' % (self.order, self.name, self.phase)
@@ -266,9 +260,8 @@ class Task(BaseModel):
     status = models.CharField(max_length=127, choices=STATUS, default=NOT_STARTED)
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
     form_responses = models.TextField(null=True, blank=True, help_text='This is a json field that needs to be parsed.')
-
-    class Meta:
-        unique_together = ['activity', 'order']
+    form = models.TextField(null=True, blank=True, help_text='This is a json field that needs to be parsed.')
+    attachments = models.TextField(null=True, blank=True, help_text='This is a json field that needs to be parsed.')
 
     def __str__(self):
         return '%s. %s(%s) - %s' % (self.order, self.name, str(self.activity.id), self.status)

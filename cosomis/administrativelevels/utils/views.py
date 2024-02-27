@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views import generic
@@ -74,12 +75,22 @@ class TaskDetailAjaxView(generic.View):
         task = Task.objects.filter(id=kwargs.get('pk', None)).first()
 
         if task is not None:
+            # Ensure dict_form_responses is a valid JSON string
+            try:
+                # Attempt to load it as JSON to check if it's already valid JSON
+                dict_form_responses = json.loads(task.dict_form_responses)
+            except TypeError:
+                # If it's a Python dict, serialize it. If it's already a string, this step is not needed.
+                dict_form_responses = task.dict_form_responses
+            except json.JSONDecodeError:
+                # If the string is not valid JSON, this handles the case and serializes a Python dict
+                dict_form_responses = json.dumps(task.dict_form_responses)
+
             response = {
                 'name': task.name,
                 'description': task.description,
                 'status': task.status,
-                'meta': task.dict_form_responses
+                'meta': dict_form_responses  # This should now be a properly formatted JSON string
             }
-            return JsonResponse(response)
 
-        return JsonResponse({})
+            return JsonResponse(response)

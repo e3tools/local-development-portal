@@ -16,7 +16,6 @@ class Command(BaseCommand):
             "type": "facilitator"
         })
         for document in db:
-            print("Facilitator", document)
             try:
                 if not document['develop_mode'] and not document["training_mode"]:
                     print("Facilitator is valid", document)
@@ -45,33 +44,27 @@ def update_or_create_priorities_document(priorities_document):
     # Extract the administrative_level_id from the priorities document
     adm_id = priorities_document['administrative_level_id']
 
-    # Check if a document with the given adm_id exists in the 'purs_test' database
-    selector = {
-        "adm_id": adm_id,
-        "type": "administrative_level"
-    }
     administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
-    existing_doc = Investment.objects.filter(no_sql_id=adm_id)
     # TODO Complete Sector Allocation
     # Extract priorities from the priorities document
     if 'form_response' in priorities_document:
         if priorities_document.get('form_response') and 'sousComposante11' in priorities_document['form_response'][0]:
             for idx, priority in enumerate(
                     priorities_document['form_response'][0]['sousComposante11']['prioritesDuVillage']):
-                print(idx)
-                Investment.objects.create(
-                    ranking=idx + 1,
-                    title=priority["priorite"],
-                    estimated_cost=priority.get("coutEstime"),
-                    sector=Sector.objects.get(id=1),
-                    delays_consumed=0,
-                    duration=0,
-                    financial_implementation_rate=0,
-                    physical_execution_rate=0,
-                    administrative_level=administrative_level,
-                    # beneficiaries= priority.get("nombreEstimeDeBeneficiaires"),
-                )
-
+                try:
+                    Investment.objects.create(
+                        ranking=idx + 1,
+                        title=priority["priorite"],
+                        estimated_cost=priority.get("coutEstime"),
+                        sector=Sector.objects.get(name=priority["priorite"]),
+                        delays_consumed=0,
+                        duration=0,
+                        financial_implementation_rate=0,
+                        physical_execution_rate=0,
+                        administrative_level=administrative_level,
+                        # beneficiaries= priority.get("nombreEstimeDeBeneficiaires"),
+                    )
+                except Exception as e:
+                    print(e, "Error creating investment", priority["priorite"], administrative_level)
     # Otherwise, create a new one
-    print("adm_id: ", adm_id)
     time.sleep(1)
