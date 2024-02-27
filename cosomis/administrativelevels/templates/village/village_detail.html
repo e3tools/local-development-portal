@@ -231,7 +231,7 @@
 
 <div class="modal fade" id="taskModalLong" tabindex="-1" role="dialog" aria-labelledby="taskModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div id="modal-content" class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title text-primary" id="taskModalTitle">...</h4>
 
@@ -345,36 +345,38 @@ let spin_attachments_images = $("#spin-attachments-images");
                 type : "GET",
                 url: base_url,
                 success: function(response){
-                    let attr_container = $('#taskModalAttrs');
-                    $('#taskModalTitle').html(response.name);
-                    $('#taskModalDescription').html(response.description);
-                    $('#taskModalStatus').html(response.status);
-                    attr_container.html('');
                     console.log(response);
-                    response.meta.forEach((element) => {
-                        if(element.type == 'text_area') {
-                            attr_container.html(attr_container.html() + `<div class="form-group">
-                                <label>${element.label}</label>
-                                <textarea class="form-control" rows="6">${element.response}</textarea>
-                              </div>
-                              <br>
-                            `);
-                        } else if(element.type == 'link') {
-                            attr_container.html(attr_container.html() + `<div class="form-group">
-                                <label>${element.label}</label>
-                                <a href="${element.response}" target="_blank">Link</a>
-                              </div>
-                              <br>
-                            `);
-                        } else {
-                            attr_container.html(attr_container.html() + `<div class="form-group">
-                                <label>${element.label}</label>
-                                <input type="text" class="form-control" value="${element.response}">
-                              </div>
-                              <br>
-                            `);
-                        }
-                    });
+                    $('#modal-content').html(response);
+                    {#let attr_container = $('#taskModalAttrs');#}
+                    {#$('#taskModalTitle').html(response.name);#}
+                    {#$('#taskModalDescription').html(response.description);#}
+                    {#$('#taskModalStatus').html(response.status);#}
+                    {#attr_container.html('');#}
+                    {#console.log(response);#}
+                    {#response.meta.forEach((element) => {#}
+                    {#    if(element.type == 'text_area') {#}
+                    {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
+                    {#            <label>${element.label}</label>#}
+                    {#            <textarea class="form-control" rows="6">${element.response}</textarea>#}
+                    {#          </div>#}
+                    {#          <br>#}
+                    {#        `);#}
+                    {#    } else if(element.type == 'link') {#}
+                    {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
+                    {#            <label>${element.label}</label>#}
+                    {#            <a href="${element.response}" target="_blank">Link</a>#}
+                    {#          </div>#}
+                    {#          <br>#}
+                    {#        `);#}
+                    {#    } else {#}
+                    {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
+                    {#            <label>${element.label}</label>#}
+                    {#            <input type="text" class="form-control" value="${element.response}">#}
+                    {#          </div>#}
+                    {#          <br>#}
+                    {#        `);#}
+                    {#    }#}
+                    {#});#}
                 }
             });
         })

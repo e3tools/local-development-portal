@@ -1,6 +1,6 @@
 from django import template
 from django.utils.translation import gettext_lazy
-
+import json
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
 from administrativelevels.models import Task
 from cosomis.utils import structure_the_words as utils_structure_the_words
@@ -280,10 +280,13 @@ def structure_the_fields(task):
 @register.filter(name="structureTheFieldsLabels")
 def structure_the_fields_labels(task):
     fields_values = []
+    print(task)
     if task.get("form_response"):
+        print('here')
         i = 0
         form = task.get("form")
         for fields in task.get("form_response"):
+            print(fields)
             fields_options = form[i].get('options').get('fields')
             dict_values = {}
             for field, value in fields.items():
@@ -391,5 +394,10 @@ def structure_the_fields_labels(task):
                     dict_values[field] = {'name': label if label else utils_structure_the_words(field), 'value': value}
             fields_values.append(dict_values)
             i += 1
-    # print(fields_values)
+    print(fields_values)
     return fields_values
+
+
+@register.filter(name="structureTheWords")
+def structure_the_words(word):
+    return utils_structure_the_words(word)

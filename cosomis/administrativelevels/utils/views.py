@@ -68,29 +68,30 @@ class GetAncestorAdministrativeLevelsView(AJAXRequestMixin, LoginRequiredMixin, 
         return self.render_to_json_response(ancestors, safe=False)
 
 
-class TaskDetailAjaxView(generic.View):
+class TaskDetailAjaxView(generic.TemplateView):
+    template_name = 'village/task_detail.html'  # Define your template location
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Get task id from URL parameters
+        task_id = self.kwargs.get('pk', None)
+        task = Task.objects.filter(id=task_id).first()
 
-        task = Task.objects.filter(id=kwargs.get('pk', None)).first()
-
-        if task is not None:
-            # Ensure dict_form_responses is a valid JSON string
-            try:
-                # Attempt to load it as JSON to check if it's already valid JSON
-                dict_form_responses = json.loads(task.dict_form_responses)
-            except TypeError:
-                # If it's a Python dict, serialize it. If it's already a string, this step is not needed.
-                dict_form_responses = task.dict_form_responses
-            except json.JSONDecodeError:
-                # If the string is not valid JSON, this handles the case and serializes a Python dict
-                dict_form_responses = json.dumps(task.dict_form_responses)
-
-            response = {
+        if task:
+            # Ensure dict_form_responses is a valid JSON string or dict
+            # Adding task details to the context
+            context['task'] = {
                 'name': task.name,
                 'description': task.description,
                 'status': task.status,
-                'meta': dict_form_responses  # This should now be a properly formatted JSON string
+                'task': {
+                    'form_response': task.form_responses,  # This is now a properly formatted JSON string or a dict
+                    'form': task.form,  # This is now a properly formatted JSON string or a dict
+                },  # This is now a properly formatted JSON string or a dict
             }
+        else:
+            # Optionally handle the case where the task is not found
+            context['error'] = 'Task not found'
 
-            return JsonResponse(response)
+        return context
