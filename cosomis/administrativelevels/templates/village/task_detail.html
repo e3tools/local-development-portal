@@ -1,29 +1,19 @@
 {% load static i18n custom_tags %}
 
 <div class="modal-header">
-    <h5 class="modal-title">
-        {{ name }}
-    </h5>
-    <div class="col-sm-2 text-right">
-    {% if status %}
-        <div class="status-badge badge-completed">
-            Completed
-        </div>
-    {% else %}
-        <div class="status-badge badge-pending">
-            Pending
-        </div>
-    {% endif %}
-</div>
-
+    <h4 class="modal-title text-primary" id="taskModalTitle">
+        {{ task.name }}
+    </h4>
+        <span class="badge badge-pill badge-lg badge-info ml-1" id="taskModalStatus">
+            {{ task.status }}
+        </span>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 
-<div class="card">
-    <div class="card-body">
-
+    <div class="modal-body">
+        <p id="taskModalDescription">{{ task.description }}</p>
         {% with task.task|structureTheFieldsLabels as liste %}
         {% for fields in liste %}
             {% for field, dicts in fields.items %}
@@ -183,4 +173,4 @@
         {% endif %}
 
     </div>
-</div>
+
