@@ -88,6 +88,7 @@ class TaskDetailAjaxView(generic.TemplateView):
                 'task': {
                     'form_response': task.form_responses,  # This is now a properly formatted JSON string or a dict
                     'form': task.form,  # This is now a properly formatted JSON string or a dict
+                    'attachments': task.attachments,  # This is now a properly formatted JSON string or a dict
                 },  # This is now a properly formatted JSON string or a dict
             }
         else:
