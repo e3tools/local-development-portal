@@ -335,8 +335,8 @@
                     <div class="col-12 mb-3">
 
                         {% for key, value in query_strings.items %}
-                            <span class="filter-badge align-middle" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
-                                <span class="filter-badge-label">{{ key }}: {{ value }}</span>
+                            <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
+                                <span class="filter-badge-label">{{ key }}: {{ value|truncatechars:20 }}</span>
                             </span>
                         {% endfor %}
                     </div>
