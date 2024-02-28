@@ -32991,21 +32991,25 @@ a.text-muted:hover {
   width: 206px;
   height: 35px;
   margin: 12px 20px 18px 0;
-  padding: 6px 18px 8px 22px;
+  padding: 16px 18px 26px 22px;
   border-radius: 14px;
   background-color: #f6f9fb;
+  font-size: 0.875rem;
+  line-height: 20px;
+  vertical-align: middle
+  display: inline-flex;
 }
 
 .filter-badge-label {
   width: 166px;
-  height: 21px;
+  height: 19px;
   font-family: poppinsmedium, "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 16px;
-  font-weight: normal;
+  font-size: 14px;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
   letter-spacing: normal;
   text-align: left;
+  vertical-align: middle
   color: #4b4b4b;
 }
