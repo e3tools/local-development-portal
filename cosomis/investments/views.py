@@ -164,7 +164,7 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
             },
             {
                 'id': 'endorsed_by_pastoralist',
-                'name': _('Endorsed by pastoralist')
+                'name': _('Endorsed by ethnic minorities')
             },
         ]
         kwargs.setdefault("view", self)
