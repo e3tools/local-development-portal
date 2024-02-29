@@ -1,9 +1,11 @@
 import re
 import zipfile
-from io import BytesIO
 import requests
+from io import BytesIO
 from typing import Optional, List, Tuple
+from urllib.parse import urlencode
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.templatetags.i18n import do_get_current_language
 from django.utils import translation
 from django.views.generic import DetailView, TemplateView, ListView, CreateView
@@ -19,8 +21,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q, QuerySet
 from no_sql_client import NoSQLClient
 
-from administrativelevels.models import AdministrativeLevel
-from investments.models import Attachment, Investment, Task
+from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task
+from investments.models import Attachment, Investment
 
 from .forms import FinancialPartnerForm, AttachmentFilterForm, VillageSearchForm
 
@@ -348,52 +350,59 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView)
 
 
 # Attachments
-class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
+class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
     template_name = "attachments/attachments.html"
     context_object_name = "attachments"
     title = _("Gallery")
     model = Attachment
 
+    def post(self, request, *args, **kwargs):
+        url = reverse('administrativelevels:attachments')
+        final_querystring = request.GET.copy()
+
+        for key, value in request.GET.items():
+            if key in request.POST and value != request.POST[key] and request.POST[key] != '':
+                final_querystring.pop(key)
+
+        post_dict = request.POST.copy()
+        post_dict.update(final_querystring)
+        post_dict.pop('csrfmiddlewaretoken')
+        if 'reset-hidden' in post_dict and post_dict['reset-hidden'] == 'true':
+            return redirect(url)
+
+        for key, value in request.POST.items():
+            if value == '':
+                post_dict.pop(key)
+        final_querystring.update(post_dict)
+        if final_querystring:
+            url = '{}?{}'.format(url, urlencode(final_querystring))
+        return redirect(url)
+
     def get_context_data(self, **kwargs):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
-        if context.get("adm_id"):
-            administrative_levels = AdministrativeLevel.objects.filter(
-                id=context.get("adm_id")
-            )
-            administrative_levels = administrative_levels[0]
-        else:
-            administrative_levels = AdministrativeLevel.objects.all()
 
-        # if len(administrative_level) == 0:
-        #     raise Http404
+        context["administrative_levels"] = AdministrativeLevel.objects.filter(type=AdministrativeLevel.VILLAGE)
 
-        context["administrative_level"] = administrative_levels
-        self.activity_choices: List[Tuple] = [(None, "---")]
-        self.task_choices: List[Tuple] = [(None, "---")]
-        self.phase_choices: List[Tuple] = [(None, "---")]
-        self.administrative_level_choices: List[Tuple] = [(None, "---")]
+        context['phases'] = Phase.objects.all()
+        if 'administrative_level' in self.request.GET and self.request.GET['administrative_level'] not in ['', None]:
+            context['phases'] = context['phases'].filter(village__id=self.request.GET['administrative_level'])
+
+        context['activities'] = Activity.objects.all()
+        if 'phase' in self.request.GET and self.request.GET['phase'] not in ['', None]:
+            context['activities'] = context['activities'].filter(phase__id=self.request.GET['phase'])
+
+        context['tasks'] = Task.objects.all()
+        if 'activities' in self.request.GET and self.request.GET['activities'] not in ['', None]:
+            context['tasks'] = context['tasks'].filter(activity__id=self.request.GET['activities'])
 
         query_params: dict = self.request.GET
 
+        context['query_strings'] = self.get_query_strings_context()
+        context['query_strings_raw'] = query_params.copy()
+
         form = AttachmentFilterForm()
 
-        adm_id: Optional[int] = self.kwargs.get("adm_id", None)
-        paginator: Paginator = self.__build_db_filter(query_params, adm_id)
-        self.__get_select_choices(paginator.object_list)
-
-        form.fields.get("administrative_level").initial = query_params.get(
-            "administrative_level"
-        )
-        form.fields.get(
-            "administrative_level"
-        ).choices = self.administrative_level_choices
-        form.fields.get("type").initial = query_params.get("type")
-        form.fields.get("phase").initial = query_params.get("phase")
-        form.fields.get("phase").choices = self.phase_choices
-        form.fields.get("task").initial = query_params.get("task")
-        form.fields.get("task").choices = self.task_choices
-        form.fields.get("activity").initial = query_params.get("activity")
-        form.fields.get("activity").choices = self.activity_choices
+        paginator: Paginator = self.__build_db_filter()
 
         context["no_results"] = paginator.count == 0
         context["current_language"] = translation.get_language()
@@ -403,66 +412,77 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, TemplateView):
 
         return context
 
-    def __get_select_choices(self, attachments: List[Attachment]) -> None:
-        # self.activity_choices = self.activity_choices + (list(
-        #      set(map(lambda attachment: (attachment.activity, attachment.activity),
-        #             attachments
-        #             ))))
-
-        # self.task_choices = self.task_choices + (list(
-        #     set(map(lambda attachment: (attachment.task, attachment.task),
-        #             attachments
-        #             ))))
-
-        # self.phase_choices = self.phase_choices + (list(
-        #      set(map(lambda attachment: (attachment.phase, attachment.phase),
-        #             attachments
-        #             ))))
-
-        self.administrative_level_choices = self.administrative_level_choices + (
-            list(
-                set(
-                    map(
-                        lambda administrative_level: (
-                            administrative_level.name,
-                            administrative_level.name,
-                        ),
-                        AdministrativeLevel.objects.all(),
-                    )
-                )
-            )
-        )
-
-    def __build_db_filter(self, query_params: dict, adm_id: Optional[int]) -> Paginator:
-        query: QuerySet = Attachment.objects
-
-        if adm_id is not None and adm_id != "":
-            query = query.filter(adm_id=adm_id)
-
-        administrative_level: str = query_params.get("administrative_level")
-        if administrative_level is not None and administrative_level != "":
-            query = query.filter(adm__administrativelevel__name=administrative_level)
-
-        attachment_type: str = query_params.get("type")
-        if attachment_type is not None and attachment_type != "":
-            query = query.filter(type=attachment_type)
-
-        # task: str = query_params.get('task')
-        # if task is not None and task != '':
-        #     query = query.filter(task=task)
-
-        # phase: str = query_params.get('phase')
-        # if phase is not None and phase != '':
-        #     query = query.filter(phase=phase)
-
-        # activity: str = query_params.get('activity')
-        # if activity is not None and activity != '':
-        #     query = query.filter(activity=activity)
+    def __build_db_filter(self) -> Paginator:
+        query: QuerySet = self.get_queryset()
 
         query = query.order_by("created_date")
         paginator = Paginator(query, 36)
 
         return paginator
+
+    def get_query_strings_context(self):
+        resp = dict()
+        for key, value in self.request.GET.items():
+            if value not in [None, '']:
+                if key == 'administrative_level':
+                    resp['Administrative-levels'] = ', '.join(AdministrativeLevel.objects.filter(
+                        id__in=[int(value)],
+                        type=AdministrativeLevel.VILLAGE
+                    ).values_list('name', flat=True))
+                if key == 'phase':
+                    resp['Phases'] = ', '.join(Phase.objects.filter(
+                        id__in=[int(value)]
+                    ).values_list('name', flat=True))
+                if key == 'activities':
+                    resp['Activities'] = ', '.join(Activity.objects.filter(
+                        id__in=[int(value)]
+                    ).values_list('name', flat=True))
+                if key == 'tasks':
+                    resp['Tasks'] = ', '.join(Task.objects.filter(
+                        id__in=[int(value)]
+                    ).values_list('name', flat=True))
+                if key == 'types':
+                    resp['Types'] = [value]
+
+        return resp
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if 'administrative_level' in self.request.GET and self.request.GET['administrative_level'] not in ['', None]:
+            if 'phase' in self.request.GET and self.request.GET['phase'] not in ['', None]:
+                queryset = queryset.filter(
+                    Q(adm__id=self.request.GET['administrative_level']) |
+                    Q(task__activity__phase__id=self.request.GET['phase'])
+                )
+            elif 'activities' in self.request.GET and self.request.GET['activities'] not in ['', None]:
+                queryset = queryset.filter(
+                    Q(adm__id=self.request.GET['administrative_level']) |
+                    Q(task__activity__id=self.request.GET['activities'])
+                )
+            elif 'tasks' in self.request.GET and self.request.GET['tasks'] not in ['', None]:
+                queryset = queryset.filter(
+                    Q(adm__id=self.request.GET['administrative_level']) |
+                    Q(task__id=self.request.GET['tasks'])
+                )
+            else:
+                queryset = queryset.filter(
+                    adm__id=self.request.GET['administrative_level']
+                )
+        else:
+            if 'phase' in self.request.GET and self.request.GET['phase'] not in ['', None]:
+                queryset = queryset.filter(
+                    adm__id=self.request.GET['administrative_level']
+                )
+            elif 'activities' in self.request.GET and self.request.GET['activities'] not in ['', None]:
+                queryset = queryset.filter(
+                    adm__id=self.request.GET['administrative_level']
+                )
+            elif 'tasks' in self.request.GET and self.request.GET['tasks'] not in ['', None]:
+                queryset = queryset.filter(
+                    adm__id=self.request.GET['administrative_level']
+                )
+
+        return queryset
 
 
 class VillageAttachmentListView(AttachmentListView):

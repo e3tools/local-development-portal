@@ -1,11 +1,11 @@
-from django.http import JsonResponse
-from django.views import generic
+from rest_framework import generics
+from rest_framework.response import Response
 
 from administrativelevels.models import AdministrativeLevel
 from .models import Sector
 
 
-class FillAdmLevelsSelectFilters(generic.View):
+class FillAdmLevelsSelectFilters(generics.GenericAPIView):
     """
     Region -> Prefecture -> Commune -> Canton -> Village
     """
@@ -22,18 +22,18 @@ class FillAdmLevelsSelectFilters(generic.View):
         elif adm_obj.type == AdministrativeLevel.CANTON:
             opt_qs = opt_qs.filter(type=AdministrativeLevel.VILLAGE)
 
-        return JsonResponse({
+        return Response({
             'values': [{'id': adm.id, 'name': adm.name} for adm in opt_qs]
         })
 
 
-class FillSectorsSelectFilters(generic.View):
+class FillSectorsSelectFilters(generics.GenericAPIView):
     """
     Region -> Prefecture -> Commune -> Canton -> Village
     """
 
     def post(self, request, *args, **kwargs):
         opt_qs = Sector.objects.filter(category__id=request.POST['value'])
-        return JsonResponse({
+        return Response({
             'values': [{'id': adm.id, 'name': adm.name} for adm in opt_qs]
         })

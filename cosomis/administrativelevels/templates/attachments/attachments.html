@@ -201,9 +201,20 @@
                     <article>
                         <div class="card mr-3">
                             <div class="card-body">
-                                <h5 class="card-title"><a href="{% url 'administrativelevels:village_detail' attachment.adm.id %}">{{ attachment.adm.type }}: {{ attachment.adm.name }}</a></h5>
+                                <h5 class="card-title">
+                                    <a href="{% url 'administrativelevels:village_detail' attachment.adm.id %}">
+                                        {{ attachment.adm.type }}: {{ attachment.adm.name }}
+                                    </a>
+                                </h5>
+                                {% if attachment.task %}
                                 <p class="card-text">
+                                    <b>{% translate 'Task' %}</b>: {{ attachment.task.name }}
+                                    <span class="badge badge-pill badge-info">{{ attachment.task.status }}</span>
                                 </p>
+                                <p class="card-text">
+                                    {{ attachment.task.description }}
+                                </p>
+                                {% endif %}
                             </div>
                             <a href="{{ attachment.url|imgAWSS3Filter }}" target="_blank">
                                 <img src="{{ attachment.url|imgAWSS3Filter }}" class="card-img-top second-target" alt="{{ attachment.task }}">
@@ -248,53 +259,107 @@
                 </div>
                 <div class="card-body">
                     <form action="" method="get">
-                        <div class="form-group">
-                            <div class="form-label">
-                                {{ form.type.label_tag }}
+                        <div class="form-checkbox-row">
+
+                            <div class="form-checkbox">
+                                <label for="id_type_0"><input type="radio" name="type" value="Photo" id="id_type_0" required="" {% if 'type' in query_strings_raw and query_strings_raw.type == 'Photo' %}checked=""{% endif %}> Photo</label>
                             </div>
-                            <div class="form-checkbox-row">
-                                {% for radio in form.type %}
-                                    <div class="form-checkbox">
-                                        {{ radio }}
-                                    </div>
-                                {% endfor %}
+
+                            <div class="form-checkbox">
+                                <label for="id_type_1"><input type="radio" name="type" value="Document" id="id_type_1" required="" {% if 'type' in query_strings_raw and query_strings_raw.type == 'Document' %}checked=""{% endif %}> Document</label>
                             </div>
+
+                            <div class="form-checkbox">
+                                <label for="id_type_2"><input type="radio" name="type" value="" id="id_type_2" required="" {% if not 'type' in query_strings_raw or query_strings_raw.type not in 'Photo,Document' %}checked=""{% endif %}> Both</label>
+                            </div>
+
                         </div>
-                        {% if adm_id is None %}
-                            <div class="form-group">
-                                <div class="form-label">
-                                    {{ form.administrative_level.label_tag }}
-                                </div>
-                                <div class="form-select-row">
-                                    {{ form.administrative_level }}
-                                </div>
-                            </div>
-                        {% endif %}
+                        <br><br>
                         <div class="form-group">
                             <div class="form-label">
-                                {{ form.phase.label_tag }}
+                                <label for="id_administrative_level">{% translate 'Administrative level' %}</label>
                             </div>
                             <div class="form-select-row">
-                                {{ form.phase }}
+                                <select class="form-control" name="administrative_level" id="id_administrative_level" empty-option="---" style="width: 100%;">
+                                    <option selected value="">---</option>
+                                    {% for administrative_level in administrative_levels %}
+                                        {% if 'administrative_level' in query_strings_raw %}
+                                            {% if query_strings_raw|get_item:'administrative_level' == administrative_level.id %}
+                                            <option value="{{ administrative_level.id }}" selected>{{ administrative_level.name }}</option>
+                                            {% else %}
+                                            <option value="{{ administrative_level.id }}">{{ administrative_level.name }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            <option value="{{ administrative_level.id }}">{{ administrative_level.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">
+                                <label for="id_phase">{% translate 'Phase' %}</label>
+                            </div>
+                            <div class="form-select-row">
+                                <select class="form-control" name="phase" id="id_phase" empty-option="---" style="width: 100%;" {% if not 'administrative_level' in query_strings_raw %}disabled{% endif %}>
+                                    <option selected value="">---</option>
+                                    {% for phase in phases %}
+                                        {% if 'phase-filter' in query_strings_raw %}
+                                            {% if query_strings_raw|get_item:'phase-filter' == phase.id %}
+                                            <option value="{{ phase.id }}" selected>{{ phase.name }}</option>
+                                            {% else %}
+                                            <option value="{{ phase.id }}">{{ phase.name }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            <option value="{{ phase.id }}">{{ phase.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">
+                                <label for="id_activity">{% translate 'Activity' %}</label>
+                            </div>
+                            <div class="form-select-row">
+                                <select class="form-control" name="activity" id="id_activity" empty-option="---" style="width: 100%;" {% if not 'phase' in query_strings_raw %}disabled{% endif %}>
+                                    <option selected value="">---</option>
+                                    {% for activity in activities %}
+                                        {% if 'activity-filter' in query_strings_raw %}
+                                            {% if query_strings_raw|get_item:'activity-filter' == activity.id %}
+                                            <option value="{{ activity.id }}" selected>{{ activity.name }}</option>
+                                            {% else %}
+                                            <option value="{{ activity.id }}">{{ activity.name }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            <option value="{{ activity.id }}">{{ activity.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">
+                                <label for="id_task">{% translate 'Task' %}</label>
+                            </div>
+                            <div class="form-select-row">
+                                <select class="form-control" name="task" id="id_task" empty-option="---" style="width: 100%;" {% if not 'activity' in query_strings_raw %}disabled{% endif %}>
+                                    <option selected value="">---</option>
+                                    {% for task in tasks %}
+                                        {% if 'task-filter' in query_strings_raw %}
+                                            {% if query_strings_raw|get_item:'task-filter' == task.id %}
+                                            <option value="{{ task.id }}" selected>{{ task.name }}</option>
+                                            {% else %}
+                                            <option value="{{ task.id }}">{{ task.name }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            <option value="{{ task.id }}">{{ task.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <div class="form-label">
-                                {{ form.activity.label_tag }}
-                            </div>
-                            <div class="form-select-row">
-                                {{ form.activity }}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-label">
-                                {{ form.task.label_tag }}
-                            </div>
-                            <div class="form-select-row">
-                                {{ form.task }}
-                            </div>
-                        </div>
                         <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}">
                     </form>
                 </div>
@@ -310,12 +375,33 @@
         var current_page = "{{ request.path }}";
         var csrf_token = "{{ csrf_token }}";
         $(document).ready(function () {
+
             $('input[type=checkbox]').click(function (event) {
                 if (event.stopPropagation) {
                     event.stopPropagation();
                 } else {
                     event.cancelBubble = true;
                 }
+            });
+
+            $('#id_administrative_level').on('change', function(){
+                change_filters_selects(
+                    $(this), $('#id_phase'),
+                    [$('#id_activity'), $('#id_task')]
+                )
+            });
+
+            $('#id_phase').on('change', function(){
+                change_filters_selects(
+                    $(this), $('#id_activity'),
+                    [$('#id_task')]
+                )
+            });
+
+            $('#id_activity').on('change', function(){
+                change_filters_selects(
+                    $(this), $('#id_task'), []
+                )
             });
 
             $('#babylongrid').babylongrid({
@@ -412,6 +498,38 @@
                 $('.carousel-indicators li').eq(count).addClass('active');
                 spin_attachments.hide();
             });
+
+            function change_filters_selects(select_input, select_to_fill, other_selects){
+                let selected_value = select_input.find(":selected").val();
+
+                if (selected_value != '') {
+                    let base_url = "{% url 'administrativelevels:utils:attachment_filter' %}";
+                    $.ajax({
+                        type : "POST",
+                        url: base_url,
+                        data: {
+                          type: select_input.attr('name'),
+                          value: selected_value,
+                          csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function(response){
+                            select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                            response.values.forEach((element) => {
+                                select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                            })
+                        }
+                    });
+                    select_to_fill.prop('disabled', false);
+                }
+                else {
+                    select_to_fill.prop('disabled', 'disabled');
+                    select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                }
+                other_selects.forEach((select) => {
+                    select.prop('disabled', 'disabled');
+                    select.html("<option selected value=''>" + select.attr('empty-option') + "</option>");
+                });
+            };
         })
     </script>
 {% endblock %}

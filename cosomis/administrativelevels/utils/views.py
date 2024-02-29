@@ -2,10 +2,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views import generic
 
-from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin
-from administrativelevels.models import AdministrativeLevel
+from rest_framework import generics, response
 
-from investments.models import Task
+from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin
+from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task
 
 
 class GetAdministrativeLevelForCVDByADLView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
@@ -20,6 +20,7 @@ class GetAdministrativeLevelForCVDByADLView(AJAXRequestMixin, LoginRequiredMixin
                 d = [{'id': elt.id, 'name': elt.name} for elt in obj.cvd.get_villages()]
 
         return self.render_to_json_response(sorted(d, key=lambda o: o['name']), safe=False)
+
 
 class GetChoicesForNextAdministrativeLevelNoConditionView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
     def get(self, request, *args, **kwargs):
@@ -42,6 +43,7 @@ class GetChoicesForNextAdministrativeLevelView(AJAXRequestMixin, LoginRequiredMi
         d = [{'id': elt.id, 'name': elt.name} for elt in data if((not elt.geographical_unit) or (elt.geographical_unit and geographical_unit_id and elt.geographical_unit.id == int(geographical_unit_id)))]
 
         return self.render_to_json_response(sorted(d, key=lambda o: o['name']), safe=False)
+
 
 class GetChoicesAdministrativeLevelByGeographicalUnitView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
     def get(self, request, *args, **kwargs):
@@ -83,3 +85,26 @@ class TaskDetailAjaxView(generic.View):
             return JsonResponse(response)
 
         return JsonResponse({})
+
+
+class FillAttachmentSelectFilters(generics.GenericAPIView):
+    """
+    Region -> Prefecture -> Commune -> Canton -> Village
+    """
+
+    def post(self, request, *args, **kwargs):
+        select_type = request.POST['type']
+        child_qs = list()
+        if select_type == 'administrative_level':
+            parent_obj = AdministrativeLevel.objects.get(id=request.POST['value'])
+            child_qs = Phase.objects.filter(village=parent_obj)
+        elif select_type == 'phase':
+            parent_obj = Phase.objects.get(id=request.POST['value'])
+            child_qs = Activity.objects.filter(phase=parent_obj)
+        elif select_type == 'activity':
+            parent_obj = Activity.objects.get(id=request.POST['value'])
+            child_qs = Task.objects.filter(activity=parent_obj)
+
+        return response.Response({
+            'values': [{'id': child.id, 'name': child.name} for child in child_qs]
+        })

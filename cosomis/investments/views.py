@@ -143,12 +143,13 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
         if 'cantons-filter' in self.request.GET:
             kwargs['villages'] = kwargs['villages'].filter(parent__id=self.request.GET['cantons-filter'])
 
-        kwargs['query_strings'] = self.get_query_strings_context()
-        kwargs['query_strings_raw'] = self.request.GET.copy()
-
         kwargs['categories'] = Category.objects.all()
         if 'category-filter' in self.request.GET:
             kwargs['sectors'] = Sector.objects.filter(category=self.request.GET['category-filter'])
+
+        kwargs['query_strings'] = self.get_query_strings_context()
+        kwargs['query_strings_raw'] = self.request.GET.copy()
+
         kwargs['subpopulations'] = [
             {
                 'id': 'endorsed_by_youth',
@@ -167,6 +168,7 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
                 'name': _('Endorsed by pastoralist')
             },
         ]
+
         kwargs.setdefault("view", self)
         if self.extra_context is not None:
             kwargs.update(self.extra_context)

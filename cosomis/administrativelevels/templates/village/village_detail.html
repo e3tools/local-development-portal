@@ -280,7 +280,7 @@ let spin_attachments_images = $("#spin-attachments-images");
             <div class="carousel-inner">
                 {% for image in images_data.images %}
                     <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
-                        <a href="{% url 'administrativelevels:village_attachments' object.id %}">
+                        <a href="{% url 'administrativelevels:attachments' %}?administrative_level={{ object.id }}">
                             <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
                             style="height: 500px !important;"
                             alt="{{ image.task }}">
@@ -299,7 +299,7 @@ let spin_attachments_images = $("#spin-attachments-images");
         </div>
 
     {% else %}
-    <a href="{% url 'administrativelevels:village_attachments' object.id %}?type=Photo">
+    <a href="{% url 'administrativelevels:attachments' %}?administrative_level={{ object.id }}">
                 <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
     alt="Card image">
     </a>

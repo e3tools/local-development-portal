@@ -286,7 +286,10 @@ class Task(BaseModel):
 
     @property
     def dict_form_responses(self):
-        return json.loads(str(self.form_responses))
+        try:
+            return json.loads(str(self.form_responses))
+        except json.JSONDecodeError as e:
+            return dict()
 
 
 def update_or_create_amd_couch(sender, instance, **kwargs):
