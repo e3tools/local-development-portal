@@ -1,10 +1,11 @@
 import datetime
+from operator import itemgetter
+import re
 
-from subprojects.models import Subproject, Component, SubprojectStep, Level, Step, Project
+
 from no_sql_client import NoSQLClient
 from authentication.models import Facilitator
 from administrativelevels.models import AdministrativeLevel
-from assignments.models import AssignAdministrativeLevelToFacilitator
 from administrativelevels.libraries.functions import strip_accents
 
 
@@ -324,3 +325,10 @@ def set_projects_images():
     print()
     print("Done !")
 
+
+def structure_the_words(word):
+    return (" ").join(re.findall(r'[A-Z][^A-Z]*|[^A-Z]+', word)).lower().capitalize()
+
+
+def sort_dictionary_list_by_field(list_to_be_sorted, field, reverse=False):
+    return sorted(list_to_be_sorted, key=itemgetter(field), reverse=reverse)

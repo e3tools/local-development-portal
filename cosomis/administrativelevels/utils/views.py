@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views import generic
@@ -69,22 +70,34 @@ class GetAncestorAdministrativeLevelsView(AJAXRequestMixin, LoginRequiredMixin, 
         return self.render_to_json_response(ancestors, safe=False)
 
 
-class TaskDetailAjaxView(generic.View):
+class TaskDetailAjaxView(generic.TemplateView):
+    template_name = 'village/task_detail.html'  # Define your template location
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Get task id from URL parameters
+        task_id = self.kwargs.get('pk', None)
+        task = Task.objects.filter(id=task_id).first()
 
-        task = Task.objects.filter(id=kwargs.get('pk', None)).first()
-
-        if task is not None:
-            response = {
+        if task:
+            # Ensure dict_form_responses is a valid JSON string or dict
+            # Adding task details to the context
+            context['task'] = {
                 'name': task.name,
                 'description': task.description,
                 'status': task.status,
-                'meta': task.dict_form_responses
+                'task': {
+                    'form_response': task.form_responses,  # This is now a properly formatted JSON string or a dict
+                    'form': task.form,  # This is now a properly formatted JSON string or a dict
+                    'attachments': task.attachments,  # This is now a properly formatted JSON string or a dict
+                },  # This is now a properly formatted JSON string or a dict
             }
-            return JsonResponse(response)
+        else:
+            # Optionally handle the case where the task is not found
+            context['error'] = 'Task not found'
 
-        return JsonResponse({})
+        return context
 
 
 class FillAttachmentSelectFilters(generics.GenericAPIView):

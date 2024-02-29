@@ -50,7 +50,7 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 )
         admin_level = context.get("object")
 
-        tasks_qs = Task.objects.filter(activity__phase__village=context['object'])
+        tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
         current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
         current_phase = current_task.activity.phase
         current_activity = current_task.activity
