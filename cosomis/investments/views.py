@@ -3,20 +3,24 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Subquery, Sum
+from django.http import HttpResponseRedirect
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
+
+from usermanager.models import User
 from administrativelevels.models import AdministrativeLevel
+
 from static.config.datatable import get_datatable_config
+
 from .models import Investment, Package, Category, Sector
-from .forms import InvestmentsForm
+from .forms import InvestmentsForm, PackageApprovalForm
 
 
 class ProfileTemplateView(LoginRequiredMixin, PageMixin, generic.DetailView):
     template_name = 'investments/profile.html'
-    queryset = User.objects.all()
+    # queryset = User.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super(ProfileTemplateView, self).get_context_data(**kwargs)
@@ -25,13 +29,10 @@ class ProfileTemplateView(LoginRequiredMixin, PageMixin, generic.DetailView):
         for package in context['packages']:
             inv_ids += package.funded_investments.all().values_list('id', flat=True)
         context['investments'] = Investment.objects.filter(id__in=inv_ids)
-        try:
-            context['organization'] = self.request.user.user_conf.get().organization
-        except self.request.user.user_conf.model.DoesNotExist as e:
-            context['organization'] = None
+        context['organization'] = self.request.user.organization
 
         if context['organization'] is not None:
-            user_qs = context['organization'].user_conf.all().values_list('user__id')
+            user_qs = context['organization'].users.all().values_list('user__id')
             investments_qs = Investment.objects.filter(packages__user__id__in=Subquery(user_qs))
             context['organization'].total_investments = investments_qs.count()
             context['organization'].total_investments_amount = investments_qs.aggregate(Sum('estimated_cost'))['estimated_cost__sum']
@@ -142,12 +143,13 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
         if 'cantons-filter' in self.request.GET:
             kwargs['villages'] = kwargs['villages'].filter(parent__id=self.request.GET['cantons-filter'])
 
-        kwargs['query_strings'] = self.get_query_strings_context()
-        kwargs['query_strings_raw'] = self.request.GET.copy()
-
         kwargs['categories'] = Category.objects.all()
         if 'category-filter' in self.request.GET:
             kwargs['sectors'] = Sector.objects.filter(category=self.request.GET['category-filter'])
+
+        kwargs['query_strings'] = self.get_query_strings_context()
+        kwargs['query_strings_raw'] = self.request.GET.copy()
+
         kwargs['subpopulations'] = [
             {
                 'id': 'endorsed_by_youth',
@@ -163,9 +165,10 @@ class IndexListView(LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, ge
             },
             {
                 'id': 'endorsed_by_pastoralist',
-                'name': _('Endorsed by pastoralist')
+                'name': _('Endorsed by ethnic minorities')
             },
         ]
+
         kwargs.setdefault("view", self)
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
@@ -359,13 +362,47 @@ class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
         return super(CartView, self).get_context_data(**context)
 
 
-class ModeratorPackageList(LoginRequiredMixin, PageMixin, generic.ListView):
-    template_name = 'investments/moderator/packages_list.html'
-    model = Package
+class ModeratorApprovalsListView(LoginRequiredMixin, PageMixin, generic.ListView):
+    template_name = 'investments/moderator/approvals_list.html'
+    package_model = Package
+    user_model = User
     ordering = ['status', '-created_date']
+    allow_empty = True
+    object_list = None
 
-    def get_queryset(self):
-        queryset = self.model._default_manager.exclude(
+    def get(self, request, *args, **kwargs):
+        self.package_list = self.get_package_queryset()
+        self.user_list = self.get_user_queryset()
+
+        context = self.get_context_data()
+        return self.render_to_response(context)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        """Get the context for this view."""
+        package_queryset = self.package_list
+        user_queryset = self.user_list
+        context = {
+            "paginator": None,
+            "page_obj": None,
+            "is_paginated": False,
+            "package_list": package_queryset,
+            "user_list": user_queryset,
+        }
+        context.update(kwargs)
+
+        context.setdefault('title', self.title)
+        context.setdefault('active_level1', self.active_level1)
+        context.setdefault('active_level2', self.active_level2)
+        context.setdefault('breadcrumb', self.breadcrumb)
+        context.setdefault('form_mixin', self.form_mixin)
+
+        context.setdefault("view", self)
+        if self.extra_context is not None:
+            context.update(self.extra_context)
+        return context
+
+    def get_package_queryset(self):
+        queryset = self.package_model._default_manager.exclude(
             status=Package.PENDING_SUBMISSION
         ).order_by('created_date', 'status')
         ordering = self.get_ordering()
@@ -375,3 +412,135 @@ class ModeratorPackageList(LoginRequiredMixin, PageMixin, generic.ListView):
             queryset = queryset.order_by(*ordering)
 
         return queryset
+
+    def get_user_queryset(self):
+        queryset = self.user_model._default_manager.filter(
+            is_approved=None,
+            is_moderator=False
+        ).order_by('date_joined')
+        return queryset
+
+
+class ModeratorPackageReviewView(LoginRequiredMixin, PageMixin, generic.FormView, generic.DetailView):
+    template_name = 'investments/moderator/package_review.html'
+    form_class = PackageApprovalForm
+    queryset = Package.objects.filter(status=Package.PENDING_APPROVAL)
+    pk_url_kwarg = 'package'
+    title = _('Investment Package Review')
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        self.object = self.get_object()
+        if "form" not in kwargs:
+            kwargs["form"] = self.get_form()
+
+        if self.object:
+            context["object"] = self.object
+            context_object_name = self.get_context_object_name(self.object)
+            if context_object_name:
+                context[context_object_name] = self.object
+        context.update(kwargs)
+        context.update(self.get_filters_context())
+        return super().get_context_data(**context)
+
+    def get_form_kwargs(self):
+        """Return the keyword arguments for instantiating the form."""
+        kwargs = {
+            "initial": self.get_initial(),
+            "prefix": self.get_prefix(),
+        }
+
+        post_data = self.request.POST.copy()
+        post_data['package'] = self.get_object()
+
+        if self.request.method in ("POST", "PUT"):
+            kwargs.update(
+                {
+                    "data": post_data,
+                    "files": self.request.FILES,
+                }
+            )
+        return kwargs
+
+    def get_filters_context(self):
+        kwargs = dict()
+        adm_queryset = AdministrativeLevel.objects.all()
+        kwargs['regions'] = adm_queryset.filter(type=AdministrativeLevel.REGION)
+
+        kwargs['prefectures'] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
+        if 'region-filter' in self.request.GET:
+            kwargs['prefectures'] = kwargs['prefectures'].filter(parent__id=self.request.GET['region-filter'])
+
+        kwargs['communes'] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
+        if 'prefecture-filter' in self.request.GET:
+            kwargs['communes'] = kwargs['communes'].filter(parent__id=self.request.GET['prefecture-filter'])
+
+        kwargs['cantons'] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
+        if 'commune-filter' in self.request.GET:
+            kwargs['cantons'] = kwargs['cantons'].filter(parent__id=self.request.GET['commune-filter'])
+
+        kwargs['villages'] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
+        if 'cantons-filter' in self.request.GET:
+            kwargs['villages'] = kwargs['villages'].filter(parent__id=self.request.GET['cantons-filter'])
+
+        kwargs['query_strings'] = self.get_query_strings_context()
+        kwargs['query_strings_raw'] = self.request.GET.copy()
+
+        kwargs['categories'] = Category.objects.all()
+        if 'category-filter' in self.request.GET:
+            kwargs['sectors'] = Sector.objects.filter(category=self.request.GET['category-filter'])
+        kwargs['subpopulations'] = [
+            {
+                'id': 'endorsed_by_youth',
+                'name': _('Endorsed by youth')
+            },
+            {
+                'id': 'endorsed_by_women',
+                'name': _('Endorsed by women')
+            },
+            {
+                'id': 'endorsed_by_agriculturist',
+                'name': _('Endorsed by agriculturist')
+            },
+            {
+                'id': 'endorsed_by_pastoralist',
+                'name': _('Endorsed by pastoralist')
+            },
+        ]
+        return kwargs
+
+    def get_query_strings_context(self):
+        resp = dict()
+        for key, value in self.request.GET.items():
+            if key == 'region-filter':
+                resp['Regions'] = ', '.join(AdministrativeLevel.objects.filter(
+                    id__in=[int(value)],
+                    type=AdministrativeLevel.REGION
+                ).values_list('name', flat=True))
+            if key == 'prefecture-filter':
+                resp['Prefectures'] = ', '.join(AdministrativeLevel.objects.filter(
+                    id__in=[int(value)],
+                    type=AdministrativeLevel.PREFECTURE
+                ).values_list('name', flat=True))
+            if key == 'commune-filter':
+                resp['Communes'] = ', '.join(AdministrativeLevel.objects.filter(
+                    id__in=[int(value)],
+                    type=AdministrativeLevel.COMMUNE
+                ).values_list('name', flat=True))
+            if key == 'village-filter':
+                resp['Villages'] = ', '.join(AdministrativeLevel.objects.filter(
+                    id__in=[int(value)],
+                    type=AdministrativeLevel.VILLAGE
+                ).values_list('name', flat=True))
+
+            if key == 'category-filter':
+                resp['Categories'] = ', '.join(Category.objects.filter(
+                    id__in=[int(value)],
+                ).values_list('name', flat=True))
+            if key == 'sector-filter':
+                resp['Sectors'] = ', '.join(Sector.objects.filter(
+                    id__in=[int(value)],
+                ).values_list('name', flat=True))
+            if key == 'subpopulation-filter':
+                resp['Subpopulations'] = ' '.join(value.split('_'))
+        return resp

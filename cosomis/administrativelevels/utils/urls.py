@@ -15,4 +15,6 @@ urlpatterns = [
      #      name='get_choices_for_next_administrative_level_by_geographical_unit'),
     path('get-ancestor-administrative-levels', views.GetAncestorAdministrativeLevelsView.as_view(),
          name='get_ancestor_administrative_levels'),
+    path('task-detail/<int:pk>', views.TaskDetailAjaxView.as_view(), name='task_detail'),
+    path('attachments-filter', views.FillAttachmentSelectFilters.as_view(), name='attachment_filter'),
 ]

@@ -1,0 +1,136 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize custom_tags %}
+
+{% block content %}
+<div class="row">
+
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link"
+                            data-target="#collapseOne" data-toggle="collapse">
+                         {% translate 'User approval requests' %}
+                    </button>
+                </h5>
+            </div>
+            <div aria-labelledby="headingOne" class="collapse show" id="collapseOne">
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date requested</th>
+                                    <th>Email</th>
+                                    <th>Organization</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in user_list %}
+                                <tr>
+                                    <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.organization }}</td>
+                                    <td>
+                                        <a class="btn btn-xs btn-primary">Approve</a>
+                                        <a class="btn btn-xs btn-default">Reject</a>
+                                        <a class="btn btn-xs btn-danger">Spam</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <button aria-controls="collapseTwo" aria-expanded="false" class="btn btn-link"
+                            data-target="#collapseTwo" data-toggle="collapse">
+                         {% translate 'Submission approval requests' %}
+                    </button>
+                </h5>
+            </div>
+            <div aria-labelledby="headingTwo" class="collapse show" id="collapseTwo">
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date created</th>
+                                    <th>Last modified</th>
+                                    <th># of projects</th>
+                                    <th>Total amount</th>
+                                    <th>Sector</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for package in package_list %}
+                                <tr>
+                                    <td>{{ package.created_date|date:"d/m/Y" }}</td>
+                                    <td>{{ package.updated_date|date:"d/m/Y" }}</td>
+                                    <td>{{ package.funded_investments.all.count|intcomma }}</td>
+                                    <td>{{ package.estimated_final_cost|intcomma }} FCFA</td>
+                                    <td>{{ package }}</td>
+                                    <td>
+                                        {% if package.status == package.PENDING_SUBMISSION %}
+                                        {% translate 'Pending Submission' %}
+                                        {% elif package.status == package.PENDING_APPROVAL %}
+                                        {% translate 'Pending Approval' %}
+                                        {% elif package.status == package.APPROVED %}
+                                        {% translate 'Approved' %}
+                                        {% elif package.status == package.REJECTED %}
+                                        {% translate 'Rejected' %}
+                                        {% elif package.status == package.UNDER_EXECUTION %}
+                                        {% translate 'Under Execution' %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'investments:package_review' package.pk %}" class="btn btn-xs btn-primary">Review</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+<div class="modal fade" id="removePackageModal" tabindex="-1" role="dialog" aria-labelledby="removePackageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" name="remove-package-form" id="remove-package-form-id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removePackageModalLabel">{% translate 'Are you sure do you want to remove the package?' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    {% csrf_token %}
+                    <input type="hidden" name="clear-package-input">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+                    <input type="submit" class="btn btn-danger" name="clear-package-submit" value="{% translate 'Remove' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

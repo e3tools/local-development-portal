@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import IndexListView, CartView, ProfileTemplateView, ModeratorPackageList
+from .views import IndexListView, CartView, ProfileTemplateView, ModeratorApprovalsListView, ModeratorPackageReviewView
 from .ajax_views import FillAdmLevelsSelectFilters, FillSectorsSelectFilters
 
 app_name = 'investments'
@@ -9,7 +9,8 @@ urlpatterns = [
     path('cart', CartView.as_view(), name='cart'),
     path('profile', ProfileTemplateView.as_view(), name='profile'),
     path('moderator/', include([
-        path('notifications', ModeratorPackageList.as_view(), name='notifications')
+        path('notifications', ModeratorApprovalsListView.as_view(), name='notifications'),
+        path('review/<int:package>', ModeratorPackageReviewView.as_view(), name='package_review'),
     ])),
     path('ajax/', include([
         path('adm-levels', FillAdmLevelsSelectFilters.as_view()),

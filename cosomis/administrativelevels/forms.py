@@ -74,9 +74,10 @@ class AttachmentFilterForm(forms.Form):
         (None, _("Both")),
     )
     type = forms.ChoiceField(choices=TYPE_CHOICES, widget=RadioSelect, label=_("Type"))
-    phase = forms.ChoiceField(widget=Select, required=False, label=_("Phase"))
-    activity = forms.ChoiceField(widget=Select, required=False, label=_("Activity"))
-    task = forms.ChoiceField(widget=Select, required=False, label=_("Task"))
-    administrative_level = forms.ChoiceField(
-        widget=Select, required=False, label=_("Administrative level")
+    phase = forms.ChoiceField(widget=Select(attrs={'empty-option': '---------'}), required=False, label=_("Phase"))
+    activity = forms.ChoiceField(widget=Select(attrs={'empty-option': '---------'}), required=False, label=_("Activity"))
+    task = forms.ChoiceField(widget=Select(attrs={'empty-option': '---------'}), required=False, label=_("Task"))
+    administrative_level = forms.ModelChoiceField(
+        queryset=AdministrativeLevel.objects.filter(type=AdministrativeLevel.VILLAGE),
+        widget=Select(attrs={'empty-option': '---------'}), required=False, label=_("Administrative level")
     )

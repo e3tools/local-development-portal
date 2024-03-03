@@ -1,9 +1,14 @@
+import json
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from cosomis.models_base import BaseModel
 
 
 class AdministrativeLevel(BaseModel):
+    """
+    field -> priority identified (date)
+    Set an Attr(model) as default image
+    """
     LIME_GREEN = 'lime_green'
     DARK_GREEN = 'dark_green'
     ORANGE = 'orange'
@@ -40,6 +45,7 @@ class AdministrativeLevel(BaseModel):
     )
     parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"))
     geographical_unit = models.ForeignKey('GeographicalUnit', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
+    default_image = models.ForeignKey('investments.Attachment', on_delete=models.SET_NULL, null=True, blank=True)
     frontalier = models.BooleanField(default=True, verbose_name=_("Frontalier"))
     rural = models.BooleanField(default=True, verbose_name=_("Rural"))
 
@@ -61,6 +67,7 @@ class AdministrativeLevel(BaseModel):
     population_pastoralist = models.IntegerField(default=0)
     population_minorities = models.IntegerField(default=0)
     main_languages = models.CharField(max_length=50, blank=True, null=True)
+    identified_priority = models.DateField(null=True, blank=True)
 
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -156,9 +163,7 @@ class Phase(BaseModel):
     order = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
-
-    class Meta:
-        unique_together = ['village', 'order']
+    no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
 
     def __str__(self):
         return '%s. %s(%s)' % (self.order, self.name, self.village)
@@ -205,9 +210,7 @@ class Activity(BaseModel):
     order = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
-
-    class Meta:
-        unique_together = ['phase', 'order']
+    no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
 
     def __str__(self):
         return '%s. %s(%s)' % (self.order, self.name, self.phase)
@@ -255,9 +258,10 @@ class Task(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
     status = models.CharField(max_length=127, choices=STATUS, default=NOT_STARTED)
-
-    class Meta:
-        unique_together = ['activity', 'order']
+    no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
+    form_responses = models.JSONField(null=True, blank=True)
+    form = models.JSONField(null=True, blank=True)
+    attachments = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return '%s. %s(%s) - %s' % (self.order, self.name, str(self.activity.id), self.status)
@@ -274,6 +278,13 @@ class Task(BaseModel):
         if self.order is None:
             self.order = self.get_order()
         return super(Task, self).save(*args, **kwargs)
+
+    @property
+    def dict_form_responses(self):
+        try:
+            return json.loads(str(self.form_responses))
+        except json.JSONDecodeError as e:
+            return dict()
 
 
 def update_or_create_amd_couch(sender, instance, **kwargs):

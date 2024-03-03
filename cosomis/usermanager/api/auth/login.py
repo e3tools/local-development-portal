@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth.hashers import check_password
 from django.utils.translation import gettext_lazy as _
 
 from authentication.models import Facilitator
+from usermanager.models import User
 
 #Login User Serialization
 class CheckUserSerializer(serializers.Serializer):

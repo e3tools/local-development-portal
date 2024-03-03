@@ -1,9 +1,14 @@
+import os
+from boto3.session import Session
+import requests
+from io import BytesIO
+from PIL import Image
 from django.db import models
-from django.contrib.auth.models import User
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
 
-from administrativelevels.models import AdministrativeLevel, Project
+from administrativelevels.models import AdministrativeLevel, Project, Task
+from usermanager.models import User
 
 
 class PackageQuerySet(models.QuerySet):
@@ -25,16 +30,15 @@ class Category(BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
+
 
 class Sector(BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-
-class Organization(BaseModel):
-    name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
 
 
 class Investment(BaseModel):  # Investment module
@@ -101,6 +105,9 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     draft_status = models.BooleanField(default=True)
     status = models.CharField(max_length=50, choices=STATUS, default=PENDING_SUBMISSION)
 
+    no_resubmission = models.BooleanField(default=False)
+    rejection_reason = models.TextField(null=True, blank=True)
+
     def estimated_final_cost(self):
         return self.funded_investments.all().aggregate(
             estimated_final_cost=models.Sum('estimated_cost')
@@ -108,6 +115,9 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
 
 
 class Attachment(BaseModel):
+    """
+    parent info and tasks info
+    """
     PHOTO = 'Photo'
     DOCUMENT = 'Document'
     TYPE_CHOICES = (
@@ -122,5 +132,39 @@ class Attachment(BaseModel):
         blank=True,
         related_name='attachments'
     )
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
     url = models.URLField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=DOCUMENT)
+
+    file_path = "aux/test.png"
+    bucket_name = "cddfiles"
+    object_name = "proof_of_work_thumbnails/image.jpg"
+
+    def get_thumbnail(self):
+        s3_client = Session(aws_access_key_id='', aws_secret_access_key='').client('s3')
+
+        # try:
+        #     # Download the image from the URL
+        #     response = requests.get(str(self.url).split("?")[0])
+        #     response.raise_for_status()
+        #
+        #     # Open the image from the downloaded content
+        #     with Image.open(BytesIO(response.content)) as img:
+        #         # Create a thumbnail
+        #         thumbnail = img.copy()
+        #         thumbnail.thumbnail((100, 100))
+        #
+        #         # Save the thumbnail
+        #         thumbnail.save('aux/test.png', format="PNG")
+        #         print(f"Thumbnail created and saved at: 'aux/'")
+        #
+        # except Exception as e:
+        #     print(f"Error: {e}")
+
+        try:
+            response = s3_client.upload_file(self.file_path, self.bucket_name, self.object_name)
+            print(f"File uploaded successfully. Response: {response}")
+
+        except Exception as e:
+            print(f"Error: {e}")
+        return

@@ -1,8 +1,12 @@
+import json
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.views import generic
 
+from rest_framework import generics, response
+
 from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin
-from administrativelevels.models import AdministrativeLevel
+from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task
 
 
 class GetAdministrativeLevelForCVDByADLView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
@@ -17,6 +21,7 @@ class GetAdministrativeLevelForCVDByADLView(AJAXRequestMixin, LoginRequiredMixin
                 d = [{'id': elt.id, 'name': elt.name} for elt in obj.cvd.get_villages()]
 
         return self.render_to_json_response(sorted(d, key=lambda o: o['name']), safe=False)
+
 
 class GetChoicesForNextAdministrativeLevelNoConditionView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
     def get(self, request, *args, **kwargs):
@@ -40,6 +45,7 @@ class GetChoicesForNextAdministrativeLevelView(AJAXRequestMixin, LoginRequiredMi
 
         return self.render_to_json_response(sorted(d, key=lambda o: o['name']), safe=False)
 
+
 class GetChoicesAdministrativeLevelByGeographicalUnitView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
     def get(self, request, *args, **kwargs):
         geographical_unit_id = request.GET.get('geographical_unit_id')
@@ -62,3 +68,56 @@ class GetAncestorAdministrativeLevelsView(AJAXRequestMixin, LoginRequiredMixin, 
             pass
 
         return self.render_to_json_response(ancestors, safe=False)
+
+
+class TaskDetailAjaxView(generic.TemplateView):
+    template_name = 'village/task_detail.html'  # Define your template location
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Get task id from URL parameters
+        task_id = self.kwargs.get('pk', None)
+        task = Task.objects.filter(id=task_id).first()
+
+        if task:
+            # Ensure dict_form_responses is a valid JSON string or dict
+            # Adding task details to the context
+            context['task'] = {
+                'name': task.name,
+                'description': task.description,
+                'status': task.status,
+                'task': {
+                    'form_response': task.form_responses,  # This is now a properly formatted JSON string or a dict
+                    'form': task.form,  # This is now a properly formatted JSON string or a dict
+                    'attachments': task.attachments,  # This is now a properly formatted JSON string or a dict
+                },  # This is now a properly formatted JSON string or a dict
+            }
+        else:
+            # Optionally handle the case where the task is not found
+            context['error'] = 'Task not found'
+
+        return context
+
+
+class FillAttachmentSelectFilters(generics.GenericAPIView):
+    """
+    Region -> Prefecture -> Commune -> Canton -> Village
+    """
+
+    def post(self, request, *args, **kwargs):
+        select_type = request.POST['type']
+        child_qs = list()
+        if select_type == 'administrative_level':
+            parent_obj = AdministrativeLevel.objects.get(id=request.POST['value'])
+            child_qs = Phase.objects.filter(village=parent_obj)
+        elif select_type == 'phase':
+            parent_obj = Phase.objects.get(id=request.POST['value'])
+            child_qs = Activity.objects.filter(phase=parent_obj)
+        elif select_type == 'activity':
+            parent_obj = Activity.objects.get(id=request.POST['value'])
+            child_qs = Task.objects.filter(activity=parent_obj)
+
+        return response.Response({
+            'values': [{'id': child.id, 'name': child.name} for child in child_qs]
+        })

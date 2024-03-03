@@ -44,9 +44,9 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <label for="category-select-id">{% translate 'Sector' %}</label>
-                                                <select class="form-control" name="category-filter" id="category-select-id" empty-option="{% translate 'Category' %}" style="width: 100%;">
-                                                    <option selected value="">{% translate 'Sector' %}</option>
+                                                <label for="category-select-id">{% translate 'Category' %}</label>
+                                                <select class="form-control" name="category-filter" id="category-select-id" empty-option="{% translate 'Type' %}" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Type' %}</option>
                                                     {% for category in categories %}
                                                         {% if 'category-filter' in query_strings_raw %}
                                                             {% if query_strings_raw|get_item:'category-filter' == category.id %}
@@ -63,9 +63,9 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <label for="sector-select-id">{% translate 'Type' %}</label>
+                                                <label for="sector-select-id">{% translate 'Sector' %}</label>
                                                 <select class="form-control" name="sector-filter" id="sector-select-id" empty-option="{% translate 'Sector' %}" style="width: 100%;" {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
-                                                    <option selected value="">{% translate 'Type' %}</option>
+                                                    <option selected value="">{% translate 'Sector' %}</option>
                                                     {% for sector in sectors %}
                                                         {% if 'sector-filter' in query_strings_raw %}
                                                             {% if query_strings_raw|get_item:'sector-filter' == sector.id %}
@@ -335,8 +335,8 @@
                     <div class="col-12 mb-3">
 
                         {% for key, value in query_strings.items %}
-                            <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
-                                <span class="filter-badge-label">{{ key }}: {{ value|truncatechars:20 }}</span>
+                            <span class="filter-badge" style="font-size: 12px; line-height: 20px; display: inline-flex; align-items: center;">
+                                <span class="filter-badge-label">{{ key }}: {{ value }}</span>
                             </span>
                         {% endfor %}
                     </div>
@@ -358,7 +358,8 @@
                         </p>
                     </div>
                     <div class="col-3">
-                        <input type="submit" class="btn btn-primary btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
+                        <p><input type="submit" class="btn btn-primary btn-sm btn-block" value="{% translate 'Approve' %}" id="investments-submit" name="investments-submit"></p>
+                        <p><a class="btn btn-default btn-sm btn-block">{% translate 'Reject' %}</a></p>
                     </div>
                 </div>
             </div>
@@ -372,7 +373,7 @@
                             <thead>
                                 <th data-priority="1" class="align-middle border-top-left-corner"><input class="" id="checkbox-select-all" type="checkbox" checked></th>
                                 <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
-                                <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Source' %}</th>
+                                <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Subproject type' %}</th>
                                 <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
                                 <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
                                 <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
@@ -382,7 +383,7 @@
                                 <th data-priority="10" class="align-middle border-top-right-corner border-bottom-0">{% translate 'Population priority' %}</th>
                             </thead>
                         <tbody>
-                        {% for investment in object_list %}
+                        {% for investment in object.funded_investments.all %}
                         <tr>
                             <td>
                                 <input class="project-table-check" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox" checked>

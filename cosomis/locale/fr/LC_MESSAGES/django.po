@@ -1804,11 +1804,11 @@ msgstr "Soutenu pas le femmes"
 
 #: investments/templates/investments/list.html:61
 msgid "Endorsed by agriculturist"
-msgstr "Soutenu par le agriculteurs"
+msgstr "Soutenu par le agriculteurs et éléveur"
 
 #: investments/templates/investments/list.html:62
 msgid "Endorsed by pastoralist"
-msgstr "Soutenu par les éléveur"
+msgstr "Soutenu par les minorités ethniques"
 
 #: investments/templates/investments/list.html:72
 #: investments/templates/investments/list.html:159
