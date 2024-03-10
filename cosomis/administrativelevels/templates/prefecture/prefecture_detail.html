@@ -77,18 +77,22 @@
                         <ul class="nav nav-tabs">
                             <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
                                                             href="#priorities">{% translate "Priorities" %}</a></li>
+                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
+                                                            href="#climate">{% translate "Climate" %}</a></li>
                         </ul>
 
                         <div class="tab-content">
                             <div id="priorities" class="tab-pane active">
                                 <div class="card">
                                     <div class="card-body">
-
                                         <div class="card-body">
                                             {% include 'shared/priorities_table.html' %}
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div id="climate" class="tab-pane fade">
+                                <h3>{% translate "In construction" %}</h3>
                             </div>
                         </div>
                     </div>
