@@ -101,8 +101,20 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="category-select-id">{% translate 'Climate contribution' %}</label>
+                                                <select class="form-control" name="climate-contribution-filter" id="climate-contribution-select-id" empty-option="{% translate 'Climate contribution' %}" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Climate contribution' %}</option>
+                                                     <option value="True">{% translate 'Yes' %}</option>
+                                                     <option value="False">{% translate 'No' %}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-3 mt-4 text-right">
                                     <div class="row">
                                         <div class="col-12">
                                             <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}" style="margin-bottom: 3px;">
@@ -235,7 +247,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-3 mt-4 text-right">
                                     <div class="row">
                                         <div class="col-12">
                                             <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}" style="margin-bottom: 3px;">
