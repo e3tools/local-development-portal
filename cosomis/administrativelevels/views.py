@@ -81,7 +81,6 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
             ).all()
             context["investments"] = investments
 
-            context["geojson"] = static("grid_clusterID.geojson")
             return context
         raise Http404
 
