@@ -2112,3 +2112,6 @@ msgstr "Connectez-vous pour démarrer votre session"
 #~| msgid "Type of subproject"
 #~ msgid "Type sous-projet"
 #~ msgstr "Type de sous-project"
+
+msgid "Climate contribution"
+msgstr "Contribution climatique"
