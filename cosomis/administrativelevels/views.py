@@ -495,61 +495,6 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
 
         return queryset
 
-    def _get_piggy_banks_html(self, stashes, parent_stash_id='', loop_count=1):
-        if parent_stash_id != '':
-            base_list_html = ('<ul class="products-list product-list-in-card collapse" '
-                              'id="piggy-banks-{stash_id}">{stashes}</ul>').format(
-                stash_id=parent_stash_id,
-                stashes='{stashes}'
-            )
-        else:
-            base_list_html = '<ul class="products-list product-list-in-card" >{stashes}</ul>'
-        list_html = ''
-        for stash in stashes:
-            loose_amount = ''
-            piggy_banks_call = ''
-            piggy_banks_render = ''
-            if stash.image:
-                stash_image_url = stash.image.url
-            else:
-                stash_image_url = static('img/stash.jpg')
-            if stash.piggy_banks.exists():
-                piggy_banks_call = 'data-toggle="collapse" data-target="#piggy-banks-{stash_id}" aria-expanded="false"'.format(
-                    stash_id=stash.id
-                )
-                piggy_banks_render = self._get_piggy_banks_html(stash.piggy_banks.all(), str(stash.id), loop_count+1)
-                if stash.amount != 0: loose_amount = stash.currency.symbol + intcommacents(stash.amount)
-            list_html += (
-                '<li class="item stash-item list-group-item list-group-item-action pr-2" data-name="{stash_name}" data-stash-id="{stash_id}" {style_padding} {piggy_banks_call}>'
-                    '<div class="product-img">'
-                        '<img alt="{stash_name} Image" class="img-size-50 img-fluid img-circle" style="object-fit: cover" src="{stash_image_url}">'
-                    '</div>'
-                    '<div class="product-info">'
-                        '<a class="product-title" href="{stash_link}">{stash_name}'
-                            '<h5 class="float-right">{stash_currency_symbol}{stash_total_amount}</h5>'
-                        '</a>'
-                        '<span class="product-description">'
-                            '{piggy_banks_breadcrumbs}'
-                            '<span class="float-right text-muted">{stash_loose_amount}</span>'
-                        '</span>'
-                    '</div>'
-                '</li>'
-                '{piggy_banks_render}'
-            ).format(
-                stash_name=stash.name,
-                stash_image_url=stash_image_url,
-                stash_currency_symbol=stash.currency.symbol,
-                stash_total_amount=intcommacents(stash.total_amount),
-                stash_loose_amount=loose_amount,
-                stash_link=reverse("stash:detail", args=[stash.id]),
-                stash_id=stash.id,
-                piggy_banks_call=piggy_banks_call,
-                piggy_banks_render=piggy_banks_render,
-                piggy_banks_breadcrumbs=', '.join([pb.name for pb in stash.piggy_banks.all()]) or '',
-                style_padding='style="padding-left: {padding}px;"'.format(padding=10*loop_count)
-            )
-        return base_list_html.format(stashes=list_html)
-
 
 class VillageAttachmentListView(AttachmentListView):
     def get_context_data(self, **kwargs):
