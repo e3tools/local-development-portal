@@ -83,12 +83,14 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     PENDING_APPROVAL = 'P'
     APPROVED = 'A'
     REJECTED = 'R'
+    CLOSED = 'C'
     UNDER_EXECUTION = 'E'
     STATUS = (
         (PENDING_SUBMISSION, _('Pending Submission')),
         (PENDING_APPROVAL, _('Pending Approval')),
         (APPROVED, _('Approved')),
         (REJECTED, _('Rejected')),
+        (CLOSED, _('Closed')),
         (UNDER_EXECUTION, _('Under Execution'))
     )
 
@@ -105,7 +107,6 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     draft_status = models.BooleanField(default=True)
     status = models.CharField(max_length=50, choices=STATUS, default=PENDING_SUBMISSION)
 
-    no_resubmission = models.BooleanField(default=False)
     rejection_reason = models.TextField(null=True, blank=True)
 
     def estimated_final_cost(self):

@@ -13,6 +13,17 @@ def img_aws_s3_filter(uri):
     return uri.split("?")[0]
 
 
+@register.filter(name="is_pdf")
+def is_pdf(uri):
+    uri = uri.split("?")[0]
+    return uri.split(".")[-1] == 'pdf'
+
+
+@register.filter(name="not_local")
+def not_local(uri):
+    return uri.split(":")[0] != 'file'
+
+
 @register.filter(name='has_group')
 def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()

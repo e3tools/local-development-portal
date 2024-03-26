@@ -1,8 +1,11 @@
+from datetime import datetime, timedelta
+from django.conf import settings
 from django.views import generic
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Subquery, Sum
 from django.http import HttpResponseRedirect
@@ -15,7 +18,7 @@ from administrativelevels.models import AdministrativeLevel
 from static.config.datatable import get_datatable_config
 
 from .models import Investment, Package, Category, Sector
-from .forms import InvestmentsForm, PackageApprovalForm
+from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
 
 
 class ProfileTemplateView(LoginRequiredMixin, PageMixin, generic.DetailView):
@@ -369,6 +372,18 @@ class ModeratorApprovalsListView(LoginRequiredMixin, PageMixin, generic.ListView
     ordering = ['status', '-created_date']
     allow_empty = True
     object_list = None
+    title = _("Welcome, Moderator!")
+
+    def post(self, request, *args, **kwargs):
+        form = UserApprovalForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(
+                self.request, messages.SUCCESS,
+                message=form.success_message,
+                extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS]
+            )
+        return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         self.package_list = self.get_package_queryset()
@@ -379,6 +394,7 @@ class ModeratorApprovalsListView(LoginRequiredMixin, PageMixin, generic.ListView
 
     def get_context_data(self, *, object_list=None, **kwargs):
         """Get the context for this view."""
+        overdue_date = datetime.now() - timedelta(days=settings.MAX_RESPONSE_DAYS)
         package_queryset = self.package_list
         user_queryset = self.user_list
         context = {
@@ -386,7 +402,9 @@ class ModeratorApprovalsListView(LoginRequiredMixin, PageMixin, generic.ListView
             "page_obj": None,
             "is_paginated": False,
             "package_list": package_queryset,
+            "packages_overdue": package_queryset.filter(updated_date__lt=overdue_date),
             "user_list": user_queryset,
+            "users_overdue": user_queryset.filter(date_joined__lt=overdue_date),
         }
         context.update(kwargs)
 
@@ -428,6 +446,34 @@ class ModeratorPackageReviewView(LoginRequiredMixin, PageMixin, generic.FormView
     pk_url_kwarg = 'package'
     title = _('Investment Package Review')
 
+    def post(self, request, *args, **kwargs):
+        if 'investments-from' in request.POST:
+            form = self.get_form()
+            if form.is_valid():
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        url = reverse('investments:package_review', kwargs={'package': self.get_object().id})
+        final_querystring = request.GET.copy()
+
+        for key, value in request.GET.items():
+            if key in request.POST and value != request.POST[key] and request.POST[key] != '':
+                final_querystring.pop(key)
+
+        post_dict = request.POST.copy()
+        post_dict.update(final_querystring)
+        post_dict.pop('csrfmiddlewaretoken')
+        if 'reset-hidden' in post_dict and post_dict['reset-hidden'] == 'true':
+            return redirect(url)
+
+        for key, value in request.POST.items():
+            if value == '':
+                post_dict.pop(key)
+        final_querystring.update(post_dict)
+        if final_querystring:
+            url = '{}?{}'.format(url, urlencode(final_querystring))
+        return redirect(url)
+
     def get_context_data(self, **kwargs):
         context = {}
         self.object = self.get_object()
@@ -441,6 +487,7 @@ class ModeratorPackageReviewView(LoginRequiredMixin, PageMixin, generic.FormView
                 context[context_object_name] = self.object
         context.update(kwargs)
         context.update(self.get_filters_context())
+        context.update(self.get_investment_list())
         return super().get_context_data(**context)
 
     def get_form_kwargs(self):
@@ -544,3 +591,62 @@ class ModeratorPackageReviewView(LoginRequiredMixin, PageMixin, generic.FormView
             if key == 'subpopulation-filter':
                 resp['Subpopulations'] = ' '.join(value.split('_'))
         return resp
+
+    def get_investment_list(self):
+        queryset = self.object.funded_investments.all()
+        if 'region-filter' in self.request.GET and self.request.GET['region-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__parent__parent__id=self.request.GET['region-filter'],
+                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION
+            )
+        if 'prefecture-filter' in self.request.GET and self.request.GET['prefecture-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__parent__id=self.request.GET['prefecture-filter'],
+                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE
+            )
+        if 'commune-filter' in self.request.GET and self.request.GET['commune-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__id=self.request.GET['commune-filter'],
+                administrative_level__parent__parent__type=AdministrativeLevel.COMMUNE
+            )
+        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__parent__id=self.request.GET['canton-filter'],
+                administrative_level__parent__type=AdministrativeLevel.CANTON
+            )
+        if 'village-filter' in self.request.GET and self.request.GET['village-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                administrative_level__id=self.request.GET['village-filter'],
+                administrative_level__type=AdministrativeLevel.VILLAGE
+            )
+
+        if 'sector-filter' in self.request.GET and self.request.GET['sector-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                sector__id=self.request.GET['sector-filter']
+            )
+        if 'category-filter' in self.request.GET and self.request.GET['category-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                sector__category__id=self.request.GET['category-filter']
+            )
+
+        if 'subpopulation-filter' in self.request.GET and self.request.GET['subpopulation-filter'] not in ['', None]:
+            queryset = queryset.filter(
+                **{self.request.GET['subpopulation-filter']: True}
+            )
+
+        return {
+            'investments': queryset
+        }
+
+    def form_valid(self, form):
+        """If the form is valid, redirect to the supplied URL."""
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            message="Package approved successfully.",
+            extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS]
+        )
+        return reverse('investments:notifications')

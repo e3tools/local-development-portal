@@ -30,8 +30,6 @@ urlpatterns = [
     path('attachments/', views.AttachmentListView.as_view(), name='attachments'),  # The path of the attachments list
 
     path('utils/', include('administrativelevels.utils.urls')),
-    path('utils/', include('administrativelevels.utils.urls')),
-
 ]
 
 
