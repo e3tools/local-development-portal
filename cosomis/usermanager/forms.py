@@ -1,7 +1,9 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
 from django.utils.translation import gettext as _
+
+UserModel = get_user_model()
 
 
 class EmailAuthenticationForm(AuthenticationForm):
@@ -36,6 +38,7 @@ class EmailAuthenticationForm(AuthenticationForm):
         """
         self.request = request
         self.user_cache = None
+        self.username_field = UserModel._meta.get_field(UserModel.USERNAME_FIELD)
         forms.forms.BaseForm.__init__(self, *args, **kwargs)
         self.fields['password'].label = _('Password')
         self.fields['email'].label = _('Email')
