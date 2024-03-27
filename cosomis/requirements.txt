@@ -1,5 +1,5 @@
 amqp==5.1.1
-asgiref==3.5.2
+asgiref==3.7.2
 async-timeout==4.0.3
 attrs==23.1.0
 beautifulsoup4==4.11.1
@@ -21,6 +21,7 @@ Django==4.1.1
 django-bootstrap4==22.2
 django-celery-results==2.4.0
 django-environ==0.9.0
+django-htmx==1.17.3
 django-storages==1.13.1
 django-unicorn==0.48.0
 djangorestframework==3.13.1

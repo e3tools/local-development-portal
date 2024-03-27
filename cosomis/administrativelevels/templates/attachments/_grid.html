@@ -1,0 +1,41 @@
+{% load static i18n humanize bootstrap4 custom_tags %}
+
+    <div class="babylongrid"
+                    hx-trigger="revealed"
+                    hx-get="{% url 'administrativelevels:attachments' %}?page={{ page_obj.number|add:1 }}&type={{ request.GET.type }}&administrative_level={{ request.GET.administrative_level }}&phase={{ request.GET.phase }}&activity={{ request.GET.activity }}&task={{ request.GET.task }}"
+                    hx-swap="afterend"
+            >
+        {% for attachment in attachments %}
+        {% if attachment.url|not_local %}
+            <article>
+                <div class="card mr-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'administrativelevels:village_detail' attachment.adm.id %}">
+                                {{ attachment.adm.type }}: {{ attachment.adm.name }}
+                            </a>
+                        </h5>
+                        {% if attachment.task %}
+                        <p class="card-text">
+                            <b>{% translate 'Task' %}</b>: {{ attachment.task.name }}
+                            <span class="badge badge-pill badge-info">{{ attachment.task.status }}</span>
+                        </p>
+                        <p class="card-text">
+                            {{ attachment.task.description }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% if attachment.url|is_pdf %}
+                    <a href="{{ attachment.url|imgAWSS3Filter }}" style="width: 100%; height:450px;" target="_blank">
+                    <embed src="{{ attachment.url|imgAWSS3Filter }}" style="width: 100%; height:450px;"/>
+                    </a>
+                    {% else %}
+                    <a href="{{ attachment.url|imgAWSS3Filter }}" target="_blank">
+                        <img src="{{ attachment.url|imgAWSS3Filter }}" class="card-img-top second-target" alt="{{ attachment.task }}">
+                    </a>
+                    {% endif %}
+                </div>
+            </article>
+        {% endif %}
+        {% endfor %}
+    </div>
