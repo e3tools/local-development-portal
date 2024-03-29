@@ -122,7 +122,7 @@ EXTERNAL_DATABASE_NAME = 'cddp'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'database1.db',  # This is where you put the name of the db file.
+        'NAME': '/Users/asucr/Downloads/database1.db',  # This is where you put the name of the db file.
         # If one doesn't exist, it will be created at migration time.
     }
 }
@@ -200,6 +200,8 @@ AWS_STORAGE_BUCKET_NAME = env('S3_BUCKET')
 AWS_ACCESS_KEY_ID = env('S3_ACCESS')
 
 AWS_SECRET_ACCESS_KEY = env('S3_SECRET')
+
+MAPBOX_ACCESS_TOKEN = env('MAPBOX_ACCESS_TOKEN')
 
 #REST API
 REST_FRAMEWORK = {

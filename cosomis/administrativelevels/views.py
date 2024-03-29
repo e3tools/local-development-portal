@@ -1,3 +1,4 @@
+import os
 import re
 import zipfile
 import requests
@@ -80,6 +81,7 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
             return context
         raise Http404
