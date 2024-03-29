@@ -4,8 +4,6 @@ import zipfile
 import requests
 from io import BytesIO
 from urllib.parse import urlencode
-
-from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import translation
@@ -634,6 +632,7 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
             return context
         raise Http404
 
@@ -675,6 +674,7 @@ class CantonDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
             return context
         raise Http404
 
@@ -716,6 +716,7 @@ class RegionDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
             return context
         raise Http404
 
@@ -747,5 +748,6 @@ class PrefectureDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
             return context
         raise Http404
