@@ -85,6 +85,7 @@ class Investment(BaseModel):  # Investment module
     endorsed_by_agriculturist = models.BooleanField(default=False)
     endorsed_by_pastoralist = models.BooleanField(default=False)
     climate_contribution = models.BooleanField(default=False)
+    climate_contribution_text = models.TextField(null=True, blank=True)
     no_sql_id = models.CharField(max_length=255)
 
 
