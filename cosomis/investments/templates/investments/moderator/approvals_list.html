@@ -3,6 +3,45 @@
 
 {% block content %}
 <div class="row">
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-body">
+                <p>
+                    Deanna Troi, Investment Partner Manager
+                </p>
+                <a href="">Organization name</a><br>
+                <a href="">Edit</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td class="border-0 p-0 pl-2 text-left">User account requests:</td>
+                        <td class="border-0 p-0 pr-2 text-right font-weight-bold">{{ user_list.count }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border-0 p-0 pl-2 text-left">Overdue requests:</td>
+                        <td class="border-0 p-0 pr-2 text-right font-weight-bold">{{ users_overdue.count }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border-0 p-0 pl-2 text-left">Investment packages to review:</td>
+                        <td class="border-0 p-0 pr-2 text-right font-weight-bold">{{ package_list.count }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border-0 p-0 pl-2 text-left">Overdue investment packages:</td>
+                        <td class="border-0 p-0 pr-2 text-right font-weight-bold">{{ packages_overdue.count }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
 
     <div class="col-12">
 
@@ -33,11 +72,17 @@
                                 <tr>
                                     <td>{{ user.date_joined|date:"d/m/Y" }}</td>
                                     <td>{{ user.email }}</td>
-                                    <td>{{ user.organization }}</td>
+                                    <td>{{ user.organization.name }}</td>
                                     <td>
-                                        <a class="btn btn-xs btn-primary">Approve</a>
-                                        <a class="btn btn-xs btn-default">Reject</a>
-                                        <a class="btn btn-xs btn-danger">Spam</a>
+                                        <form action="" method="post" name="approve-user-form" id="approve-user-form-id-{{ user.id }}">
+                                            {% csrf_token %}
+                                            <input type="hidden" id="user-input-form-{{ user.id }}" value="{{ user.id }}" name="user">
+                                            <input type="hidden" id="action-input-form-{{ user.id }}" value="" name="action">
+                                        </form>
+
+                                        <button class="btn btn-xs btn-primary user-form-action" name="{{ user.id }}" id="approve-{{ user.id }}">{% translate 'Approve' %}</button>
+                                        <button class="btn btn-xs btn-default user-form-action" name="{{ user.id }}" id="reject-{{ user.id }}">{% translate 'Reject' %}</button>
+                                        <button class="btn btn-xs btn-danger user-form-action" name="{{ user.id }}" id="spam-{{ user.id }}">{% translate 'Spam' %}</button>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -69,7 +114,6 @@
                                     <th>Last modified</th>
                                     <th># of projects</th>
                                     <th>Total amount</th>
-                                    <th>Sector</th>
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
@@ -81,7 +125,6 @@
                                     <td>{{ package.updated_date|date:"d/m/Y" }}</td>
                                     <td>{{ package.funded_investments.all.count|intcomma }}</td>
                                     <td>{{ package.estimated_final_cost|intcomma }} FCFA</td>
-                                    <td>{{ package }}</td>
                                     <td>
                                         {% if package.status == package.PENDING_SUBMISSION %}
                                         {% translate 'Pending Submission' %}
@@ -133,4 +176,25 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript">
+    $( document ).ready(function() {
+
+        $('.user-form-action').on('click', function(){
+
+            let user_id = $(this).attr('name');
+            let action = $(this).attr('id').split('-')[0];
+
+            $('#action-input-form-' + user_id).attr('value', action);
+
+            $('#approve-user-form-id-' + user_id).submit();
+
+        });
+
+    });
+</script>
 {% endblock %}

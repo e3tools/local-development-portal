@@ -2,13 +2,11 @@ import re
 import zipfile
 import requests
 from io import BytesIO
-from typing import Optional, List, Tuple
 from urllib.parse import urlencode
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.templatetags.i18n import do_get_current_language
 from django.utils import translation
-from django.views.generic import DetailView, TemplateView, ListView, CreateView
+from django.views.generic import DetailView, ListView, CreateView
 from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usermanager.permissions import AdminPermissionRequiredMixin
@@ -354,6 +352,7 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
     template_name = "attachments/attachments.html"
     context_object_name = "attachments"
     title = _("Gallery")
+    paginate_by = 10
     model = Attachment
 
     def post(self, request, *args, **kwargs):
@@ -411,6 +410,12 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
         context["form"] = form
 
         return context
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx:
+            return "attachments/_grid.html"
+        else:
+            return self.template_name
 
     def __build_db_filter(self) -> Paginator:
         query: QuerySet = self.get_queryset()
@@ -481,6 +486,12 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
                 queryset = queryset.filter(
                     adm__id=self.request.GET['administrative_level']
                 )
+
+        ordering = self.get_ordering()
+        if ordering:
+            if isinstance(ordering, str):
+                ordering = (ordering,)
+            queryset = queryset.order_by(*ordering)
 
         return queryset
 

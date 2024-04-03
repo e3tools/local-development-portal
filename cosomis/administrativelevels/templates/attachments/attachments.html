@@ -195,36 +195,9 @@
         </div>
 
         <div class="col-12">
-            <div id="babylongrid">
-                {% for attachment in attachments %}
-                    {% if attachment.type == 'Photo' %}
-                    <article>
-                        <div class="card mr-3">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a href="{% url 'administrativelevels:village_detail' attachment.adm.id %}">
-                                        {{ attachment.adm.type }}: {{ attachment.adm.name }}
-                                    </a>
-                                </h5>
-                                {% if attachment.task %}
-                                <p class="card-text">
-                                    <b>{% translate 'Task' %}</b>: {{ attachment.task.name }}
-                                    <span class="badge badge-pill badge-info">{{ attachment.task.status }}</span>
-                                </p>
-                                <p class="card-text">
-                                    {{ attachment.task.description }}
-                                </p>
-                                {% endif %}
-                            </div>
-                            <a href="{{ attachment.url|imgAWSS3Filter }}" target="_blank">
-                                <img src="{{ attachment.url|imgAWSS3Filter }}" class="card-img-top second-target" alt="{{ attachment.task }}">
-                            </a>
 
-                        </div>
-                    </article>
-                    {% endif %}
-                {% endfor %}
-            </div>
+            {% include 'attachments/_grid.html' with attachments=attachments %}
+
         </div>
     </div>
 {% endblock %}
@@ -371,6 +344,7 @@
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript" src="{% static 'plugins/babylon-grid/jquery.babylongrid.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/htmx.min.js' %}" defer></script>
     <script type="text/javascript" data-attachments="{{ attachments }}">
         var current_page = "{{ request.path }}";
         var csrf_token = "{{ csrf_token }}";
@@ -404,26 +378,26 @@
                 )
             });
 
-            $('#babylongrid').babylongrid({
-					scheme: [
-						{
-							minWidth: 1250,
-							columns: 4
-						},
-						{
-							minWidth: 960,
-							columns: 4
-						},
-						{
-							minWidth: 500,
-							columns: 2
-						},
-						{
-							minWidth: 0,
-							columns: 1
-						}
-					]
-				});
+            $('.babylongrid').babylongrid({
+                scheme: [
+                    {
+                        minWidth: 1250,
+                        columns: 3
+                    },
+                    {
+                        minWidth: 960,
+                        columns: 3
+                    },
+                    {
+                        minWidth: 500,
+                        columns: 2
+                    },
+                    {
+                        minWidth: 0,
+                        columns: 1
+                    }
+                ]
+            });
 
             $('.download-all').click(function (event) {
                 var formArray = $('.form-attachment').serializeArray();
@@ -531,5 +505,29 @@
                 });
             };
         })
+
+        document.addEventListener('htmx:afterRequest', function(evt) {
+            $('.babylongrid').babylongrid({
+                scheme: [
+                    {
+                        minWidth: 1250,
+                        columns: 3
+                    },
+                    {
+                        minWidth: 960,
+                        columns: 3
+                    },
+                    {
+                        minWidth: 500,
+                        columns: 2
+                    },
+                    {
+                        minWidth: 0,
+                        columns: 1
+                    }
+                ]
+            });
+            $('.babylongrid').trigger('babylongrid:resize');
+        });
     </script>
 {% endblock %}

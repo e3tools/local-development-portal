@@ -63,6 +63,9 @@ THIRD_PARTY_APPS = [
     'django_celery_results',
     'drf_spectacular',
     'rest_framework',
+
+    # https://django-htmx.readthedocs.io/en/latest/installation.html
+    'django_htmx',
 ]
 
 INSTALLED_APPS += CREATED_APPS + THIRD_PARTY_APPS
@@ -76,6 +79,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
 ]
 
 ROOT_URLCONF = 'cosomis.urls'
