@@ -84,7 +84,7 @@ function loadGeoJsonMap(url, access_token) {
                     },
                     'filter': ['==', 'ClusterID', cluster]
                 });
-                $('#legend').append(`<i class="nav-icon fa fa-square-full" style=color:${colors[index]}></i> <span>clusterNames[index]</span>`);
+                $('#legend').append(`<i class="nav-icon fa fa-square-full" style=color:${colors[index]}></i> <span>${clusterNames[index]}</span> <br>`);
             })
 
 
