@@ -344,6 +344,9 @@ class IndexListView(
                 )
             if key == "subpopulation-filter":
                 resp["Subpopulations"] = " ".join(value.split("_"))
+
+            if key == "climate-contribution-filter":
+                resp["Climate contribution"] = _("Yes") if value == "True" else _("No")
         return resp
 
     def get_success_url(self):
@@ -428,9 +431,10 @@ class ModeratorApprovalsListView(LoginRequiredMixin, PageMixin, generic.ListView
         if form.is_valid():
             form.save()
             messages.add_message(
-                self.request, messages.SUCCESS,
+                self.request,
+                messages.SUCCESS,
                 message=form.success_message,
-                extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS]
+                extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS],
             )
         return self.get(request, *args, **kwargs)
 
@@ -497,31 +501,37 @@ class ModeratorPackageReviewView(
     title = _("Investment Package Review")
 
     def post(self, request, *args, **kwargs):
-        if 'investments-from' in request.POST:
+        if "investments-from" in request.POST:
             form = self.get_form()
             if form.is_valid():
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
-        url = reverse('investments:package_review', kwargs={'package': self.get_object().id})
+        url = reverse(
+            "investments:package_review", kwargs={"package": self.get_object().id}
+        )
         final_querystring = request.GET.copy()
 
         for key, value in request.GET.items():
-            if key in request.POST and value != request.POST[key] and request.POST[key] != '':
+            if (
+                key in request.POST
+                and value != request.POST[key]
+                and request.POST[key] != ""
+            ):
                 final_querystring.pop(key)
 
         post_dict = request.POST.copy()
         post_dict.update(final_querystring)
-        post_dict.pop('csrfmiddlewaretoken')
-        if 'reset-hidden' in post_dict and post_dict['reset-hidden'] == 'true':
+        post_dict.pop("csrfmiddlewaretoken")
+        if "reset-hidden" in post_dict and post_dict["reset-hidden"] == "true":
             return redirect(url)
 
         for key, value in request.POST.items():
-            if value == '':
+            if value == "":
                 post_dict.pop(key)
         final_querystring.update(post_dict)
         if final_querystring:
-            url = '{}?{}'.format(url, urlencode(final_querystring))
+            url = "{}?{}".format(url, urlencode(final_querystring))
         return redirect(url)
 
     def get_context_data(self, **kwargs):
@@ -650,49 +660,67 @@ class ModeratorPackageReviewView(
 
     def get_investment_list(self):
         queryset = self.object.funded_investments.all()
-        if 'region-filter' in self.request.GET and self.request.GET['region-filter'] not in ['', None]:
+        if "region-filter" in self.request.GET and self.request.GET[
+            "region-filter"
+        ] not in ["", None]:
             queryset = queryset.filter(
-                administrative_level__parent__parent__parent__parent__id=self.request.GET['region-filter'],
-                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION
+                administrative_level__parent__parent__parent__parent__id=self.request.GET[
+                    "region-filter"
+                ],
+                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION,
             )
-        if 'prefecture-filter' in self.request.GET and self.request.GET['prefecture-filter'] not in ['', None]:
+        if "prefecture-filter" in self.request.GET and self.request.GET[
+            "prefecture-filter"
+        ] not in ["", None]:
             queryset = queryset.filter(
-                administrative_level__parent__parent__parent__id=self.request.GET['prefecture-filter'],
-                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE
+                administrative_level__parent__parent__parent__id=self.request.GET[
+                    "prefecture-filter"
+                ],
+                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE,
             )
-        if 'commune-filter' in self.request.GET and self.request.GET['commune-filter'] not in ['', None]:
+        if "commune-filter" in self.request.GET and self.request.GET[
+            "commune-filter"
+        ] not in ["", None]:
             queryset = queryset.filter(
-                administrative_level__parent__parent__id=self.request.GET['commune-filter'],
-                administrative_level__parent__parent__type=AdministrativeLevel.COMMUNE
+                administrative_level__parent__parent__id=self.request.GET[
+                    "commune-filter"
+                ],
+                administrative_level__parent__parent__type=AdministrativeLevel.COMMUNE,
             )
-        if 'canton-filter' in self.request.GET and self.request.GET['canton-filter'] not in ['', None]:
+        if "canton-filter" in self.request.GET and self.request.GET[
+            "canton-filter"
+        ] not in ["", None]:
             queryset = queryset.filter(
-                administrative_level__parent__id=self.request.GET['canton-filter'],
-                administrative_level__parent__type=AdministrativeLevel.CANTON
+                administrative_level__parent__id=self.request.GET["canton-filter"],
+                administrative_level__parent__type=AdministrativeLevel.CANTON,
             )
-        if 'village-filter' in self.request.GET and self.request.GET['village-filter'] not in ['', None]:
+        if "village-filter" in self.request.GET and self.request.GET[
+            "village-filter"
+        ] not in ["", None]:
             queryset = queryset.filter(
-                administrative_level__id=self.request.GET['village-filter'],
-                administrative_level__type=AdministrativeLevel.VILLAGE
+                administrative_level__id=self.request.GET["village-filter"],
+                administrative_level__type=AdministrativeLevel.VILLAGE,
             )
 
-        if 'sector-filter' in self.request.GET and self.request.GET['sector-filter'] not in ['', None]:
+        if "sector-filter" in self.request.GET and self.request.GET[
+            "sector-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
+        if "category-filter" in self.request.GET and self.request.GET[
+            "category-filter"
+        ] not in ["", None]:
             queryset = queryset.filter(
-                sector__id=self.request.GET['sector-filter']
-            )
-        if 'category-filter' in self.request.GET and self.request.GET['category-filter'] not in ['', None]:
-            queryset = queryset.filter(
-                sector__category__id=self.request.GET['category-filter']
-            )
-
-        if 'subpopulation-filter' in self.request.GET and self.request.GET['subpopulation-filter'] not in ['', None]:
-            queryset = queryset.filter(
-                **{self.request.GET['subpopulation-filter']: True}
+                sector__category__id=self.request.GET["category-filter"]
             )
 
-        return {
-            'investments': queryset
-        }
+        if "subpopulation-filter" in self.request.GET and self.request.GET[
+            "subpopulation-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                **{self.request.GET["subpopulation-filter"]: True}
+            )
+
+        return {"investments": queryset}
 
     def form_valid(self, form):
         """If the form is valid, redirect to the supplied URL."""
@@ -701,8 +729,9 @@ class ModeratorPackageReviewView(
 
     def get_success_url(self):
         messages.add_message(
-            self.request, messages.SUCCESS,
+            self.request,
+            messages.SUCCESS,
             message="Package approved successfully.",
-            extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS]
+            extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS],
         )
-        return reverse('investments:notifications')
+        return reverse("investments:notifications")
