@@ -35,11 +35,13 @@ class Command(BaseCommand):
 def update_administrative_level_investment(administrative_level, priority):
     investment = Investment.objects.filter(
         administrative_level=administrative_level,
-        title=priority["siAutreVeuillezDecrire"]
+        title=priority["priorite"]
         if priority["priorite"]
         else priority["priorite"],
     )
+    print(priority["priorite"], investment)
     if len(investment) > 0:
+        print(priority["contributionClimatique"])
         investment = investment.first()
         investment.climate_contribution = priority["contributionClimatique"]
         investment.save()
