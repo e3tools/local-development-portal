@@ -3,28 +3,28 @@
 
 {% block extracss %}
     {{ block.super }}
-    <link rel="stylesheet" href="{% static 'css/detail.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
 {% endblock %}
 
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-md-8 col-12">
-        <div class="clearfix" id="attachments_images">
+    <div class="row mb-4">
+        <div class="col-md-8 col-12">
+            <div class="clearfix" id="attachments_images">
 
-        </div>
-        <div class="overlay" id="spin-attachments-images">
-            <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-        </div>
-    </div>
-    <div class="col-md-4 col-12 mt-4 mt-md-0">
-        <div class="card col-12">
-            <div class="card-header pb-0">
-                <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
             </div>
-            <div class="card-body p-2">
-                <table class="table">
-                    <tbody>
+            <div class="overlay" id="spin-attachments-images">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+            </div>
+        </div>
+        <div class="col-md-4 col-12 mt-4 mt-md-0">
+            <div class="card col-12">
+                <div class="card-header pb-0">
+                    <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
+                </div>
+                <div class="card-body p-2">
+                    <table class="table">
+                        <tbody>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ object.total_population }}</td>
@@ -64,17 +64,17 @@
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Languages" %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ object.main_languages }}</td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="card col-12">
-            <div class="card-header pb-0">
-                <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
-            </div>
-            <div class="card-body p-2">
-                <table class="table">
-                    <tbody>
+            <div class="card col-12">
+                <div class="card-header pb-0">
+                    <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
+                </div>
+                <div class="card-body p-2">
+                    <table class="table">
+                        <tbody>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
@@ -96,45 +96,58 @@
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan Date" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.village_development_plan_date  }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.village_development_plan_date }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.facilitator }}</td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body table-responsive">
-                <div class="col-12">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab" href="#priorities">{% translate "Priorities" %}</a></li>
-                        <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab" href="#village_population">{% translate "Village population" %}</a></li>
-                        <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab" href="#infrastructure_services">{% translate "Infrastructure and Services" %}</a></li>
-                        <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab" href="#planning_cycle">{% translate "Planning Cycle" %}</a></li>
-                        <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab" href="#financial_informations">{% translate "Financial informations" %}</a></li>
-                        <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab" href="#grm">{% translate "GRM" %}</a></li>
-                        <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab" href="#diagnostics">{% translate "Diagnostics" %}</a></li>
-                    </ul>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <div class="col-12">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
+                                                            href="#priorities">{% translate "Priorities" %}</a></li>
+                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                      href="#village_population">{% translate "Village population" %}</a>
+                            </li>
+                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                      href="#infrastructure_services">{% translate "Infrastructure and Services" %}</a>
+                            </li>
+                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                      href="#planning_cycle">{% translate "Planning Cycle" %}</a>
+                            </li>
+                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                      href="#financial_informations">{% translate "Financial informations" %}</a>
+                            </li>
+                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                      href="#grm">{% translate "GRM" %}</a></li>
+                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
+                                                            href="#diagnostics">{% translate "Diagnostics" %}</a></li>
+                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
+                                                            href="#climate">{% translate "Climate" %}</a></li>
+                        </ul>
 
-                    <div class="tab-content">
-                        <div id="priorities" class="tab-pane active">
-                            <div class="card">
-                                <div class="card-body">
-                                     {% include 'shared/priorities_table.html' %}
+                        <div class="tab-content">
+                            <div id="priorities" class="tab-pane active">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% include 'shared/priorities_table.html' %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="village_population" class="tab-pane fade">
-                            <h3>{% translate "In construction" %}</h3>
-                            {% comment %}<div class="row">
+                            <div id="village_population" class="tab-pane fade">
+                                <h3>{% translate "In construction" %}</h3>
+                                {% comment %}<div class="row">
                                 <div class="col-12"></div>
                             </div>
                             <div class="card">
@@ -173,10 +186,10 @@
                                     </div>
                                 </div>
                             </div>{% endcomment %}
-                        </div>
-                        <div id="infrastructure_services" class="tab-pane fade">
-                            <h3>{% translate "In construction" %}</h3>
-                           {% comment %} <div class="row">
+                            </div>
+                            <div id="infrastructure_services" class="tab-pane fade">
+                                <h3>{% translate "In construction" %}</h3>
+                                {% comment %} <div class="row">
                                 <div class="col-12"></div>
                             </div>
                             <div class="card">
@@ -197,84 +210,89 @@
                                     </div>
                                 </div>
                             </div>{% endcomment %}
-                        </div>
-                        <div id="planning_cycle" class="tab-pane fade">
-                            <div class="card">
-                                <div class="card-body">
-                                    {% include 'village/tabs/planning_cycle.html' %}
+                            </div>
+                            <div id="planning_cycle" class="tab-pane fade">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% include 'village/tabs/planning_cycle.html' %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="financial_informations" class="tab-pane fade">
-                            <h3>{% translate "In construction" %}</h3>
-                        </div>
-                        <div id="grm" class="tab-pane fade">
-                            <h3>{% translate "In construction" %}</h3>
-                        </div>
-                        <div id="diagnostics" class="tab-pane fade">
-                            <h3>{% translate "In construction" %}</h3>
+                            <div id="financial_informations" class="tab-pane fade">
+                                <h3>{% translate "In construction" %}</h3>
+                            </div>
+                            <div id="grm" class="tab-pane fade">
+                                <h3>{% translate "In construction" %}</h3>
+                            </div>
+                            <div id="diagnostics" class="tab-pane fade">
+                                <h3>{% translate "In construction" %}</h3>
+                            </div>
+                            <div id="climate" class="tab-pane fade">
+                                {% include 'climate/tabs/mapbox.html' %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
-</div>
 
 
 
 {% endblock %}
 
 {% block modals %}
-{{ block.super }}
+    {{ block.super }}
 
-<div class="modal fade" id="taskModalLong" tabindex="-1" role="dialog" aria-labelledby="taskModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div id="modal-content" class="modal-content">
-{#            <div class="modal-header">#}
-{#                <h4 class="modal-title text-primary" id="taskModalTitle">...</h4>#}
-{##}
-{#                <span class="badge badge-pill badge-lg badge-info ml-1" id="taskModalStatus">...</span>#}
-{##}
-{#                <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
-{#                    <span aria-hidden="true">&times;</span>#}
-{#                </button>#}
-{#            </div>#}
-{#            <div class="modal-body">#}
-{#                <p id="taskModalDescription">#}
-{#                    ...#}
-{#                </p>#}
-{#                <br>#}
-{#                <div id="taskModalAttrs"></div>#}
-{#            </div>#}
+    <div class="modal fade" id="taskModalLong" tabindex="-1" role="dialog" aria-labelledby="taskModalLongTitle"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div id="modal-content" class="modal-content">
+                {#            <div class="modal-header">#}
+                {#                <h4 class="modal-title text-primary" id="taskModalTitle">...</h4>#}
+                {##}
+                {#                <span class="badge badge-pill badge-lg badge-info ml-1" id="taskModalStatus">...</span>#}
+                {##}
+                {#                <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+                {#                    <span aria-hidden="true">&times;</span>#}
+                {#                </button>#}
+                {#            </div>#}
+                {#            <div class="modal-body">#}
+                {#                <p id="taskModalDescription">#}
+                {#                    ...#}
+                {#                </p>#}
+                {#                <br>#}
+                {#                <div id="taskModalAttrs"></div>#}
+                {#            </div>#}
+            </div>
         </div>
     </div>
-</div>
 
 {% endblock %}
 
 
 
 {% block javascript %}
-{{ block.super }}
+    {{ block.super }}
 
-<!-- Attachments script for carrousel -->
-<script type="text/javascript">
+    <!-- Attachments script for carrousel -->
+    <script type="text/javascript">
 
-$(function() {
-  $('[data-toggle="tooltip"]').tooltip()
-});
-let spin_attachments_images = $("#spin-attachments-images");
-    let attachments_images = $("#attachments_images");
-    spin_attachments_images.show();
-    attachments_images.html(`
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+        let spin_attachments_images = $("#spin-attachments-images");
+        let attachments_images = $("#attachments_images");
+        spin_attachments_images.show();
+        attachments_images.html(`
     {% if images_data.exists_at_least_image %}
 
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
                 {% for image in images_data.images %}
-                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}" {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"
+            {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
                 {% endfor %}
             </ol>
             <div class="carousel-inner">
@@ -306,80 +324,82 @@ let spin_attachments_images = $("#spin-attachments-images");
 
     {% endif %}
     `);
-    spin_attachments_images.hide();
-</script>
+        spin_attachments_images.hide();
+    </script>
 
     <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
     <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
     <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
 
-<!-- Planning cycle script -->
-<script type="text/javascript">
-    $( document ).ready(function(){
-        $(".pc-btn").on('click', function(){
+    <!-- Planning cycle script -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".pc-btn").on('click', function () {
 
-            let phase_id = $(this).attr("id").split("-")[3];
-            let activity_buttons = $("#v-phase-" + phase_id + "-pills-tab").children();
-            let has_selected = false;
-            $(".tasks-pane").removeClass("active show");
-            activity_buttons.each(function(){
-                if( $( this ).hasClass("active") ){
-                    let activity_id = $( this ).attr("id").split("-")[3];
+                let phase_id = $(this).attr("id").split("-")[3];
+                let activity_buttons = $("#v-phase-" + phase_id + "-pills-tab").children();
+                let has_selected = false;
+                $(".tasks-pane").removeClass("active show");
+                activity_buttons.each(function () {
+                    if ($(this).hasClass("active")) {
+                        let activity_id = $(this).attr("id").split("-")[3];
+                        $("#activity-" + activity_id + "-content").tab("show");
+                        has_selected = true;
+                    }
+                });
+                if (!has_selected) {
+                    let single_button = $("#v-phase-" + phase_id + "-pills-tab").children(":first-child");
+                    let activity_id = single_button.attr("id").split("-")[3];
+                    single_button.addClass("active")
                     $("#activity-" + activity_id + "-content").tab("show");
-                    has_selected = true;
                 }
             });
-            if( !has_selected ){
-                let single_button = $("#v-phase-" + phase_id + "-pills-tab").children(":first-child");
-                let activity_id = single_button.attr("id").split("-")[3];
-                single_button.addClass("active")
-                $("#activity-" + activity_id + "-content").tab("show");
-            }
-        });
 
-        $('#taskModalLong').on('shown.bs.modal', function (e) {
-            let pk = e.relatedTarget.id.split('-')[3];
-            let base_url = "{% url 'administrativelevels:utils:task_detail' 0 %}";
-            base_url = base_url.replace(0, pk);
-            $.ajax({
-                type : "GET",
-                url: base_url,
-                success: function(response){
-                    console.log(response);
-                    $('#modal-content').html(response);
-                    {#let attr_container = $('#taskModalAttrs');#}
-                    {#$('#taskModalTitle').html(response.name);#}
-                    {#$('#taskModalDescription').html(response.description);#}
-                    {#$('#taskModalStatus').html(response.status);#}
-                    {#attr_container.html('');#}
-                    {#console.log(response);#}
-                    {#response.meta.forEach((element) => {#}
-                    {#    if(element.type == 'text_area') {#}
-                    {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
-                    {#            <label>${element.label}</label>#}
-                    {#            <textarea class="form-control" rows="6">${element.response}</textarea>#}
-                    {#          </div>#}
-                    {#          <br>#}
-                    {#        `);#}
-                    {#    } else if(element.type == 'link') {#}
-                    {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
-                    {#            <label>${element.label}</label>#}
-                    {#            <a href="${element.response}" target="_blank">Link</a>#}
-                    {#          </div>#}
-                    {#          <br>#}
-                    {#        `);#}
-                    {#    } else {#}
-                    {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
-                    {#            <label>${element.label}</label>#}
-                    {#            <input type="text" class="form-control" value="${element.response}">#}
-                    {#          </div>#}
-                    {#          <br>#}
-                    {#        `);#}
-                    {#    }#}
-                    {#});#}
-                }
+            $('#taskModalLong').on('shown.bs.modal', function (e) {
+                let pk = e.relatedTarget.id.split('-')[3];
+                let base_url = "{% url 'administrativelevels:utils:task_detail' 0 %}";
+                base_url = base_url.replace(0, pk);
+                $.ajax({
+                    type: "GET",
+                    url: base_url,
+                    success: function (response) {
+                        console.log(response);
+                        $('#modal-content').html(response);
+                        {#let attr_container = $('#taskModalAttrs');#}
+                        {#$('#taskModalTitle').html(response.name);#}
+                        {#$('#taskModalDescription').html(response.description);#}
+                        {#$('#taskModalStatus').html(response.status);#}
+                        {#attr_container.html('');#}
+                        {#console.log(response);#}
+                        {#response.meta.forEach((element) => {#}
+                        {#    if(element.type == 'text_area') {#}
+                        {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
+                        {#            <label>${element.label}</label>#}
+                        {#            <textarea class="form-control" rows="6">${element.response}</textarea>#}
+                        {#          </div>#}
+                        {#          <br>#}
+                        {#        `);#}
+                        {#    } else if(element.type == 'link') {#}
+                        {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
+                        {#            <label>${element.label}</label>#}
+                        {#            <a href="${element.response}" target="_blank">Link</a>#}
+                        {#          </div>#}
+                        {#          <br>#}
+                        {#        `);#}
+                        {#    } else {#}
+                        {#        attr_container.html(attr_container.html() + `<div class="form-group">#}
+                        {#            <label>${element.label}</label>#}
+                        {#            <input type="text" class="form-control" value="${element.response}">#}
+                        {#          </div>#}
+                        {#          <br>#}
+                        {#        `);#}
+                        {#    }#}
+                        {#})
+                            ;
+                            #}
+                        }
+                    });
+            })
             });
-        })
-    });
-</script>
+    </script>
 {% endblock %}

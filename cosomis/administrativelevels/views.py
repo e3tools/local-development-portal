@@ -1,3 +1,4 @@
+import os
 import re
 import zipfile
 import requests
@@ -40,9 +41,9 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(VillageDetailView, self).get_context_data(**kwargs)
 
-        if 'object' in context:
-            context['title'] = context['object'].name
-            if context['object'].is_village() is True:
+        if "object" in context:
+            context["title"] = context["object"].name
+            if context["object"].is_village() is True:
                 context["investments"] = Investment.objects.filter(
                     administrative_level=self.object
                 )
@@ -56,13 +57,13 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
         task_number = tasks_qs.count()
         tasks_done = tasks_qs.filter(status=Task.COMPLETED).count()
         context["planning_status"] = {
-            'current_phase': current_phase,
-            'current_activity': current_activity,
-            'current_task': current_task,
-            'completed': round(float(tasks_done) * 100 / float(task_number), 2),
-            'priorities_identified': context['object'].identified_priority,
-            'village_development_plan_date': '',
-            'facilitator': '',
+            "current_phase": current_phase,
+            "current_activity": current_activity,
+            "current_task": current_task,
+            "completed": round(float(tasks_done) * 100 / float(task_number), 2),
+            "priorities_identified": context["object"].identified_priority,
+            "village_development_plan_date": "",
+            "facilitator": "",
         }
 
         if admin_level and admin_level.is_village() is True:
@@ -78,6 +79,8 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+
             return context
         raise Http404
 
@@ -356,48 +359,65 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
     model = Attachment
 
     def post(self, request, *args, **kwargs):
-        url = reverse('administrativelevels:attachments')
+        url = reverse("administrativelevels:attachments")
         final_querystring = request.GET.copy()
 
         for key, value in request.GET.items():
-            if key in request.POST and value != request.POST[key] and request.POST[key] != '':
+            if (
+                key in request.POST
+                and value != request.POST[key]
+                and request.POST[key] != ""
+            ):
                 final_querystring.pop(key)
 
         post_dict = request.POST.copy()
         post_dict.update(final_querystring)
-        post_dict.pop('csrfmiddlewaretoken')
-        if 'reset-hidden' in post_dict and post_dict['reset-hidden'] == 'true':
+        post_dict.pop("csrfmiddlewaretoken")
+        if "reset-hidden" in post_dict and post_dict["reset-hidden"] == "true":
             return redirect(url)
 
         for key, value in request.POST.items():
-            if value == '':
+            if value == "":
                 post_dict.pop(key)
         final_querystring.update(post_dict)
         if final_querystring:
-            url = '{}?{}'.format(url, urlencode(final_querystring))
+            url = "{}?{}".format(url, urlencode(final_querystring))
         return redirect(url)
 
     def get_context_data(self, **kwargs):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
 
-        context["administrative_levels"] = AdministrativeLevel.objects.filter(type=AdministrativeLevel.VILLAGE)
+        context["administrative_levels"] = AdministrativeLevel.objects.filter(
+            type=AdministrativeLevel.VILLAGE
+        )
 
-        context['phases'] = Phase.objects.all()
-        if 'administrative_level' in self.request.GET and self.request.GET['administrative_level'] not in ['', None]:
-            context['phases'] = context['phases'].filter(village__id=self.request.GET['administrative_level'])
+        context["phases"] = Phase.objects.all()
+        if "administrative_level" in self.request.GET and self.request.GET[
+            "administrative_level"
+        ] not in ["", None]:
+            context["phases"] = context["phases"].filter(
+                village__id=self.request.GET["administrative_level"]
+            )
 
-        context['activities'] = Activity.objects.all()
-        if 'phase' in self.request.GET and self.request.GET['phase'] not in ['', None]:
-            context['activities'] = context['activities'].filter(phase__id=self.request.GET['phase'])
+        context["activities"] = Activity.objects.all()
+        if "phase" in self.request.GET and self.request.GET["phase"] not in ["", None]:
+            context["activities"] = context["activities"].filter(
+                phase__id=self.request.GET["phase"]
+            )
 
-        context['tasks'] = Task.objects.all()
-        if 'activities' in self.request.GET and self.request.GET['activities'] not in ['', None]:
-            context['tasks'] = context['tasks'].filter(activity__id=self.request.GET['activities'])
+        context["tasks"] = Task.objects.all()
+        if "activities" in self.request.GET and self.request.GET["activities"] not in [
+            "",
+            None,
+        ]:
+            context["tasks"] = context["tasks"].filter(
+                activity__id=self.request.GET["activities"]
+            )
 
         query_params: dict = self.request.GET
 
-        context['query_strings'] = self.get_query_strings_context()
-        context['query_strings_raw'] = query_params.copy()
+        context["query_strings"] = self.get_query_strings_context()
+        context["query_strings_raw"] = query_params.copy()
 
         form = AttachmentFilterForm()
 
@@ -408,7 +428,6 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
         page_number = query_params.get("page", 1)
         context["attachments"] = paginator.get_page(page_number)
         context["form"] = form
-
         return context
 
     def get_template_names(self, *args, **kwargs):
@@ -428,63 +447,88 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
     def get_query_strings_context(self):
         resp = dict()
         for key, value in self.request.GET.items():
-            if value not in [None, '']:
-                if key == 'administrative_level':
-                    resp['Administrative-levels'] = ', '.join(AdministrativeLevel.objects.filter(
-                        id__in=[int(value)],
-                        type=AdministrativeLevel.VILLAGE
-                    ).values_list('name', flat=True))
-                if key == 'phase':
-                    resp['Phases'] = ', '.join(Phase.objects.filter(
-                        id__in=[int(value)]
-                    ).values_list('name', flat=True))
-                if key == 'activities':
-                    resp['Activities'] = ', '.join(Activity.objects.filter(
-                        id__in=[int(value)]
-                    ).values_list('name', flat=True))
-                if key == 'tasks':
-                    resp['Tasks'] = ', '.join(Task.objects.filter(
-                        id__in=[int(value)]
-                    ).values_list('name', flat=True))
-                if key == 'types':
-                    resp['Types'] = [value]
+            if value not in [None, ""]:
+                if key == "administrative_level":
+                    resp["Administrative-levels"] = ", ".join(
+                        AdministrativeLevel.objects.filter(
+                            id__in=[int(value)], type=AdministrativeLevel.VILLAGE
+                        ).values_list("name", flat=True)
+                    )
+                if key == "phase":
+                    resp["Phases"] = ", ".join(
+                        Phase.objects.filter(id__in=[int(value)]).values_list(
+                            "name", flat=True
+                        )
+                    )
+                if key == "activities":
+                    resp["Activities"] = ", ".join(
+                        Activity.objects.filter(id__in=[int(value)]).values_list(
+                            "name", flat=True
+                        )
+                    )
+                if key == "tasks":
+                    resp["Tasks"] = ", ".join(
+                        Task.objects.filter(id__in=[int(value)]).values_list(
+                            "name", flat=True
+                        )
+                    )
+                if key == "types":
+                    resp["Types"] = [value]
 
         return resp
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if 'administrative_level' in self.request.GET and self.request.GET['administrative_level'] not in ['', None]:
-            if 'phase' in self.request.GET and self.request.GET['phase'] not in ['', None]:
+        if "administrative_level" in self.request.GET and self.request.GET[
+            "administrative_level"
+        ] not in ["", None]:
+            if "phase" in self.request.GET and self.request.GET["phase"] not in [
+                "",
+                None,
+            ]:
                 queryset = queryset.filter(
-                    Q(adm__id=self.request.GET['administrative_level']) |
-                    Q(task__activity__phase__id=self.request.GET['phase'])
+                    Q(adm__id=self.request.GET["administrative_level"])
+                    | Q(task__activity__phase__id=self.request.GET["phase"])
                 )
-            elif 'activities' in self.request.GET and self.request.GET['activities'] not in ['', None]:
+            elif "activities" in self.request.GET and self.request.GET[
+                "activities"
+            ] not in ["", None]:
                 queryset = queryset.filter(
-                    Q(adm__id=self.request.GET['administrative_level']) |
-                    Q(task__activity__id=self.request.GET['activities'])
+                    Q(adm__id=self.request.GET["administrative_level"])
+                    | Q(task__activity__id=self.request.GET["activities"])
                 )
-            elif 'tasks' in self.request.GET and self.request.GET['tasks'] not in ['', None]:
+            elif "tasks" in self.request.GET and self.request.GET["tasks"] not in [
+                "",
+                None,
+            ]:
                 queryset = queryset.filter(
-                    Q(adm__id=self.request.GET['administrative_level']) |
-                    Q(task__id=self.request.GET['tasks'])
+                    Q(adm__id=self.request.GET["administrative_level"])
+                    | Q(task__id=self.request.GET["tasks"])
                 )
             else:
                 queryset = queryset.filter(
-                    adm__id=self.request.GET['administrative_level']
+                    adm__id=self.request.GET["administrative_level"]
                 )
         else:
-            if 'phase' in self.request.GET and self.request.GET['phase'] not in ['', None]:
+            if "phase" in self.request.GET and self.request.GET["phase"] not in [
+                "",
+                None,
+            ]:
                 queryset = queryset.filter(
-                    adm__id=self.request.GET['administrative_level']
+                    adm__id=self.request.GET["administrative_level"]
                 )
-            elif 'activities' in self.request.GET and self.request.GET['activities'] not in ['', None]:
+            elif "activities" in self.request.GET and self.request.GET[
+                "activities"
+            ] not in ["", None]:
                 queryset = queryset.filter(
-                    adm__id=self.request.GET['administrative_level']
+                    adm__id=self.request.GET["administrative_level"]
                 )
-            elif 'tasks' in self.request.GET and self.request.GET['tasks'] not in ['', None]:
+            elif "tasks" in self.request.GET and self.request.GET["tasks"] not in [
+                "",
+                None,
+            ]:
                 queryset = queryset.filter(
-                    adm__id=self.request.GET['administrative_level']
+                    adm__id=self.request.GET["administrative_level"]
                 )
 
         ordering = self.get_ordering()
@@ -588,6 +632,7 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
             return context
         raise Http404
 
@@ -629,6 +674,7 @@ class CantonDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
             return context
         raise Http404
 
@@ -670,6 +716,7 @@ class RegionDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
             return context
         raise Http404
 
@@ -701,5 +748,6 @@ class PrefectureDetailView(PageMixin, LoginRequiredMixin, DetailView):
                 administrative_level=admin_level.id
             ).all()
             context["investments"] = investments
+            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
             return context
         raise Http404
