@@ -67,14 +67,12 @@ function loadGeoJsonMap(url, access_token) {
 		  '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
 
             const clusters = new Set(geoJson.features.map(feature => feature.properties.ClusterID));
-
+            const clusterNames = new Set(geoJson.features.map(feature => feature.properties.Region));
             mymap.addSource(around_africa_id, {
                 'type': 'geojson',
                 'data': geoJson
             });
             clusters.forEach((cluster, index) => {
-
-                const color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
                 mymap.addLayer({
                     'id': cluster.toString(),
                     'type': 'fill',
@@ -86,7 +84,7 @@ function loadGeoJsonMap(url, access_token) {
                     },
                     'filter': ['==', 'ClusterID', cluster]
                 });
-                $('#legend').append(`<i class="nav-icon fa fa-square-full" style=color:${colors[index]}></i> <span>Togo</span>`);
+                $('#legend').append(`<i class="nav-icon fa fa-square-full" style=color:${colors[index]}></i> <span>clusterNames[index]</span>`);
             })
 
 
