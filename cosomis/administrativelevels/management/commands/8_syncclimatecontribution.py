@@ -39,11 +39,10 @@ def update_administrative_level_investment(administrative_level, priority):
         if priority["priorite"]
         else priority["priorite"],
     )
-    print(priority["priorite"], investment)
     if len(investment) > 0:
-        print(priority["contributionClimatique"])
         investment = investment.first()
-        investment.climate_contribution = priority["contributionClimatique"]
+        investment.climate_contribution = True if priority["contributionClimatique"] else False
+        investment.climate_contribution_text = priority["contributionClimatique"]
         investment.save()
 
 
