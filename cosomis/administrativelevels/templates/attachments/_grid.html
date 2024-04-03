@@ -6,7 +6,7 @@
                     hx-swap="afterend"
             >
         {% for attachment in attachments %}
-        {% if attachment.url|not_local %}
+        {% if attachment.url|not_local and not attachment.url|is_pdf%}
             <article>
                 <div class="card mr-3">
                     <div class="card-body">
@@ -26,9 +26,7 @@
                         {% endif %}
                     </div>
                     {% if attachment.url|is_pdf %}
-                    <a href="{{ attachment.url|imgAWSS3Filter }}" style="width: 100%; height:450px;" target="_blank">
-                    <embed src="{{ attachment.url|imgAWSS3Filter }}" style="width: 100%; height:450px;"/>
-                    </a>
+
                     {% else %}
                     <a href="{{ attachment.url|imgAWSS3Filter }}" target="_blank">
                         <img src="{{ attachment.url|imgAWSS3Filter }}" class="card-img-top second-target" alt="{{ attachment.task }}">
