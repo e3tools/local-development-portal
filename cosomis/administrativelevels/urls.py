@@ -9,7 +9,7 @@ urlpatterns = [
     path('', views.AdministrativeLevelsListView.as_view(), name='list'), # Administrative levels list path
     path('search/', views.AdministrativeLevelSearchListView.as_view(), name='search'), # Administrative levels path to search
     path('create/', views.AdministrativeLevelCreateView.as_view(), name='create'), # Administrative level path to create
-    path('detail/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='detail'), #The path of the detail
+    path('detail/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='detail'),  # The path of the detail
     path('detail/<int:adm_id>/attachments/<path:url>/download/', views.attachment_download,
          name='attachment_download'),
     path('detail/<int:adm_id>/attachments/download-zip/', views.attachment_download_zip,
