@@ -72,7 +72,7 @@
                                 <tr>
                                     <td>{{ user.date_joined|date:"d/m/Y" }}</td>
                                     <td>{{ user.email }}</td>
-                                    <td>{{ user.organization }}</td>
+                                    <td>{{ user.organization.name }}</td>
                                     <td>
                                         <form action="" method="post" name="approve-user-form" id="approve-user-form-id-{{ user.id }}">
                                             {% csrf_token %}

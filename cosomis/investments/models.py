@@ -2,7 +2,6 @@ import os
 from boto3.session import Session
 import requests
 from io import BytesIO
-from PIL import Image
 from django.db import models
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
@@ -32,7 +31,6 @@ class Category(BaseModel):
 
     def __str__(self):
         return self.name
-
 
 
 class Sector(BaseModel):
