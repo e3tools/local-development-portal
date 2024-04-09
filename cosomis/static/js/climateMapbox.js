@@ -1,4 +1,4 @@
-function loadGeoJsonMap(url, access_token) {
+function loadGeoJsonMap(url, access_token, admin_level_coordinates) {
     mapboxgl.accessToken = access_token;
 
     fetch(url)
@@ -12,23 +12,6 @@ function loadGeoJsonMap(url, access_token) {
         let load_percentage = $('#load-percentage');
         let map_message = $('#map-message');
         let around_africa_id = 'around_africa';
-
-        function calculateBoundingBox(geojson) {
-            var minX = geojson.features[0].geometry.coordinates[0][0][0];
-            var minY = geojson.features[0].geometry.coordinates[0][0][1];
-            var maxX = geojson.features[0].geometry.coordinates[0][1][0];
-            var maxY = geojson.features[0].geometry.coordinates[0][1][1];
-            geojson.features.forEach(function (feature) {
-                feature.geometry.coordinates[0].forEach(function (coordinate) {
-                    if (!minX || coordinate[0] < minX) minX = coordinate[0];
-                    if (!minY || coordinate[1] < minY) minY = coordinate[1];
-                    if (!maxX || coordinate[0] > maxX) maxX = coordinate[0];
-                    if (!maxY || coordinate[1] > maxY) maxY = coordinate[1];
-                });
-            });
-
-            return [[minX, minY], [maxX, maxY]];
-        }
 
         function clearAllTimeout() {
             let id = window.setTimeout(function () {
@@ -89,18 +72,23 @@ function loadGeoJsonMap(url, access_token) {
 
 
         }
-
         var geoJson = {
             "type": "FeatureCollection",
             "features": data.features
         };
-        var bbox = calculateBoundingBox(geoJson);
         const mymap = new mapboxgl.Map({
             container: 'mapid',
             style: 'mapbox://styles/jorgedavidgb/cktwydyi118en18l9alhtk5ds',
-        });
+            center: admin_level_coordinates,
+            zoom: 8,
+        })
 
-        mymap.fitBounds(bbox);
+         new mapboxgl.Marker()
+        .setLngLat(admin_level_coordinates)
+        .addTo(mymap)
+
+
+        //mymap.fitBounds(bbox);
 
         mymap.on('load', () => {
             mymap.dragRotate.disable();

@@ -48,7 +48,6 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
                     administrative_level=self.object
                 )
         admin_level = context.get("object")
-
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
         current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
         current_phase = current_task.activity.phase
@@ -78,9 +77,11 @@ class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
             investments = Investment.objects.filter(
                 administrative_level=admin_level.id
             ).all()
+
             context["investments"] = investments
             context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
-
+            self.object.latitude = 10.693749945416448
+            self.object.longitude = 0.330183201548857
             return context
         raise Http404
 
@@ -633,6 +634,8 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
             ).all()
             context["investments"] = investments
             context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+            self.object.latitude = 10.693749945416448
+            self.object.longitude = 0.330183201548857
             return context
         raise Http404
 
@@ -675,6 +678,8 @@ class CantonDetailView(PageMixin, LoginRequiredMixin, DetailView):
             ).all()
             context["investments"] = investments
             context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+            self.object.latitude = 10.693749945416448
+            self.object.longitude = 0.330183201548857
             return context
         raise Http404
 
@@ -717,6 +722,8 @@ class RegionDetailView(PageMixin, LoginRequiredMixin, DetailView):
             ).all()
             context["investments"] = investments
             context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+            self.object.latitude = 10.693749945416448
+            self.object.longitude = 0.330183201548857
             return context
         raise Http404
 
@@ -749,5 +756,7 @@ class PrefectureDetailView(PageMixin, LoginRequiredMixin, DetailView):
             ).all()
             context["investments"] = investments
             context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+            self.object.latitude = 10.693749945416448
+            self.object.longitude = 0.330183201548857
             return context
         raise Http404
