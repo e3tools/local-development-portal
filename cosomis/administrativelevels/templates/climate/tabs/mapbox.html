@@ -1,10 +1,6 @@
 {% load static i18n humanize custom_tags %}
 {% block extracss %}
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
-<style>
-    body { margin: 0; padding: 0; }
-    #mapid { position: absolute; top: 0; bottom: 0; width: 100%; }
-</style>
 {% endblock %}
 <h4 class="mt-1">
     {% blocktrans with village.name as village_name %}
