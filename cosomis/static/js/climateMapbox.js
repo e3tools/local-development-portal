@@ -1,4 +1,4 @@
-function loadGeoJsonMap(url, access_token, admin_level_coordinates) {
+function loadGeoJsonMap(url, access_token, admin_level_coordinates, type) {
     mapboxgl.accessToken = access_token;
 
     fetch(url)
@@ -70,7 +70,35 @@ function loadGeoJsonMap(url, access_token, admin_level_coordinates) {
                 $('#legend').append(`<i class="nav-icon fa fa-square-full" style=color:${colors[index]}></i> <span>Cluster ${cluster}</span> <br>`);
             })
 
-
+            var sourceLayer = '';
+            var shapefileId = '';
+            if (type === 'commune') {
+                shapefileId = 'leokooshi.16r4x6dm';
+                sourceLayer = 'communes_togo-c1mb3n';
+            } else if (type === 'canton') {
+                shapefileId = 'leokooshi.76xl2wnj';
+                sourceLayer = 'canton_togo-207yxg';
+            } else if (type === 'prefecture') {
+                shapefileId = 'leokooshi.d175fn96';
+                sourceLayer = 'prefecture_togo-da9iqd';
+            }
+            mymap.addLayer({
+                  'id': 'shapefile',
+                  'type': 'line',
+                  'source': {
+                      'type': 'vector',
+                      'url': `mapbox://${shapefileId}`
+                    },
+                  'source-layer': sourceLayer,
+                  'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                  },
+                  'paint': {
+                    'line-color': '#000000',
+                    'line-width': 1
+                  }
+                });
         }
         var geoJson = {
             "type": "FeatureCollection",
@@ -78,7 +106,7 @@ function loadGeoJsonMap(url, access_token, admin_level_coordinates) {
         };
         const mymap = new mapboxgl.Map({
             container: 'mapid',
-            style: 'mapbox://styles/jorgedavidgb/cktwydyi118en18l9alhtk5ds',
+            style: 'mapbox://styles/mapbox/outdoors-v12',
             center: admin_level_coordinates,
             zoom: 8,
         })
@@ -114,3 +142,4 @@ function loadGeoJsonMap(url, access_token, admin_level_coordinates) {
 
     });
 }
+z
