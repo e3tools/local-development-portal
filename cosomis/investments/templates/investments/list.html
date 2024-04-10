@@ -106,9 +106,19 @@
                                             <div class="form-group">
                                                 <label for="category-select-id">{% translate 'Climate contribution' %}</label>
                                                 <select class="form-control" name="climate-contribution-filter" id="climate-contribution-select-id" empty-option="{% translate 'Climate contribution' %}" style="width: 100%;">
-                                                    <option selected value="">{% translate 'Climate contribution' %}</option>
-                                                     <option value="True">{% translate 'Yes' %}</option>
-                                                     <option value="False">{% translate 'No' %}</option>
+                                                    {% if 'climate-contribution-filter' in query_strings_raw %}
+                                                        {% if query_strings_raw|get_item:'climate-contribution-filter' == 'True' %}
+                                                            <option value="True" selected>{% translate 'Yes' %}</option>
+                                                            <option value="False">{% translate 'No' %}</option>
+                                                        {% else %}
+                                                            <option value="True">{% translate 'Yes' %}</option>
+                                                            <option value="False" selected>{% translate 'No' %}</option>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <option selected value="">{% translate 'Climate contribution' %}</option>
+                                                        <option value="True">{% translate 'Yes' %}</option>
+                                                        <option value="False">{% translate 'No' %}</option>
+                                                    {% endif %}
                                                 </select>
                                             </div>
                                         </div>
