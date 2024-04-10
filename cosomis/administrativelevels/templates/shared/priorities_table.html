@@ -37,7 +37,7 @@
             <td class="border-sides--light">{{ investment.beneficiaries }}</td>
             <td class="border-sides--light">{{ investment.estimated_cost|intcomma }}</td>
             <td class="border-sides--light">{{ investment.responsible_structure }}</td>
-            <td class="border-sides--light">{% if investment.contribution_to_climate %}{% translate "Yes" %}{% else %}
+            <td class="border-sides--light">{% if investment.climate_contribution %}{{ investment.climate_contribution_text }}{% else %}
                 {% translate "No" %}{% endif %}</td>
             <td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
         </tr>

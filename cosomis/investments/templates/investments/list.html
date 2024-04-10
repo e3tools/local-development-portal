@@ -397,9 +397,9 @@
                                 <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Source' %}</th>
                                 <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
                                 <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
-                                <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
-                                <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
-                                <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
+                                <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Canton' %}</th>
+                                <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
+                                <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
                                 <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
                                 <th data-priority="10" class="align-middle border-top-right-corner border-bottom-0">{% translate 'Population priority' %}</th>
                             </thead>
@@ -414,10 +414,18 @@
                             <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
                                 {{ investment.estimated_cost|intcomma }} FCFA
                             </td>
-                            <td>{{ investment.administrative_level.name }}</td>
+                            <td>
+                                <a href="{% url 'administrativelevels:village_detail' investment.administrative_level.id %}" target="_blank">
+                                    {{ investment.administrative_level.name }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'administrativelevels:detail' investment.administrative_level.parent.id %}" target="_blank">
+                                    {{ investment.administrative_level.parent.name }}
+                                </a>
+                            </td>
                             <td>{{ investment.administrative_level.parent.parent.name }}</td>
                             <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
-                            <td>{{ investment.administrative_level.parent.parent.parent.parent.name }}</td>
                             <td>{{ investment.ranking }}</td>
                             <td>
                                 {% if investment.endorsed_by_youth %}
