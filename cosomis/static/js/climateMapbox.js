@@ -142,4 +142,3 @@ function loadGeoJsonMap(url, access_token, admin_level_coordinates, type) {
 
     });
 }
-z
