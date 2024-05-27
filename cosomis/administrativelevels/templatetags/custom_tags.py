@@ -16,7 +16,7 @@ def img_aws_s3_filter(uri):
 @register.filter(name="is_pdf")
 def is_pdf(uri):
     uri = uri.split("?")[0]
-    return uri.split(".")[-1] == 'pdf'
+    return uri.split(".")[-1] in ['pdf', 'docx']
 
 
 @register.filter(name="not_local")
