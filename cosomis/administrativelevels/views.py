@@ -9,82 +9,21 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import translation
 from django.views.generic import DetailView, ListView, CreateView
-from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usermanager.permissions import AdminPermissionRequiredMixin
 from .forms import AdministrativeLevelForm
 from cosomis.mixins import PageMixin
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
-from django.db.models import Q, QuerySet
-from no_sql_client import NoSQLClient
+from django.db.models import QuerySet, Subquery, OuterRef, Value
+from django.db.models.functions import Coalesce
 
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task
 from investments.models import Attachment, Investment
 
-from .forms import FinancialPartnerForm, AttachmentFilterForm, VillageSearchForm
-
-
-class VillageDetailView(PageMixin, LoginRequiredMixin, DetailView):
-    """Class to present the detail page of one village"""
-
-    model = AdministrativeLevel
-    template_name = "village/village_detail.html"
-    context_object_name = "village"
-    title = _("Village")
-    active_level1 = "administrative_levels"
-    breadcrumb = [
-        {"url": "", "title": title},
-    ]
-
-    def get_context_data(self, **kwargs):
-        context = super(VillageDetailView, self).get_context_data(**kwargs)
-
-        if "object" in context:
-            context["title"] = context["object"].name
-            if context["object"].is_village() is True:
-                context["investments"] = Investment.objects.filter(
-                    administrative_level=self.object
-                )
-        admin_level = context.get("object")
-        tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
-        current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
-        current_phase = current_task.activity.phase
-        current_activity = current_task.activity
-
-        task_number = tasks_qs.count()
-        tasks_done = tasks_qs.filter(status=Task.COMPLETED).count()
-        context["planning_status"] = {
-            "current_phase": current_phase,
-            "current_activity": current_activity,
-            "current_task": current_task,
-            "completed": round(float(tasks_done) * 100 / float(task_number), 2),
-            "priorities_identified": context["object"].identified_priority,
-            "village_development_plan_date": "",
-            "facilitator": "",
-        }
-
-        if admin_level and admin_level.is_village() is True:
-            images = Attachment.objects.filter(
-                adm=admin_level.id, type=Attachment.PHOTO
-            ).all()
-            context["images_data"] = {
-                "images": images,
-                "exists_at_least_image": len(images) != 0,
-                "first_image": images[0] if len(images) > 0 else None,
-            }
-            investments = Investment.objects.filter(
-                administrative_level=admin_level.id
-            ).all()
-
-            context["investments"] = investments
-            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
-            self.object.latitude = 10.693749945416448
-            self.object.longitude = 0.330183201548857
-            return context
-        raise Http404
+from .forms import AttachmentFilterForm, VillageSearchForm
 
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
@@ -92,7 +31,7 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
 
     model = AdministrativeLevel
     queryset = []  # AdministrativeLevel.objects.filter(type="Village")
-    template_name = "administrativelevels_list.html"
+    template_name = "administrative_level/list.html"
     context_object_name = "administrativelevels"
     title = _("Administrative levels")
     active_level1 = "administrative_levels"
@@ -131,7 +70,7 @@ class AdministrativeLevelCreateView(
     PageMixin, LoginRequiredMixin, AdminPermissionRequiredMixin, CreateView
 ):
     model = AdministrativeLevel
-    template_name = "administrativelevel_create.html"
+    template_name = "administrative_level/create.html"
     context_object_name = "administrativelevel"
     title = _("Create Administrative level")
     active_level1 = "administrative_levels"
@@ -170,146 +109,112 @@ class AdministrativeLevelCreateView(
 
 
 class AdministrativeLevelDetailView(
-    PageMixin, LoginRequiredMixin, BaseFormView, DetailView
+    PageMixin, LoginRequiredMixin, DetailView
 ):
     """Class to present the detail page of one village"""
 
     model = AdministrativeLevel
-    financial_partner_form_class = FinancialPartnerForm
-    nsc_class = NoSQLClient
-    no_sql_db_id = None
-    no_sql_database_name = "purs_test"
-    template_name = "village/village_detail.html"
+    template_name = "administrative_level/detail/index.html"
     context_object_name = "village"
     title = _("Village")
     active_level1 = "administrative_levels"
+    breadcrumb = [
+        {"url": "", "title": title},
+    ]
 
     def get_context_data(self, **kwargs):
         context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
-        try:
-            _type = self.request.GET.get("type", context["object"].type)
-        except AttributeError:
-            _type = "village"
-        self.template_name = (
-            _type.lower()
-            if _type.lower() in ("village", "canton")
-            else "administrativelevel"
-        ) + "_detail.html"
-        context["context_object_name"] = _type
-        context["title"] = _type
-        context["hide_content_header"] = True
-        context["administrativelevel_profile"] = context["object"]
-        context["priorities"] = Investment.objects.filter(
-            administrative_level=self.object
-        )
-        context["planning_status"] = []
-        images = self._get_images(None)
-        context["adm_id"] = self.object.id
+
+        if "object" in context:
+            context["title"] = context["object"].name
+            if context["object"].is_village() is True:
+                context["investments"] = Investment.objects.filter(
+                    administrative_level=self.object
+                )
+        admin_level = context.get("object")
+
+        context['phases'] = self._get_planning_cycle()
+
+        tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
+        current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
+        current_activity = current_task.activity if current_task else None
+        current_phase = current_activity.phase if current_activity else None
+
+        task_number = tasks_qs.count()
+        tasks_done = tasks_qs.filter(status=Task.COMPLETED).count()
+        context["planning_status"] = {
+            "current_phase": current_phase,
+            "current_activity": current_activity,
+            "current_task": current_task,
+            "completed": round(float(tasks_done) * 100 / float(task_number), 2) if task_number != 0 else '-',
+            "priorities_identified": context["object"].identified_priority,
+            "village_development_plan_date": "",
+            "facilitator": "",
+        }
+
+        images = Attachment.objects.filter(
+            adm=admin_level, type=Attachment.PHOTO
+        ).all()[:5]
         context["images_data"] = {
             "images": images,
             "exists_at_least_image": len(images) != 0,
             "first_image": images[0] if len(images) > 0 else None,
         }
-        if "form" not in kwargs:
-            kwargs["form"] = self.get_form()
 
+        context["investments"] = Investment.objects.filter(
+            administrative_level=admin_level.id
+        )
+        context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+        self.object.latitude = 10.693749945416448
+        self.object.longitude = 0.330183201548857
         return context
 
-    def get_form_class(self):
-        """Return the form class to use."""
-        return self.financial_partner_form_class
-
-    def _get_nosql_db(self, name=None):
-        name = name if name is not None else self.no_sql_database_name
-        nsc = self.nsc_class()
-        return nsc.get_db(name)
-
-    def _get_village(self):
-        nsc = self.nsc_class()
-        db = nsc.get_db(self.no_sql_database_name)
-        adm_id = self.kwargs.get(self.pk_url_kwarg)
-        village_document = db.get_query_result(
-            {"type": "administrative_level", "adm_id": str(adm_id)}
-        )
-        result = None
-        for doc in village_document:
-            result = doc
-            break
-        return result
-
-    def _get_population_data(self, village):
-        try:
-            village_obj = village
-        except Exception as e:
-            return []
-
-        resp = dict()
-
-        if village_obj is not None and "total_population" in village_obj:
-            resp["total_population"] = village_obj["total_population"]
-        if village_obj is not None and "population_men" in village_obj:
-            resp["population_men"] = village_obj["population_men"]
-        if village_obj is not None and "population_women" in village_obj:
-            resp["population_women"] = village_obj["population_women"]
-        if village_obj is not None and "population_young" in village_obj:
-            resp["population_young"] = village_obj["population_young"]
-        if village_obj is not None and "population_elder" in village_obj:
-            resp["population_elder"] = village_obj["population_elder"]
-        if village_obj is not None and "population_handicap" in village_obj:
-            resp["population_handicap"] = village_obj["population_handicap"]
-        if village_obj is not None and "population_agruculture" in village_obj:
-            resp["population_agruculture"] = village_obj["population_agruculture"]
-        if village_obj is not None and "population_breeders" in village_obj:
-            resp["population_breeders"] = village_obj["population_breeders"]
-        if village_obj is not None and "population_minorities" in village_obj:
-            resp["population_minorities"] = village_obj["population_minorities"]
-        if village_obj is not None and "languages" in village_obj:
-            resp["languages"] = village_obj["languages"]
-
-        return resp
-
-    def _get_planning_status(self, village):
-        try:
-            village_obj = village
-        except Exception as e:
-            return []
-
-        resp = dict()
-
-        if village_obj is not None and "current_phase" in village_obj:
-            resp["current_phase"] = village_obj["current_phase"]
-        if village_obj is not None and "current_activity" in village_obj:
-            resp["current_activity"] = village_obj["current_activity"]
-        if village_obj is not None and "current_task" in village_obj:
-            resp["current_task"] = village_obj["current_task"]
-        if village_obj is not None and "% Complete" in village_obj:
-            resp["completed"] = village_obj["% Complete"] == 1.0
-        if village_obj is not None and "priorities_identified_date" in village_obj:
-            resp["priorities_identified"] = bool(
-                village_obj["priorities_identified_date"]
-            )
-        else:
-            resp["priorities_identified"] = False
-        if village_obj is not None and "village_development_plan_date" in village_obj:
-            resp["village_development_plan_date"] = village_obj[
-                "village_development_plan_date"
-            ]
-        if village_obj is not None and "Facilitator" in village_obj:
-            resp["facilitator"] = village_obj["Facilitator"]["name"]
-        return resp
-
-    def _get_images(self, village):
-        try:
-            village_obj = village
-            if village_obj is not None and "attachments" in village_obj:
-                return list(
-                    filter(
-                        lambda x: x.get("type") == "photo", village_obj["attachments"]
-                    )
-                )
-            return []
-        except Exception as e:
-            return []
+    def _get_planning_cycle(self):
+        phases = list()
+        admin_level = self.object
+        for phase in admin_level.phases.all():
+            phase_node = {
+                "id": phase.id,
+                "name": phase.name,
+                "order": phase.order,
+                "activities": list(),
+            }
+            activities_status = None
+            for activity in phase.activities.all():
+                activity_node = {
+                    "id": activity.id,
+                    "name": activity.name,
+                    "order": activity.order,
+                    "tasks": list(),
+                }
+                tasks_status = None
+                for task in activity.tasks.all():
+                    task_node = {
+                        "id": task.id,
+                        "name": task.name,
+                        "order": task.order,
+                        "status": task.status,
+                    }
+                    activity_node["tasks"].append(task_node)
+                    if tasks_status is None:
+                        tasks_status = task.status
+                    if task.status != Task.ERROR:
+                        if tasks_status == Task.COMPLETED and task.status == Task.IN_PROGRESS:
+                            tasks_status = Task.IN_PROGRESS
+                    else:
+                        tasks_status = Task.ERROR
+                activity_node["status"] = tasks_status
+                phase_node["activities"].append(activity_node)
+                if activities_status is None:
+                    activities_status = tasks_status
+                if activity_node["status"] != Task.ERROR:
+                    if activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
+                        activities_status = Task.IN_PROGRESS
+                else:
+                    activities_status = Task.ERROR
+            phase_node["status"] = activities_status
+            phases.append(phase_node)
+        return phases
 
 
 class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView):
@@ -317,7 +222,7 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView)
 
     model = AdministrativeLevel
     queryset = []
-    template_name = "administrativelevels_list.html"
+    template_name = "administrative_level/list.html"
     context_object_name = "administrativelevels"
     title = _("Administrative levels")
     active_level1 = "administrative_levels"
@@ -499,15 +404,6 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
         return queryset
 
 
-class VillageAttachmentListView(AttachmentListView):
-    def get_context_data(self, **kwargs):
-        context = super(VillageAttachmentListView, self).get_context_data(**kwargs)
-        if context["administrative_level"].is_village() is False:
-            raise Http404
-
-        return context
-
-
 @login_required
 def attachment_download(self, adm_id: int, url: str):
     response = requests.get(url)
@@ -562,159 +458,3 @@ def attachment_download_zip(self, adm_id: int):
     response["Content-Disposition"] = "attachment; filename=attachments.zip"
 
     return response
-
-
-# Commune
-class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
-    model = AdministrativeLevel
-    template_name = "commune/commune_detail.html"
-    context_object_name = "commune"
-    title = _("Commune")
-    active_level1 = "administrative_levels"
-    breadcrumb = [
-        {"url": "", "title": title},
-    ]
-
-    def get_context_data(self, **kwargs):
-        context = super(CommuneDetailView, self).get_context_data(**kwargs)
-        admin_level = context.get("object")
-        if admin_level and admin_level.is_commune() is True:
-            images = Attachment.objects.filter(
-                adm=admin_level.id, type=Attachment.PHOTO
-            ).all()
-            context["images_data"] = {
-                "images": images,
-                "exists_at_least_image": len(images) != 0,
-                "first_image": images[0] if len(images) > 0 else None,
-            }
-            investments = Investment.objects.filter(
-                administrative_level=admin_level.id
-            ).all()
-            context["investments"] = investments
-            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
-            self.object.latitude = 10.693749945416448
-            self.object.longitude = 0.330183201548857
-            return context
-        raise Http404
-
-
-class CommuneAttachmentListView(AttachmentListView):
-    def get_context_data(self, **kwargs):
-        context = super(CommuneAttachmentListView, self).get_context_data(**kwargs)
-
-        if context["administrative_level"].is_commune() is False:
-            raise Http404
-
-        return context
-
-
-# Canton
-class CantonDetailView(PageMixin, LoginRequiredMixin, DetailView):
-    model = AdministrativeLevel
-    template_name = "canton/canton_detail.html"
-    context_object_name = "canton"
-    title = _("Canton")
-    active_level1 = "administrative_levels"
-    breadcrumb = [
-        {"url": "", "title": title},
-    ]
-
-    def get_context_data(self, **kwargs):
-        context = super(CantonDetailView, self).get_context_data(**kwargs)
-        admin_level = context.get("object")
-        if admin_level and admin_level.is_canton() is True:
-            images = Attachment.objects.filter(
-                adm=admin_level.id, type=Attachment.PHOTO
-            ).all()
-            context["images_data"] = {
-                "images": images,
-                "exists_at_least_image": len(images) != 0,
-                "first_image": images[0] if len(images) > 0 else None,
-            }
-            investments = Investment.objects.filter(
-                administrative_level=admin_level.id
-            ).all()
-            context["investments"] = investments
-            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
-            self.object.latitude = 10.693749945416448
-            self.object.longitude = 0.330183201548857
-            return context
-        raise Http404
-
-
-class CantonAttachmentListView(AttachmentListView):
-    def get_context_data(self, **kwargs):
-        context = super(CantonAttachmentListView, self).get_context_data(**kwargs)
-
-        if context["administrative_level"].is_canton() is False:
-            raise Http404
-
-        return context
-
-
-# Region
-class RegionDetailView(PageMixin, LoginRequiredMixin, DetailView):
-    model = AdministrativeLevel
-    template_name = "region/region_detail.html"
-    context_object_name = "region"
-    title = _("Region")
-    active_level1 = "administrative_levels"
-    breadcrumb = [
-        {"url": "", "title": title},
-    ]
-
-    def get_context_data(self, **kwargs):
-        context = super(RegionDetailView, self).get_context_data(**kwargs)
-        admin_level = context.get("object")
-        if admin_level and admin_level.is_region() is True:
-            images = Attachment.objects.filter(
-                adm=admin_level.id, type=Attachment.PHOTO
-            ).all()
-            context["images_data"] = {
-                "images": images,
-                "exists_at_least_image": len(images) != 0,
-                "first_image": images[0] if len(images) > 0 else None,
-            }
-            investments = Investment.objects.filter(
-                administrative_level=admin_level.id
-            ).all()
-            context["investments"] = investments
-            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
-            self.object.latitude = 10.693749945416448
-            self.object.longitude = 0.330183201548857
-            return context
-        raise Http404
-
-
-# Prefecture
-class PrefectureDetailView(PageMixin, LoginRequiredMixin, DetailView):
-    model = AdministrativeLevel
-    template_name = "prefecture/prefecture_detail.html"
-    context_object_name = "prefecture"
-    title = _("Prefecture")
-    active_level1 = "administrative_levels"
-    breadcrumb = [
-        {"url": "", "title": title},
-    ]
-
-    def get_context_data(self, **kwargs):
-        context = super(PrefectureDetailView, self).get_context_data(**kwargs)
-        admin_level = context.get("object")
-        if admin_level and admin_level.is_prefecture() is True:
-            images = Attachment.objects.filter(
-                adm=admin_level.id, type=Attachment.PHOTO
-            ).all()
-            context["images_data"] = {
-                "images": images,
-                "exists_at_least_image": len(images) != 0,
-                "first_image": images[0] if len(images) > 0 else None,
-            }
-            investments = Investment.objects.filter(
-                administrative_level=admin_level.id
-            ).all()
-            context["investments"] = investments
-            context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
-            self.object.latitude = 10.693749945416448
-            self.object.longitude = 0.330183201548857
-            return context
-        raise Http404

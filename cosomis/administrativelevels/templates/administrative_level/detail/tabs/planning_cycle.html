@@ -1,0 +1,57 @@
+{% load static i18n humanize custom_tags %}
+
+<div class="row">
+    <div class="col-4">
+        <h6>{% translate "Phases" %}</h6>
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            {% for phase in phases %}
+            <button
+                    class="pc-btn btn {% if phase.status == 'completed' %}btn-primary {% else %}btn-outline-primary {% endif %}  btn-block{% if phase.status == 'in progress' or phase.status == 'error' %} active{% endif %}"
+                    id="v-pills-phase-{{ phase.id }}-tab" data-toggle="pill" data-target="#phase-{{ phase.id }}-content" type="button" role="tab"
+                    aria-controls="v-pills-phase-{{ phase.id }}" aria-selected="{% if phase.status == 'in progress' or phase.status == 'error' %}true{% else %}false{% endif %}">
+                <span style="" class="{% if phase.status == 'not started' or phase.status == 'error' %}text-muted{% endif %}" title="{{ phase.name }}">{{ phase.order }}. {{ phase.name|truncatechars:25 }}</span>{% if phase.status == 'completed' %}<i class="nav-icon fa fa-check-circle pull-right"></i>{% elif phase.status == 'error' %}<i class="nav-icon fa fa-exclamation-circle pull-right text-danger"></i>{% endif %}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-4">
+        <h6>{% translate "Activities" %}</h6>
+        <div class="tab-content">
+            {% for phase in phases %}
+            <div id="phase-{{ phase.id }}-content" role="tabpanel" class="tab-pane fade{% if phase.status == 'in progress' or phase.status == 'error' %} show active{% endif %}">
+                <div class="nav flex-column nav-pills" id="v-phase-{{ phase.id }}-pills-tab" role="tablist" aria-orientation="vertical">
+                {% for activity in phase.activities %}
+                    <button
+                            class="btn {% if activity.status == 'completed' %}btn-primary {% else %}btn-outline-primary {% endif %} btn-block{% if activity.status == 'in progress' or activity.status == 'error' %} active{% endif %}"
+                            id="v-pills-activity-{{ activity.id }}-tab" data-toggle="pill" data-target="#activity-{{ activity.id }}-content" type="button" role="tab" aria-controls="v-pills-activity-{{ activity.id }}"
+                            aria-selected="{% if activity.status == 'in progress' or activity.status == 'error' %}true{% else %}false{% endif %}">
+                        <span class="{% if activity.status == 'not started' or activity.status == 'error' %}text-muted{% endif %}" title="{{ activity.name }}">{{ activity.order }}. {{ activity.name|truncatechars:25 }}</span>{% if activity.status == 'completed' %}<i class="nav-icon fa fa-check-circle pull-right"></i>{% elif activity.status == 'error' %}<i class="nav-icon fa fa-exclamation-circle pull-right text-danger"></i>{% endif %}
+                    </button>
+                {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-4">
+        <h6>{% translate "Tasks" %}</h6>
+        <div class="tab-content">
+            {% for phase in phases %}
+                {% for activity in phase.activities %}
+                <div id="activity-{{ activity.id }}-content" role="tabpanel" class="tasks-pane tab-pane fade{% if activity.status == 'in progress' or activity.status == 'error' %} show active{% endif %}">
+                    {% for task in activity.tasks %}
+                    <button
+                            class="btn {% if task.status == 'completed' %}btn-primary {% else %}btn-outline-primary {% endif %} btn-block"
+                            id="v-pills-task-{{ task.id }}-tab" type="button" role="tab" aria-controls="v-pills-activity-{{ task.id }}"
+                            data-toggle="modal" data-target="#taskModalLong"
+                            aria-selected="{% if task.status == 'in progress' or task.status == 'error' %}true{% else %}false{% endif %}"
+                    >
+                        <span class="{% if task.status == 'not started' or task.status == 'error' %}text-muted{% endif %}" title="{{ task.name }}">{{ task.order }}. {{ task.name|truncatechars:25 }}</span>{% if task.status == 'completed' %}<i class="nav-icon fa fa-check-circle pull-right"></i>{% elif task.status == 'error' %}<i class="nav-icon fa fa-exclamation-circle pull-right text-danger"></i>{% endif %}
+                    </button>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>

@@ -72,7 +72,7 @@ class GetAncestorAdministrativeLevelsView(AJAXRequestMixin, LoginRequiredMixin, 
 
 
 class TaskDetailAjaxView(generic.TemplateView):
-    template_name = 'village/task_detail.html'  # Define your template location
+    template_name = 'administrative_level/detail/task_detail.html'  # Define your template location
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

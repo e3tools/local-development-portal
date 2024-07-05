@@ -214,7 +214,7 @@
                             <div id="planning_cycle" class="tab-pane fade">
                                 <div class="card">
                                     <div class="card-body">
-                                        {% include 'village/tabs/planning_cycle.html' %}
+                                        {% include 'administrative_level/detail/tabs/planning_cycle.html' %}
                                     </div>
                                 </div>
                             </div>
@@ -237,8 +237,6 @@
             </div>
         </div>
     </div>
-
-
 
 {% endblock %}
 
@@ -272,7 +270,6 @@
 {% endblock %}
 
 
-
 {% block javascript %}
     {{ block.super }}
 
@@ -298,7 +295,7 @@
             <div class="carousel-inner">
                 {% for image in images_data.images %}
                     <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
-                        <a href="{% url 'administrativelevels:attachments' %}?village={{ object.id }}">
+                        <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
                             <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
                             style="height: 500px !important;"
                             alt="{{ image.task }}">
@@ -332,8 +329,9 @@
     <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
 
     <!-- Planning cycle script -->
-    <script type="text/javascript">
+    <script type="text/javascript" async>
         $(document).ready(function () {
+            
             $(".pc-btn").on('click', function () {
 
                 let phase_id = $(this).attr("id").split("-")[3];
@@ -363,11 +361,11 @@
                     type: "GET",
                     url: base_url,
                     success: function (response) {
-                        console.log(response);
                         $('#modal-content').html(response);
                     }
                 });
-            })
             });
+            
+        });
     </script>
 {% endblock %}

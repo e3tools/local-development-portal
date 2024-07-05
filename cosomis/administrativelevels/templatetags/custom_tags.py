@@ -236,14 +236,6 @@ def get_item(dictionary, key):
         return dictionary.get(key)
 
 
-@register.filter
-def vpc_status(phase_or_activity):
-    """
-    Village Planification Cycle object status getter
-    """
-    return phase_or_activity.get_status()
-
-
 @register.filter(name="structureTheFields")
 def structure_the_fields(task):
     fields_values = {}
