@@ -1,5 +1,6 @@
 import os
 import re
+import json
 import zipfile
 import requests
 from io import BytesIO
@@ -359,6 +360,12 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
     paginate_by = 10
     model = Attachment
 
+    filter_hierarchy = [
+        'task',
+        'activity',
+        'phase'
+    ] + [adm_type[0].lower() for adm_type in AdministrativeLevel.TYPE]
+
     def post(self, request, *args, **kwargs):
         url = reverse("administrativelevels:attachments")
         final_querystring = request.GET.copy()
@@ -388,46 +395,27 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
 
-        context["administrative_levels"] = AdministrativeLevel.objects.filter(
-            type=AdministrativeLevel.VILLAGE
+        context["regions"] = AdministrativeLevel.objects.filter(
+            type=AdministrativeLevel.REGION
         )
-
-        context["phases"] = Phase.objects.all()
-        if "administrative_level" in self.request.GET and self.request.GET[
-            "administrative_level"
-        ] not in ["", None]:
-            context["phases"] = context["phases"].filter(
-                village__id=self.request.GET["administrative_level"]
-            )
-
-        context["activities"] = Activity.objects.all()
-        if "phase" in self.request.GET and self.request.GET["phase"] not in ["", None]:
-            context["activities"] = context["activities"].filter(
-                phase__id=self.request.GET["phase"]
-            )
-
-        context["tasks"] = Task.objects.all()
-        if "activities" in self.request.GET and self.request.GET["activities"] not in [
-            "",
-            None,
-        ]:
-            context["tasks"] = context["tasks"].filter(
-                activity__id=self.request.GET["activities"]
-            )
 
         query_params: dict = self.request.GET
 
-        context["query_strings"] = self.get_query_strings_context()
+        context["filter_hierarchy_query_strings"] = self.build_filter_hierarchy()
         context["query_strings_raw"] = query_params.copy()
+        context["query_strings_raw"].pop("page", None)
+        babylong_query_params_list = [key + '=' + value for key, value in context["query_strings_raw"].items()]
+        if babylong_query_params_list:
+            context["babylong_query_params"] = '&' + '&'.join(babylong_query_params_list)
 
         form = AttachmentFilterForm()
 
-        paginator: Paginator = self.__build_db_filter()
+        paginator= self.__build_db_filter()
 
         context["no_results"] = paginator.count == 0
         context["current_language"] = translation.get_language()
-        page_number = query_params.get("page", 1)
-        context["attachments"] = paginator.get_page(page_number)
+        page_number = int(query_params.get("page", 1))
+        context["attachments"] = paginator.get_page(page_number) if page_number <= paginator.num_pages else []
         context["form"] = form
         return context
 
@@ -445,92 +433,62 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
 
         return paginator
 
-    def get_query_strings_context(self):
-        resp = dict()
-        for key, value in self.request.GET.items():
-            if value not in [None, ""]:
-                if key == "administrative_level":
-                    resp["Administrative-levels"] = ", ".join(
-                        AdministrativeLevel.objects.filter(
-                            id__in=[int(value)], type=AdministrativeLevel.VILLAGE
-                        ).values_list("name", flat=True)
-                    )
-                if key == "phase":
-                    resp["Phases"] = ", ".join(
-                        Phase.objects.filter(id__in=[int(value)]).values_list(
-                            "name", flat=True
-                        )
-                    )
-                if key == "activities":
-                    resp["Activities"] = ", ".join(
-                        Activity.objects.filter(id__in=[int(value)]).values_list(
-                            "name", flat=True
-                        )
-                    )
-                if key == "tasks":
-                    resp["Tasks"] = ", ".join(
-                        Task.objects.filter(id__in=[int(value)]).values_list(
-                            "name", flat=True
-                        )
-                    )
-                if key == "types":
-                    resp["Types"] = [value]
+    def build_filter_hierarchy(self):
+        resp = {}
 
-        return resp
+        def _build_filter_hierarchy(index, get_value):
+            current_filter_level = self.filter_hierarchy[index]
+            next_filter_level = self.filter_hierarchy[index + 1] if index + 1 < len(self.filter_hierarchy) else None
+            if current_filter_level == "task":
+                task = Task.objects.get(id=int(get_value))
+                resp[current_filter_level] = task.id
+                resp[next_filter_level] = task.activity.id
+            if current_filter_level == "activity":
+                activity = Activity.objects.get(id=int(get_value))
+                resp[current_filter_level] = activity.id
+                resp[next_filter_level] = activity.phase.id
+            if current_filter_level == "phase":
+                phase = Phase.objects.get(id=int(get_value))
+                resp[current_filter_level] = phase.id
+                resp[next_filter_level] = phase.village.id
+            if current_filter_level in [adm_type[0].lower() for adm_type in AdministrativeLevel.TYPE]:
+                adm_lvl = AdministrativeLevel.objects.get(id=int(get_value))
+                resp[current_filter_level] = adm_lvl.id
+                if hasattr(adm_lvl, "parent") and adm_lvl.parent is not None and len(self.filter_hierarchy) > index + 1:
+                    resp[next_filter_level] = adm_lvl.parent.id
+
+            if len(self.filter_hierarchy) > index + 1:
+                return _build_filter_hierarchy(index + 1, resp[next_filter_level])
+            return resp
+
+        for idx, key_filter in enumerate(self.filter_hierarchy):
+            if key_filter in self.request.GET and self.request.GET[key_filter] not in ['', None]:
+                resp = _build_filter_hierarchy(idx, self.request.GET[key_filter])
+                return json.dumps(resp)
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if "administrative_level" in self.request.GET and self.request.GET[
-            "administrative_level"
-        ] not in ["", None]:
-            if "phase" in self.request.GET and self.request.GET["phase"] not in [
-                "",
-                None,
-            ]:
-                queryset = queryset.filter(
-                    Q(adm__id=self.request.GET["administrative_level"])
-                    | Q(task__activity__phase__id=self.request.GET["phase"])
-                )
-            elif "activities" in self.request.GET and self.request.GET[
-                "activities"
-            ] not in ["", None]:
-                queryset = queryset.filter(
-                    Q(adm__id=self.request.GET["administrative_level"])
-                    | Q(task__activity__id=self.request.GET["activities"])
-                )
-            elif "tasks" in self.request.GET and self.request.GET["tasks"] not in [
-                "",
-                None,
-            ]:
-                queryset = queryset.filter(
-                    Q(adm__id=self.request.GET["administrative_level"])
-                    | Q(task__id=self.request.GET["tasks"])
-                )
-            else:
-                queryset = queryset.filter(
-                    adm__id=self.request.GET["administrative_level"]
-                )
+        empty_list = ["", None]
+
+        if "tasks" in self.request.GET and self.request.GET["tasks"] not in empty_list:
+            queryset = queryset.filter(
+                task__id=self.request.GET["tasks"]
+            )
+        elif "activities" in self.request.GET and self.request.GET["activities"] not in empty_list:
+            queryset = queryset.filter(
+                task__activity__id=self.request.GET["activities"]
+            )
+        elif "phase" in self.request.GET and self.request.GET["phase"] not in empty_list:
+            queryset = queryset.filter(
+                task__activity__phase__id=self.request.GET["phase"]
+            )
         else:
-            if "phase" in self.request.GET and self.request.GET["phase"] not in [
-                "",
-                None,
-            ]:
-                queryset = queryset.filter(
-                    adm__id=self.request.GET["administrative_level"]
-                )
-            elif "activities" in self.request.GET and self.request.GET[
-                "activities"
-            ] not in ["", None]:
-                queryset = queryset.filter(
-                    adm__id=self.request.GET["administrative_level"]
-                )
-            elif "tasks" in self.request.GET and self.request.GET["tasks"] not in [
-                "",
-                None,
-            ]:
-                queryset = queryset.filter(
-                    adm__id=self.request.GET["administrative_level"]
-                )
+            adm_lvls = [adm_name[0].lower() for adm_name in AdministrativeLevel.TYPE]
+            adm_list = [adm_type for adm_type in adm_lvls if adm_type in self.request.GET]
+            adm_type = adm_list[0] if adm_list else None
+
+            if adm_type and self.request.GET[adm_type] not in empty_list:
+                queryset = queryset.filter(adm__id=self.request.GET[adm_type])
 
         ordering = self.get_ordering()
         if ordering:

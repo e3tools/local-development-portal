@@ -141,10 +141,6 @@
                 justify-content: center;
             }
 
-            .select2-container {
-                width: 50% !important;
-            }
-
             .select2-container--default .select2-selection--single .select2-selection__rendered {
                 color: black;
             }
@@ -182,7 +178,6 @@
 {% endblock %}
 
 {% block content %}
-    {% csrf_token %}
     <div class="row">
 
         <div class="col-12 p-0 d-flex justify-content-end">
@@ -203,9 +198,8 @@
 {% endblock %}
 
 {% block modals %}
-    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog"
-         aria-labelledby="attachmentModalLabel"
-         aria-hidden="true">
+{#  Deprecated  #}
+    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -218,6 +212,7 @@
             </div>
         </div>
     </div>
+{#  /Deprecated  #}
 
     <div class="modal fade" id="attachmentFilterModal" tabindex="-1" role="dialog"
          aria-labelledby="attachmentFilterModalLabel"
@@ -248,88 +243,97 @@
 
                         </div>
                         <br><br>
-                        <div class="form-group">
-                            <div class="form-label">
-                                <label for="id_administrative_level">{% translate 'Administrative level' %}</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="form-label">
+                                        <label for="id_region">{% translate 'Region' %}</label>
+                                    </div>
+                                    <div class="form-select-row">
+                                        <select class="form-control" name="region" id="id_region" style="width: 100%;">
+                                            <option selected value="">---</option>
+                                            {% for region in regions %}
+                                                {% if 'region' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.region == region.id %}
+                                                    <option value="{{ region.id }}" selected>{{ region.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ region.id }}">{{ region.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-label">
+                                        <label for="id_prefecture">{% translate 'Prefecture' %}</label>
+                                    </div>
+                                    <div class="form-select-row">
+                                        <select class="form-control" name="prefecture" id="id_prefecture" style="width: 100%;" disabled>
+                                            <option selected value="">---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-label">
+                                        <label for="id_commune">{% translate 'Commune' %}</label>
+                                    </div>
+                                    <div class="form-select-row">
+                                        <select class="form-control" name="commune" id="id_commune" style="width: 100%;" disabled>
+                                            <option selected value="">---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-label">
+                                        <label for="id_canton">{% translate 'Canton' %}</label>
+                                    </div>
+                                    <div class="form-select-row">
+                                        <select class="form-control" name="canton" id="id_canton" style="width: 100%;" disabled>
+                                            <option selected value="">---</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-select-row">
-                                <select class="form-control" name="administrative_level" id="id_administrative_level" empty-option="---" style="width: 100%;">
-                                    <option selected value="">---</option>
-                                    {% for administrative_level in administrative_levels %}
-                                        {% if 'administrative_level' in query_strings_raw %}
-                                            {% if query_strings_raw|get_item:'administrative_level' == administrative_level.id %}
-                                            <option value="{{ administrative_level.id }}" selected>{{ administrative_level.name }}</option>
-                                            {% else %}
-                                            <option value="{{ administrative_level.id }}">{{ administrative_level.name }}</option>
-                                            {% endif %}
-                                        {% else %}
-                                            <option value="{{ administrative_level.id }}">{{ administrative_level.name }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-label">
-                                <label for="id_phase">{% translate 'Phase' %}</label>
-                            </div>
-                            <div class="form-select-row">
-                                <select class="form-control" name="phase" id="id_phase" empty-option="---" style="width: 100%;" {% if not 'administrative_level' in query_strings_raw %}disabled{% endif %}>
-                                    <option selected value="">---</option>
-                                    {% for phase in phases %}
-                                        {% if 'phase-filter' in query_strings_raw %}
-                                            {% if query_strings_raw|get_item:'phase-filter' == phase.id %}
-                                            <option value="{{ phase.id }}" selected>{{ phase.name }}</option>
-                                            {% else %}
-                                            <option value="{{ phase.id }}">{{ phase.name }}</option>
-                                            {% endif %}
-                                        {% else %}
-                                            <option value="{{ phase.id }}">{{ phase.name }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-label">
-                                <label for="id_activity">{% translate 'Activity' %}</label>
-                            </div>
-                            <div class="form-select-row">
-                                <select class="form-control" name="activity" id="id_activity" empty-option="---" style="width: 100%;" {% if not 'phase' in query_strings_raw %}disabled{% endif %}>
-                                    <option selected value="">---</option>
-                                    {% for activity in activities %}
-                                        {% if 'activity-filter' in query_strings_raw %}
-                                            {% if query_strings_raw|get_item:'activity-filter' == activity.id %}
-                                            <option value="{{ activity.id }}" selected>{{ activity.name }}</option>
-                                            {% else %}
-                                            <option value="{{ activity.id }}">{{ activity.name }}</option>
-                                            {% endif %}
-                                        {% else %}
-                                            <option value="{{ activity.id }}">{{ activity.name }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-label">
-                                <label for="id_task">{% translate 'Task' %}</label>
-                            </div>
-                            <div class="form-select-row">
-                                <select class="form-control" name="task" id="id_task" empty-option="---" style="width: 100%;" {% if not 'activity' in query_strings_raw %}disabled{% endif %}>
-                                    <option selected value="">---</option>
-                                    {% for task in tasks %}
-                                        {% if 'task-filter' in query_strings_raw %}
-                                            {% if query_strings_raw|get_item:'task-filter' == task.id %}
-                                            <option value="{{ task.id }}" selected>{{ task.name }}</option>
-                                            {% else %}
-                                            <option value="{{ task.id }}">{{ task.name }}</option>
-                                            {% endif %}
-                                        {% else %}
-                                            <option value="{{ task.id }}">{{ task.name }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="form-label">
+                                        <label for="id_village">{% translate 'Village' %}</label>
+                                    </div>
+                                    <div class="form-select-row">
+                                        <select class="form-control" name="village" id="id_village" style="width: 100%;" disabled>
+                                            <option selected value="">---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-label">
+                                        <label for="id_phase">{% translate 'Phase' %}</label>
+                                    </div>
+                                    <div class="form-select-row">
+                                        <select class="form-control" name="phase" id="id_phase" style="width: 100%;" disabled>
+                                            <option selected value="">---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-label">
+                                        <label for="id_activity">{% translate 'Activity' %}</label>
+                                    </div>
+                                    <div class="form-select-row">
+                                        <select class="form-control" name="activity" id="id_activity" style="width: 100%;" disabled>
+                                            <option selected value="">---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-label">
+                                        <label for="id_task">{% translate 'Task' %}</label>
+                                    </div>
+                                    <div class="form-select-row">
+                                        <select class="form-control" name="task" id="id_task" style="width: 100%;" disabled>
+                                            <option selected value="">---</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -346,9 +350,12 @@
     <script type="text/javascript" src="{% static 'plugins/babylon-grid/jquery.babylongrid.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/htmx.min.js' %}" defer></script>
     <script type="text/javascript" data-attachments="{{ attachments }}">
-        var current_page = "{{ request.path }}";
-        var csrf_token = "{{ csrf_token }}";
         $(document).ready(function () {
+            
+            let current_page = "{{ request.path }}";
+            let query_string = {{ filter_hierarchy_query_strings|safe }};
+            const filter_inputs = [$('#id_region'), $('#id_prefecture'), $('#id_commune'), $('#id_canton'), 
+                $('#id_village'), $('#id_phase'), $('#id_activity'), $('#id_task')]
 
             $('input[type=checkbox]').click(function (event) {
                 if (event.stopPropagation) {
@@ -357,25 +364,13 @@
                     event.cancelBubble = true;
                 }
             });
-
-            $('#id_administrative_level').on('change', function(){
-                change_filters_selects(
-                    $(this), $('#id_phase'),
-                    [$('#id_activity'), $('#id_task')]
-                )
-            });
-
-            $('#id_phase').on('change', function(){
-                change_filters_selects(
-                    $(this), $('#id_activity'),
-                    [$('#id_task')]
-                )
-            });
-
-            $('#id_activity').on('change', function(){
-                change_filters_selects(
-                    $(this), $('#id_task'), []
-                )
+            
+            init_change_filters_selects(0);
+            
+            filter_inputs.forEach((input) => {
+                input.on('change', function(){
+                    change_filters_selects(input);
+                });
             });
 
             $('.babylongrid').babylongrid({
@@ -473,10 +468,15 @@
                 spin_attachments.hide();
             });
 
-            function change_filters_selects(select_input, select_to_fill, other_selects){
+            function change_filters_selects(select_input){
+                let empty_option = new Option("---", "", false, false);
+                let base_index = filter_inputs.indexOf(select_input);
+                let select_to_fill = filter_inputs[base_index + 1]
+                let other_selects = filter_inputs.slice(base_index + 2)
+                
                 let selected_value = select_input.find(":selected").val();
 
-                if (selected_value != '') {
+                if (selected_value !== '') {
                     let base_url = "{% url 'administrativelevels:utils:attachment_filter' %}";
                     $.ajax({
                         type : "POST",
@@ -487,9 +487,10 @@
                           csrfmiddlewaretoken: '{{ csrf_token }}',
                         },
                         success: function(response){
-                            select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                            select_to_fill.empty();
+                            select_to_fill.append(empty_option);
                             response.values.forEach((element) => {
-                                select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                                select_to_fill.append(new Option(element.name, element.id, false, false));
                             })
                         }
                     });
@@ -497,37 +498,73 @@
                 }
                 else {
                     select_to_fill.prop('disabled', 'disabled');
-                    select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                    select_to_fill.empty()
+                    select_to_fill.append(empty_option);
                 }
                 other_selects.forEach((select) => {
                     select.prop('disabled', 'disabled');
-                    select.html("<option selected value=''>" + select.attr('empty-option') + "</option>");
+                    select.empty()
+                    select.append(empty_option);
                 });
-            };
-        })
-
-        document.addEventListener('htmx:afterRequest', function(evt) {
-            $('.babylongrid').babylongrid({
-                scheme: [
-                    {
-                        minWidth: 1250,
-                        columns: 3
-                    },
-                    {
-                        minWidth: 960,
-                        columns: 3
-                    },
-                    {
-                        minWidth: 500,
-                        columns: 2
-                    },
-                    {
-                        minWidth: 0,
-                        columns: 1
+            }
+            
+            function init_change_filters_selects(base_index){
+                let empty_option = new Option("---", "", false, false);
+                let base_url = "{% url 'administrativelevels:utils:attachment_filter' %}";
+                let current_select = filter_inputs[base_index]
+                let select_to_fill = filter_inputs[base_index + 1]
+                
+                if ( query_string.hasOwnProperty(current_select.attr('name')) && query_string[current_select.attr('name')] !== "" ){
+                    let selected_value = query_string[current_select.attr('name')];
+                    current_select.val(selected_value);
+                    if ( base_index === 0 ) {  // I don't know why us only needed on index 0
+                        current_select.trigger('change');
                     }
-                ]
+                    
+                    $.ajax({
+                        type : "POST",
+                        url: base_url,
+                        data: {
+                          type: current_select.attr('name'),
+                          value: selected_value,
+                          csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function(response){
+                            select_to_fill.empty();
+                            select_to_fill.append(empty_option);
+                            response.values.forEach((element) => {
+                                select_to_fill.append(new Option(element.name, element.id, false, false));
+                            });
+                            select_to_fill.prop('disabled', false);
+                            return init_change_filters_selects(base_index + 1);
+                        }
+                    });
+                }
+            }
+
+            document.addEventListener('htmx:afterRequest', function(evt) {
+                $('.babylongrid').babylongrid({
+                    scheme: [
+                        {
+                            minWidth: 1250,
+                            columns: 3
+                        },
+                        {
+                            minWidth: 960,
+                            columns: 3
+                        },
+                        {
+                            minWidth: 500,
+                            columns: 2
+                        },
+                        {
+                            minWidth: 0,
+                            columns: 1
+                        }
+                    ]
+                });
+                $('.babylongrid').trigger('babylongrid:resize');
             });
-            $('.babylongrid').trigger('babylongrid:resize');
         });
     </script>
 {% endblock %}

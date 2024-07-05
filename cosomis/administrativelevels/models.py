@@ -36,14 +36,15 @@ class AdministrativeLevel(BaseModel):
     COMMUNE = 'Commune'
     REGION = 'Region'
     PREFECTURE = 'Prefecture'
-    TYPE = (
+
+    TYPE = (  # Keep this order, is important for the gallery
         (VILLAGE, _('Village')),
         (CANTON, _('Canton')),
         (COMMUNE, _('Commune')),
-        (REGION, _('Region')),
-        (PREFECTURE, _('Prefecture'))
+        (PREFECTURE, _('Prefecture')),
+        (REGION, _('Region'))
     )
-    parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"))
+    parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"), related_name='children')
     geographical_unit = models.ForeignKey('GeographicalUnit', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Geographical unit"))
     default_image = models.ForeignKey('investments.Attachment', on_delete=models.SET_NULL, null=True, blank=True)
     frontalier = models.BooleanField(default=True, verbose_name=_("Frontalier"))

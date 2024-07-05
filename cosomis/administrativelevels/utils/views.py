@@ -1,6 +1,7 @@
 import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
+from django.db.models import Subquery
 from django.views import generic
 
 from rest_framework import generics, response
@@ -108,8 +109,20 @@ class FillAttachmentSelectFilters(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         select_type = request.POST['type']
         child_qs = list()
-        if select_type == 'administrative_level':
-            parent_obj = AdministrativeLevel.objects.get(id=request.POST['value'])
+        if select_type == 'region':
+            parent_qs = AdministrativeLevel.objects.filter(id=request.POST['value'], type=AdministrativeLevel.REGION)
+            child_qs = AdministrativeLevel.objects.filter(parent=Subquery(parent_qs.values('id')), type=AdministrativeLevel.PREFECTURE)
+        elif select_type == 'prefecture':
+            parent_qs = AdministrativeLevel.objects.filter(id=request.POST['value'], type=AdministrativeLevel.PREFECTURE)
+            child_qs = AdministrativeLevel.objects.filter(parent=Subquery(parent_qs.values('id')), type=AdministrativeLevel.COMMUNE)
+        elif select_type == 'commune':
+            parent_qs = AdministrativeLevel.objects.filter(id=request.POST['value'], type=AdministrativeLevel.COMMUNE)
+            child_qs = AdministrativeLevel.objects.filter(parent=Subquery(parent_qs.values('id')), type=AdministrativeLevel.CANTON)
+        elif select_type == 'canton':
+            parent_qs = AdministrativeLevel.objects.filter(id=request.POST['value'], type=AdministrativeLevel.CANTON)
+            child_qs = AdministrativeLevel.objects.filter(parent=Subquery(parent_qs.values('id')), type=AdministrativeLevel.VILLAGE)
+        elif select_type == 'village':
+            parent_obj = AdministrativeLevel.objects.get(id=request.POST['value'], type=AdministrativeLevel.VILLAGE)
             child_qs = Phase.objects.filter(village=parent_obj)
         elif select_type == 'phase':
             parent_obj = Phase.objects.get(id=request.POST['value'])

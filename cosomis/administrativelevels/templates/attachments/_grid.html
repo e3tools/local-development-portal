@@ -2,7 +2,7 @@
 
     <div class="babylongrid"
                     hx-trigger="revealed"
-                    hx-get="{% url 'administrativelevels:attachments' %}?page={{ page_obj.number|add:1 }}&type={{ request.GET.type }}&administrative_level={{ request.GET.administrative_level }}&phase={{ request.GET.phase }}&activity={{ request.GET.activity }}&task={{ request.GET.task }}"
+                    hx-get="{% url 'administrativelevels:attachments' %}?page={{ page_obj.number|add:1 }}{{ babylong_query_params }}"
                     hx-swap="afterend"
             >
         {% for attachment in attachments %}

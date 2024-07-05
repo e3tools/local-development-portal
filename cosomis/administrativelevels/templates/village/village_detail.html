@@ -298,7 +298,7 @@
             <div class="carousel-inner">
                 {% for image in images_data.images %}
                     <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
-                        <a href="{% url 'administrativelevels:attachments' %}?administrative_level={{ object.id }}">
+                        <a href="{% url 'administrativelevels:attachments' %}?village={{ object.id }}">
                             <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
                             style="height: 500px !important;"
                             alt="{{ image.task }}">
