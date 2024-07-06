@@ -115,23 +115,20 @@ class AdministrativeLevelDetailView(
 
     model = AdministrativeLevel
     template_name = "administrative_level/detail/index.html"
-    context_object_name = "village"
-    title = _("Village")
     active_level1 = "administrative_levels"
-    breadcrumb = [
-        {"url": "", "title": title},
-    ]
 
     def get_context_data(self, **kwargs):
         context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
 
         if "object" in context:
-            context["title"] = context["object"].name
-            if context["object"].is_village() is True:
+            context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
+            if context["object"].is_village():
                 context["investments"] = Investment.objects.filter(
                     administrative_level=self.object
                 )
         admin_level = context.get("object")
+
+        context["context_object_name"] = admin_level.type.lower()
 
         context['phases'] = self._get_planning_cycle()
 

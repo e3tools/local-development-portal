@@ -314,7 +314,7 @@
         </div>
 
     {% else %}
-    <a href="{% url 'administrativelevels:attachments' %}?administrative_level={{ object.id }}">
+    <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
                 <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
     alt="Card image">
     </a>
