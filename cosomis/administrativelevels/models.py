@@ -1,6 +1,7 @@
 import json
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from usermanager.models import User
 from cosomis.models_base import BaseModel
 
 
@@ -153,10 +154,34 @@ class GeographicalUnit(BaseModel):
         return self.get_name()
 
 
+class Category(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Sector(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class Project(BaseModel):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=255)
-    implementation_agency = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
+    implementation_agency = models.CharField(max_length=255, null=True, blank=True, verbose_name=_("Implementation agency"))
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    total_amount = models.PositiveBigIntegerField(default=0)
+    sector = models.ForeignKey(Sector, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Phase(BaseModel):

@@ -24,6 +24,10 @@ urlpatterns = [
     # The path of the detail of village
     path('attachments/', views.AttachmentListView.as_view(), name='attachments'),  # The path of the attachments list
 
+    path('projects/', views.ProjectListView.as_view(), name='projects'),
+    path('projects/<int:pk>/', views.ProjectDetailView.as_view(), name='project-detail'),
+    path('projects/create/', views.ProjectCreateView.as_view(), name='project-create'),
+
     path('utils/', include('administrativelevels.utils.urls')),
 ]
 

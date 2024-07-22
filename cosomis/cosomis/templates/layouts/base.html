@@ -22,15 +22,17 @@
             <div class="container-fluid">
                 <div class="row mb-2">
 
-                    {% if administrativelevel_village %}
-                    <div class="col-sm-12">
-                        <div class="m-0 main-title" style="color: #707070 !important;"><h2>{{ title | safe }}</h2></div>
-                    </div>
-                    {% else %}
-                    <div class="col-sm-6">
-                        <div class="m-0 main-title">{{ title | safe }}</div>
-                    </div>
-                    {% endif %}
+                    {% block custom_title %}
+                        {% if administrativelevel_village %}
+                        <div class="col-sm-12">
+                            <div class="m-0 main-title" style="color: #707070 !important;"><h2>{{ title | safe }}</h2></div>
+                        </div>
+                        {% else %}
+                        <div class="col-sm-6">
+                            <div class="m-0 main-title">{{ title | safe }}</div>
+                        </div>
+                        {% endif %}
+                    {% endblock %}
 
                 </div>
                 <!-- /.row -->
@@ -79,7 +81,7 @@
             });
         </script>
         <script src="{% static '\admin\js\vendor\select2\i18n\fr.js' %}"></script>
-{% endblock select2 %}
+    {% endblock select2 %}
 {% endblock javascript %}
 </body>
 

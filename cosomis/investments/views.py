@@ -12,11 +12,11 @@ from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
 
 from usermanager.models import User
-from administrativelevels.models import AdministrativeLevel
+from administrativelevels.models import AdministrativeLevel, Category, Sector
 
 from static.config.datatable import get_datatable_config
 
-from .models import Investment, Package, Category, Sector
+from .models import Investment, Package
 from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
 
 

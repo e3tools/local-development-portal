@@ -2,9 +2,16 @@ from django import forms
 from django.forms import RadioSelect, Select
 
 from investments.models import Attachment
-from .models import AdministrativeLevel
+from .models import AdministrativeLevel, Project
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import gettext_lazy as _
+
+
+class ProjectForm(forms.ModelForm):
+
+    class Meta:
+        model = Project
+        exclude = ['id', 'created_date', 'updated_date']
 
 
 class AdministrativeLevelForm(forms.ModelForm):

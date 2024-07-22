@@ -5,7 +5,7 @@ from django.db import models
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
 
-from administrativelevels.models import AdministrativeLevel, Project, Task
+from administrativelevels.models import AdministrativeLevel, Project, Task, Sector
 from usermanager.models import User
 
 
@@ -24,20 +24,6 @@ class PackageQuerySet(models.QuerySet):
                 user=user, status=Package.PENDING_SUBMISSION
             )
         return package
-
-
-class Category(BaseModel):
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Sector(BaseModel):
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255, blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Investment(BaseModel):  # Investment module

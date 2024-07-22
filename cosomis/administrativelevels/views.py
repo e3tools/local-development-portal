@@ -17,13 +17,12 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
-from django.db.models import QuerySet, Subquery, OuterRef, Value
-from django.db.models.functions import Coalesce
+from django.db.models import QuerySet, Sum, Count
 
-from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task
+from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project
 from investments.models import Attachment, Investment
 
-from .forms import AttachmentFilterForm, VillageSearchForm
+from .forms import AttachmentFilterForm, VillageSearchForm, ProjectForm
 
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
@@ -399,6 +398,49 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
             queryset = queryset.order_by(*ordering)
 
         return queryset
+
+
+class ProjectListView(PageMixin, LoginRequiredMixin, ListView):
+    queryset = Project.objects.all()
+    template_name = 'project/list.html'
+    context_object_name = "projects"
+    title = _("Projects")
+    breadcrumb = [
+        {"url": "", "title": title},
+    ]
+
+    def get_context_data(self,*args, object_list=None, **kwargs):
+        queryset = object_list if object_list is not None else self.object_list
+
+        context = super().get_context_data(object_list=queryset, **kwargs)
+
+        object_name = self.get_context_object_name(queryset)
+        if object_name in context:
+            context[object_name] = context[object_name].annotate(investments_count=Count('packages__funded_investments'))
+            context[object_name] = context[object_name].annotate(investments_total=Sum('packages__funded_investments__estimated_cost'))
+            context['total_mount_invested'] = context[object_name].aggregate(Sum('investments_total'))['investments_total__sum'] or 0
+
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(owner=self.request.user)
+        return queryset
+
+
+class ProjectDetailView(PageMixin, LoginRequiredMixin, DetailView):
+    queryset = Project.objects.all()
+    template_name = 'project/detail.html'
+    context_object_name = "project"
+
+
+class ProjectCreateView(PageMixin, LoginRequiredMixin, CreateView):
+    template_name = 'project/create.html'
+    form_class = ProjectForm
+    title = _("Create Project")
+
+    def get_success_url(self):
+        return reverse('administrativelevels:project-detail', kwargs={'pk': self.object.pk})
 
 
 @login_required
