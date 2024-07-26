@@ -8,7 +8,8 @@ from urllib.parse import urlencode
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import translation
-from django.views.generic import DetailView, ListView, CreateView
+from django.views.generic import DetailView, ListView, CreateView, FormView
+from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usermanager.permissions import AdminPermissionRequiredMixin
 from .forms import AdministrativeLevelForm
@@ -22,7 +23,7 @@ from django.db.models import QuerySet, Sum, Count
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project
 from investments.models import Attachment, Investment
 
-from .forms import AttachmentFilterForm, VillageSearchForm, ProjectForm
+from .forms import AttachmentFilterForm, VillageSearchForm, ProjectForm, BulkUploadInvestmentsForm
 
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
@@ -435,9 +436,33 @@ class ProjectDetailView(PageMixin, LoginRequiredMixin, DetailView):
 
 
 class ProjectCreateView(PageMixin, LoginRequiredMixin, CreateView):
-    template_name = 'project/create.html'
+    template_name = 'project/create/index.html'
     form_class = ProjectForm
     title = _("Create Project")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'owner': self.request.user})
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
+
+
+class BulkUploadInvestmentsView(PageMixin, LoginRequiredMixin, SingleObjectMixin, FormView):
+    form_class = BulkUploadInvestmentsForm
+    template_name = 'project/create/bulk_upload_investments.html'
+    queryset = Project.objects.all()
+    object = None
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'project': self.get_object()})
+        return kwargs
 
     def get_success_url(self):
         return reverse('administrativelevels:project-detail', kwargs={'pk': self.object.pk})

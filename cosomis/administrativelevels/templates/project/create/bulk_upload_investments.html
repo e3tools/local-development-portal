@@ -1,0 +1,31 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n static bootstrap4 %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card m-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-center">
+                            Please upload a CSV file containing all the investments you want to attach to the newly created project. You can find an example by
+                            <a href="{% static 'investments/project_investments_template.csv' %}" target="_blank">downloading</a> the CSV template file.
+                        </p>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class ="col-4">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% bootstrap_field form.csv_file %}
+                            <input type="submit" class="btn btn-primary btn-block" value="Upload">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

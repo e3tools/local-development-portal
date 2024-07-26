@@ -74,6 +74,9 @@ class Investment(BaseModel):  # Investment module
     climate_contribution_text = models.TextField(null=True, blank=True)
     no_sql_id = models.CharField(max_length=255)
 
+    def __str__(self):
+        return "%s" % self.title
+
 
 class Package(
     BaseModel

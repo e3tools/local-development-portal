@@ -1,8 +1,10 @@
+import csv
+from io import TextIOWrapper
 from django import forms
 from django.forms import RadioSelect, Select
 
-from investments.models import Attachment
-from .models import AdministrativeLevel, Project
+from investments.models import Attachment, Package, Investment
+from .models import AdministrativeLevel, Project, Sector
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import gettext_lazy as _
 
@@ -11,7 +13,105 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        exclude = ['id', 'created_date', 'updated_date']
+        exclude = ['id', 'created_date', 'updated_date', 'owner']
+
+    def __init__(self, *args, **kwargs):
+        self.owner = kwargs.pop('owner', None)
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.owner = self.owner
+        return super().save(commit=commit)
+
+
+class BulkUploadInvestmentsForm(forms.Form):
+    csv_file = forms.FileField()
+    headers = [
+        'village_id',
+        'ranking',
+        'title',
+        'responsible_structure',
+        'sector_id',
+        'estimated_cost',
+        'start_date',
+        'duration',
+        'delays_consumed',
+        'physical_execution_rate',
+        'financial_implementation_rate',
+        'investment_status',
+        'project_status',
+        'endorsed_by_youth',
+        'endorsed_by_women',
+        'endorsed_by_agriculturist',
+        'endorsed_by_pastoralist',
+        'climate_contribution',
+        'climate_contribution_text'
+    ]
+
+    def __init__(self, *args, **kwargs):
+        self.project = kwargs.pop('project', None)
+        super().__init__(*args, **kwargs)
+
+    def save(self):
+        project = self.project
+        package = project.packages.all().first()
+        init_headers = self.headers
+        investments = list()
+
+        package = package if package is not None else Package.objects.create(
+            project=project,
+            user=project.owner
+        )
+
+        # Get the uploaded file
+        uploaded_file = self.cleaned_data['csv_file']
+
+        # Open the file as a text stream
+        file_stream = TextIOWrapper(uploaded_file.file, encoding='utf-8')
+
+        # Read the CSV file
+        csv_reader = csv.reader(file_stream)
+
+        # Process the CSV data
+        headers_dict = {}
+        for idx, row in enumerate(csv_reader):
+            if idx == 0:
+                for k, header in enumerate(row):
+                    if header in init_headers:
+                        headers_dict[header] = k
+                        init_headers.remove(header)
+            else:
+                investments.append(Investment(
+                    ranking=row[headers_dict['ranking']],
+                    title=row[headers_dict['title']],
+                    responsible_structure=row[headers_dict['responsible_structure']],
+                    administrative_level=AdministrativeLevel.objects.get(id=row[headers_dict['village_id']]),
+                    sector=Sector.objects.get(id=row[headers_dict['sector_id']]),
+                    estimated_cost=row[headers_dict['estimated_cost']],
+                    start_date=row[headers_dict['start_date']],
+                    duration=row[headers_dict['duration']],
+                    delays_consumed=row[headers_dict['delays_consumed']],
+                    physical_execution_rate=row[headers_dict['physical_execution_rate']],
+                    financial_implementation_rate=row[headers_dict['financial_implementation_rate']],
+                    investment_status=row[headers_dict['investment_status']],
+                    project_status=row[headers_dict['project_status']],
+                    endorsed_by_youth=row[headers_dict['endorsed_by_youth']],
+                    endorsed_by_women=row[headers_dict['endorsed_by_women']],
+                    endorsed_by_agriculturist=row[headers_dict['endorsed_by_agriculturist']],
+                    endorsed_by_pastoralist=row[headers_dict['endorsed_by_pastoralist']],
+                    climate_contribution=row[headers_dict['climate_contribution']],
+                    climate_contribution_text=row[headers_dict['climate_contribution_text']],
+                ))
+
+        Investment.objects.bulk_create(investments)
+        for investment in investments:
+            package.funded_investments.add(investment)
+
+        # Here you can process the data as needed
+        # For example, you can save it to the database or process it further
+
+        return project
 
 
 class AdministrativeLevelForm(forms.ModelForm):
