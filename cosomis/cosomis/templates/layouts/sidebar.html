@@ -17,7 +17,7 @@
                 {% endif %}
             </a>
             <div class="info">
-                {% if user.first_name != "" or user.first_name != "" %}
+                {% if user.last_name != "" or user.first_name != "" %}
                 <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.first_name }} {{ user.last_name }}</a>
                 {% else %}
                 <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.username }}</a>
@@ -55,6 +55,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{% url 'dashboard:dashboard_summary' %}"
+                        class="nav-link {% if url_name == 'dashboard_summary' %}active{% endif %}">
+                        <i class="nav-icon fa fa-tachometer"></i>
+                        <p>{% translate "Summary" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{% url 'investments:profile' %}"
                        class="nav-link {% if url_name == 'profile' %}active{% endif %}">
                         <i class="nav-icon fa fa-user"></i>
@@ -64,7 +71,6 @@
             </ul>
             {% endwith %}
         </nav>
-
         <nav class="toogle-sidebar-button">
             <ul class="nav nav-pills nav-sidebar flex-column">
                 <li class="nav-item">
