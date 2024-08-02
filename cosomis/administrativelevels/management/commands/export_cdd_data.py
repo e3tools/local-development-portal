@@ -1,4 +1,6 @@
 import json
+import json
+from datetime import datetime
 from django.core.management.base import BaseCommand, CommandError
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
@@ -16,7 +18,7 @@ class Command(BaseCommand):
     total_not_collected_villages = 0
     not_collected_villages_ids = []
     data_collected = {
-        "exported_date": "02-08-2024",
+        "exported_date": datetime.today().strftime('%d-%m-%Y'),
         "data": []
     }
 
