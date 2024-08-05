@@ -32,6 +32,13 @@
             {% with request.resolver_match.url_name as url_name %}
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                 <li class="nav-item">
+                    <a href="{% url 'dashboard:dashboard_summary' %}"
+                        class="nav-link {% if url_name == 'dashboard_summary' %}active{% endif %}">
+                        <i class="nav-icon fa fa-tachometer"></i>
+                        <p>{% translate "Summary" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a 
                         href="{% url 'administrativelevels:search' %}"
                         {% comment %}href="{% url 'administrativelevels:list' %}"{% endcomment %}
@@ -52,13 +59,6 @@
                        class="nav-link {% if url_name == 'home_investments' %}active{% endif %}">
                         <i class="nav-icon fa fa-comments-dollar"></i>
                         <p>{% translate "Investments" %}</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'dashboard:dashboard_summary' %}"
-                        class="nav-link {% if url_name == 'dashboard_summary' %}active{% endif %}">
-                        <i class="nav-icon fa fa-tachometer"></i>
-                        <p>{% translate "Summary" %}</p>
                     </a>
                 </li>
                 <li class="nav-item">

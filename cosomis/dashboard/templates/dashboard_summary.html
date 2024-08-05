@@ -1,5 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n bootstrap4 custom_tags %}
+
 {% block extracss %}
     {{ block.super }}
     <link href="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.css' %}" rel="stylesheet">
@@ -17,9 +18,7 @@
         .horizontal-form .form-group { flex: 1; min-width: 100px; }
         .horizontal-form .btn { flex: none; }
         .card-Administrative, .card-status { border: none; }
-        .own-green-color { color: #26C18B; }
         .nav-pills .nav-link { color: inherit; background-color: inherit; }
-        .nav-pills .nav-link.active, .nav-pills .nav-link:hover, .nav-pills .nav-link:focus { color: white; background-color: #26C18B; border-color: #26C18B; }
         .card-map { min-height: 800px; min-width: 350px; overflow: hidden; position: relative; }
         #map { position: absolute; top: 0; bottom: 2; left: 0; right: 0; height: 100%; width: 100%; }
         .marker { display: block; border: none; border-radius: 50%; cursor: pointer; width: 20px; height: 20px; transform: translate(-50%, -50%); }
@@ -83,7 +82,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="button" class="btn btn-link adm-submit-reset mt-4 own-green-color" value="{% translate 'Reset' %}" id="adm-reset-hidden-id" style="margin-bottom: 3px;"/>
+                                        <input type="button" class="btn btn-link adm-submit-reset mt-4" value="{% translate 'Reset' %}" id="adm-reset-hidden-id" style="margin-bottom: 3px;"/>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +123,7 @@
                             </svg>
                             <h5 class="card-title mt-3" style="font-size: 15px;">Communautés couvertes</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3 own-green-color" id="total-communities" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-communities" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
                     </div>
                 </div>
                 <div class="card count-card flex-fill mb-3" style="position: relative;">
@@ -136,7 +135,7 @@
                             </svg>
                             <h5 class="card-title mt-3" style="font-size: 15px;">Total Sous-projets</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3 own-green-color" id="total-subprojects" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-subprojects" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
                     </div>
                 </div>
                 <div class="card count-card flex-fill mb-3" style="position: relative;">
@@ -147,7 +146,7 @@
                             </svg>
                             <h5 class="card-title mt-3" style="font-size: 15px;">Infrastructures complétées</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3 own-green-color" id="total-completed-infrastructure" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-completed-infrastructure" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
                     </div>
                 </div>
             </div>
@@ -160,7 +159,7 @@
                                 <h6 class="card-title py-0">Nombre de priorités par secteurs</h6>
                             </div>
                             <div id="noDataMessage" class="col-12 mt-3 mb-5" style="display: none; font-size:25px; ">
-                                <p class="text-center own-green-color mt-5" style="font-size:20px; ">Priorités non encore identifié dans ce village</p>
+                                <p class="text-center mt-5" style="font-size:20px; ">Priorités non encore identifié dans ce village</p>
                             </div>
                             <div class="col-6 mt-5">
                                 <ul id="prioritiesLegend" class="legend"></ul>
@@ -195,7 +194,7 @@
                                 <div class="tab-pane fade show active ml-2" id="pills-agriculturist" role="tabpanel" aria-labelledby="pills-agriculturist-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageAgriculturist" class="text-center own-green-color" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Agriculteurs</p>
+                                            <p id="noDataMessageAgriculturist" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Agriculteurs</p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="agriculturistLegend" class="legend"></ul>
@@ -208,7 +207,7 @@
                                 <div class="tab-pane fade ml-2" id="pills-women" role="tabpanel" aria-labelledby="pills-women-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageWomen" class="text-center own-green-color" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Femmes</p>
+                                            <p id="noDataMessageWomen" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Femmes</p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="womenLegend" class="legend"></ul>
@@ -221,7 +220,7 @@
                                 <div class="tab-pane fade ml-2" id="pills-youth" role="tabpanel" aria-labelledby="pills-youth-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageYouth" class="text-center own-green-color" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Jeunes</p>
+                                            <p id="noDataMessageYouth" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Jeunes</p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="youthLegend" class="legend"></ul>
@@ -234,7 +233,7 @@
                                 <div class="tab-pane fade ml-2" id="pills-ethnic-minorities" role="tabpanel" aria-labelledby="pills-ethnic-minorities-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageEthnicMinorities" class="text-center own-green-color" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Minorités ethniques</p>
+                                            <p id="noDataMessageEthnicMinorities" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Minorités ethniques</p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="ethnicMinoritiesLegend" class="legend"></ul>

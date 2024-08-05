@@ -166,7 +166,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/'
 
-LOGIN_REDIRECT_URL = 'administrativelevels:search'
+LOGIN_REDIRECT_URL = 'dashboard:dashboard_summary'
 
 LOGOUT_REDIRECT_URL = LOGIN_URL
 # Mapbox
