@@ -6,17 +6,17 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Sum, Max
 
-from subprojects.models import Subproject, Step, Component
+#from subprojects.models import Subproject, Step, Component
 from administrativelevels.models import AdministrativeLevel
-from administrativelevels.functions import (
-    get_administrative_level_ids_descendants, get_children_types_administrativelevels,
-    get_administrative_level_ids_ascendants, get_administrative_level_id_ascendant
-)
-from assignments.models import AssignAdministrativeLevelToFacilitator
+# from administrativelevels.functions import (
+#     get_administrative_level_ids_descendants, get_children_types_administrativelevels,
+#     get_administrative_level_ids_ascendants, get_administrative_level_id_ascendant
+# )
+#from assignments.models import AssignAdministrativeLevelToFacilitator
 from . import forms
 from . import functions
-from process_manager.models import AdministrativeLevelWave, PeriodWave
-from financial.models.allocation import AdministrativeLevelAllocation
+#from process_manager.models import AdministrativeLevelWave, PeriodWave
+#from financial.models.allocation import AdministrativeLevelAllocation
 
 
 

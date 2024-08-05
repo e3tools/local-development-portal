@@ -166,7 +166,6 @@ class VillageSearchForm(forms.Form):
         label=_("Canton"),
     )
 
-
 class FinancialPartnerForm(forms.Form):
     name = forms.CharField()
     is_full_contribution = forms.BooleanField()

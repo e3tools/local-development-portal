@@ -26,7 +26,22 @@ class PackageQuerySet(models.QuerySet):
         return package
 
 
-class Investment(BaseModel):  # Investment module
+class Category(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Sector(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
+
+class Investment(BaseModel): # Investment module
     NOT_FUNDED = "N"
     IN_PROGRESS = "P"
     COMPLETED = "C"
@@ -73,10 +88,8 @@ class Investment(BaseModel):  # Investment module
     climate_contribution = models.BooleanField(default=False)
     climate_contribution_text = models.TextField(null=True, blank=True)
     no_sql_id = models.CharField(max_length=255)
-
     def __str__(self):
-        return "%s" % self.title
-
+        return f'{self.title}'
 
 class Package(
     BaseModel
