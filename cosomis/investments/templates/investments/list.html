@@ -270,6 +270,7 @@
                         </div>
                     </form>
                 </div>
+
             </div>
 
             <div class="card">
@@ -358,7 +359,7 @@
 
                         {% for key, value in query_strings.items %}
                             <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
-                                <span class="filter-badge-label">{{ key }}: {{ value|truncatechars:20 }}</span>
+                                <span class="filter-badge-label">{{ key }} : {{ value|truncatechars:20 }}</span>
                             </span>
                         {% endfor %}
                     </div>

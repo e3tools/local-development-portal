@@ -6,9 +6,9 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Sum, Max
 
-from subprojects.models import Subproject, Step
-from administrativelevels.models import AdministrativeLevel
-from administrativelevels.functions import get_administrative_level_ids_descendants
+#from subprojects.models import Subproject, Step
+#from administrativelevels.models import AdministrativeLevel
+#from administrativelevels.functions import get_administrative_level_ids_descendants
 from . import forms
 from . import functions
 
