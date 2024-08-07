@@ -5,7 +5,7 @@ from cloudant.result import Result
 from cloudant.document import Document
 from investments.models import Investment
 from administrativelevels.models import AdministrativeLevel
-from investments.models import Category, Sector
+from administrativelevels.models import Category, Sector
 
 
 class Command(BaseCommand):
@@ -18,7 +18,7 @@ class Command(BaseCommand):
         for document in db:
             try:
                 if not document['develop_mode'] and not document["training_mode"]:
-                    print("Facilitator is valid", document)
+                    # print("Facilitator is valid", document)
                     return True
             except:
                 return False
