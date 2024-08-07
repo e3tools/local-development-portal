@@ -3,7 +3,7 @@ from django.conf import settings
 from django.views import generic
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,13 +14,15 @@ from cosomis.mixins import PageMixin
 from usermanager.models import User
 from administrativelevels.models import AdministrativeLevel, Category, Sector
 
+from usermanager.permissions import IsInvestorMixin, IsModeratorMixin
+
 from static.config.datatable import get_datatable_config
 
 from .models import Investment, Package
 from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
 
 
-class ProfileTemplateView(LoginRequiredMixin, PageMixin, generic.DetailView):
+class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
     template_name = "investments/profile.html"
     # queryset = User.objects.all()
 
@@ -353,7 +355,7 @@ class IndexListView(
         return reverse("investments:cart")
 
 
-class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
+class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
     template_name = "investments/cart.html"
     queryset = Package.objects.filter(status=Package.PENDING_APPROVAL)
     title = _("Your package")
@@ -418,7 +420,7 @@ class CartView(LoginRequiredMixin, PageMixin, generic.DetailView):
         return super(CartView, self).get_context_data(**context)
 
 
-class ModeratorApprovalsListView(LoginRequiredMixin, PageMixin, generic.ListView):
+class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
     template_name = "investments/moderator/approvals_list.html"
     package_model = Package
     user_model = User
@@ -493,7 +495,7 @@ class ModeratorApprovalsListView(LoginRequiredMixin, PageMixin, generic.ListView
 
 
 class ModeratorPackageReviewView(
-    LoginRequiredMixin, PageMixin, generic.FormView, generic.DetailView
+    IsModeratorMixin, PageMixin, generic.FormView, generic.DetailView
 ):
     template_name = "investments/moderator/package_review.html"
     form_class = PackageApprovalForm

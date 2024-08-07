@@ -11,7 +11,7 @@ from django.utils import translation
 from django.views.generic import DetailView, ListView, CreateView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from usermanager.permissions import AdminPermissionRequiredMixin
+from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixin
 from .forms import AdministrativeLevelForm
 from cosomis.mixins import PageMixin
 from django.http import HttpResponse
@@ -254,6 +254,73 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView)
         return ctx
 
 
+class ProjectListView(PageMixin, IsInvestorMixin, ListView):
+    queryset = Project.objects.all()
+    template_name = 'project/list.html'
+    context_object_name = "projects"
+    title = _("Projects")
+    breadcrumb = [
+        {"url": "", "title": title},
+    ]
+
+    def get_context_data(self,*args, object_list=None, **kwargs):
+        queryset = object_list if object_list is not None else self.object_list
+
+        context = super().get_context_data(object_list=queryset, **kwargs)
+
+        object_name = self.get_context_object_name(queryset)
+        if object_name in context:
+            context[object_name] = context[object_name].annotate(investments_count=Count('packages__funded_investments'))
+            context[object_name] = context[object_name].annotate(investments_total=Sum('packages__funded_investments__estimated_cost'))
+            context['total_mount_invested'] = context[object_name].aggregate(Sum('investments_total'))['investments_total__sum'] or 0
+
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(owner=self.request.user)
+        return queryset
+
+
+class ProjectDetailView(PageMixin, IsInvestorMixin, DetailView):
+    queryset = Project.objects.all()
+    template_name = 'project/detail.html'
+    context_object_name = "project"
+
+
+class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
+    template_name = 'project/create/index.html'
+    form_class = ProjectForm
+    title = _("Create Project")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'owner': self.request.user})
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
+
+
+class BulkUploadInvestmentsView(PageMixin, IsInvestorMixin, SingleObjectMixin, FormView):
+    form_class = BulkUploadInvestmentsForm
+    template_name = 'project/create/bulk_upload_investments.html'
+    queryset = Project.objects.all()
+    object = None
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'project': self.get_object()})
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('administrativelevels:project-detail', kwargs={'pk': self.object.pk})
+
+
 # Attachments
 class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
     template_name = "attachments/attachments.html"
@@ -399,73 +466,6 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
             queryset = queryset.order_by(*ordering)
 
         return queryset
-
-
-class ProjectListView(PageMixin, LoginRequiredMixin, ListView):
-    queryset = Project.objects.all()
-    template_name = 'project/list.html'
-    context_object_name = "projects"
-    title = _("Projects")
-    breadcrumb = [
-        {"url": "", "title": title},
-    ]
-
-    def get_context_data(self,*args, object_list=None, **kwargs):
-        queryset = object_list if object_list is not None else self.object_list
-
-        context = super().get_context_data(object_list=queryset, **kwargs)
-
-        object_name = self.get_context_object_name(queryset)
-        if object_name in context:
-            context[object_name] = context[object_name].annotate(investments_count=Count('packages__funded_investments'))
-            context[object_name] = context[object_name].annotate(investments_total=Sum('packages__funded_investments__estimated_cost'))
-            context['total_mount_invested'] = context[object_name].aggregate(Sum('investments_total'))['investments_total__sum'] or 0
-
-        return context
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(owner=self.request.user)
-        return queryset
-
-
-class ProjectDetailView(PageMixin, LoginRequiredMixin, DetailView):
-    queryset = Project.objects.all()
-    template_name = 'project/detail.html'
-    context_object_name = "project"
-
-
-class ProjectCreateView(PageMixin, LoginRequiredMixin, CreateView):
-    template_name = 'project/create/index.html'
-    form_class = ProjectForm
-    title = _("Create Project")
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'owner': self.request.user})
-        return kwargs
-
-    def get_success_url(self):
-        return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
-
-
-class BulkUploadInvestmentsView(PageMixin, LoginRequiredMixin, SingleObjectMixin, FormView):
-    form_class = BulkUploadInvestmentsForm
-    template_name = 'project/create/bulk_upload_investments.html'
-    queryset = Project.objects.all()
-    object = None
-
-    def form_valid(self, form):
-        self.object = form.save()
-        return super().form_valid(form)
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'project': self.get_object()})
-        return kwargs
-
-    def get_success_url(self):
-        return reverse('administrativelevels:project-detail', kwargs={'pk': self.object.pk})
 
 
 @login_required

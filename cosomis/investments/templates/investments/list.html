@@ -380,9 +380,11 @@
                             <b class="d-block total-funding-display">0 FCFA</b>
                         </p>
                     </div>
+                    {% if not user.is_moderator %}
                     <div class="col-3">
                         <input type="submit" class="btn btn-primary btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
                     </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body">

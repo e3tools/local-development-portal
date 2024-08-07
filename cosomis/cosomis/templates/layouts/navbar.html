@@ -83,6 +83,7 @@
 {#                {% translate 'Help / FAQ' %}#}
 {#            </a>#}
 {#        </li>#}
+        {% if user.is_moderator %}
         <li class="nav-item">
             <a href="{% url 'investments:notifications' %}" class="nav-link">
                 <i class="fa fa-bell"></i>
@@ -95,6 +96,7 @@
                 {% endif %}
             </a>
         </li>
+        {% else %}
         <li class="nav-item">
             <a href="{% url 'investments:cart' %}" class="nav-link">
                 <i class="fa fa-shopping-cart"></i>
@@ -103,6 +105,7 @@
                 {% endif %}
             </a>
         </li>
+        {% endif %}
         {% if OTHER_LANGUAGES %}
             {% include 'layouts/language_dropdown.html' %}
         {% endif %}

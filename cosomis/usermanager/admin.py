@@ -1,5 +1,7 @@
 from django.contrib.auth.hashers import make_password, check_password
 
+from django.utils.translation import gettext_lazy as _
+
 from django import forms
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import AdminPasswordChangeForm
@@ -16,6 +18,26 @@ class UserCustomAdmin(UserAdmin):
     list_display = ('email', 'username', 'date_joined', 'last_login', 'is_staff', )
     search_fields = ('email', 'username')
     readonly_fields = ('date_joined', 'last_login')
+
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "is_moderator",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (_("Management"), {"fields": ("is_password_change", "email_was_confirm", "is_approved")}),
+        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+    )
 
     def get_form(self, request, obj=None, **kwargs):
         """

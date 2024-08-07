@@ -81,11 +81,11 @@ class User(AbstractUser):
     email = models.EmailField(_("email address"), blank=False, null=False, unique=True)
 
     is_moderator = models.BooleanField(default=False)
-    is_password_change = models.BooleanField(default=False)
 
     confirm_email_token = models.UUIDField(blank=True, null=True)
     forgot_password_token = models.UUIDField(blank=True, null=True)
 
+    is_password_change = models.BooleanField(default=False)
     email_was_confirm = models.BooleanField(default=False)
     is_approved = models.BooleanField(null=True)
 

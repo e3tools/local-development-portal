@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.defaults import page_not_found
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import Group
 
 """
 All Groups permissions
@@ -222,7 +221,6 @@ class AdvisorPermissionRequiredMixin(UserPassesTestMixin):
 
     def dispatch(self, request, *args, **kwargs):
         return super(AdvisorPermissionRequiredMixin, self).dispatch(request, *args, **kwargs)
-    
 
 
 class MinisterPermissionRequiredMixin(UserPassesTestMixin):
@@ -242,6 +240,7 @@ class MinisterPermissionRequiredMixin(UserPassesTestMixin):
 
     def dispatch(self, request, *args, **kwargs):
         return super(MinisterPermissionRequiredMixin, self).dispatch(request, *args, **kwargs)
+
 
 class InfraPermissionRequiredMixin(UserPassesTestMixin):
     permission_required = None
@@ -264,3 +263,17 @@ class InfraPermissionRequiredMixin(UserPassesTestMixin):
 
     def dispatch(self, request, *args, **kwargs):
         return super(InfraPermissionRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class IsModeratorMixin(UserPassesTestMixin):
+    permission_denied_message = ''
+
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_moderator
+
+
+class IsInvestorMixin(UserPassesTestMixin):
+    permission_denied_message = ''
+
+    def test_func(self):
+        return self.request.user.is_authenticated and not self.request.user.is_moderator
