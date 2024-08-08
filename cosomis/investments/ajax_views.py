@@ -1,12 +1,13 @@
-from django.db.models import Count,Q
+from django.db.models import Count, Q, Subquery
+from django.http import JsonResponse
+from django.views import View
+
 from rest_framework import generics
 from rest_framework.response import Response
 
-from administrativelevels.models import AdministrativeLevel
-from .models import Sector
-from django.http import JsonResponse
-from django.views import View
-from investments.models import Investment, Sector
+from administrativelevels.models import AdministrativeLevel, Sector
+from .models import Investment, Package
+
 
 class FillAdmLevelsSelectFilters(generics.GenericAPIView):
     """
@@ -41,38 +42,38 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
             'values': [{'id': adm.id, 'name': adm.name} for adm in opt_qs]
         })
 
-from django.views import View
-from django.http import JsonResponse
-from django.db.models import Q, Count
-from .models import Investment
 
 class StatisticsView(View):
     def get(self, request, *args, **kwargs):
         # Retrieve filter parameters
-        region_id = request.GET.get('region_id')
-        prefecture_id = request.GET.get('prefecture_id')
-        commune_id = request.GET.get('commune_id')
-        canton_id = request.GET.get('canton_id')
-        village_id = request.GET.get('village_id')
-        project_status = request.GET.get('project-status-filter')
+        region_id = request.GET.get('region_id', None)
+        prefecture_id = request.GET.get('prefecture_id', None)
+        commune_id = request.GET.get('commune_id', None)
+        canton_id = request.GET.get('canton_id', None)
+        village_id = request.GET.get('village_id', None)
+        project_status = request.GET.get('project-status-filter', None)
+        organization = request.GET.get('organization', None)
 
         # Initial queryset
         investments = Investment.objects.all()
 
         # Apply filters using Q objects
         filters = Q()
-        if region_id:
-            filters &= Q(administrative_level__parent__parent__parent__parent__id=region_id)
-        if prefecture_id:
-            filters &= Q(administrative_level__parent__parent__parent__id=prefecture_id)
-        if commune_id:
-            filters &= Q(administrative_level__parent__parent__id=commune_id)
-        if canton_id:
-            filters &= Q(administrative_level__parent__id=canton_id)
-        if village_id:
+        if village_id and village_id is not None:
             filters &= Q(administrative_level__id=village_id)
-        if project_status:
+        elif canton_id and canton_id is not None:
+            filters &= Q(administrative_level__parent__id=canton_id)
+        elif commune_id and commune_id is not None:
+            filters &= Q(administrative_level__parent__parent__id=commune_id)
+        elif prefecture_id and prefecture_id is not None:
+            filters &= Q(administrative_level__parent__parent__parent__id=prefecture_id)
+        elif region_id and region_id is not None:
+            filters &= Q(administrative_level__parent__parent__parent__parent__id=region_id)
+
+        if project_status and project_status is not None:
             filters &= Q(project_status=project_status)
+        if organization and organization is not None:
+            filters &= Q(packages__in=(Subquery(Package.objects.filter(project__owner__organization=organization).values('funded_investments'))))
 
         investments = investments.filter(filters)
 

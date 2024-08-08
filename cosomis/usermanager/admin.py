@@ -15,13 +15,13 @@ class UserCustomAdmin(UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
-    list_display = ('email', 'username', 'date_joined', 'last_login', 'is_staff', )
+    list_display = ('email', 'username', 'date_joined', 'last_login', 'is_staff', "is_moderator")
     search_fields = ('email', 'username')
     readonly_fields = ('date_joined', 'last_login')
 
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "email", "organization")}),
         (
             _("Permissions"),
             {

@@ -75,9 +75,7 @@ class Investment(BaseModel): # Investment module
         return f'{self.title}'
 
 
-class Package(
-    BaseModel
-):  # investments module (orden de compra(cart de invesments(products)))
+class Package(BaseModel):  # investments module (orden de compra(cart de invesments(products)))
     PENDING_SUBMISSION = "PS"
     PENDING_APPROVAL = "P"
     APPROVED = "A"

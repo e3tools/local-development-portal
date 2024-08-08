@@ -2,8 +2,10 @@ from django.conf import settings
 from django.views import generic
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.mixins import LoginRequiredMixin
+from usermanager.models import Organization
 from administrativelevels.models import AdministrativeLevel
 from investments.models import Investment  # Make sure to import the Investment model
+
 
 class DashboardSummaryView(LoginRequiredMixin, generic.TemplateView):
     template_name = "dashboard_summary.html"
@@ -32,6 +34,7 @@ class DashboardSummaryView(LoginRequiredMixin, generic.TemplateView):
         filters_context["communes"] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
         filters_context["cantons"] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
         filters_context["villages"] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
+        filters_context["organizations"] = Organization.objects.all()
 
         if "region-filter" in self.request.GET:
             filters_context["prefectures"] = filters_context["prefectures"].filter(

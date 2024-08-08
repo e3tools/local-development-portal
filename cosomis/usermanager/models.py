@@ -76,6 +76,9 @@ class Organization(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return "%s" % self.name
+
 
 class User(AbstractUser):
     email = models.EmailField(_("email address"), blank=False, null=False, unique=True)
