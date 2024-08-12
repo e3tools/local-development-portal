@@ -8,6 +8,10 @@ from django.utils.translation import gettext_lazy as _
 from cosomis.models_base import BaseModel
 
 
+def upload_to_user_photo(instance, filename):
+    return f'users/{instance.pk}'
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -84,6 +88,8 @@ class User(AbstractUser):
     email = models.EmailField(_("email address"), blank=False, null=False, unique=True)
 
     is_moderator = models.BooleanField(default=False)
+
+    photo = models.ImageField(upload_to=upload_to_user_photo, null=True, blank=True)
 
     confirm_email_token = models.UUIDField(blank=True, null=True)
     forgot_password_token = models.UUIDField(blank=True, null=True)
