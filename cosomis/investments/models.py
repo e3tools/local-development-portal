@@ -26,10 +26,12 @@ class PackageQuerySet(models.QuerySet):
 
 class Investment(BaseModel): # Investment module
     NOT_FUNDED = "N"
+    FUNDED = "F"
     IN_PROGRESS = "P"
     COMPLETED = "C"
     PROJECT_STATUS_CHOICES = (
         (NOT_FUNDED, _("Not Funded")),
+        (FUNDED, _("Funded")),
         (IN_PROGRESS, _("In Progress")),
         (COMPLETED, _("Completed")),
     )
@@ -70,6 +72,14 @@ class Investment(BaseModel): # Investment module
     endorsed_by_pastoralist = models.BooleanField(default=False)
     climate_contribution = models.BooleanField(default=False)
     climate_contribution_text = models.TextField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True, verbose_name=_("Latitude"))
+    longitude = models.FloatField(null=True, blank=True, verbose_name=_("Longitude"))
+    funded_by = models.ForeignKey(
+        Project,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     no_sql_id = models.CharField(max_length=255)
     def __str__(self):
         return f'{self.title}'
