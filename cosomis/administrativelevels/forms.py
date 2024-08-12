@@ -21,7 +21,12 @@ class ProjectForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.owner = self.owner
+        print(instance.id)
+        if self.owner is not None:
+            print('----')
+            print(self.owner)
+            print('----')
+            instance.owner = self.owner
         return super().save(commit=commit)
 
 

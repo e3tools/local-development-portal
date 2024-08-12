@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n humanize custom_tags %}
+{% load static i18n humanize custom_tags bootstrap4 %}
 
 {% block extracss %}
     {{ block.super }}
@@ -23,50 +23,12 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3">
-                <div class="card card-primary card-outline">
-                    <div class="card-body box-profile">
-                        <div class="text-center">
-                            {% if object.owner.photo %}
-                            <img alt="Owner profile picture" class="profile-user-img img-fluid img-circle"
-                                 src="{{ object.owner.photo.url }}">
-                            {% else %}
-                            <img alt="User profile picture" class="profile-user-img img-fluid img-circle"
-                                 src="/static/images/default-avatar.jpg">
-                            {% endif %}
-                        </div>
-                        
-                        {% if object.owner.first_name != "" %}
-                            <h3 class="profile-username text-center">{{ object.owner.first_name }} {{ object.owner.last_name }}</h3>
-                        {% else %}
-                            <h3 class="profile-username text-center">{{ object.owner.username }}</h3>
-                        {% endif %}
-                        <h3 class="profile-username text-center">{{ object.owner.full_name }}</h3>
-                        <p class="text-muted text-center">{% translate 'Owner' %}</p>
-                        <ul class="list-group list-group-unbordered mb-3">
-                            <li class="list-group-item">
-                                <b>{% translate 'Total investments' %}</b> <a class="float-right">1,322</a>
-                            </li>
-                            <li class="list-group-item">
-                                <b>{% translate 'Total committed funds' %}</b> <a class="float-right">13,287</a>
-                            </li>
-                            <li class="list-group-item">
-                                <b>{% translate 'Total target communities' %}</b> <a class="float-right">543</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                </div>
-
-
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">{% translate 'About Project' %}</h3>
+                        <h3 class="card-title">{{ object.name }}</h3>
                     </div>
 
                     <div class="card-body">
-                        <strong><i class="fas fa-map-marker-alt mr-1"></i> {% translate 'Name' %}</strong>
-                        <p class="text-muted">{{ organization.name }}</p>
-                        <hr>
                         <strong><i class="fas fa-book mr-1"></i> UNHCR</strong>
                         <p class="text-muted">
                             {{ organization.description }}
@@ -84,7 +46,6 @@
                     </div>
 
                 </div>
-
             </div>
 
             <div class="col-md-9">
@@ -116,7 +77,7 @@
 
                             <div class="tab-pane" id="investments_list">
 
-                                <table class="table investments-datatable rounded-table table-striped" style="100%">
+                                <table class="table investments-datatable rounded-table table-striped" style="width: 100%;">
                                     <thead>
                                         <tr>
                                             <th data-priority="1" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
@@ -127,6 +88,7 @@
                                             <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
                                             <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
                                             <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Population priority' %}</th>
+                                            <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Status' %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -155,6 +117,13 @@
                                             ME
                                             {% endif %}
                                         </td>
+                                        <td>
+                                            <span class="badge badge-pill {{ investment.project_status | projectStatusColor }} investment-status-badge" data-investment="{{ investment.id }}" 
+                                                   data-name="{{ investment.title }}" data-status="{{ investment.project_status }}" style="font-size: 12px; padding: 10px; cursor: pointer;"
+                                            >{{ investment.project_status | projectStatus }}
+                                                <i class="nav-icon fas fa-chevron-down ml-2"></i>
+                                            </span>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>
@@ -163,7 +132,7 @@
                             </div>
 
                             <div class="tab-pane" id="packages">
-                                <table class="table packages-datatable display" style="100%">
+                                <table class="table packages-datatable display" style="width: 100%;">
                                     <thead>
                                         <tr>
                                             <th>{% translate 'Status' %}</th>
@@ -190,7 +159,21 @@
                             </div>
 
                             <div class="tab-pane" id="settings">
-                                <form class="form-horizontal">
+                                <form class="form-horizontal" action="" method="post">
+                                    {% csrf_token %}
+                                    {% bootstrap_field form.name %}
+                                    
+                                    {% bootstrap_field form.description %}
+                                    
+                                    {% bootstrap_field form.implementation_agency %}
+                                    
+                                    {% bootstrap_field form.start_date %}
+                                    
+                                    {% bootstrap_field form.end_date %}
+                                    
+                                    {% bootstrap_field form.total_amount %}
+                                    
+                                    {% bootstrap_field form.sector %}
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label" for="inputName">Name</label>
                                         <div class="col-sm-10">
@@ -250,6 +233,39 @@
 </div>
 {% endblock %}
 
+{% block modals %}
+<div class="modal fade" id="investmentStatusModel" tabindex="-1" role="dialog" aria-labelledby="investmentStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 class="mb-3" id="investment-name">{% translate "Investment" %}</h4>
+                <form action="" class="form-horizontal" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="investment" id="investment-hidden" value="">
+                    <div class="form-group row">
+                        <div class="col-3 col-form-label">
+                            <label for="project-status">{% translate "Project Status" %}</label>
+                        </div>
+                        <div class="col-9">
+                            <select class="custom-select" id="project-status" name="status" style="width: 100%">
+                                {% for proj_status in project_status %}
+                                    <option value="{{ proj_status.0 }}">{{ proj_status.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary btn-block" type="submit">{% translate "Change status" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block javascript %}
 {{ block.super }}
 <script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/jquery.vmap.js' %}"></script>
@@ -257,13 +273,17 @@
 <script type="text/javascript">
 
     $( document ).ready(function() {
-
-        console.log({{ investments_datatable_config | safe }});
-        console.log({{ packages_datatable_config | safe }});
-
-        var table = $(".investments-datatable").DataTable({{ investments_datatable_config | safe }});
-        var table = $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
+        
+        $(".investments-datatable").DataTable({{ investments_datatable_config | safe }});
+        $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
         $('#world-map').vectorMap({ map: 'africa_en' });
+        
+        $('.investment-status-badge').on('click', function (){
+            $('#investment-hidden').val($(this).data('investment'));
+            $('#project-status').val($(this).data('status')).trigger("change");
+            $('#investment-name').html($(this).data('name'));
+            $("#investmentStatusModel").modal("show");
+        });
 
     });
 </script>

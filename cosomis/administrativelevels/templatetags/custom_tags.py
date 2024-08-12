@@ -1,8 +1,10 @@
 from django import template
 from django.utils.translation import gettext_lazy
 import json
+
+from administrativelevels.models import Project
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
-from administrativelevels.models import Task
+from investments.models import Investment
 from cosomis.utils import structure_the_words as utils_structure_the_words
 
 register = template.Library()
@@ -401,3 +403,24 @@ def structure_the_fields_labels(task):
 @register.filter(name="structureTheWords")
 def structure_the_words(word):
     return utils_structure_the_words(word)
+
+
+@register.filter(name="projectStatus")
+def project_status(raw_status):
+    for status in Investment.PROJECT_STATUS_CHOICES:
+        if status[0] == raw_status:
+            return status[1]
+    return ""
+
+
+@register.filter(name="projectStatusColor")
+def project_status_color(raw_status):
+    if raw_status == Investment.NOT_FUNDED:
+        return "badge-light"
+    if raw_status == Investment.FUNDED:
+        return "badge-secondary"
+    if raw_status == Investment.IN_PROGRESS:
+        return "badge-info"
+    if raw_status == Investment.COMPLETED:
+        return "badge-success"
+    return ""

@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils import translation
 from django.views.generic import DetailView, ListView, CreateView, FormView
 from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixin
 from .forms import AdministrativeLevelForm
@@ -284,12 +285,27 @@ class ProjectListView(PageMixin, IsInvestorMixin, ListView):
         return queryset
 
 
-class ProjectDetailView(PageMixin, IsInvestorMixin, DetailView):
+class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
     queryset = Project.objects.all()
     template_name = 'project/detail.html'
     context_object_name = "project"
+    form_class = ProjectForm
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if 'investment' in request.POST:
+            investment = Investment.objects.filter(
+                packages__project=self.object,
+            ).get(id=request.POST['investment'])
+            investment.project_status = request.POST['status']
+            investment.save()
+            return super().get(request, *args, **kwargs)
+
+        return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        self.title = "Project: %s" % self.object.name
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
         project = kwargs["object"]
         context["packages"] = project.packages.all().order_by("created_date")
@@ -297,6 +313,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, DetailView):
         for package in context["packages"]:
             inv_ids += package.funded_investments.all().values_list("id", flat=True)
         context["investments"] = Investment.objects.filter(id__in=inv_ids)
+        context["project_status"] = Investment.PROJECT_STATUS_CHOICES
         context["organization"] = project.owner.organization
 
         if context["organization"] is not None:
@@ -322,6 +339,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, DetailView):
             {"responsivePriority": 6, "targets": 5},
             {"responsivePriority": 7, "targets": 6},
             {"responsivePriority": 8, "targets": 7},
+            {"responsivePriority": 9, "targets": 8},
         ]
 
         context["packages_datatable_config"] = context["datatable_config"].copy()
@@ -332,6 +350,17 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, DetailView):
             {"responsivePriority": 4, "targets": 3},
         ]
         return context
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        """Return the keyword arguments for instantiating the form."""
+        kwargs = super().get_form_kwargs()
+        if hasattr(self, "object"):
+            kwargs.update({"instance": self.object})
+        return kwargs
 
 
 class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
