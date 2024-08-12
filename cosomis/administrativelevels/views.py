@@ -18,10 +18,12 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
-from django.db.models import QuerySet, Sum, Count
+from django.db.models import QuerySet, Sum, Count, Subquery
 
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project
 from investments.models import Attachment, Investment
+
+from static.config.datatable import get_datatable_config
 
 from .forms import AttachmentFilterForm, VillageSearchForm, ProjectForm, BulkUploadInvestmentsForm
 
@@ -286,6 +288,50 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, DetailView):
     queryset = Project.objects.all()
     template_name = 'project/detail.html'
     context_object_name = "project"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectDetailView, self).get_context_data(**kwargs)
+        project = kwargs["object"]
+        context["packages"] = project.packages.all().order_by("created_date")
+        inv_ids = list()
+        for package in context["packages"]:
+            inv_ids += package.funded_investments.all().values_list("id", flat=True)
+        context["investments"] = Investment.objects.filter(id__in=inv_ids)
+        context["organization"] = project.owner.organization
+
+        if context["organization"] is not None:
+            user_qs = context["organization"].users.all().values_list("id")
+            investments_qs = Investment.objects.filter(
+                packages__user__id__in=Subquery(user_qs)
+            )
+            context["organization"].total_investments = investments_qs.count()
+            context["organization"].total_investments_amount = investments_qs.aggregate(
+                Sum("estimated_cost")
+            )["estimated_cost__sum"]
+
+        context["datatable_config"] = get_datatable_config()
+        context["datatable_config"]["responsive"] = "true"
+
+        context["investments_datatable_config"] = context["datatable_config"].copy()
+        context["investments_datatable_config"]["columnDefs"] = [
+            {"responsivePriority": 1, "targets": 0},
+            {"responsivePriority": 2, "targets": 1},
+            {"responsivePriority": 3, "targets": 2},
+            {"responsivePriority": 4, "targets": 3},
+            {"responsivePriority": 5, "targets": 4},
+            {"responsivePriority": 6, "targets": 5},
+            {"responsivePriority": 7, "targets": 6},
+            {"responsivePriority": 8, "targets": 7},
+        ]
+
+        context["packages_datatable_config"] = context["datatable_config"].copy()
+        context["packages_datatable_config"]["columnDefs"] = [
+            {"responsivePriority": 1, "targets": 0},
+            {"responsivePriority": 2, "targets": 1},
+            {"responsivePriority": 3, "targets": 2},
+            {"responsivePriority": 4, "targets": 3},
+        ]
+        return context
 
 
 class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):

@@ -15,6 +15,9 @@
     </style>
 {% endblock %}
 
+{% block custom_title %}
+{% endblock %}
+
 {% block content %}
 <div class="content">
     <div class="container-fluid">
@@ -75,159 +78,57 @@
 
             <div class="col-md-9">
                 <div class="card">
-                    <div class="card-header p-2">
-                        <ul class="nav nav-pills">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#investments_map">{% translate 'Investments map' %}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#investments_list">{% translate 'Investments list' %}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#packages">{% translate 'Packages' %}</a>
-                            </li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">Settings</a>
-                            </li>
-                        </ul>
-                    </div>
                     <div class="card-body">
-                        <div class="tab-content">
-                            <div class="active tab-pane" id="investments_map">
-
-                                <div class="col-12">
-                                    <div id="world-map" style="height: 650px; width: 100%; position: relative; overflow: hidden; background-color: transparent;">
+                        <form class="form-horizontal">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="inputName">Name</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="inputName" placeholder="Name" type="email">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="inputEmail">Email</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="inputEmail" placeholder="Email"
+                                           type="email">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="inputName2">Name</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="inputName2" placeholder="Name" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="inputExperience">Experience</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" id="inputExperience"
+                                              placeholder="Experience"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="inputSkills">Skills</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="inputSkills" placeholder="Skills"
+                                           type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="offset-sm-2 col-sm-10">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox"> I agree to the <a href="#">terms and
+                                            conditions</a>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="tab-pane" id="investments_list">
-
-                                <table class="table investments-datatable rounded-table table-striped" style="100%">
-                                    <thead>
-                                        <tr>
-                                            <th data-priority="1" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
-                                            <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
-                                            <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
-                                            <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
-                                            <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
-                                            <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
-                                            <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
-                                            <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Population priority' %}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for investment in investments.all %}
-                                    <tr>
-                                        <td>{{ investment.title }}</td>
-                                        <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
-                                            {{ investment.estimated_cost|intcomma }}
-                                        </td>
-                                        <td>{{ investment.administrative_level.name }}</td>
-                                        <td>{{ investment.administrative_level.parent.name }}</td>
-                                        <td>{{ investment.administrative_level.parent.parent.name }}</td>
-                                        <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
-                                        <td>{{ investment.ranking }}</td>
-                                        <td>
-                                            {% if investment.endorsed_by_youth %}
-                                            J,
-                                            {% endif %}
-                                            {% if investment.endorsed_by_women %}
-                                            F,
-                                            {% endif %}
-                                            {% if investment.endorsed_by_agriculturist %}
-                                            AG,
-                                            {% endif %}
-                                            {% if investment.endorsed_by_pastoralist %}
-                                            ME
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-
+                            <div class="form-group row">
+                                <div class="offset-sm-2 col-sm-10">
+                                    <button class="btn btn-danger" type="submit">Submit</button>
+                                </div>
                             </div>
-
-                            <div class="tab-pane" id="packages">
-                                <table class="table packages-datatable display" style="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>{% translate 'Status' %}</th>
-                                            <th>{% translate 'Date' %}</th>
-                                            <th>{% translate 'Estimate cost' %}</th>
-                                            <th>{% translate 'Actions' %}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for package in packages %}
-                                    <tr>
-                                        <td>{{ package.status }}</td>
-                                        <td data-order="{{ package.created_date|date:'U' }}" data-search="{{ package.created_date|date:'U' }}">
-                                            {{ package.created_date }}
-                                        </td>
-                                        <td data-order="{{ package.estimated_final_cost }}" data-search="{{ package.estimated_final_cost }}">
-                                            {{ package.estimated_final_cost|intcomma }}
-                                        </td>
-                                        <td><a class="btn btn-sm btn-primary">{% translate 'Detail' %}</a></td>
-                                    </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="tab-pane" id="settings">
-                                <form class="form-horizontal">
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label" for="inputName">Name</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" id="inputName" placeholder="Name" type="email">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label" for="inputEmail">Email</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" id="inputEmail" placeholder="Email"
-                                                   type="email">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label" for="inputName2">Name</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" id="inputName2" placeholder="Name" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label" for="inputExperience">Experience</label>
-                                        <div class="col-sm-10">
-                                            <textarea class="form-control" id="inputExperience"
-                                                      placeholder="Experience"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label" for="inputSkills">Skills</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" id="inputSkills" placeholder="Skills"
-                                                   type="text">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="offset-sm-2 col-sm-10">
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox"> I agree to the <a href="#">terms and
-                                                    conditions</a>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="offset-sm-2 col-sm-10">
-                                            <button class="btn btn-danger" type="submit">Submit</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -244,11 +145,8 @@
 
     $( document ).ready(function() {
 
-        console.log({{ investments_datatable_config | safe }});
-        console.log({{ packages_datatable_config | safe }});
-
-        var table = $(".investments-datatable").DataTable({{ investments_datatable_config | safe }});
-        var table = $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
+        $(".investments-datatable").DataTable({{ investments_datatable_config | safe }});
+        $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
         $('#world-map').vectorMap({ map: 'africa_en' });
 
     });
