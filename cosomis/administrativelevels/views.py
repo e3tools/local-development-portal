@@ -305,7 +305,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        self.title = "Project: %s" % self.object.name
+        self.title = self.object.name
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
         project = kwargs["object"]
         context["packages"] = project.packages.all().order_by("created_date")

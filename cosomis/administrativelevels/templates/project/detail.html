@@ -15,40 +15,54 @@
     </style>
 {% endblock %}
 
-{% block custom_title %}
-{% endblock %}
-
 {% block content %}
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">{{ object.name }}</h3>
-                    </div>
+            <div class="col-lg-4 col-6">
 
-                    <div class="card-body">
-                        <strong><i class="fas fa-book mr-1"></i> UNHCR</strong>
-                        <p class="text-muted">
-                            {{ organization.description }}
-                        </p>
-                        <hr>
-                        <strong><i class="fas fa-pencil-alt mr-1"></i> {% translate 'Total investments' %}</strong>
-                        <p class="text-muted">
-                            {{ organization.total_investments|intcomma }}
-                        </p>
-                        <hr>
-                        <strong><i class="fas fa-pencil-alt mr-1"></i> {% translate 'Total investments amount' %}</strong>
-                        <p class="text-muted">
-                            {{ organization.total_investments_amount|intcomma }}
-                        </p>
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ organization }}</h3>
+                        <p>{% translate "Organization" %}</p>
                     </div>
-
+                    <div class="icon">
+                        <i class="ion ion-person-add"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-9">
+            <div class="col-lg-4 col-6">
+
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ organization.total_investments }}</h3>
+                        <p>{% translate "Total Investments" %}</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-6">
+
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ organization.total_investments_amount|intcomma }}</h3>
+                        <p>
+                        <p>{% translate "Total Investments Amount" %}</p></p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-solid fa-dollar-sign"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
