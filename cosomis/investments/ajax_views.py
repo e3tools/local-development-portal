@@ -79,6 +79,7 @@ class StatisticsView(View):
 
         # Calculate statistics
         total_communities = investments.values('administrative_level').distinct().count()
+        total_investments = investments.count()
         total_subprojects = investments.filter(investment_status=Investment.SUBPROJECT).count()
         subprojects = investments.filter(investment_status=Investment.SUBPROJECT)
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
@@ -115,6 +116,7 @@ class StatisticsView(View):
 
         data = {
             'total_communities': total_communities,
+            'total_investments': total_investments,
             'total_subprojects': total_subprojects,
             'total_completed_infrastructure': total_completed_infrastructure,
             'sector_priorities': list(sector_priorities),
