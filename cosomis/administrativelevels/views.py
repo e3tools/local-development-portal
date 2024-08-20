@@ -19,7 +19,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
-from django.db.models import QuerySet, Sum, Count, Subquery
+from django.db.models import QuerySet, Sum, Count, Subquery, Q
 
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project
 from investments.models import Attachment, Investment
@@ -153,8 +153,9 @@ class AdministrativeLevelDetailView(
         }
 
         images = Attachment.objects.filter(
-            adm=admin_level, type=Attachment.PHOTO
-        ).all()[:5]
+            Q (adm=admin_level) |
+            Q (task__activity__phase__village=admin_level)
+        ).exclude(url__icontains='.pdf').all()[:5]
         context["images_data"] = {
             "images": images,
             "exists_at_least_image": len(images) != 0,

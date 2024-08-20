@@ -3,9 +3,9 @@ import time
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
-from investments.models import Investment
+from investments.models import Investment, Attachment
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task
-from investments.models import Category, Sector
+from investments.models import Sector
 
 
 def update_or_create_document(document):
@@ -102,6 +102,16 @@ def update_or_create_document(document):
             existing_task.form = document['form']
             existing_task.attachments = document['attachments']
             existing_task.save()
+
+            existing_task_attachments = list()
+            for attachment in document['attachments']:
+                existing_task_attachments.append(Attachment(
+                    adm=existing_task.activity.phase.village,
+                    task=existing_task,
+                    url=attachment['attachment']['uri'],
+                    type=attachment['type'],
+                    order=attachment['order']
+                ))
 
 
 class Command(BaseCommand):

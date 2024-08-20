@@ -145,13 +145,12 @@ class Attachment(BaseModel):
         blank=True,
         related_name="attachments",
     )
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='attachments', null=True, blank=True)
     url = models.URLField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=DOCUMENT)
 
-    file_path = "aux/test.png"
-    bucket_name = "cddfiles"
-    object_name = "proof_of_work_thumbnails/image.jpg"
+    name = models.CharField(max_length=255, null=True, blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
 
     def get_thumbnail(self):
         s3_client = Session(aws_access_key_id="", aws_secret_access_key="").client("s3")
