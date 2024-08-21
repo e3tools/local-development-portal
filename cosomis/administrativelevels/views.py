@@ -134,6 +134,7 @@ class AdministrativeLevelDetailView(
         context["context_object_name"] = admin_level.type.lower()
 
         context['phases'] = self._get_planning_cycle()
+        context['development_plan'] = self._get_development_plan(context['phases'])
 
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
         current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
@@ -216,6 +217,20 @@ class AdministrativeLevelDetailView(
             phase_node["status"] = activities_status
             phases.append(phase_node)
         return phases
+
+    def _get_development_plan(self, phases):
+        phase = next((phase for phase in phases if phase['order'] == 3), None)
+        if phase is not None:
+            activity = next((activity for activity in phase['activities'] if activity['order'] == 2), None)
+            if activity is not None:
+                task = next((task for task in activity['tasks'] if task['order'] == 1), None)
+                if task is not None:
+                    task_obj = Task.objects.get(id=task['id'])
+                    return task_obj.attachments.filter(
+                        Q(type__icontains='pdf') |
+                        Q(type__icontains='Document')
+                    ).first()
+        return None
 
 
 class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView):

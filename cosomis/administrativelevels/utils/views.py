@@ -30,9 +30,14 @@ class GetChoicesForNextAdministrativeLevelNoConditionView(AJAXRequestMixin, Logi
 
         data = AdministrativeLevel.objects.filter(parent_id=int(parent_id))
 
-        d = [{'id': elt.id, 'name': elt.name} for elt in data]
+        d = [{'id': elt.id, 'name': elt.name, 'disabled': self.is_empty(elt)} for elt in data]
 
         return self.render_to_json_response(sorted(d, key=lambda o: o['name']), safe=False)
+
+    def is_empty(self, village):
+        phases = village.phases.all().count()
+        attachements = village.attachments.all().count()
+        return phases == 0 and attachements == 0 and village.total_population ==0
     
 
 class GetChoicesForNextAdministrativeLevelView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
@@ -101,6 +106,16 @@ class TaskDetailAjaxView(generic.TemplateView):
                     } for attachment in task.attachments.all()],  # This is now a properly formatted JSON string or a dict
                 },  # This is now a properly formatted JSON string or a dict
             }
+
+            for attachment in task.attachments.all():
+                print('----')
+                print(attachment.id)
+                print(attachment.name)
+                print(attachment.type)
+                print(attachment.order)
+                print(attachment.url)
+                print('----')
+
         else:
             # Optionally handle the case where the task is not found
             context['error'] = 'Task not found'

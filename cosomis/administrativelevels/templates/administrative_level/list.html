@@ -151,9 +151,14 @@
                                     container.html('');
                                     let container_txt_html = "";
                                     data.forEach(function (item, index) {
-
-                                        container_txt_html += `<input type='radio' class='radio-button-search' name='options' value="${item.id}" id="${item.id}"> `;
-                                        container_txt_html += `<label for="${item.id}">${item.name}</label> &nbsp; &nbsp; &nbsp; `;
+                                        
+                                        if (item.disabled){
+                                            container_txt_html += `<input type='radio' class='radio-button-search' name='options' value="${item.id}" id="${item.id}" disabled> `;
+                                            container_txt_html += `<label for="${item.id}" class="text-muted">${item.name}</label> &nbsp; &nbsp; &nbsp; `;
+                                        }else{
+                                            container_txt_html += `<input type='radio' class='radio-button-search' name='options' value="${item.id}" id="${item.id}"> `;
+                                            container_txt_html += `<label for="${item.id}">${item.name}</label> &nbsp; &nbsp; &nbsp; `;
+                                        }
 
 
                                         if ( container_txt_html !== ""){

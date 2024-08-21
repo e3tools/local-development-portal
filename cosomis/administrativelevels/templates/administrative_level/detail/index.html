@@ -95,8 +95,14 @@
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified }}</td>
                         </tr>
                         <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan Date" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.village_development_plan_date }}</td>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">
+                                {% if development_plan %}
+                                <a href="{{ development_plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
