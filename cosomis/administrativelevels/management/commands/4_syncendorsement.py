@@ -4,8 +4,8 @@ from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
 from investments.models import Investment
-from administrativelevels.models import AdministrativeLevel
-from investments.models import Category, Sector
+from administrativelevels.models import AdministrativeLevel, Category
+from investments.models import Sector
 
 
 

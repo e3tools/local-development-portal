@@ -5,14 +5,14 @@
     <table class="table rounded-table">
     <thead>
     <tr>
-        <th class="align-middle border-top-left-corner" rowspan="2">Rang</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">Juste ce village</th>
-        <th class="align-middle border-bottom-0 rounded-0" colspan="4">Priorités</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">Bénéficiaires</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">Coût-estimé</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">Financé par</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">Contribution au climat</th>
-        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">Actions</th>
+        <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Just this Village' %}</th>
+        <th class="align-middle border-bottom-0 rounded-0" colspan="4">{%  translate 'Priorities' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{%  translate 'Beneficiaries' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Estimated cost' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Funded by' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Climate contribution' %}</th>
+        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">{% translate 'Actions' %}</th>
     </tr>
     <tr>
         <th class="bg-yellow rounded-0 border-sides-0 white-font">J</th>
@@ -24,7 +24,7 @@
     <tbody>
     {% for investment in investments %}
         <tr>
-            <td>{{ investment.ranking }}</td>
+            <td>{{ investment.ranking }} - {{ investment.id }}</td>
             <td class="border-sides--light">{{ investment.title }}</td>
             <td class="border-sides--light">
                 {% if investment.endorsed_by_youth %}✓{% endif %}</td>
