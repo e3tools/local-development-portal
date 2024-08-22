@@ -25,7 +25,18 @@
     {% for investment in investments %}
         <tr>
             <td>{{ investment.ranking }} - {{ investment.id }}</td>
+            {% if investment.title == "Autre" %}
+            <td class="border-sides--light">
+                <a 
+                        href="" data-container="body" data-toggle="popover" 
+                        data-placement="top" data-trigger="hover" 
+                        data-content="{% if investment.description %}{{ investment.description }}{% else %}-{% endif %}">
+                    {{ investment.title }}
+                </a>
+            </td>
+            {% else %}
             <td class="border-sides--light">{{ investment.title }}</td>
+            {% endif %}
             <td class="border-sides--light">
                 {% if investment.endorsed_by_youth %}✓{% endif %}</td>
             <td class="border-sides--light">
