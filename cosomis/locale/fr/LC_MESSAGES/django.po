@@ -508,7 +508,7 @@ msgstr "En construction"
 
 #: administrativelevels/templates/administrative_level/detail/tabs/planning_cycle.html:5
 msgid "Phases"
-msgstr "Étapes"
+msgstr "Phases"
 
 #: administrativelevels/templates/administrative_level/detail/tabs/planning_cycle.html:18
 #: administrativelevels/templates/administrativelevel_detail.html:153
