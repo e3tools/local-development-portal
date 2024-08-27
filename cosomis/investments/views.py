@@ -138,6 +138,12 @@ class IndexListView(
             },
         ]
 
+        kwargs["priorities"] = [
+            {"id": 1, "name": _("Priority 1")},
+            {"id": 2, "name": _("Priorities 1 and 2")},
+            {"id": 3, "name": _("All priorities")}
+        ]
+
         kwargs.setdefault("view", self)
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
@@ -256,6 +262,19 @@ class IndexListView(
                 climate_contribution=self.request.GET["climate-contribution-filter"]
             )
 
+        if "priorities-filter" in self.request.GET and self.request.GET[
+            "priorities-filter"
+        ] not in ["", None]:
+            priorities = [1]
+            if self.request.GET["priorities-filter"] == '2':
+                priorities.append(2)
+            elif self.request.GET["priorities-filter"] == '3':
+                priorities.append(2)
+                priorities.append(3)
+            queryset = queryset.filter(
+                ranking__in=priorities
+            )
+
         return queryset
 
     def get_query_strings_context(self):
@@ -303,6 +322,14 @@ class IndexListView(
 
             if key == "climate-contribution-filter":
                 resp["Climate contribution"] = _("Yes") if value == "True" else _("No")
+
+            if key == "priorities-filter":
+                if value == "1":
+                    resp["Priorities"] = _('Priority 1')
+                elif value == "2":
+                    resp["Priorities"] = _('Priorities 1 and 2')
+                else:
+                    resp["Priorities"] = _('All priorities')
         return resp
 
     def get_success_url(self):

@@ -6,7 +6,7 @@
     <thead>
     <tr>
         <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Just this Village' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Sub-project priorities' %}</th>
         <th class="align-middle border-bottom-0 rounded-0" colspan="4">{%  translate 'Priorities' %}</th>
         <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{%  translate 'Beneficiaries' %}</th>
         <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Estimated cost' %}</th>
@@ -24,7 +24,7 @@
     <tbody>
     {% for investment in investments %}
         <tr>
-            <td>{{ investment.ranking }} - {{ investment.id }}</td>
+            <td>{{ investment.ranking }}</td>
             {% if investment.title == "Autre" %}
             <td class="border-sides--light">
                 <a 

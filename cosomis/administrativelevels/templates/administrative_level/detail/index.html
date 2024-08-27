@@ -62,7 +62,7 @@
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Languages" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.main_languages }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{% if object.main_languages %}{{ object.main_languages }}{% else %}-{% endif %}</td>
                         </tr>
                         </tbody>
                     </table>
