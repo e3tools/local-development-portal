@@ -321,10 +321,17 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
         )
 
         context["investments"] = Investment.objects.filter(
+            project_status=Investment.NOT_FUNDED,
             administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
                 parent__parent=admin_level
             ).values_list('id')
         ))
+
+        context["subprojects"] = Investment.objects.filter(
+            administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
+                parent__parent=admin_level
+            ).values_list('id')
+        )).exclude(project_status=Investment.NOT_FUNDED,)
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
         self.object.latitude = 10.693749945416448
         self.object.longitude = 0.330183201548857

@@ -1,6 +1,6 @@
 {% load static i18n humanize custom_tags %}
 {% if investments.count == 0 %}
-    {% translate 'You have no priorities' %}
+    <h3>{% translate 'You have no priorities' %}</h3>
 {% else %}
     <table class="table rounded-table">
     <thead>
