@@ -69,25 +69,24 @@ def update_or_create_document(document):
             activity__phase__village=int(administrative_level_id)
         )
         if not existing_task:
-            try:
-                administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=administrative_level_id)
-                if document['completed']:
-                    status = 'completed'
-                else:
-                    status = 'not started'
-                Task.objects.create(
-                    no_sql_db_id=object_id,
-                    activity=Activity.objects.get(no_sql_db_id=document['activity_id'], phase__village=administrative_level),
-                    name=document['name'],
-                    description=document['description'],
-                    order=document['order'],
-                    status=status,
-                    form_responses=document['form_response'],
-                    form=document['form'],
-                    attachments=document['attachments']
-                )
-            except Exception as e:
-                print(e, "Error creating task", document['name'], document['administrative_level_id'])
+            # try:
+            administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=administrative_level_id)
+            if document['completed']:
+                status = 'completed'
+            else:
+                status = 'not started'
+            existing_task = Task.objects.create(
+                no_sql_db_id=object_id,
+                activity=Activity.objects.get(no_sql_db_id=document['activity_id'], phase__village=administrative_level),
+                name=document['name'],
+                description=document['description'],
+                order=document['order'],
+                status='not started',
+                form_responses=document['form_response'],
+                form=document['form'],
+            )
+            # except Exception as e:
+            #     print(e, "Error creating task", document['name'], document['administrative_level_id'])
         else:
             if document['completed']:
                 status = 'completed'
@@ -100,18 +99,8 @@ def update_or_create_document(document):
             existing_task.status = status
             existing_task.form_responses = document['form_response']
             existing_task.form = document['form']
-            existing_task.attachments = document['attachments']
             existing_task.save()
 
-            existing_task_attachments = list()
-            for attachment in document['attachments']:
-                existing_task_attachments.append(Attachment(
-                    adm=existing_task.activity.phase.village,
-                    task=existing_task,
-                    url=attachment['attachment']['uri'],
-                    type=attachment['type'],
-                    order=attachment['order']
-                ))
 
 
 class Command(BaseCommand):

@@ -1,4 +1,5 @@
 import json
+from django.contrib.gis.db import models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from usermanager.models import User
@@ -74,6 +75,8 @@ class AdministrativeLevel(BaseModel):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
+
+    shape_file = models.GeometryField(null=True, blank=True)
     
     class Meta:
         unique_together = ['name', 'parent', 'type']
@@ -287,6 +290,7 @@ class Task(BaseModel):
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
     form_responses = models.JSONField(null=True, blank=True)
     form = models.JSONField(null=True, blank=True)
+    attachment = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return '%s. %s(%s) - %s' % (self.order, self.name, str(self.activity.id), self.status)

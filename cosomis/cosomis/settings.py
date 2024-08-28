@@ -67,6 +67,7 @@ THIRD_PARTY_APPS = [
 
     # https://django-htmx.readthedocs.io/en/latest/installation.html
     'django_htmx',
+    'django.contrib.gis',
 ]
 
 INSTALLED_APPS += CREATED_APPS + THIRD_PARTY_APPS
@@ -121,13 +122,8 @@ EXTERNAL_DATABASE_NAME = 'cddp'
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': '/Users/asucr/Downloads/database1.db',  # This is where you put the name of the db file.
-        # If one doesn't exist, it will be created at migration time.
-        'NAME': os.path.join(BASE_DIR, 'database1.db'),
-    }
- }
+    'default': env.db(),  # This will read the DATABASE_URL environment variable
+}
 
 MAX_RESPONSE_DAYS = 3
 
