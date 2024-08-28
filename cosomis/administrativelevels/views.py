@@ -19,7 +19,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
-from django.db.models import QuerySet, Sum, Count, Subquery, Q
+from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, IntegerField
+from django.db.models.functions import Coalesce
 
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project
 from investments.models import Attachment, Investment
@@ -109,6 +110,46 @@ class AdministrativeLevelCreateView(
             form.save()
             return redirect("administrativelevels:list")
         return super(AdministrativeLevelCreateView, self).get(request, *args, **kwargs)
+
+
+class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView):
+    """Display administrative level list by parent choice"""
+
+    model = AdministrativeLevel
+    queryset = []
+    template_name = "administrative_level/list.html"
+    context_object_name = "administrativelevels"
+    title = _("Administrative levels")
+    active_level1 = "administrative_levels"
+    breadcrumb = [
+        {"url": "", "title": title},
+    ]
+
+    def get_queryset(self):
+        search = self.request.GET.get("search", None)
+        page_number = self.request.GET.get("page", None)
+        _type = self.request.GET.get("type", "Village")
+        if search:
+            if search == "All":
+                ads = AdministrativeLevel.objects.filter(type=_type)
+                return Paginator(ads, ads.count()).get_page(page_number)
+            search = search.upper()
+            return Paginator(
+                AdministrativeLevel.objects.filter(type=_type, name__icontains=search),
+                100,
+            ).get_page(page_number)
+        else:
+            return Paginator(
+                AdministrativeLevel.objects.filter(type=_type), 100
+            ).get_page(page_number)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(AdministrativeLevelSearchListView, self).get_context_data(**kwargs)
+        ctx["form"] = VillageSearchForm()
+        ctx["search"] = self.request.GET.get("search", None)
+        ctx["type"] = self.request.GET.get("type", "Village")
+        ctx["current_language"] = translation.get_language()
+        return ctx
 
 
 class AdministrativeLevelDetailView(
@@ -233,44 +274,122 @@ class AdministrativeLevelDetailView(
         return None
 
 
-class AdministrativeLevelSearchListView(PageMixin, LoginRequiredMixin, ListView):
-    """Display administrative level list by parent choice"""
+class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
 
     model = AdministrativeLevel
-    queryset = []
-    template_name = "administrative_level/list.html"
-    context_object_name = "administrativelevels"
-    title = _("Administrative levels")
+    template_name = "commune/commune_detail.html"
     active_level1 = "administrative_levels"
-    breadcrumb = [
-        {"url": "", "title": title},
-    ]
-
-    def get_queryset(self):
-        search = self.request.GET.get("search", None)
-        page_number = self.request.GET.get("page", None)
-        _type = self.request.GET.get("type", "Village")
-        if search:
-            if search == "All":
-                ads = AdministrativeLevel.objects.filter(type=_type)
-                return Paginator(ads, ads.count()).get_page(page_number)
-            search = search.upper()
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type, name__icontains=search),
-                100,
-            ).get_page(page_number)
-        else:
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type), 100
-            ).get_page(page_number)
 
     def get_context_data(self, **kwargs):
-        ctx = super(AdministrativeLevelSearchListView, self).get_context_data(**kwargs)
-        ctx["form"] = VillageSearchForm()
-        ctx["search"] = self.request.GET.get("search", None)
-        ctx["type"] = self.request.GET.get("type", "Village")
-        ctx["current_language"] = translation.get_language()
-        return ctx
+        context = super(CommuneDetailView, self).get_context_data(**kwargs)
+
+        if "object" in context:
+            context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
+            if context["object"].is_village():
+                context["investments"] = Investment.objects.filter(
+                    administrative_level=self.object
+                )
+        admin_level = context.get("object")
+
+        context["context_object_name"] = admin_level.type.lower()
+
+        images = Attachment.objects.filter(
+            Q (adm=admin_level) |
+            Q (task__activity__phase__village=admin_level)
+        ).exclude(url__icontains='.pdf').all()[:5]
+        context["images_data"] = {
+            "images": images,
+            "exists_at_least_image": len(images) != 0,
+            "first_image": images[0] if len(images) > 0 else None,
+        }
+
+        context["villages"] = AdministrativeLevel.objects.filter(
+                parent__parent=admin_level
+            ).annotate(
+            total_estimated_cost=Coalesce(
+                Sum('investments__estimated_cost'), 0
+            ),
+            total_founded=Coalesce(
+                Sum(
+                    Case(
+                        When(investments__project_status=Investment.FUNDED, then=F('investments__estimated_cost')),
+                        default=0,
+                        output_field=IntegerField(),
+                    )
+                ), 0
+            )
+        )
+
+        context["investments"] = Investment.objects.filter(
+            administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
+                parent__parent=admin_level
+            ).values_list('id')
+        ))
+        context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+        self.object.latitude = 10.693749945416448
+        self.object.longitude = 0.330183201548857
+        return context
+
+    def _get_planning_cycle(self):
+        phases = list()
+        admin_level = self.object
+        for phase in admin_level.phases.all():
+            phase_node = {
+                "id": phase.id,
+                "name": phase.name,
+                "order": phase.order,
+                "activities": list(),
+            }
+            activities_status = None
+            for activity in phase.activities.all():
+                activity_node = {
+                    "id": activity.id,
+                    "name": activity.name,
+                    "order": activity.order,
+                    "tasks": list(),
+                }
+                tasks_status = None
+                for task in activity.tasks.all():
+                    task_node = {
+                        "id": task.id,
+                        "name": task.name,
+                        "order": task.order,
+                        "status": task.status,
+                    }
+                    activity_node["tasks"].append(task_node)
+                    if tasks_status is None:
+                        tasks_status = task.status
+                    if task.status != Task.ERROR:
+                        if tasks_status == Task.COMPLETED and task.status == Task.IN_PROGRESS:
+                            tasks_status = Task.IN_PROGRESS
+                    else:
+                        tasks_status = Task.ERROR
+                activity_node["status"] = tasks_status
+                phase_node["activities"].append(activity_node)
+                if activities_status is None:
+                    activities_status = tasks_status
+                if activity_node["status"] != Task.ERROR:
+                    if activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
+                        activities_status = Task.IN_PROGRESS
+                else:
+                    activities_status = Task.ERROR
+            phase_node["status"] = activities_status
+            phases.append(phase_node)
+        return phases
+
+    def _get_development_plan(self, phases):
+        phase = next((phase for phase in phases if phase['order'] == 3), None)
+        if phase is not None:
+            activity = next((activity for activity in phase['activities'] if activity['order'] == 2), None)
+            if activity is not None:
+                task = next((task for task in activity['tasks'] if task['order'] == 1), None)
+                if task is not None:
+                    task_obj = Task.objects.get(id=task['id'])
+                    return task_obj.attachments.filter(
+                        Q(type__icontains='pdf') |
+                        Q(type__icontains='Document')
+                    ).first()
+        return None
 
 
 class ProjectListView(PageMixin, IsInvestorMixin, ListView):
