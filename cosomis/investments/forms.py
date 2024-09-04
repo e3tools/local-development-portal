@@ -19,7 +19,10 @@ class InvestmentsForm(forms.Form):
         data = self.cleaned_data['investments']
         investment_ids = self.cleaned_data['investments'].split(',')
         investment_ids.remove('')
-        investments = Investment.objects.filter(id__in=investment_ids)
+        investments = Investment.objects.filter(
+            id__in=investment_ids,
+            project_status=Investment.NOT_FUNDED
+        )
         package = Package.objects.get_active_cart(
             user=self.context['user']
         )

@@ -125,9 +125,6 @@ class IndexListView(
                 category=self.request.GET["category-filter"]
             )
 
-        kwargs["query_strings"] = self.get_query_strings_context()
-        kwargs["query_strings_raw"] = self.request.GET.copy()
-
         kwargs["subpopulations"] = [
             {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
             {"id": "endorsed_by_women", "name": _("Endorsed by women")},
@@ -143,6 +140,9 @@ class IndexListView(
             {"id": 2, "name": _("Priorities 1 and 2")},
             {"id": 3, "name": _("All priorities")}
         ]
+
+        kwargs["query_strings"] = self.get_query_strings_context()
+        kwargs["query_strings_raw"] = self.request.GET.copy()
 
         kwargs.setdefault("view", self)
         if self.extra_context is not None:
@@ -274,6 +274,18 @@ class IndexListView(
             queryset = queryset.filter(
                 ranking__in=priorities
             )
+
+        if "is-funded-filter" in self.request.GET and self.request.GET[
+            "is-funded-filter"
+        ] not in ["", None]:
+            if self.request.GET["is-funded-filter"] == 'true':
+                queryset = queryset.filter(
+                    project_status=Investment.FUNDED
+                )
+            else:
+                queryset = queryset.exclude(
+                    project_status=Investment.FUNDED
+                )
 
         return queryset
 

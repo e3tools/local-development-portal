@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-27 11:19+0000\n"
+"POT-Creation-Date: 2024-09-04 13:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,10 +37,10 @@ msgstr ""
 #: dashboard/views_subprojects.py:416 dashboard/views_subprojects.py:434
 #: dashboard/views_subprojects.py:436 dashboard/views_subprojects.py:462
 #: investments/templates/investments/cart.html:174
-#: investments/templates/investments/list.html:182
-#: investments/templates/investments/list.html:183
-#: investments/templates/investments/list.html:184
-#: investments/templates/investments/list.html:347
+#: investments/templates/investments/list.html:202
+#: investments/templates/investments/list.html:203
+#: investments/templates/investments/list.html:204
+#: investments/templates/investments/list.html:367
 #: investments/templates/investments/moderator/package_review.html:141
 #: investments/templates/investments/moderator/package_review.html:142
 #: investments/templates/investments/moderator/package_review.html:143
@@ -62,11 +62,11 @@ msgstr "Région"
 #: dashboard/templates/dashboard_summary.html:59
 #: dashboard/templates/dashboard_summary.html:60
 #: investments/templates/investments/cart.html:173
-#: investments/templates/investments/list.html:241
-#: investments/templates/investments/list.html:242
-#: investments/templates/investments/list.html:243
-#: investments/templates/investments/list.html:340
-#: investments/templates/investments/list.html:424
+#: investments/templates/investments/list.html:261
+#: investments/templates/investments/list.html:262
+#: investments/templates/investments/list.html:263
+#: investments/templates/investments/list.html:360
+#: investments/templates/investments/list.html:444
 #: investments/templates/investments/moderator/package_review.html:200
 #: investments/templates/investments/moderator/package_review.html:201
 #: investments/templates/investments/moderator/package_review.html:202
@@ -88,11 +88,11 @@ msgstr "Préfecture"
 #: dashboard/templates/dashboard_summary.html:68
 #: dashboard/templates/dashboard_summary.html:69
 #: investments/templates/investments/cart.html:172
-#: investments/templates/investments/list.html:201
-#: investments/templates/investments/list.html:202
-#: investments/templates/investments/list.html:203
-#: investments/templates/investments/list.html:335
-#: investments/templates/investments/list.html:423
+#: investments/templates/investments/list.html:221
+#: investments/templates/investments/list.html:222
+#: investments/templates/investments/list.html:223
+#: investments/templates/investments/list.html:355
+#: investments/templates/investments/list.html:443
 #: investments/templates/investments/moderator/package_review.html:160
 #: investments/templates/investments/moderator/package_review.html:161
 #: investments/templates/investments/moderator/package_review.html:162
@@ -104,6 +104,7 @@ msgstr "Commune"
 #: administrativelevels/forms.py:171 administrativelevels/models.py:43
 #: administrativelevels/templates/administrative_level/list.html:252
 #: administrativelevels/templates/attachments/attachments.html:287
+#: administrativelevels/templates/commune/commune_detail.html:264
 #: administrativelevels/templates/components/download.html:34
 #: administrativelevels/templates/cvds_list.html:64
 #: administrativelevels/templates/geographical_unit_list.html:58
@@ -112,10 +113,10 @@ msgstr "Commune"
 #: dashboard/templates/dashboard_summary.html:76
 #: dashboard/templates/dashboard_summary.html:77
 #: dashboard/templates/dashboard_summary.html:78
-#: investments/templates/investments/list.html:260
-#: investments/templates/investments/list.html:261
-#: investments/templates/investments/list.html:262
-#: investments/templates/investments/list.html:422
+#: investments/templates/investments/list.html:280
+#: investments/templates/investments/list.html:281
+#: investments/templates/investments/list.html:282
+#: investments/templates/investments/list.html:442
 #: investments/templates/investments/moderator/package_review.html:219
 #: investments/templates/investments/moderator/package_review.html:220
 #: investments/templates/investments/moderator/package_review.html:221
@@ -137,6 +138,8 @@ msgid "Both"
 msgstr "Les deux"
 
 #: administrativelevels/forms.py:187 administrativelevels/models.py:61
+#: administrativelevels/templates/commune/commune_detail.html:170
+#: administrativelevels/templates/commune/commune_detail.html:172
 #: dashboard/views_subprojects.py:141 dashboard/views_subprojects.py:159
 #: dashboard/views_subprojects.py:161 dashboard/views_subprojects.py:180
 #: dashboard/views_subprojects.py:181 dashboard/views_subprojects.py:182
@@ -153,6 +156,7 @@ msgstr "Par Type"
 #: administrativelevels/forms.py:188
 #: administrativelevels/templates/administrative_level/detail/index.html:79
 #: administrativelevels/templates/attachments/attachments.html:309
+#: administrativelevels/templates/commune/commune_detail.html:80
 #: administrativelevels/templates/components/administrative_level_planning_status.html:9
 msgid "Phase"
 msgstr "Phase"
@@ -160,6 +164,7 @@ msgstr "Phase"
 #: administrativelevels/forms.py:189
 #: administrativelevels/templates/administrative_level/detail/index.html:83
 #: administrativelevels/templates/attachments/attachments.html:319
+#: administrativelevels/templates/commune/commune_detail.html:84
 #: administrativelevels/templates/components/administrative_level_planning_status.html:18
 msgid "Activity"
 msgstr "Activité"
@@ -168,6 +173,7 @@ msgstr "Activité"
 #: administrativelevels/templates/administrative_level/detail/index.html:87
 #: administrativelevels/templates/attachments/_grid.html:20
 #: administrativelevels/templates/attachments/attachments.html:329
+#: administrativelevels/templates/commune/commune_detail.html:88
 #: administrativelevels/templates/components/administrative_level_planning_status.html:27
 msgid "Task"
 msgstr "Tâche"
@@ -221,11 +227,11 @@ msgstr ""
 #: dashboard/templates/dashboard_summary.html:86
 #: dashboard/templates/dashboard_summary.html:87
 #: investments/templates/investments/cart.html:171
-#: investments/templates/investments/list.html:220
-#: investments/templates/investments/list.html:221
-#: investments/templates/investments/list.html:222
-#: investments/templates/investments/list.html:330
-#: investments/templates/investments/list.html:421
+#: investments/templates/investments/list.html:240
+#: investments/templates/investments/list.html:241
+#: investments/templates/investments/list.html:242
+#: investments/templates/investments/list.html:350
+#: investments/templates/investments/list.html:441
 #: investments/templates/investments/moderator/package_review.html:179
 #: investments/templates/investments/moderator/package_review.html:180
 #: investments/templates/investments/moderator/package_review.html:181
@@ -259,6 +265,7 @@ msgid "Longitude"
 msgstr "Longitude"
 
 #: administrativelevels/models.py:56
+#: administrativelevels/templates/commune/commune_detail.html:263
 #: administrativelevels/templates/components/download.html:39
 #: administrativelevels/templates/components/priorities_list.html:24
 #: administrativelevels/templates/components/subprojects_list.html:26
@@ -266,8 +273,8 @@ msgstr "Longitude"
 #: administrativelevels/templates/geographical_unit_list.html:56
 #: administrativelevels/templates/project/detail.html:97
 #: investments/templates/investments/cart.html:168
-#: investments/templates/investments/list.html:313
-#: investments/templates/investments/list.html:418
+#: investments/templates/investments/list.html:333
+#: investments/templates/investments/list.html:438
 #: investments/templates/investments/moderator/package_review.html:271
 #: investments/templates/investments/moderator/package_review.html:379
 #: investments/templates/investments/profile.html:56
@@ -298,7 +305,7 @@ msgstr ""
 
 #: administrativelevels/templates/administrative_level/create.html:11
 #: administrativelevels/templates/administrativelevel_village_list.html:11
-#: administrativelevels/views.py:39 administrativelevels/views.py:243
+#: administrativelevels/views.py:40 administrativelevels/views.py:122
 #: cosomis/templates/layouts/sidebar.html:48
 msgid "Administrative levels"
 msgstr "Niveaux administratifs"
@@ -311,6 +318,8 @@ msgid "Submit"
 msgstr "Soumettre"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:23
+#: administrativelevels/templates/commune/commune_detail.html:24
+#: administrativelevels/templates/commune/commune_detail.html:265
 #: administrativelevels/templates/components/villages_overview_under_canton.html:25
 msgid "Population"
 msgstr "Population"
@@ -318,7 +327,7 @@ msgstr "Population"
 #: administrativelevels/templates/administrative_level/detail/index.html:29
 #: administrativelevels/templates/canton/canton_detail.html:28
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:416
-#: administrativelevels/templates/commune/commune_detail.html:28
+#: administrativelevels/templates/commune/commune_detail.html:30
 #: administrativelevels/templates/prefecture/prefecture_detail.html:27
 #: administrativelevels/templates/region/region_detail.html:27
 #: dashboard/views_administrativelevels.py:174
@@ -336,7 +345,7 @@ msgstr "Total"
 #: administrativelevels/templates/administrative_level/detail/index.html:33
 #: administrativelevels/templates/canton/canton_detail.html:32
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:328
-#: administrativelevels/templates/commune/commune_detail.html:32
+#: administrativelevels/templates/commune/commune_detail.html:34
 #: administrativelevels/templates/components/administrative_level_overview.html:32
 #: administrativelevels/templates/prefecture/prefecture_detail.html:31
 #: administrativelevels/templates/region/region_detail.html:31
@@ -346,7 +355,7 @@ msgstr "Hommes"
 #: administrativelevels/templates/administrative_level/detail/index.html:37
 #: administrativelevels/templates/canton/canton_detail.html:36
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:328
-#: administrativelevels/templates/commune/commune_detail.html:36
+#: administrativelevels/templates/commune/commune_detail.html:38
 #: administrativelevels/templates/components/administrative_level_overview.html:32
 #: administrativelevels/templates/prefecture/prefecture_detail.html:35
 #: administrativelevels/templates/region/region_detail.html:35
@@ -356,7 +365,7 @@ msgstr "Femmes"
 #: administrativelevels/templates/administrative_level/detail/index.html:41
 #: administrativelevels/templates/canton/canton_detail.html:40
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:337
-#: administrativelevels/templates/commune/commune_detail.html:40
+#: administrativelevels/templates/commune/commune_detail.html:42
 #: administrativelevels/templates/components/administrative_level_overview.html:41
 #: administrativelevels/templates/prefecture/prefecture_detail.html:39
 #: administrativelevels/templates/region/region_detail.html:39
@@ -365,7 +374,7 @@ msgstr "Jeunes"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:44
 #: administrativelevels/templates/canton/canton_detail.html:43
-#: administrativelevels/templates/commune/commune_detail.html:43
+#: administrativelevels/templates/commune/commune_detail.html:45
 #: administrativelevels/templates/prefecture/prefecture_detail.html:42
 #: administrativelevels/templates/region/region_detail.html:42
 msgid "Elder"
@@ -374,7 +383,7 @@ msgstr "Personne âgé"
 #: administrativelevels/templates/administrative_level/detail/index.html:48
 #: administrativelevels/templates/canton/canton_detail.html:47
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:355
-#: administrativelevels/templates/commune/commune_detail.html:47
+#: administrativelevels/templates/commune/commune_detail.html:49
 #: administrativelevels/templates/components/administrative_level_overview.html:59
 #: administrativelevels/templates/prefecture/prefecture_detail.html:46
 #: administrativelevels/templates/region/region_detail.html:46
@@ -383,7 +392,7 @@ msgstr "Personnes handicapées"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:52
 #: administrativelevels/templates/canton/canton_detail.html:51
-#: administrativelevels/templates/commune/commune_detail.html:51
+#: administrativelevels/templates/commune/commune_detail.html:53
 #: administrativelevels/templates/prefecture/prefecture_detail.html:50
 #: administrativelevels/templates/region/region_detail.html:50
 msgid "Agruculture"
@@ -392,7 +401,7 @@ msgstr "Agriculteurs"
 #: administrativelevels/templates/administrative_level/detail/index.html:56
 #: administrativelevels/templates/canton/canton_detail.html:55
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:364
-#: administrativelevels/templates/commune/commune_detail.html:55
+#: administrativelevels/templates/commune/commune_detail.html:57
 #: administrativelevels/templates/components/administrative_level_overview.html:68
 #: administrativelevels/templates/prefecture/prefecture_detail.html:54
 #: administrativelevels/templates/region/region_detail.html:54
@@ -402,7 +411,7 @@ msgstr "Eleveurs"
 #: administrativelevels/templates/administrative_level/detail/index.html:60
 #: administrativelevels/templates/canton/canton_detail.html:59
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:382
-#: administrativelevels/templates/commune/commune_detail.html:59
+#: administrativelevels/templates/commune/commune_detail.html:61
 #: administrativelevels/templates/components/administrative_level_overview.html:86
 #: administrativelevels/templates/prefecture/prefecture_detail.html:58
 #: administrativelevels/templates/region/region_detail.html:58
@@ -411,7 +420,7 @@ msgstr "Minorités"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:64
 #: administrativelevels/templates/canton/canton_detail.html:63
-#: administrativelevels/templates/commune/commune_detail.html:63
+#: administrativelevels/templates/commune/commune_detail.html:65
 #: administrativelevels/templates/components/villages_overview_under_canton.html:27
 #: administrativelevels/templates/prefecture/prefecture_detail.html:62
 #: administrativelevels/templates/region/region_detail.html:62
@@ -420,26 +429,31 @@ msgstr "Langues"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:73
 #: administrativelevels/templates/administrative_level/detail/index.html:133
+#: administrativelevels/templates/commune/commune_detail.html:74
 msgid "Planning Cycle"
 msgstr "Cycle de Planification"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:91
+#: administrativelevels/templates/commune/commune_detail.html:92
 #: cosomis/constants.py:46 cosomis/templates/common/progress_bar.html:6
 #: investments/models.py:36
 msgid "Completed"
 msgstr "Achevé"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:94
+#: administrativelevels/templates/commune/commune_detail.html:95
 msgid "Priorities Identified"
 msgstr "Priorités identifiées"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:98
 #: administrativelevels/templates/administrativelevel_detail.html:347
+#: administrativelevels/templates/commune/commune_detail.html:99
 #: ⁨administrativelevels/templates/village_detail copy.html⁩:347
 msgid "Village Development Plan"
 msgstr "Plan de Développement du Village"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:101
+#: administrativelevels/templates/commune/commune_detail.html:102
 #: dashboard/views_excel.py:22
 msgid "Download"
 msgstr "Télécharger"
@@ -447,6 +461,7 @@ msgstr "Télécharger"
 #: administrativelevels/templates/administrative_level/detail/index.html:108
 #: administrativelevels/templates/administrativelevel_detail.html:43
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:128
+#: administrativelevels/templates/commune/commune_detail.html:109
 #: administrativelevels/templates/components/administrative_level_planning_status.html:81
 #: administrativelevels/templates/cvd_detail.html:43
 #: administrativelevels/templates/geographical_unit_detail.html:43
@@ -458,7 +473,11 @@ msgstr "Animateur(trice)"
 #: administrativelevels/templates/canton/canton_detail.html:80
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:173
 #: administrativelevels/templates/canton_detail.html:105
-#: administrativelevels/templates/commune/commune_detail.html:80
+#: administrativelevels/templates/commune/commune_detail.html:126
+#: administrativelevels/templates/commune/commune_detail.html:229
+#: administrativelevels/templates/commune/commune_detail.html:230
+#: administrativelevels/templates/commune/commune_detail.html:231
+#: administrativelevels/templates/commune/commune_detail.html:311
 #: administrativelevels/templates/prefecture/prefecture_detail.html:79
 #: administrativelevels/templates/region/region_detail.html:79
 #: administrativelevels/templates/shared/priorities_table.html:10
@@ -488,12 +507,13 @@ msgstr "MGP"
 #: administrativelevels/templates/administrative_level/detail/index.html:141
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:179
 #: administrativelevels/templates/canton_detail.html:112
+#: administrativelevels/templates/commune/commune_detail.html:131
 msgid "Diagnostics"
 msgstr "Diagnostics"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:143
 #: administrativelevels/templates/canton/canton_detail.html:82
-#: administrativelevels/templates/commune/commune_detail.html:82
+#: administrativelevels/templates/commune/commune_detail.html:133
 #: administrativelevels/templates/prefecture/prefecture_detail.html:81
 #: administrativelevels/templates/region/region_detail.html:81
 #, fuzzy
@@ -510,6 +530,7 @@ msgstr "Données climatiques"
 #: administrativelevels/templates/canton_detail.html:236
 #: administrativelevels/templates/canton_detail.html:239
 #: administrativelevels/templates/canton_detail.html:246
+#: administrativelevels/templates/commune/commune_detail.html:297
 msgid "In construction"
 msgstr "En construction"
 
@@ -611,6 +632,7 @@ msgstr "Calendrier"
 #: administrativelevels/templates/administrativelevel_detail.html:193
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:178
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:415
+#: administrativelevels/templates/commune/commune_detail.html:135
 #: administrativelevels/templates/cvd_detail.html:165
 #: ⁨administrativelevels/templates/village_detail copy.html⁩:193
 msgid "Subprojects"
@@ -643,8 +665,9 @@ msgid "Choose attachments to view"
 msgstr "Choisir les documents à visualiser"
 
 #: administrativelevels/templates/attachments/attachments.html:340
-#: investments/templates/investments/list.html:149
-#: investments/templates/investments/list.html:282
+#: administrativelevels/templates/commune/commune_detail.html:249
+#: investments/templates/investments/list.html:169
+#: investments/templates/investments/list.html:302
 #: investments/templates/investments/moderator/package_review.html:108
 #: investments/templates/investments/moderator/package_review.html:241
 msgid "Apply"
@@ -692,6 +715,7 @@ msgstr "Nombre de Ménages"
 
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:319
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:442
+#: administrativelevels/templates/commune/commune_detail.html:128
 #: administrativelevels/templates/components/administrative_level_overview.html:22
 #: administrativelevels/templates/cvd_detail.html:127
 #: administrativelevels/templates/geographical_unit_detail.html:184
@@ -714,6 +738,9 @@ msgid "Ethnic minorities"
 msgstr "Minorités ethniques"
 
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:414
+#: administrativelevels/templates/commune/commune_detail.html:151
+#: administrativelevels/templates/commune/commune_detail.html:153
+#: administrativelevels/templates/commune/commune_detail.html:171
 #: dashboard/templates/dashboard_summary.html:348
 #: investments/templates/investments/list.html:47
 #: investments/templates/investments/list.html:49
@@ -737,6 +764,7 @@ msgid "CVD"
 msgstr ""
 
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:443
+#: administrativelevels/templates/commune/commune_detail.html:312
 #: administrativelevels/templates/shared/priorities_table.html:11
 msgid "Beneficiaries"
 msgstr "Bénéficiaires"
@@ -871,31 +899,127 @@ msgid "Current climate related investments"
 msgstr ""
 
 #: administrativelevels/templates/climate/tabs/mapbox.html:96
+#: administrativelevels/templates/commune/commune_detail.html:213
+#: administrativelevels/templates/commune/commune_detail.html:216
+#: administrativelevels/templates/commune/commune_detail.html:221
 #: administrativelevels/templates/components/administrative_level_planning_status.html:41
 #: administrativelevels/templates/components/administrative_level_planning_status.html:56
 #: administrativelevels/templates/components/administrative_level_planning_status.html:71
 #: investments/templates/investments/list.html:111
 #: investments/templates/investments/list.html:114
-#: investments/templates/investments/list.html:119 investments/views.py:311
+#: investments/templates/investments/list.html:119 investments/views.py:336
 msgid "Yes"
 msgstr "Oui"
 
 #: administrativelevels/templates/climate/tabs/mapbox.html:97
+#: administrativelevels/templates/commune/commune_detail.html:214
+#: administrativelevels/templates/commune/commune_detail.html:217
+#: administrativelevels/templates/commune/commune_detail.html:222
+#: administrativelevels/templates/commune/commune_detail.html:353
 #: administrativelevels/templates/components/administrative_level_planning_status.html:43
 #: administrativelevels/templates/components/administrative_level_planning_status.html:58
 #: administrativelevels/templates/components/administrative_level_planning_status.html:73
 #: administrativelevels/templates/shared/priorities_table.html:52
 #: investments/templates/investments/list.html:112
 #: investments/templates/investments/list.html:115
-#: investments/templates/investments/list.html:120 investments/views.py:311
+#: investments/templates/investments/list.html:120 investments/views.py:336
 msgid "No"
 msgstr "Non"
 
-#: administrativelevels/templates/commune/commune_detail.html:22
+#: administrativelevels/templates/commune/commune_detail.html:152
+#: investments/templates/investments/list.html:48
+#: investments/templates/investments/moderator/package_review.html:47
+msgid "Category"
+msgstr ""
+
+#: administrativelevels/templates/commune/commune_detail.html:189
+#: administrativelevels/templates/commune/commune_detail.html:192
+#: investments/templates/investments/list.html:85
+#: investments/templates/investments/list.html:88
+#: investments/templates/investments/moderator/package_review.html:85
+#: investments/templates/investments/moderator/package_review.html:88
+msgid "Endorsed by"
+msgstr "Soutenu par"
+
+#: administrativelevels/templates/commune/commune_detail.html:209
+#: administrativelevels/templates/commune/commune_detail.html:210
+#: administrativelevels/templates/commune/commune_detail.html:220
+#: administrativelevels/templates/commune/commune_detail.html:315
+#: administrativelevels/templates/shared/priorities_table.html:14
+#: investments/templates/investments/list.html:107
+#: investments/templates/investments/list.html:108
+#: investments/templates/investments/list.html:118
+msgid "Climate contribution"
+msgstr "Contribution climatique"
+
+#: administrativelevels/templates/commune/commune_detail.html:250
+#: dashboard/templates/dashboard_summary.html:94
+#: investments/templates/investments/list.html:170
+#: investments/templates/investments/list.html:303
+#: investments/templates/investments/moderator/package_review.html:109
+#: investments/templates/investments/moderator/package_review.html:242
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: administrativelevels/templates/commune/commune_detail.html:266
 #, fuzzy
-#| msgid "Canton overview"
-msgid "Commune Overview"
-msgstr "Vue d'ensemble du canton"
+#| msgid "Investments"
+msgid "Invested Capital"
+msgstr "Investissements"
+
+#: administrativelevels/templates/commune/commune_detail.html:267
+msgid "Required Capital"
+msgstr ""
+
+#: administrativelevels/templates/commune/commune_detail.html:268
+msgid "Per Capita Invested"
+msgstr ""
+
+#: administrativelevels/templates/commune/commune_detail.html:269
+msgid "Per Capita Required"
+msgstr ""
+
+#: administrativelevels/templates/commune/commune_detail.html:270
+#: administrativelevels/templates/commune/commune_detail.html:316
+#: administrativelevels/templates/project/detail.html:155
+#: administrativelevels/templates/shared/priorities_table.html:15
+#, fuzzy
+#| msgid "Action"
+msgid "Actions"
+msgstr "Action"
+
+#: administrativelevels/templates/commune/commune_detail.html:304
+#, fuzzy
+#| msgid "You have no priorities"
+msgid "You have no Sub-projects"
+msgstr "Priorités identifiées"
+
+#: administrativelevels/templates/commune/commune_detail.html:309
+#: administrativelevels/templates/shared/priorities_table.html:8
+msgid "Ranking"
+msgstr "Classement"
+
+#: administrativelevels/templates/commune/commune_detail.html:310
+#: administrativelevels/templates/shared/priorities_table.html:9
+msgid "Sub-project priorities"
+msgstr "Priorités des sous-projets"
+
+#: administrativelevels/templates/commune/commune_detail.html:313
+#: administrativelevels/templates/shared/priorities_table.html:12
+#: dashboard/views_subprojects.py:420 dashboard/views_subprojects.py:447
+msgid "Estimated cost"
+msgstr "Coût estimé"
+
+#: administrativelevels/templates/commune/commune_detail.html:314
+#: administrativelevels/templates/shared/priorities_table.html:13
+msgid "Funded by"
+msgstr "Financé par"
+
+#: administrativelevels/templates/commune/commune_detail.html:504
+#, fuzzy
+#| msgid "Investments"
+msgid "Investment type"
+msgstr "Investissements"
 
 #: administrativelevels/templates/components/administrative_level_planning_status.html:36
 msgid "Completed "
@@ -1295,26 +1419,19 @@ msgid "Budget"
 msgstr "Budget"
 
 #: administrativelevels/templates/project/create/index.html:39
-#: administrativelevels/views.py:385
-#, fuzzy
-#| msgid "Create"
+#: administrativelevels/views.py:511
 msgid "Create Project"
-msgstr "Créer"
+msgstr "Créer un projet"
 
 #: administrativelevels/templates/project/detail.html:27
 #: dashboard/templates/dashboard_summary.html:40
 #: dashboard/templates/dashboard_summary.html:42
-#, fuzzy
-#| msgid "Sanitation"
 msgid "Organization"
-msgstr "Assainissement"
+msgstr "Organisation"
 
 #: administrativelevels/templates/project/detail.html:40
-#: dashboard/templates/dashboard_summary.html:133
-#, fuzzy
-#| msgid "Investments"
 msgid "Total Investments"
-msgstr "Investissements"
+msgstr "Total des investissements"
 
 #: administrativelevels/templates/project/detail.html:54
 #, fuzzy
@@ -1341,8 +1458,8 @@ msgstr ""
 #: administrativelevels/templates/project/detail.html:98
 #: administrativelevels/templates/project/detail.html:154
 #: investments/templates/investments/cart.html:170
-#: investments/templates/investments/list.html:323
-#: investments/templates/investments/list.html:420
+#: investments/templates/investments/list.html:343
+#: investments/templates/investments/list.html:440
 #: investments/templates/investments/moderator/package_review.html:281
 #: investments/templates/investments/moderator/package_review.html:381
 msgid "Estimate cost"
@@ -1350,8 +1467,8 @@ msgstr "Coût estimé"
 
 #: administrativelevels/templates/project/detail.html:103
 #: investments/templates/investments/cart.html:175
-#: investments/templates/investments/list.html:352
-#: investments/templates/investments/list.html:425
+#: investments/templates/investments/list.html:372
+#: investments/templates/investments/list.html:445
 #: investments/templates/investments/moderator/package_review.html:310
 #: investments/templates/investments/moderator/package_review.html:386
 msgid "Village priority"
@@ -1359,8 +1476,8 @@ msgstr "Priorité du village"
 
 #: administrativelevels/templates/project/detail.html:104
 #: investments/templates/investments/cart.html:176
-#: investments/templates/investments/list.html:357
-#: investments/templates/investments/list.html:426
+#: investments/templates/investments/list.html:377
+#: investments/templates/investments/list.html:446
 #: investments/templates/investments/moderator/package_review.html:315
 #: investments/templates/investments/moderator/package_review.html:387
 msgid "Population priority"
@@ -1375,13 +1492,6 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: administrativelevels/templates/project/detail.html:155
-#: administrativelevels/templates/shared/priorities_table.html:15
-#, fuzzy
-#| msgid "Action"
-msgid "Actions"
-msgstr "Action"
-
 #: administrativelevels/templates/project/detail.html:255
 #, fuzzy
 #| msgid "Investments"
@@ -1390,14 +1500,12 @@ msgstr "Investissements"
 
 #: administrativelevels/templates/project/detail.html:261
 #: dashboard/templates/dashboard_summary.html:109
-#, fuzzy
-#| msgid "Project coverage"
-msgid "Project Status"
-msgstr "Couverture du projet"
+msgid "Sub-Project Status"
+msgstr "Statut du sous-projet"
 
 #: administrativelevels/templates/project/detail.html:273
 msgid "Change status"
-msgstr ""
+msgstr "Changement de statut"
 
 #: administrativelevels/templates/project/list.html:52
 #, fuzzy
@@ -1430,30 +1538,6 @@ msgstr "Vue d'ensemble du canton"
 #: administrativelevels/templates/shared/priorities_table.html:3
 msgid "You have no priorities"
 msgstr "Priorités identifiées"
-
-#: administrativelevels/templates/shared/priorities_table.html:8
-msgid "Ranking"
-msgstr "Classement"
-
-#: administrativelevels/templates/shared/priorities_table.html:9
-msgid "Sub-project priorities"
-msgstr "Priorités des sous-projets"
-
-#: administrativelevels/templates/shared/priorities_table.html:12
-#: dashboard/views_subprojects.py:420 dashboard/views_subprojects.py:447
-msgid "Estimated cost"
-msgstr "Coût estimé"
-
-#: administrativelevels/templates/shared/priorities_table.html:13
-msgid "Funded by"
-msgstr "Financé par"
-
-#: administrativelevels/templates/shared/priorities_table.html:14
-#: investments/templates/investments/list.html:107
-#: investments/templates/investments/list.html:108
-#: investments/templates/investments/list.html:118
-msgid "Climate contribution"
-msgstr "Contribution climatique"
 
 #: administrativelevels/templatetags/custom_tags.py:52
 msgid "Principal Administrator"
@@ -1511,17 +1595,17 @@ msgstr "Utilisateur"
 msgid "and"
 msgstr "et"
 
-#: administrativelevels/views.py:78
+#: administrativelevels/views.py:79
 msgid "Create Administrative level"
 msgstr "Créer niveau administratif"
 
-#: administrativelevels/views.py:280
+#: administrativelevels/views.py:406
 #, fuzzy
 #| msgid "Subproject"
 msgid "Projects"
 msgstr "Sous-projet"
 
-#: administrativelevels/views.py:419 cosomis/templates/layouts/sidebar.html:55
+#: administrativelevels/views.py:545 cosomis/templates/layouts/sidebar.html:55
 msgid "Gallery"
 msgstr "Galerie"
 
@@ -1842,43 +1926,39 @@ msgstr "Sousprojets par étape en cours"
 msgid "Number of sub-projects by administrative level, sector and step"
 msgstr "Montant de sous-projets par niveau administratif, secteur et étape"
 
-#: dashboard/templates/dashboard_summary.html:94
-#: investments/templates/investments/list.html:150
-#: investments/templates/investments/list.html:283
-#: investments/templates/investments/moderator/package_review.html:109
-#: investments/templates/investments/moderator/package_review.html:242
-msgid "Reset"
-msgstr "Réinitialiser"
-
 #: dashboard/templates/dashboard_summary.html:111
 msgid "All Statuses"
-msgstr ""
+msgstr "Tous les statuts"
+
+#: dashboard/templates/dashboard_summary.html:133
+msgid "Total Sub-Project Priorities"
+msgstr "Total Priorités Sous-Projets"
+
+#: dashboard/templates/dashboard_summary.html:145
+msgid "Total Selected Sub-Projects"
+msgstr "Total sous-projets sélectionnés"
+
+#: dashboard/templates/dashboard_summary.html:156
+msgid "Completed Sub-Projects"
+msgstr "Sous-projets achevés"
 
 #: dashboard/templates/dashboard_summary.html:190
-#, fuzzy
-#| msgid "Endorsed by agriculturist"
-msgid "agriculturist"
-msgstr "Soutenu par le agriculteurs et éléveur"
+msgid "Agriculturist"
+msgstr "Agriculteur"
 
 #: dashboard/templates/dashboard_summary.html:193
-#, fuzzy
-#| msgid "Women"
 msgid "women"
-msgstr "Femmes"
+msgstr "femmes"
 
 #: dashboard/templates/dashboard_summary.html:196
-msgid "youth"
-msgstr ""
+msgid "Youth"
+msgstr "La Jeunesse"
 
 #: dashboard/templates/dashboard_summary.html:199
-#, fuzzy
-#| msgid "Ethnic minorities"
-msgid "ethnic minorities"
+msgid "Ethnic Minorities"
 msgstr "Minorités ethniques"
 
 #: dashboard/templates/dashboard_summary.html:349
-#, fuzzy
-#| msgid "Physical level"
 msgid "Physical rate"
 msgstr "Niveau Physique"
 
@@ -2088,32 +2168,32 @@ msgstr "Etape"
 msgid "Dashboard"
 msgstr "Tableau de bord des sous-projets"
 
-#: dashboard/views_summary.py:62 investments/views.py:132
-#: investments/views.py:573
+#: dashboard/views_summary.py:62 investments/views.py:129
+#: investments/views.py:606
 msgid "Endorsed by youth"
 msgstr "Soutenu par les jeunes"
 
-#: dashboard/views_summary.py:63 investments/views.py:133
-#: investments/views.py:574
+#: dashboard/views_summary.py:63 investments/views.py:130
+#: investments/views.py:607
 msgid "Endorsed by women"
 msgstr "Soutenu pas le femmes"
 
-#: dashboard/views_summary.py:64 investments/views.py:134
-#: investments/views.py:575
+#: dashboard/views_summary.py:64 investments/views.py:131
+#: investments/views.py:608
 msgid "Endorsed by agriculturist"
 msgstr "Soutenu par le agriculteurs et éléveur"
 
-#: dashboard/views_summary.py:65 investments/views.py:137
+#: dashboard/views_summary.py:65 investments/views.py:134
 #, fuzzy
 #| msgid "Ethnic minorities"
 msgid "Endorsed by ethnic minorities"
 msgstr "Minorités ethniques"
 
-#: investments/forms.py:36
+#: investments/forms.py:39
 msgid "Reject reason"
 msgstr ""
 
-#: investments/forms.py:37
+#: investments/forms.py:40
 msgid ""
 "You are about to send this submission for revision. The submitter will see "
 "flagged investments. Please leave comments to help with re-submission."
@@ -2176,16 +2256,18 @@ msgstr "En construction"
 #: investments/models.py:115
 msgid "Source of the funding, e.g., a particular organization or grant"
 msgstr ""
+"Source de financement, par exemple une organisation ou une subvention "
+"particulière"
 
 #: investments/templates/investments/cart.html:34
 #: investments/templates/investments/cart.html:99
-#: investments/templates/investments/list.html:398
+#: investments/templates/investments/list.html:418
 #: investments/templates/investments/moderator/package_review.html:356
 msgid "Total funding selected"
 msgstr "Financement total sélectionné"
 
 #: investments/templates/investments/cart.html:44
-#: investments/templates/investments/list.html:393
+#: investments/templates/investments/list.html:413
 #: investments/templates/investments/moderator/package_review.html:351
 msgid "# Sub-projects"
 msgstr "# Sous-projets"
@@ -2227,7 +2309,7 @@ msgid "Clear Package"
 msgstr ""
 
 #: investments/templates/investments/cart.html:169
-#: investments/templates/investments/list.html:318
+#: investments/templates/investments/list.html:338
 #: investments/templates/investments/moderator/package_review.html:276
 #: investments/templates/investments/moderator/package_review.html:380
 msgid "Subproject type"
@@ -2242,56 +2324,56 @@ msgstr ""
 msgid "Choose filters"
 msgstr "Choisir les filtres"
 
-#: investments/templates/investments/list.html:48
-#: investments/templates/investments/moderator/package_review.html:47
-msgid "Category"
-msgstr ""
+#: investments/templates/investments/list.html:146
+#: investments/templates/investments/list.html:147
+#: investments/templates/investments/list.html:148
+msgid "Is Funded"
+msgstr "Est Financé"
 
-#: investments/templates/investments/list.html:85
-#: investments/templates/investments/list.html:88
-#: investments/templates/investments/moderator/package_review.html:85
-#: investments/templates/investments/moderator/package_review.html:88
-msgid "Endorsed by"
-msgstr "Soutenu par"
+#: investments/templates/investments/list.html:151
+#: investments/templates/investments/list.html:154
+#: investments/templates/investments/list.html:158
+msgid "Is funded"
+msgstr "Est financé"
 
-#: investments/templates/investments/list.html:168
+#: investments/templates/investments/list.html:152
+#: investments/templates/investments/list.html:155
+#: investments/templates/investments/list.html:159
+msgid "Is not funded"
+msgstr "N'est pas financé"
+
+#: investments/templates/investments/list.html:188
 #: investments/templates/investments/moderator/package_review.html:127
-#, fuzzy
-#| msgid "Choose the administrative level"
 msgid "Choose the Administrative level"
 msgstr "Choisissez les niveaux administratifs"
 
-#: investments/templates/investments/list.html:300
+#: investments/templates/investments/list.html:320
 #: investments/templates/investments/moderator/package_review.html:258
 msgid "Choose the columns to display"
 msgstr "Choisir les documents à visualiser"
 
-#: investments/templates/investments/list.html:374
+#: investments/templates/investments/list.html:394
 #: investments/templates/investments/moderator/package_review.html:332
-#, fuzzy
-#| msgid "Results"
 msgid "Results"
 msgstr "Résultats"
 
-#: investments/templates/investments/list.html:388
+#: investments/templates/investments/list.html:408
 #: investments/templates/investments/moderator/package_review.html:346
-#, fuzzy
-#| msgid "# Villages"
 msgid "# Villages:"
-msgstr "# Villages"
+msgstr "# Villages:"
 
-#: investments/templates/investments/list.html:404
+#: investments/templates/investments/list.html:424
 msgid "Add to Cart"
 msgstr "Ajouter une priorité"
 
-#: investments/templates/investments/list.html:413
+#: investments/templates/investments/list.html:433
 #: investments/templates/investments/moderator/package_review.html:374
 #, fuzzy
 #| msgid "Identified priorities"
 msgid "You have no investments"
 msgstr "Priorités identifiées"
 
-#: investments/templates/investments/list.html:419
+#: investments/templates/investments/list.html:439
 msgid "Source"
 msgstr ""
 
@@ -2349,42 +2431,42 @@ msgstr ""
 
 #: investments/templates/investments/profile.html:52
 msgid "About Organization"
-msgstr ""
+msgstr "À propos de l'organisation"
 
 #: investments/templates/investments/profile.html:69
 msgid "Total investments amount"
 msgstr ""
 
-#: investments/views.py:142
+#: investments/views.py:139 investments/views.py:340
 msgid "Priority 1"
 msgstr "Priorité 1"
 
-#: investments/views.py:143
+#: investments/views.py:140 investments/views.py:342
 msgid "Priorities 1 and 2"
 msgstr "Priorité 1 et 2"
 
-#: investments/views.py:144
+#: investments/views.py:141 investments/views.py:344
 msgid "All priorities"
 msgstr "Toutes les priorités"
 
-#: investments/views.py:321
+#: investments/views.py:354
 msgid "Your package"
 msgstr ""
 
-#: investments/views.py:350
+#: investments/views.py:383
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
 msgstr ""
 
-#: investments/views.py:390
+#: investments/views.py:423
 msgid "Welcome, Moderator!"
 msgstr ""
 
-#: investments/views.py:464
+#: investments/views.py:497
 msgid "Investment Package Review"
 msgstr ""
 
-#: investments/views.py:576
+#: investments/views.py:609
 msgid "Endorsed by pastoralist"
 msgstr "Soutenu par les minorités ethniques"
 
@@ -2528,6 +2610,11 @@ msgstr "Connexion"
 #: usermanager/templates/login.html:45
 msgid "Log in to start your session"
 msgstr "Connectez-vous pour démarrer votre session"
+
+#, fuzzy
+#~| msgid "Canton overview"
+#~ msgid "Commune Overview"
+#~ msgstr "Vue d'ensemble du canton"
 
 #~ msgid "Village Development Plan Date"
 #~ msgstr "Date du plan de développement du village"

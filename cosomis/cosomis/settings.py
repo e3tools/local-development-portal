@@ -203,8 +203,6 @@ AWS_ACCESS_KEY_ID = env('S3_ACCESS')
 
 AWS_SECRET_ACCESS_KEY = env('S3_SECRET')
 
-MAPBOX_ACCESS_TOKEN = env('MAPBOX_ACCESS_TOKEN')
-
 #REST API
 REST_FRAMEWORK = {
     # https://github.com/tfranzel/drf-spectacular
