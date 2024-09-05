@@ -22,8 +22,8 @@ from django.core.paginator import Paginator
 from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, IntegerField
 from django.db.models.functions import Coalesce
 
-from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project
-from investments.models import Attachment, Investment
+from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project, Category, Sector
+from investments.models import Attachment, Investment, Package
 
 from static.config.datatable import get_datatable_config
 
@@ -280,6 +280,43 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
     template_name = "commune/commune_detail.html"
     active_level1 = "administrative_levels"
 
+    def post(self, request, *args, **kwargs):
+        if 'cart-toggle' in request.POST:
+            investment = Investment.objects.get(id=request.POST['cart-toggle'])
+            if investment.project_status == Investment.NOT_FUNDED:
+                package = Package.objects.get_active_cart(user=self.request.user)
+                if package.funded_investments.filter(id=investment.id).exists():
+                    package.funded_investments.remove(investment)
+                else:
+                    package.funded_investments.add(investment)
+            return super().get(request, *args, **kwargs)
+
+        obj = self.get_object()
+        url = reverse("administrativelevels:commune_detail", args=[obj.id])
+        final_querystring = request.GET.copy()
+
+        for key, value in request.GET.items():
+            if (
+                key in request.POST
+                and value != request.POST[key]
+                and request.POST[key] != ""
+            ):
+                final_querystring.pop(key)
+
+        post_dict = request.POST.copy()
+        post_dict.update(final_querystring)
+        post_dict.pop("csrfmiddlewaretoken")
+        if "reset-hidden" in post_dict and post_dict["reset-hidden"] == "true":
+            return redirect(url)
+
+        for key, value in request.POST.items():
+            if value == "":
+                post_dict.pop(key)
+        final_querystring.update(post_dict)
+        if final_querystring:
+            url = "{}?{}".format(url, urlencode(final_querystring))
+        return redirect(url)
+
     def get_context_data(self, **kwargs):
         context = super(CommuneDetailView, self).get_context_data(**kwargs)
 
@@ -320,12 +357,12 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
             )
         )
 
-        context["investments"] = Investment.objects.filter(
+        context["investments"] = self._get_queryset(Investment.objects.filter(
             project_status=Investment.NOT_FUNDED,
             administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
                 parent__parent=admin_level
             ).values_list('id')
-        ))
+        )))
 
         context["subprojects"] = Investment.objects.filter(
             administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
@@ -335,6 +372,9 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
         self.object.latitude = 10.693749945416448
         self.object.longitude = 0.330183201548857
+
+        context.update(self._get_priorities_filters())
+
         return context
 
     def _get_planning_cycle(self):
@@ -397,6 +437,79 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
                         Q(type__icontains='Document')
                     ).first()
         return None
+
+    def _get_priorities_filters(self):
+        context = dict()
+
+        context["categories"] = Category.objects.all()
+        if "category-filter" in self.request.GET:
+            context["sectors"] = Sector.objects.filter(
+                category=self.request.GET["category-filter"]
+            )
+
+        context["subpopulations"] = [
+            {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
+            {"id": "endorsed_by_women", "name": _("Endorsed by women")},
+            {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
+            {
+                "id": "endorsed_by_pastoralist",
+                "name": _("Endorsed by ethnic minorities"),
+            },
+        ]
+
+        context["priorities"] = [
+            {"id": 1, "name": _("Priority 1")},
+            {"id": 2, "name": _("Priorities 1 and 2")},
+            {"id": 3, "name": _("All priorities")}
+        ]
+
+        package = Package.objects.get_active_cart(
+            user=self.request.user
+        )
+        context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
+        return context
+
+    def _get_queryset(self, queryset):
+
+        if "sector-filter" in self.request.GET and self.request.GET[
+            "sector-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
+        if "category-filter" in self.request.GET and self.request.GET[
+            "category-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                sector__category__id=self.request.GET["category-filter"]
+            )
+
+        if "subpopulation-filter" in self.request.GET and self.request.GET[
+            "subpopulation-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                **{self.request.GET["subpopulation-filter"]: True}
+            )
+
+        if "climate-contribution-filter" in self.request.GET and self.request.GET[
+            "climate-contribution-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                climate_contribution=self.request.GET["climate-contribution-filter"]
+            )
+
+        if "priorities-filter" in self.request.GET and self.request.GET[
+            "priorities-filter"
+        ] not in ["", None]:
+            priorities = [1]
+            if self.request.GET["priorities-filter"] == '2':
+                priorities.append(2)
+            elif self.request.GET["priorities-filter"] == '3':
+                priorities.append(2)
+                priorities.append(3)
+            queryset = queryset.filter(
+                ranking__in=priorities
+            )
+
+        return queryset
 
 
 class ProjectListView(PageMixin, IsInvestorMixin, ListView):

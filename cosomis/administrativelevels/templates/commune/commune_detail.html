@@ -138,123 +138,7 @@
 
                         <div class="tab-content">
                             <div id="priorities" class="tab-pane active pt-3">
-                                <div class="row pb-3">
-                                    <div class="col-12">
-                                        <input class="form-control" id="okm" type="checkbox" name="my-checkbox" checked>
-                                    </div>
-                                </div>
-                                <form action="" method="POST" id="filter-form">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                        <div class="col-2">
-                                            <div class="form-group">
-                                                <label for="category-select-id">{% translate 'Sector' %}</label>
-                                                <select class="form-control" name="category-filter" id="category-select-id" empty-option="{% translate 'Category' %}" style="width: 100%;">
-                                                    <option selected value="">{% translate 'Sector' %}</option>
-                                                    {% for category in categories %}
-                                                        {% if 'category-filter' in query_strings_raw %}
-                                                            {% if query_strings_raw|get_item:'category-filter' == category.id %}
-                                                            <option value="{{ category.id }}" selected>{{ category.name }}</option>
-                                                            {% else %}
-                                                            <option value="{{ category.id }}">{{ category.name }}</option>
-                                                            {% endif %}
-                                                        {% else %}
-                                                            <option value="{{ category.id }}">{{ category.name }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-2">
-                                            <div class="form-group">
-                                                <label for="sector-select-id">{% translate 'Type' %}</label>
-                                                <select class="form-control" name="sector-filter" id="sector-select-id" empty-option="{% translate 'Sector' %}" style="width: 100%;" {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
-                                                    <option selected value="">{% translate 'Type' %}</option>
-                                                    {% for sector in sectors %}
-                                                        {% if 'sector-filter' in query_strings_raw %}
-                                                            {% if query_strings_raw|get_item:'sector-filter' == sector.id %}
-                                                            <option value="{{ sector.id }}" selected>{{ sector.name }}</option>
-                                                            {% else %}
-                                                            <option value="{{ sector.id }}">{{ sector.name }}</option>
-                                                            {% endif %}
-                                                        {% else %}
-                                                            <option value="{{ sector.id }}">{{ sector.name }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-2">
-                                            <div class="form-group">
-                                                <label for="endorse-by-select-id">{% translate 'Endorsed by' %}</label>
-                                                <select class="form-control" name="subpopulation-filter" id="endorse-by-select-id"
-                                                        style="width: 100%;">
-                                                    <option value=''>{% translate "Endorsed by" %}</option>
-                                                    {% for subpopulation in subpopulations %}
-                                                        {% if 'subpopulation-filter' in query_strings_raw %}
-                                                            {% if query_strings_raw|get_item:'subpopulation-filter' == subpopulation.id %}
-                                                            <option value="{{ subpopulation.id }}" selected>{{ subpopulation.name }}</option>
-                                                            {% else %}
-                                                            <option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
-                                                            {% endif %}
-                                                        {% else %}
-                                                            <option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-2">
-                                            <div class="form-group">
-                                                <label for="category-select-id">{% translate 'Climate contribution' %}</label>
-                                                <select class="form-control" name="climate-contribution-filter" id="climate-contribution-select-id" empty-option="{% translate 'Climate contribution' %}" style="width: 100%;">
-                                                    {% if 'climate-contribution-filter' in query_strings_raw %}
-                                                        {% if query_strings_raw|get_item:'climate-contribution-filter' == 'True' %}
-                                                            <option value="True" selected>{% translate 'Yes' %}</option>
-                                                            <option value="False">{% translate 'No' %}</option>
-                                                        {% else %}
-                                                            <option value="True">{% translate 'Yes' %}</option>
-                                                            <option value="False" selected>{% translate 'No' %}</option>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <option selected value="">{% translate 'Climate contribution' %}</option>
-                                                        <option value="True">{% translate 'Yes' %}</option>
-                                                        <option value="False">{% translate 'No' %}</option>
-                                                    {% endif %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-2">
-                                            <div class="form-group">
-                                                <label for="category-select-id">{% translate 'Priorities' %}</label>
-                                                <select class="form-control" name="priorities-filter" id="Priorities-select-id" empty-option="{% translate 'Priorities' %}" style="width: 100%;">
-                                                    <option value=''>{% translate "Priorities" %}</option>
-                                                    {% for priority in priorities %}
-                                                        {% if 'priorities-filter' in query_strings_raw %}
-                                                            {% if query_strings_raw|get_item:'priorities-filter' == priority.id %}
-                                                            <option value="{{ priority.id }}" selected>{{ priority.name }}</option>
-                                                            {% else %}
-                                                            <option value="{{ priority.id }}">{{ priority.name }}</option>
-                                                            {% endif %}
-                                                        {% else %}
-                                                            <option value="{{ priority.id }}">{{ priority.name }}</option>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-2 mt-4 text-right">
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}" style="margin-bottom: 3px;">
-                                                    <input type="button" class="btn btn-primary submit-reset" value="{% translate 'Reset' %}" style="margin-bottom: 3px;"/>
-                                                    <input type="hidden" id="reset-hidden-id" name="reset-hidden" value="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                {% include 'shared/priorities_table.html' %}
+                                {% include 'commune/tabs/priorities.html' %}
                             </div>
                             <div id="villages" class="tab-pane fade pt-3">
                                 <table class="table rounded-table">
@@ -500,11 +384,42 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('.datatable').DataTable({searching: false});
-            $("[name='my-checkbox']").bootstrapSwitch({
-                labelText: '{% translate "Investment type" %}',
-                onText: 'This is a really long test',
-                offText: 'This is a really long test',
+    
+            $('.submit-reset').on('click', function() {
+                $('#reset-hidden-id').attr('value', 'true');
+                $('#filter-form').submit();
             });
+    
+            $('#category-select-id').on('change', function(){
+                change_sectors_selects($(this), $('#sector-select-id'), [])
+            });
+    
+            function change_sectors_selects(select_input, select_to_fill){
+                let selected_value = select_input.find(":selected").val();
+    
+                if (selected_value != '') {
+                    let base_url = "{% url 'investments:home_investments' %}";
+                    $.ajax({
+                        type : "POST",
+                        url: base_url + "ajax/sectors",
+                        data: {
+                          value: selected_value,
+                          csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function(response){
+                            select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                            response.values.forEach((element) => {
+                                select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                            })
+                        }
+                    });
+                    select_to_fill.prop('disabled', false);
+                }
+                else {
+                    select_to_fill.prop('disabled', 'disabled');
+                    select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                }
+            };
         });
     </script>
 {% endblock %}
