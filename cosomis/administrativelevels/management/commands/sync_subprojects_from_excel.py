@@ -4,6 +4,7 @@ from administrativelevels.models import Project, AdministrativeLevel
 from investments.models import Investment
 from thefuzz import fuzz
 
+
 class Command(BaseCommand):
     help = 'Reads an Excel file and processes it with a given project ID.'
 
@@ -14,7 +15,8 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         file_path = kwargs['file_path']
         project_id = kwargs['project_id']
-        similarity_threshold = 70  # For matching the investment title
+        project = Project.objects.get(pk=project_id)
+        similarity_threshold = 100  # For matching the investment title
         count = 0
         # Validate that the project exists
         try:
@@ -41,16 +43,34 @@ class Command(BaseCommand):
                 # Filter by similarity manually
                 matched_investments = [
                     investment for investment in investments
-                    if fuzz.ratio(investment.title, row["TYPE D'OUVRAGE (INFRASTRUCTURE)"]) >= similarity_threshold
+                    if fuzz.ratio(investment.title, row["CDD Option"]) >= similarity_threshold
                 ]
 
                 # Sort by similarity if you want the best match first
-                matched_investments.sort(key=lambda inv: fuzz.ratio(inv.title, row["TYPE D'OUVRAGE (INFRASTRUCTURE)"]),
+                matched_investments.sort(key=lambda inv: fuzz.ratio(inv.title, row["CDD Option"]),
                                          reverse=True)
-
+                print(len(matched_investments))
                 if matched_investments:
                     best_match = matched_investments[0]  # The best match based on similarity
-                    print("Best match:", best_match.title, row["TYPE D'OUVRAGE (INFRASTRUCTURE)"])
+                    if best_match.funded_by:
+                        print('Ya esta financiado')
+                        # print("matched second", best_match.title, row["CDD Option"], row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"])
+
+                    # print("Best match:", best_match.title, row["CDD Option"], row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"])
+                    best_match.funded_by = project
+                    best_match.longitude = row["Longitude (x)"]
+                    best_match.latitude = row["Latitude (y)"]
+                    if row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"] == "Approuvé":
+                        best_match.project_status = "F"
+                    elif row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"] == "En cours":
+                        best_match.project_status = "P"
+                    elif pd.isna(row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"]):
+                        best_match.project_status = "F"
+                    elif row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"] == "Interrompu":
+                        best_match.project_status = "PA"
+                    else:
+                        best_match.project_status = "P"
+                    best_match.save()
                     count += 1
                     # Do something with the matched investment
                 else:
