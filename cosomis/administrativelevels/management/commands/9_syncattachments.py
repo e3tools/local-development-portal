@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
-from administrativelevels.models import AdministrativeLevel
+from administrativelevels.models import AdministrativeLevel, Task
 from investments.models import Attachment
 
 
@@ -14,10 +14,8 @@ class Command(BaseCommand):
             "type": "facilitator"
         })
         for document in db:
-            print("Facilitator", document)
             try:
                 if not document['develop_mode'] and not document["training_mode"]:
-                    print("Facilitator is valid", document)
                     return True
             except:
                 return False
@@ -50,13 +48,23 @@ def get_attachments_from_database(task_documents):
         for attachment in document.get('attachments', []):
             attachment_data = attachment.get('attachment')
             attachment_uri = attachment_data.get('uri', "") if attachment_data else ""
+            try:
+                task = Task.objects.get(no_sql_db_id=document.get('_id'))
+                task_name = task.name
+                task_order = task.order
+            except:
+                task = None
+                task_name = ""
+                task_order = 0
             if attachment_uri:
                 extracted_attachments.append({
                     "type": "photo" if "photo" in attachment['name'].lower() else "document",
                     "url": attachment_uri,
                     "phase": document.get('phase_name', ""),
                     "activity": document.get('activity_name', ""),
-                    "task": document.get('name', "")
+                    "task": task,
+                    "task_name": task_name,
+                    "task_order": task_order
                 })
     return extracted_attachments
 
@@ -64,10 +72,14 @@ def save_attachments_to_purs_test(adm, extracted_attachments):
     # Access the 'purs_test' database
 
     # Create a new document with the extracted attachments
+    objects_to_create = []
     for attachment in extracted_attachments:
-        print(attachment)
-        Attachment.objects.create(
+        objects_to_create.append(Attachment(
             adm=adm,
             type=attachment.get('type').capitalize(),
-            url=attachment.get('url')
-        )
+            url=attachment.get('url'),
+            task=attachment.get('task'),
+            name=attachment.get('task_name'),
+            order=attachment.get('task_order')
+        ))
+    Attachment.objects.bulk_create(objects_to_create)
