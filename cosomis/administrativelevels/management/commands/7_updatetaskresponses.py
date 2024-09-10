@@ -5,8 +5,8 @@ from administrativelevels.models import AdministrativeLevel, Task, Activity, Pha
 
 
 def parse_fields(fields, field_types, response):
+    print(response)
     matched_responses = []
-
     for key, field_info in fields.items():
         if "fields" in field_info:  # Nested fields
             nested_fields = field_info["fields"]
@@ -32,7 +32,10 @@ def match_form_labels_with_responses(form, form_responses):
     for form_section, response_section in zip(form, form_responses):
         fields = form_section["options"]["fields"]
         field_types = form_section["page"]["properties"]
-        response = response_section
+        if response_section:
+            response = response_section
+        else:
+            response = {}
 
         matched_responses = parse_fields(fields, field_types, response)
         all_matched_responses.extend(matched_responses)
@@ -40,15 +43,15 @@ def match_form_labels_with_responses(form, form_responses):
     return json.dumps(all_matched_responses, ensure_ascii=False)
 
 def update_task_responses(document):
-    try:
-        parsed_result = match_form_labels_with_responses(
-            document['form'], document['form_response']
-        )
-        task = Task.objects.get(no_sql_db_id=document['_id'])
-        task.form_responses = parsed_result
-        task.save()
-    except Exception as e:
-        print(e, "Error updating task", document['_id'])
+    # try:
+    parsed_result = match_form_labels_with_responses(
+        document['form'], document['form_response']
+    )
+    task = Task.objects.get(no_sql_db_id=document['_id'])
+    task.form_responses = parsed_result
+    task.save()
+    # except Exception as e:
+    #     print(e, "Error updating task", document['_id'])
 
 
 class Command(BaseCommand):
