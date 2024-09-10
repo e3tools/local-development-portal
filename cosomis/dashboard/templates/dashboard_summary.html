@@ -37,6 +37,24 @@
                             <div class="card-body">
                                 <div class="horizontal-form">
                                     <div class="form-group">
+                                        <label for="organization-select-id">{% translate 'Sector' %}</label>
+                                        <select class="form-control" name="sector-filter" id="sector-select-id" style="width: 100%;">
+                                            <option selected value="">{% translate 'Sector' %}</option>
+                                            {% for sector in sectors %}
+                                                <option value="{{ sector.id }}">{{ sector.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="organization-select-id">{% translate 'Type' %}</label>
+                                        <select class="form-control" name="type-filter" id="type-select-id" style="width: 100%;">
+                                            <option selected value="">{% translate 'Type' %}</option>
+                                            {% for type in types %}
+                                                <option value="{{ type.0 }}">{{ type.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="organization-select-id">{% translate 'Organization' %}</label>
                                         <select class="form-control" name="organization-filter" id="organization-select-id" style="width: 100%;">
                                             <option selected value="">{% translate 'Organization' %}</option>
@@ -416,6 +434,16 @@
 
             $('#organization-select-id').on('change', function() {
                 filter_values['organization'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            $('#sector-select-id').on('change', function() {
+                filter_values['sector'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            $('#type-select-id').on('change', function() {
+                filter_values['type'] = $(this).val();
                 statisticsComponent.fetchAndDisplayStatistics();
             });
 

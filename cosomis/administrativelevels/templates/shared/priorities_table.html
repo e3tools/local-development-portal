@@ -50,7 +50,19 @@
             <td class="border-sides--light">{{ investment.responsible_structure }}</td>
             <td class="border-sides--light">{% if investment.climate_contribution %}{{ investment.climate_contribution_text }}{% else %}
                 {% translate "No" %}{% endif %}</td>
-            <td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
+            <td>
+                {% if investment.project_status == investment.NOT_FUNDED %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% if investment.id not in cart_items_id %}
+                    <input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
+                    {% else %}
+                    <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
+                    {% endif %}
+                    <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
+                </form>
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
     </tbody>

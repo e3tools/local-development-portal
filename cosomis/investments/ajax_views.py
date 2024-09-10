@@ -53,6 +53,8 @@ class StatisticsView(View):
         village_id = request.GET.get('village_id', None)
         project_status = request.GET.get('project-status-filter', None)
         organization = request.GET.get('organization', None)
+        sector = request.GET.get('sector', None)
+        investment_status = request.GET.get('type', None)
 
         # Initial queryset
         investments = Investment.objects.all()
@@ -74,6 +76,10 @@ class StatisticsView(View):
             filters &= Q(project_status=project_status)
         if organization and organization is not None:
             filters &= Q(packages__in=(Subquery(Package.objects.filter(project__owner__organization=organization).values('funded_investments'))))
+        if sector and sector is not None:
+            filters &= Q(sector=sector)
+        if investment_status and investment_status is not None:
+            filters &= Q(investment_status=investment_status)
 
         investments = investments.filter(filters)
 

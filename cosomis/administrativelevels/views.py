@@ -161,6 +161,17 @@ class AdministrativeLevelDetailView(
     template_name = "administrative_level/detail/index.html"
     active_level1 = "administrative_levels"
 
+    def post(self, request, *args, **kwargs):
+        if 'cart-toggle' in request.POST:
+            investment = Investment.objects.get(id=request.POST['cart-toggle'])
+            if investment.project_status == Investment.NOT_FUNDED:
+                package = Package.objects.get_active_cart(user=self.request.user)
+                if package.funded_investments.filter(id=investment.id).exists():
+                    package.funded_investments.remove(investment)
+                else:
+                    package.funded_investments.add(investment)
+            return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
 
@@ -210,6 +221,12 @@ class AdministrativeLevelDetailView(
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
         self.object.latitude = 10.693749945416448
         self.object.longitude = 0.330183201548857
+
+        package = Package.objects.get_active_cart(
+            user=self.request.user
+        )
+        context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
+
         return context
 
     def _get_planning_cycle(self):
@@ -787,7 +804,9 @@ class AttachmentListView(PageMixin, LoginRequiredMixin, ListView):
             adm_type = adm_list[0] if adm_list else None
 
             if adm_type and self.request.GET[adm_type] not in empty_list:
-                queryset = queryset.filter(adm__id=self.request.GET[adm_type])
+                administrative_levels = AdministrativeLevel.objects.get(id=self.request.GET[adm_type])
+                descendants = administrative_levels.get_all_descendants()
+                queryset = queryset.filter(adm__id__in=[decs.id for decs in descendants])
 
         ordering = self.get_ordering()
         if ordering:
