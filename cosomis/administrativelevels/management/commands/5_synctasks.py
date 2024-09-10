@@ -69,24 +69,24 @@ def update_or_create_document(document):
             activity__phase__village=int(administrative_level_id)
         )
         if not existing_task:
-            # try:
-            administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=administrative_level_id)
-            if document['completed']:
-                status = 'completed'
-            else:
-                status = 'not started'
-            existing_task = Task.objects.create(
-                no_sql_db_id=object_id,
-                activity=Activity.objects.get(no_sql_db_id=document['activity_id'], phase__village=administrative_level),
-                name=document['name'],
-                description=document['description'],
-                order=document['order'],
-                status=status,
-                form_responses=document['form_response'],
-                form=document['form'],
-            )
-            # except Exception as e:
-            #     print(e, "Error creating task", document['name'], document['administrative_level_id'])
+            try:
+                administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=administrative_level_id)
+                if document['completed']:
+                    status = 'completed'
+                else:
+                    status = 'not started'
+                existing_task = Task.objects.create(
+                    no_sql_db_id=object_id,
+                    activity=Activity.objects.get(no_sql_db_id=document['activity_id'], phase__village=administrative_level),
+                    name=document['name'],
+                    description=document['description'],
+                    order=document['order'],
+                    status=status,
+                    form_responses=document['form_response'],
+                    form=document['form'],
+                )
+            except Exception as e:
+                print(e, "Error creating task", document['name'], document['administrative_level_id'])
         else:
             if document['completed']:
                 status = 'completed'

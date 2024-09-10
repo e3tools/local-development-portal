@@ -149,7 +149,7 @@ class Attachment(BaseModel):
         related_name="attachments",
     )
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='attachments', null=True, blank=True)
-    url = models.URLField()
+    url = models.URLField(max_length=300)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=DOCUMENT)
 
     name = models.CharField(max_length=255, null=True, blank=True)
