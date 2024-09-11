@@ -232,7 +232,7 @@ class AdministrativeLevelDetailView(
     def _get_planning_cycle(self):
         phases = list()
         admin_level = self.object
-        for phase in admin_level.phases.all():
+        for phase in admin_level.phases.all().order_by("order"):
             phase_node = {
                 "id": phase.id,
                 "name": phase.name,
@@ -240,7 +240,7 @@ class AdministrativeLevelDetailView(
                 "activities": list(),
             }
             activities_status = None
-            for activity in phase.activities.all():
+            for activity in phase.activities.all().order_by("order"):
                 activity_node = {
                     "id": activity.id,
                     "name": activity.name,
@@ -248,7 +248,7 @@ class AdministrativeLevelDetailView(
                     "tasks": list(),
                 }
                 tasks_status = None
-                for task in activity.tasks.all():
+                for task in activity.tasks.all().order_by("order"):
                     task_node = {
                         "id": task.id,
                         "name": task.name,
