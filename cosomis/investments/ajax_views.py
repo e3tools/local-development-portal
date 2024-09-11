@@ -87,7 +87,6 @@ class StatisticsView(View):
         total_communities = investments.values('administrative_level').distinct().count()
         total_investments = investments.count()
         total_subprojects = investments.filter(investment_status=Investment.SUBPROJECT).count()
-        subprojects = investments.filter(investment_status=Investment.SUBPROJECT)
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
 
         # Sector priorities
@@ -102,20 +101,20 @@ class StatisticsView(View):
         ]
 
         subprojects_by_sector_and_group = {
-            group: subprojects.filter(**{group: True}).values('sector__name').annotate(total=Count('sector__name'))
+            group: investments.filter(**{group: True}).values('sector__name').annotate(total=Count('sector__name'))
             for group in minority_groups
         }
 
         # Subprojects with coordinates
-        subprojects_with_coordinates = subprojects.exclude(
-            administrative_level__latitude__isnull=True,
-            administrative_level__longitude__isnull=True
+        subprojects_with_coordinates = investments.exclude(
+            latitude__isnull=True,
+            longitude__isnull=True
         ).values(
             'id',
             'title',
             'administrative_level__name',
-            'administrative_level__latitude',
-            'administrative_level__longitude',
+            'latitude',
+            'longitude',
             'sector__name',
             'physical_execution_rate'
         )

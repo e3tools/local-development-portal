@@ -351,15 +351,16 @@
 
             subprojects.forEach((subproject, index) => {
                 if ((filterSector === null || subproject.sector__name === filterSector) &&
-                    subproject.administrative_level__latitude && subproject.administrative_level__longitude) {
+                    subproject.latitude && subproject.longitude) {
                     const sectorColor = sectorColors[subproject.sector__name] || getRandomColor();
-                    const markerElement = createCustomMarker(sectorColor);
+                    // const markerElement = createCustomMarker(sectorColor);
                     const offset = calculateOffset(index);
                     const marker = new mapboxgl.Marker({
-                        element: markerElement,
+                        color: sectorColor,
+                        draggable: false,
                         offset: [offset.x, offset.y]
                     })
-                    .setLngLat([subproject.administrative_level__longitude, subproject.administrative_level__latitude])
+                    .setLngLat([subproject.longitude, subproject.latitude])
                     .setPopup(new mapboxgl.Popup({ offset: 20 }).setHTML(`
                             <h3 class="popover-header">${subproject.administrative_level__name}</h3>
                             <div class="popover-body">
@@ -557,7 +558,7 @@
                         this.updatePrioritiesChart(data.sector_priorities);
                         this.updateMinorityCharts(data.subprojects_by_sector_and_group);
                         allSubprojects = data.subprojects;
-                        updateMap(this.map, data.subprojects, filters['sector-filter']);
+                        updateMap(this.map, data.subprojects, filter_values['sector-filter']);
                     },
                     error: function() {
                         alert('Failed to fetch statistics. Please try again.');
@@ -665,6 +666,7 @@
         }
 
         function createLegend(legendId, data, statisticsComponent) {
+            console.log("createLegend")
             const legend = document.getElementById(legendId);
             if (legend) {
                 legend.innerHTML = '';
