@@ -2386,8 +2386,8 @@ msgstr "Choisir les filtres"
 #: investments/templates/investments/list.html:146
 #: investments/templates/investments/list.html:147
 #: investments/templates/investments/list.html:148
-msgid "Is Funded"
-msgstr "Est Financé"
+msgid "Funding Status"
+msgstr "État Du Financement"
 
 #: investments/templates/investments/list.html:151
 #: investments/templates/investments/list.html:154

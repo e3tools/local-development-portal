@@ -50,13 +50,11 @@ class Command(BaseCommand):
                 # Sort by similarity if you want the best match first
                 matched_investments.sort(key=lambda inv: fuzz.ratio(inv.title, row["CDD Option"]),
                                          reverse=True)
-                print(len(matched_investments))
                 if matched_investments:
                     best_match = matched_investments[0]  # The best match based on similarity
                     if best_match.funded_by:
                         print('Ya esta financiado')
                         # print("matched second", best_match.title, row["CDD Option"], row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"])
-
                     # print("Best match:", best_match.title, row["CDD Option"], row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"])
                     best_match.funded_by = project
                     best_match.longitude = row["Longitude (x)"]
