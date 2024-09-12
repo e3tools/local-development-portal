@@ -143,9 +143,9 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <label for="funded-select-id">{% translate 'Is Funded' %}</label>
-                                                <select class="form-control" name="is-funded-filter" id="funded-select-id" empty-option="{% translate 'Is Funded' %}" style="width: 100%;">
-                                                    <option value=''>{% translate "Is Funded" %}</option>
+                                                <label for="funded-select-id">{% translate 'Funding Status' %}</label>
+                                                <select class="form-control" name="is-funded-filter" id="funded-select-id" empty-option="{% translate 'Funding Status' %}" style="width: 100%;">
+                                                    <option value=''>{% translate "Funding Status" %}</option>
                                                     {% if 'is-funded-filter' in query_strings_raw %}
                                                         {% if query_strings_raw|get_item:'is-funded-filter' == 'true' %}
                                                         <option value='true' selected>{% translate "Is funded" %}</option>

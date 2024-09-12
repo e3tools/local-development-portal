@@ -279,9 +279,7 @@ class IndexListView(
             "is-funded-filter"
         ] not in ["", None]:
             if self.request.GET["is-funded-filter"] == 'true':
-                queryset = queryset.filter(
-                    project_status=Investment.FUNDED
-                )
+                queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
             else:
                 queryset = queryset.exclude(
                     project_status=Investment.FUNDED
