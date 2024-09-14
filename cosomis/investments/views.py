@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
 
 from usermanager.models import User
-from administrativelevels.models import AdministrativeLevel, Category, Sector
+from administrativelevels.models import AdministrativeLevel, Category, Sector, Project
 
 from usermanager.permissions import IsInvestorMixin, IsModeratorMixin
 
@@ -363,16 +363,22 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
     title = _("Your package")
 
     def post(self, request, *args, **kwargs):
-        obj = self.get_object()
-        if "clear-package-input" in request.POST:
-            obj.funded_investments.clear()
-            obj.project = None
-            obj.save()
+        package = Package.objects.get_active_cart(user=self.request.user)
+        if not package.project:
+            package.project = Project.objects.get(id=request.POST["project"], organization=request.user.organization)
+            package.save()
+            return redirect(reverse('investments:cart'))
         else:
-            obj.status = Package.PENDING_APPROVAL
-            obj.save()
-            messages.add_message(request, messages.SUCCESS, "Package submitted.")
-        return redirect(reverse('investments:home_investments'))
+            obj = self.get_object()
+            if "clear-package-input" in request.POST:
+                obj.funded_investments.clear()
+                obj.project = None
+                obj.save()
+            else:
+                obj.status = Package.PENDING_APPROVAL
+                obj.save()
+                messages.add_message(request, messages.SUCCESS, "Package submitted.")
+            return redirect(reverse('investments:home_investments'))
 
     def get_object(self, queryset=None):
         """
@@ -421,6 +427,10 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
 
         context["sectors"] = dict.fromkeys(sectors)
         context["categories"] = dict.fromkeys(categories)
+
+        context['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
+        context['projects'] = self.request.user.organization.projects.all()
+
         return super(CartView, self).get_context_data(**context)
 
 

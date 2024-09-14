@@ -249,6 +249,37 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="nonProjectModal" data-backdrop="static" tabindex="-1" role="dialog"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">{% translate 'Select project' %}</h5>
+                </div>
+                <div class="modal-body">
+                    <p>{% translate 'You need to select a project related to this investments.' %}</p>
+                        <div class="horizontal-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="project-select-id">{% translate 'Project' %}</label>
+                                <select class="form-control" name="project" id="project-select-id" required style="width: 100%;">
+                                    <option selected value="">{% translate 'Project' %}</option>
+                                    {% for project in projects %}
+                                        <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="{% translate 'Save' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
@@ -256,7 +287,13 @@
 <script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        var table = $(".datatable").DataTable({{ datatable_config | safe }});
+
+        if ('{{ cart_project }}' === 'None') {
+            $('#investments-submit').attr('disabled','disabled');
+            $('#nonProjectModal').modal('show');
+        }
+
+        let table = $(".datatable").DataTable({{ datatable_config | safe }});
 
         sum_subprojects();
 
