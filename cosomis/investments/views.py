@@ -146,8 +146,9 @@ class IndexListView(
         kwargs["query_strings"] = self.get_query_strings_context()
         kwargs["query_strings_raw"] = self.request.GET.copy()
 
-        kwargs["projects"] = self.request.user.organization.projects.all()
-        kwargs['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
+        if self.request.user.organization is not None:
+            kwargs["projects"] = self.request.user.organization.projects.all()
+            kwargs['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
 
         kwargs.setdefault("view", self)
         if self.extra_context is not None:
