@@ -98,6 +98,7 @@ class StatisticsView(View):
         total_communities = investments.values('administrative_level').distinct().count()
         total_investments = investments.count()
         total_subprojects = investments.exclude(funded_by=None).count()
+        subprojects = investments.filter(investment_status=Investment.SUBPROJECT)
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
 
         # Sector priorities

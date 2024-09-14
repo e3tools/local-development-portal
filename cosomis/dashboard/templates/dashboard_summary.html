@@ -553,7 +553,7 @@
                     data: filter_values,
                     success: (data) => {
                         this.totalInvestmentsElement.text(data.total_investments);
-                        this.totalSubprojectsElement.text(data.total_subprojects);
+                        this.totalSubprojectsElement.text(data.total_subprojects+'/'+data.total_investments);
                         this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure);
                         this.updatePrioritiesChart(data.sector_priorities);
                         this.updateMinorityCharts(data.subprojects_by_sector_and_group);
