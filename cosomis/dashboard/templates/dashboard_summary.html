@@ -1,5 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n bootstrap4 custom_tags %}
+
 {% block extracss %}
     {{ block.super }}
     <link href="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.css' %}" rel="stylesheet">
@@ -17,11 +18,9 @@
         .horizontal-form .form-group { flex: 1; min-width: 100px; }
         .horizontal-form .btn { flex: none; }
         .card-Administrative, .card-status { border: none; }
-        .own-green-color { color: #26C18B; }
         .nav-pills .nav-link { color: inherit; background-color: inherit; }
-        .nav-pills .nav-link.active, .nav-pills .nav-link:hover, .nav-pills .nav-link:focus { color: white; background-color: #26C18B; border-color: #26C18B; }
         .card-map { min-height: 800px; min-width: 350px; overflow: hidden; position: relative; }
-        #map { position: absolute; top: 0; bottom: 2; left: 0; right: 0; height: 100%; width: 100%; }
+        #map { position: absolute; top: 0; left: 0; right: 0; height: 100%; width: 100%; }
         .marker { display: block; border: none; border-radius: 50%; cursor: pointer; width: 20px; height: 20px; transform: translate(-50%, -50%); }
         .mapboxgl-popup-content { min-width: 200px; min-height: 100px; }
     </style>
@@ -37,6 +36,33 @@
                             {% csrf_token %}
                             <div class="card-body">
                                 <div class="horizontal-form">
+                                    <div class="form-group">
+                                        <label for="organization-select-id">{% translate 'Sector' %}</label>
+                                        <select class="form-control" name="sector-filter" id="sector-select-id" style="width: 100%;">
+                                            <option selected value="">{% translate 'Sector' %}</option>
+                                            {% for sector in sectors %}
+                                                <option value="{{ sector.id }}">{{ sector.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="organization-select-id">{% translate 'Type' %}</label>
+                                        <select class="form-control" name="type-filter" id="type-select-id" style="width: 100%;">
+                                            <option selected value="">{% translate 'Type' %}</option>
+                                            {% for type in types %}
+                                                <option value="{{ type.0 }}">{{ type.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="organization-select-id">{% translate 'Organization' %}</label>
+                                        <select class="form-control" name="organization-filter" id="organization-select-id" style="width: 100%;">
+                                            <option selected value="">{% translate 'Organization' %}</option>
+                                            {% for organization in organizations %}
+                                                <option value="{{ organization.id }}">{{ organization.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                     <div class="form-group">
                                         <label for="region-select-id">{% translate 'Region' %}</label>
                                         <select class="form-control" name="region-filter" empty-option="{% translate 'Region' %}" style="width: 100%;" id="region-select-id">
@@ -83,7 +109,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="button" class="btn btn-link adm-submit-reset mt-4 own-green-color" value="{% translate 'Reset' %}" id="adm-reset-hidden-id" style="margin-bottom: 3px;"/>
+                                        <input type="button" class="btn btn-link adm-submit-reset mt-4" value="{% translate 'Reset' %}" id="adm-reset-hidden-id" style="margin-bottom: 3px;"/>
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +124,7 @@
                             {% csrf_token %}
                             <div class="horizontal-form">
                                 <div class="form-group">
-                                    <label for="project-status-select-id">{% translate 'Project Status' %}</label>
+                                    <label for="project-status-select-id">{% translate 'Sub-Project Status' %}</label>
                                     <select class="form-control" name="project-status-filter" id="project-status-select-id" style="width: 100%;">
                                         <option selected value="">{% translate 'All Statuses' %}</option>
                                         {% for status in project_statuses %}
@@ -122,9 +148,9 @@
                                 <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
                                 <path d="M4.5 12.5A.5.5 0 0 1 5 12h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m0-2A.5.5 0 0 1 5 10h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m1.639-3.708 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V8.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V8s1.54-1.274 1.639-1.208M6.25 6a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5"/>
                             </svg>
-                            <h5 class="card-title mt-3" style="font-size: 15px;">Communautés couvertes</h5>
+                            <h5 class="card-title mt-3" style="font-size: 15px;">{% translate "Total Sub-Project Priorities" %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3 own-green-color" id="total-communities" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-investments" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
                     </div>
                 </div>
                 <div class="card count-card flex-fill mb-3" style="position: relative;">
@@ -134,9 +160,9 @@
                               <path d="M7.207 1a1 1 0 0 0-1.414 0L.146 6.646a.5.5 0 0 0 .708.708L1 7.207V12.5A1.5 1.5 0 0 0 2.5 14h.55a2.5 2.5 0 0 1-.05-.5V9.415a1.5 1.5 0 0 1-.56-2.475l5.353-5.354z"/>
                               <path d="M8.793 2a1 1 0 0 1 1.414 0L12 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l1.854 1.853a.5.5 0 0 1-.708.708L15 8.207V13.5a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 4 13.5V8.207l-.146.147a.5.5 0 1 1-.708-.708z"/>
                             </svg>
-                            <h5 class="card-title mt-3" style="font-size: 15px;">Total Sous-projets</h5>
+                            <h5 class="card-title mt-3" style="font-size: 15px;">{% translate 'Total Selected Sub-Projects' %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3 own-green-color" id="total-subprojects" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-subprojects" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
                     </div>
                 </div>
                 <div class="card count-card flex-fill mb-3" style="position: relative;">
@@ -145,9 +171,9 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
                               <path d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z"/>
                             </svg>
-                            <h5 class="card-title mt-3" style="font-size: 15px;">Infrastructures complétées</h5>
+                            <h5 class="card-title mt-3" style="font-size: 15px;">{% translate 'Completed Sub-Projects' %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3 own-green-color" id="total-completed-infrastructure" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-completed-infrastructure" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
                     </div>
                 </div>
             </div>
@@ -160,7 +186,7 @@
                                 <h6 class="card-title py-0">Nombre de priorités par secteurs</h6>
                             </div>
                             <div id="noDataMessage" class="col-12 mt-3 mb-5" style="display: none; font-size:25px; ">
-                                <p class="text-center own-green-color mt-5" style="font-size:20px; ">Priorités non encore identifié dans ce village</p>
+                                <p class="text-center mt-5" style="font-size:20px; ">Priorités non encore identifié dans ce village</p>
                             </div>
                             <div class="col-6 mt-5">
                                 <ul id="prioritiesLegend" class="legend"></ul>
@@ -195,7 +221,7 @@
                                 <div class="tab-pane fade show active ml-2" id="pills-agriculturist" role="tabpanel" aria-labelledby="pills-agriculturist-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageAgriculturist" class="text-center own-green-color" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Agriculteurs</p>
+                                            <p id="noDataMessageAgriculturist" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Agriculteurs</p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="agriculturistLegend" class="legend"></ul>
@@ -208,7 +234,7 @@
                                 <div class="tab-pane fade ml-2" id="pills-women" role="tabpanel" aria-labelledby="pills-women-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageWomen" class="text-center own-green-color" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Femmes</p>
+                                            <p id="noDataMessageWomen" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Femmes</p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="womenLegend" class="legend"></ul>
@@ -221,7 +247,7 @@
                                 <div class="tab-pane fade ml-2" id="pills-youth" role="tabpanel" aria-labelledby="pills-youth-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageYouth" class="text-center own-green-color" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Jeunes</p>
+                                            <p id="noDataMessageYouth" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Jeunes</p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="youthLegend" class="legend"></ul>
@@ -234,7 +260,7 @@
                                 <div class="tab-pane fade ml-2" id="pills-ethnic-minorities" role="tabpanel" aria-labelledby="pills-ethnic-minorities-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageEthnicMinorities" class="text-center own-green-color" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Minorités ethniques</p>
+                                            <p id="noDataMessageEthnicMinorities" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Minorités ethniques</p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="ethnicMinoritiesLegend" class="legend"></ul>
@@ -269,6 +295,7 @@
     <script src="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.js' %}"></script>
     <script type="text/javascript">
         let markers = [];
+        let filter_values = {}
         const sectorColors = {};
         let allSubprojects = [];
 
@@ -324,15 +351,16 @@
 
             subprojects.forEach((subproject, index) => {
                 if ((filterSector === null || subproject.sector__name === filterSector) &&
-                    subproject.administrative_level__latitude && subproject.administrative_level__longitude) {
+                    subproject.latitude && subproject.longitude) {
                     const sectorColor = sectorColors[subproject.sector__name] || getRandomColor();
-                    const markerElement = createCustomMarker(sectorColor);
+                    // const markerElement = createCustomMarker(sectorColor);
                     const offset = calculateOffset(index);
                     const marker = new mapboxgl.Marker({
-                        element: markerElement,
+                        color: sectorColor,
+                        draggable: false,
                         offset: [offset.x, offset.y]
                     })
-                    .setLngLat([subproject.administrative_level__longitude, subproject.administrative_level__latitude])
+                    .setLngLat([subproject.longitude, subproject.latitude])
                     .setPopup(new mapboxgl.Popup({ offset: 20 }).setHTML(`
                             <h3 class="popover-header">${subproject.administrative_level__name}</h3>
                             <div class="popover-body">
@@ -395,13 +423,29 @@
                     if (level !== 'village') {
                         changeAdmLevelsSelects($(this), $(`#${nextLevel}-select-id`), getFollowingLevels(nextLevel));
                     }
-                    statisticsComponent.fetchAndDisplayStatistics({ [`${level}_id`]: selectedValue });
+                    filter_values[`${level}_id`] = selectedValue
+                    statisticsComponent.fetchAndDisplayStatistics();
                 }, 300)); // Debouncing to prevent rapid consecutive calls
             });
 
             $('#project-status-select-id').on('change', function() {
-                const selectedValue = $(this).val();
-                statisticsComponent.fetchAndDisplayStatistics({ 'project-status-filter': selectedValue });
+                filter_values['project-status-filter'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            $('#organization-select-id').on('change', function() {
+                filter_values['organization'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            $('#sector-select-id').on('change', function() {
+                filter_values['sector'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            $('#type-select-id').on('change', function() {
+                filter_values['type'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
             });
 
             function getNextLevel(level) {
@@ -460,6 +504,7 @@
 
         function resetFilters(regionOptions, statisticsComponent) {
             const form = $('#adm-filter-form')[0];
+            filter_values = {};
             form.reset();
 
             ['prefecture', 'commune', 'canton', 'village'].forEach(level => {
@@ -474,6 +519,10 @@
             const projectStatusSelect = $('#project-status-select-id');
             projectStatusSelect.val('').change();
 
+            // Reset the "Project Organizations" select
+            const projectOrganizationsSelect = $('#organization-select-id');
+            projectOrganizationsSelect.val('').change();
+
             statisticsComponent.fetchAndDisplayStatistics();
         }
 
@@ -485,7 +534,7 @@
         class StatisticsComponent {
             constructor(map) {
                 this.map = map;
-                this.totalCommunitiesElement = $('#total-communities');
+                this.totalInvestmentsElement = $('#total-investments');
                 this.totalSubprojectsElement = $('#total-subprojects');
                 this.totalCompletedInfrastructureElement = $('#total-completed-infrastructure');
                 this.prioritiesChart = null;
@@ -497,19 +546,19 @@
                 };
             }
 
-            fetchAndDisplayStatistics(filters = {}) {
+            fetchAndDisplayStatistics() {
                 const baseUrl = window.location.href.split('?')[0];
                 $.ajax({
                     url: `${baseUrl}ajax/statistics`,
-                    data: filters,
+                    data: filter_values,
                     success: (data) => {
-                        this.totalCommunitiesElement.text(data.total_communities);
-                        this.totalSubprojectsElement.text(data.total_subprojects);
+                        this.totalInvestmentsElement.text(data.total_investments);
+                        this.totalSubprojectsElement.text(data.total_subprojects+'/'+data.total_investments);
                         this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure);
                         this.updatePrioritiesChart(data.sector_priorities);
                         this.updateMinorityCharts(data.subprojects_by_sector_and_group);
                         allSubprojects = data.subprojects;
-                        updateMap(this.map, data.subprojects, filters['sector-filter']);
+                        updateMap(this.map, data.subprojects, filter_values['sector-filter']);
                     },
                     error: function() {
                         alert('Failed to fetch statistics. Please try again.');
