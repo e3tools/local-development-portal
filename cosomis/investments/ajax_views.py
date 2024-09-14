@@ -3,10 +3,12 @@ from django.http import JsonResponse
 from django.views import View
 
 from rest_framework import generics
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
 from administrativelevels.models import AdministrativeLevel, Sector
 from .models import Investment, Package
+from .serializers import InvestmentSerializer
 
 
 class FillAdmLevelsSelectFilters(generics.GenericAPIView):
@@ -41,6 +43,15 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
         return Response({
             'values': [{'id': adm.id, 'name': adm.name} for adm in opt_qs]
         })
+
+
+class InvestmentModelViewSet(ModelViewSet):
+    queryset = Investment.objects.all()
+    serializer_class = InvestmentSerializer
+
+    def list(self, request, *args, **kwargs):
+        print('en el get')
+        return super().list(request, *args, **kwargs)
 
 
 class StatisticsView(View):

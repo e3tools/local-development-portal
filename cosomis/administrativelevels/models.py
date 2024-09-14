@@ -1,7 +1,7 @@
 import json
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from usermanager.models import User
+from usermanager.models import User, Organization
 from cosomis.models_base import BaseModel
 
 
@@ -181,7 +181,9 @@ class Sector(BaseModel):
 class Project(BaseModel):
     name = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
-    implementation_agency = models.CharField(max_length=255, null=True, blank=True, verbose_name=_("Implementation agency"))
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
+                                     null=True, blank=True, related_name="projects",
+                                     verbose_name=_("Implementation agency"))
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 

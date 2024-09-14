@@ -553,7 +553,7 @@ class ProjectListView(PageMixin, IsInvestorMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(owner=self.request.user)
+        queryset = queryset.filter(organization=self.request.user.organization)
         return queryset
 
 

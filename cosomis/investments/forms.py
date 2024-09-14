@@ -1,34 +1,46 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+
+from administrativelevels.models import Project
 from usermanager.models import User
 from .models import Package, Investment
 
 
 class InvestmentsForm(forms.Form):
     investments = forms.CharField()
+    project = forms.ModelChoiceField(queryset=Project.objects.all())
 
     def __init__(self, *args, context=None, **kwargs):
         self.context = context
-        super().__init__(*args, **kwargs)
-
-    def clean_investments(self):
         if not hasattr(self, 'context'):
             raise 'Need context.'
         if 'user' not in self.context:
             raise 'Need user.'
-        data = self.cleaned_data['investments']
+        super().__init__(*args, **kwargs)
+        self.fields['investments'].queryset = Project.objects.filter(organization=context["user"].organization)
+        self.package = Package.objects.get_active_cart(
+            user=self.context['user']
+        )
+
+    def clean_investments(self):
         investment_ids = self.cleaned_data['investments'].split(',')
         investment_ids.remove('')
-        investments = Investment.objects.filter(
+        return Investment.objects.filter(
             id__in=investment_ids,
             project_status=Investment.NOT_FUNDED
         )
-        package = Package.objects.get_active_cart(
-            user=self.context['user']
-        )
-        for inv in investments:
-            package.funded_investments.add(inv)
-        return data
+
+    def save(self):
+        investments = list()
+        project  = self.cleaned_data['project']
+        for inv in self.cleaned_data['investments']:
+            self.package.funded_investments.add(inv)
+            inv.fund_by = project
+            investments.append(inv)
+        self.package.project = project
+        self.package.save()
+        Investment.objects.bulk_update(investments, 'fund_by')
+        return self.package
 
 
 class PackageApprovalForm(forms.Form):

@@ -388,6 +388,7 @@
 
 <div class="row">
     <div class="col-12">
+        <form action="" method="POST" id="investment-form" name="investments-form">
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -395,7 +396,6 @@
                 </div>
                 <div class="row">
                     <div class="col-12 mb-3">
-
                         {% for key, value in query_strings.items %}
                             <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
                                 <span class="filter-badge-label">{{ key }} : {{ value|truncatechars:20 }}</span>
@@ -421,13 +421,29 @@
                     </div>
                     {% if not user.is_moderator %}
                     <div class="col-3">
+                        <div class="form-group">
+                            <label for="project-select-id">{% translate 'Project' %}</label>
+                            <select class="form-control" name="project" id="project-select-id" style="width: 100%;" required>
+                                <option selected value="">{% translate 'project' %}</option>
+                                {% for project in projects %}
+                                    {% if cart_project %}
+                                        {% if cart_project.id == project.id %}
+                                        <option value="{{ project.id }}" selected>{{ project.name }}</option>
+                                        {% else %}
+                                        <option value="{{ project.id }}">{{ project.name }}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
                         <input type="submit" class="btn btn-primary btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
                     </div>
                     {% endif %}
                 </div>
             </div>
             <div class="card-body">
-                <form action="" method="POST" id="investment-form" name="investments-form">
                     {% csrf_token %}
                     {% if investments.count == 0 %}
                         {% translate 'You have no investments' %}
@@ -489,9 +505,9 @@
                     </table>
                     {% endif %}
                     <input type="hidden" id="investments-input-id" value="" name="investments">
-                </form>
             </div>
         </div>
+        </form>
     </div>
 </div>
 
@@ -654,15 +670,6 @@
                 select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
             }
         };
-
-        // Get the 'Add to Cart' button by ID
-        var addToCartBtn = document.getElementById('investments-submit');
-
-        // When the 'Add to Cart' button is clicked
-        addToCartBtn.addEventListener('click', function () {
-            // Submit the form with the ID 'investment-form'
-            document.getElementById('investment-form').submit();
-        });
     });
 </script>
 {% endblock %}

@@ -46,6 +46,8 @@ class IndexListView(
     def post(self, request, *args, **kwargs):
         if "investments" in request.POST:
             form = self.get_form()
+            print(form.is_valid())
+            print(form.errors)
             if form.is_valid():
                 return self.form_valid(form)
             else:
@@ -144,6 +146,9 @@ class IndexListView(
         kwargs["query_strings"] = self.get_query_strings_context()
         kwargs["query_strings_raw"] = self.request.GET.copy()
 
+        kwargs["projects"] = self.request.user.organization.projects.all()
+        kwargs['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
+
         kwargs.setdefault("view", self)
         if self.extra_context is not None:
             kwargs.update(self.extra_context)
@@ -177,6 +182,8 @@ class IndexListView(
 
         context["datatable_config"] = get_datatable_config()
         context["datatable_config"]["responsive"] = "true"
+        # context["datatable_config"]["server-side"] = "true"
+        # context["datatable_config"]["ajax"] = "/investments/ajax/datatable?format=datatables"
         context["datatable_config"]["columnDefs"] = [
             {"responsivePriority": 1, "targets": 0},
             {"responsivePriority": 2, "targets": 1},
@@ -342,6 +349,10 @@ class IndexListView(
                     resp["Priorities"] = _('All priorities')
         return resp
 
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_url(self):
         return reverse("investments:cart")
 
@@ -355,6 +366,8 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
         obj = self.get_object()
         if "clear-package-input" in request.POST:
             obj.funded_investments.clear()
+            obj.project = None
+            obj.save()
         else:
             obj.status = Package.PENDING_APPROVAL
             obj.save()

@@ -50,15 +50,25 @@
                     </div>
                 </div>
                 <div class="row">
-                <div class="col-4">
-                    <p class="text-sm">{% translate '# Villages' %}:</p>
+                    <div class="col-4">
+                        <p class="text-sm">{% translate '# Villages' %}:</p>
+                    </div>
+                    <div class="col-8">
+                        <p class="text-sm">
+                            <b class="d-block total-villages-display">0</b>
+                        </p>
+                    </div>
                 </div>
-                <div class="col-8">
-                    <p class="text-sm">
-                        <b class="d-block total-villages-display">0</b>
-                    </p>
+                <div class="row">
+                    <div class="col-4">
+                        <p class="text-sm">{% translate 'Project' %}:</p>
+                    </div>
+                    <div class="col-8">
+                        <p class="text-sm">
+                            <b class="d-block">{{ object.project.name }}</b>
+                        </p>
+                    </div>
                 </div>
-            </div>
             </div>
             <div class="card-footer">
                 <div class="row">
@@ -66,7 +76,7 @@
                         <h6>{% translate 'Sectors' %} ({{ sectors|length }}):</h6>
 
                         {% for sector in sectors %}
-                        <span class="badge badge-pill badge-info mr-1"
+                        <span class="badge badge-pill badge-info mr-1 mb-1"
                               style="font-size: 12px; padding: 10px;">{{ sector.name }}
                         </span>
                         {% endfor %}
@@ -78,7 +88,7 @@
                         <h6>{% translate 'Categories' %} ({{ categories|length }}):</h6>
 
                         {% for category in categories %}
-                        <span class="badge badge-pill badge-info mr-1"
+                        <span class="badge badge-pill badge-info mr-1 mb-1"
                               style="font-size: 12px; padding: 10px;">{{ category.name }}
                         </span>
                         {% endfor %}
