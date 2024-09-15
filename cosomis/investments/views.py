@@ -573,6 +573,7 @@ class ModeratorPackageReviewView(
         kwargs = {
             "initial": self.get_initial(),
             "prefix": self.get_prefix(),
+            "context": {"user": self.request.user},
         }
 
         post_data = self.request.POST.copy()

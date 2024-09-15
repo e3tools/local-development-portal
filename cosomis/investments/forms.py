@@ -54,6 +54,17 @@ class PackageApprovalForm(forms.Form):
                                                 'investments. Please leave comments to help '
                                                 'with re-submission.'))
 
+    def __init__(self, *args, **kwargs):
+        context = kwargs.pop('context')
+        self.user = None
+        if context:
+            self.user = context.get('user', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        if self.user is None or not self.user.is_moderator:
+            raise Exception("Moderator user required.")
+
     def save(self):
         package = self.cleaned_data['package']
         if 'reject_reason' in self.cleaned_data and self.cleaned_data['reject_reason'] not in [None, '']:
@@ -63,6 +74,7 @@ class PackageApprovalForm(forms.Form):
                 package.status = Package.CLOSED
         else:
             package.status = Package.APPROVED
+        package.review_by = self.user
         package.save()
 
 

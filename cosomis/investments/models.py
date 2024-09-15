@@ -122,6 +122,10 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     draft_status = models.BooleanField(default=True)
     status = models.CharField(max_length=50, choices=STATUS, default=PENDING_SUBMISSION)
 
+    review_by = models.ForeignKey(User, on_delete=models.SET_NULL,
+                                  help_text=_("User who reviews the status of the Package. This user must be a moderator."),
+                                  null=True, blank=True)
+
     rejection_reason = models.TextField(null=True, blank=True)
 
     def estimated_final_cost(self):

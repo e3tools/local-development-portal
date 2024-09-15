@@ -139,7 +139,11 @@
                                         {% endif %}
                                     </td>
                                     <td>
+                                        {% if package.status != package.PENDING_APPROVAL and package.status != package.PENDING_SUBMISSION %}
+                                            <span>{% translate 'Review by' %}</span> <b>{{ package.review_by }}</b>
+                                        {% else %}
                                         <a href="{% url 'investments:package_review' package.pk %}" class="btn btn-xs btn-primary">Review</a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
