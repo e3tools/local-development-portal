@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-15 13:16+0200\n"
+"POT-Creation-Date: 2024-09-15 13:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1890,16 +1890,12 @@ msgid "Investments"
 msgstr "Investissements"
 
 #: cosomis/templates/layouts/sidebar.html:70
-#, fuzzy
-#| msgid "Load file"
 msgid "Profile"
-msgstr "Charger Fichier"
+msgstr "Profil"
 
 #: cosomis/templates/layouts/sidebar.html:77
-#, fuzzy
-#| msgid "Project coverage"
 msgid "Project Management"
-msgstr "Couverture du projet"
+msgstr "Gestion de projet"
 
 #: cosomis/templates/layouts/sidebar.html:89
 msgid "Toggle Sidebar"
@@ -2351,14 +2347,12 @@ msgid "Categories"
 msgstr ""
 
 #: investments/templates/investments/cart.html:118
-#| msgid "# Sub-projects"
 msgid "# Subprojects"
 msgstr "# Sous-projets"
 
 #: investments/templates/investments/cart.html:139
-#| msgid "Submit"
-msgid "Submit Package"
-msgstr "Soumettre"
+msgid "Submit For Approval"
+msgstr "Soumettre à l'approbation"
 
 #: investments/templates/investments/cart.html:152
 msgid "Investments in your package"
@@ -2381,7 +2375,6 @@ msgid "Are you sure do you want to clear the package?"
 msgstr ""
 
 #: investments/templates/investments/cart.html:258
-#| msgid "Search a level"
 msgid "Select project"
 msgstr "Rechercher un niveau"
 
@@ -2437,7 +2430,6 @@ msgid "# Villages:"
 msgstr "# Villages:"
 
 #: investments/templates/investments/list.html:427
-#| msgid "Subproject"
 msgid "project"
 msgstr "Projet"
 
@@ -2455,7 +2447,6 @@ msgstr "Ajouter une priorité"
 
 #: investments/templates/investments/list.html:456
 #: investments/templates/investments/moderator/package_review.html:374
-#| msgid "Identified priorities"
 msgid "You have no investments"
 msgstr "Vous n'avez pas d'investissements"
 
@@ -2469,7 +2460,6 @@ msgstr ""
 
 #: investments/templates/investments/moderator/approvals_list.html:83
 #: investments/templates/investments/moderator/package_review.html:364
-#| msgid "Approved"
 msgid "Approve"
 msgstr "Approuvé"
 
@@ -2501,7 +2491,6 @@ msgstr ""
 
 #: investments/templates/investments/profile.html:36
 #: investments/templates/investments/profile.html:64
-#| msgid "Investments"
 msgid "Total investments"
 msgstr "Investissements"
 
@@ -2525,6 +2514,10 @@ msgstr ""
 msgid "Your package"
 msgstr "Votre paquet"
 
+#: investments/views.py:381
+msgid "Package submitted."
+msgstr "Paquet soumis."
+
 #: investments/views.py:401
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
@@ -2532,7 +2525,7 @@ msgstr ""
 
 #: investments/views.py:445
 msgid "Welcome, Moderator!"
-msgstr ""
+msgstr "Bienvenue, Monsieur le Modérateur !"
 
 #: investments/views.py:519
 msgid "Investment Package Review"
@@ -2591,7 +2584,6 @@ msgid "Management"
 msgstr ""
 
 #: usermanager/admin.py:39
-#| msgid "Start date"
 msgid "Important dates"
 msgstr "Date de début"
 
@@ -2681,6 +2673,9 @@ msgstr "Connexion"
 #: usermanager/templates/login.html:47
 msgid "Log in to start your session"
 msgstr "Connectez-vous pour démarrer votre session"
+
+#~ msgid "Submit Package"
+#~ msgstr "Soumettre"
 
 #, fuzzy
 #~| msgid "Investments"
