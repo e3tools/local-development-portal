@@ -6,7 +6,9 @@
         <div class="m-0 main-title">{{ title | safe }}</div>
     </div>
     <div class="col-sm-3">
-        <a href="{% url 'administrativelevels:project-create' %}" class="btn btn-block btn-primary">Create project</a>
+        <a href="{% url 'administrativelevels:project-create' %}" class="btn btn-block btn-primary">
+            {% translate 'Create Project' %}
+        </a>
     </div>
 {% endblock %}
 

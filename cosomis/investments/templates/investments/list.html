@@ -438,7 +438,7 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        {% if not project %}
+                        {% if projects|length == 0 %}
                             <div class="alert alert-danger" role="alert">
                                 {% translate 'Your organization must have a project to submit investments' %}
                                 </br>

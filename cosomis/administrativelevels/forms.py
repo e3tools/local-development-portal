@@ -14,6 +14,15 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         exclude = ['id', 'created_date', 'updated_date', 'owner']
+        labels = {
+            'name': _("Name"),
+            'description': _("Description"),
+            'organization': _("Organization"),
+            'start_date': _("Start Date"),
+            'end_date': _("End Date"),
+            'total_amount': _("Total Amount"),
+            'sector': _("Sector"),
+        }
 
     def __init__(self, *args, **kwargs):
         self.owner = kwargs.pop('owner', None)

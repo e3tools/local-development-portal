@@ -35,11 +35,11 @@ class InvestmentsForm(forms.Form):
         project  = self.cleaned_data['project']
         for inv in self.cleaned_data['investments']:
             self.package.funded_investments.add(inv)
-            inv.fund_by = project
+            inv.funded_by = project
             investments.append(inv)
         self.package.project = project
         self.package.save()
-        Investment.objects.bulk_update(investments, 'fund_by')
+        Investment.objects.bulk_update(investments, ['funded_by'])
         return self.package
 
 

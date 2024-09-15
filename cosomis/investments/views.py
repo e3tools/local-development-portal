@@ -378,7 +378,7 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
             else:
                 obj.status = Package.PENDING_APPROVAL
                 obj.save()
-                messages.add_message(request, messages.SUCCESS, "Package submitted.")
+                messages.add_message(request, messages.SUCCESS, _("Package submitted."))
             return redirect(reverse('investments:home_investments'))
 
     def get_object(self, queryset=None):
