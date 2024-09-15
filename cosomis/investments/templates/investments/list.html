@@ -438,6 +438,13 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        {% if not project %}
+                            <div class="alert alert-danger" role="alert">
+                                {% translate 'Your organization must have a project to submit investments' %}
+                                </br>
+                                <a href="{% url 'administrativelevels:projects' %}" class="underline">{% translate 'Click to your first project' %}</a>
+                            </div>
+                        {% endif %}
                         <input type="submit" class="btn btn-primary btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
                     </div>
                     {% endif %}

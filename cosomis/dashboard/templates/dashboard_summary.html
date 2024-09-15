@@ -308,7 +308,8 @@
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v11',
                 center: [{{ lng }}, {{ lat }}],
-                zoom: {{ zoom }}
+                zoom: {{ zoom }},
+                collectResourceTiming: false
             });
 
             const bounds = [
@@ -548,21 +549,47 @@
 
             fetchAndDisplayStatistics() {
                 const baseUrl = window.location.href.split('?')[0];
+                const requestUrl = `${baseUrl}ajax/statistics`;
+
+                console.log('Fetching statistics from:', requestUrl);
+                console.log('Request data:', filter_values);
+
                 $.ajax({
-                    url: `${baseUrl}ajax/statistics`,
+                    url: requestUrl,
                     data: filter_values,
                     success: (data) => {
+                        console.log('Response data:', data);  // Log the full response
+
+                        // Update DOM elements with data
                         this.totalInvestmentsElement.text(data.total_investments);
-                        this.totalSubprojectsElement.text(data.total_subprojects+'/'+data.total_investments);
+                        this.totalSubprojectsElement.text(data.total_subprojects + '/' + data.total_investments);
                         this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure);
                         this.updatePrioritiesChart(data.sector_priorities);
                         this.updateMinorityCharts(data.subprojects_by_sector_and_group);
                         allSubprojects = data.subprojects;
-                        updateMap(this.map, data.subprojects, filter_values['sector-filter']);
+                        // Uncomment if needed: updateMap(this.map, data.subprojects, filter_values['sector-filter']);
                     },
-                    error: function() {
-                        alert('Failed to fetch statistics. Please try again.');
+                    error: (jqXHR, textStatus, errorThrown) => {
+                        console.error('Error fetching statistics:', {
+                            status: jqXHR.status,
+                            statusText: jqXHR.statusText,
+                            responseText: jqXHR.responseText,
+                            errorThrown: errorThrown,
+                            textStatus: textStatus
+                        });
+
+                        alert('Failed to fetch statistics. Please check the console for more details.');
                     }
+                }).fail((jqXHR, textStatus, errorThrown) => {
+                    console.error('Request failed:', {
+                        status: jqXHR.status,
+                        statusText: jqXHR.statusText,
+                        responseText: jqXHR.responseText,
+                        errorThrown: errorThrown,
+                        textStatus: textStatus
+                    });
+
+                    alert(`Failed to fetch statistics. Status: ${jqXHR.status}, Error: ${textStatus}`);
                 });
             }
 
@@ -678,7 +705,7 @@
                     `;
                     legendItem.addEventListener('click', function() {
                         const selectedSector = data.labels[index];
-                        updateMap(statisticsComponent.map, allSubprojects, selectedSector);
+                        {#updateMap(statisticsComponent.map, allSubprojects, selectedSector);#}
                     });
                     legend.appendChild(legendItem);
                 });

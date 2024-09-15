@@ -24,7 +24,7 @@ django-environ==0.9.0
 django-htmx==1.17.3
 django-storages==1.13.1
 django-unicorn==0.48.0
-djangorestframework==3.13.1
+djangorestframework==3.14.0
 djangorestframework-datatables==0.7.2
 drf-spectacular==0.23.1
 et-xmlfile==1.1.0

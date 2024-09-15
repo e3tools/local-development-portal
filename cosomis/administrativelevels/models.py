@@ -190,7 +190,7 @@ class Project(BaseModel):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     total_amount = models.PositiveBigIntegerField(default=0)
-    sector = models.ForeignKey(Sector, on_delete=models.CASCADE, null=True, blank=True)
+    sector = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Phase(BaseModel):

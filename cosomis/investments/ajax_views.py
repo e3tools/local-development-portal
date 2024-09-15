@@ -1,3 +1,4 @@
+import math
 from django.db.models import Count, Q, Subquery
 from django.http import JsonResponse
 from django.views import View
@@ -117,7 +118,7 @@ class StatisticsView(View):
             for group in minority_groups
         }
 
-        # Subprojects with coordinates
+        # Fetch subprojects that have non-null latitude and longitude
         subprojects_with_coordinates = investments.exclude(
             latitude__isnull=True,
             longitude__isnull=True
@@ -131,6 +132,12 @@ class StatisticsView(View):
             'physical_execution_rate'
         )
 
+        # Filter out subprojects with NaN latitude or longitude
+        filtered_subprojects = [
+            subproject for subproject in subprojects_with_coordinates
+            if not (math.isnan(subproject['latitude']) or math.isnan(subproject['longitude']))
+        ]
+
         data = {
             'total_communities': total_communities,
             'total_investments': total_investments,
@@ -140,7 +147,7 @@ class StatisticsView(View):
             'subprojects_by_sector_and_group': {
                 group: list(subprojects_by_sector_and_group[group]) for group in minority_groups
             },
-            'subprojects': list(subprojects_with_coordinates)
+            'subprojects': filtered_subprojects  # Use the filtered subprojects without NaN
         }
 
         return JsonResponse(data)
