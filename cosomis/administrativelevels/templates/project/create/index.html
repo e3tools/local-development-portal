@@ -56,7 +56,10 @@
             showDropdowns: true,
             autoApply: true,
             minYear: 2020,
-            maxYear: parseInt(moment().format('YYYY'),10) + 10
+            maxYear: parseInt(moment().format('YYYY'),10) + 10,
+            locale: {
+              format: 'DD/MM/YYYY'
+            }
         });
     });
     </script>

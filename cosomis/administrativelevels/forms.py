@@ -11,6 +11,9 @@ from django.utils.translation import gettext_lazy as _
 
 class ProjectForm(forms.ModelForm):
 
+    start_date = forms.DateField(input_formats=["%d/%m/%Y"])
+    end_date = forms.DateField(input_formats=["%d/%m/%Y"])
+
     class Meta:
         model = Project
         exclude = ['id', 'created_date', 'updated_date', 'owner']
