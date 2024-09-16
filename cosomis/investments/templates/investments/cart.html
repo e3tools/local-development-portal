@@ -35,7 +35,7 @@
                     </div>
                     <div class="col-8">
                         <p class="text-sm">
-                            <b class="d-block total-funding-display">0</b>
+                            <b class="d-block total-funding-display">{{ total_funding|intcomma }}</b>
                         </p>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                     </div>
                     <div class="col-4">
                         <p class="text-sm">
-                            <b class="d-block total-funding-display">0</b>
+                            <b class="d-block total-funding-display">{{ total_funding|intcomma }}</b>
                         </p>
                     </div>
                 </div>
@@ -171,9 +171,8 @@
             <div class="card-body">
                 <form action="" method="POST" name="investments-form" id="investment-form">
                     {% csrf_token %}
-                    <table class="table datatable display" style="100%">
+                    <table class="table datatable display" style="width: 100%;">
                         <thead>
-                        <th></th>
                         <th>{% translate 'Name' %}</th>
                         <th>{% translate 'Subproject type' %}</th>
                         <th>{% translate 'Estimate cost' %}</th>
@@ -183,13 +182,11 @@
                         <th>{% translate 'Region' %}</th>
                         <th>{% translate 'Village priority' %}</th>
                         <th>{% translate 'Population priority' %}</th>
+                        <th></th>
                         </thead>
                         <tbody>
                         {% for investment in object.funded_investments.all %}
                         <tr>
-                            <td class="d-flex align-items-center justify-content-center">
-                                <input class="form-check-input project-table-check align-self-center p-2" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox" checked>
-                            </td>
                             <td>{{ investment.title }}</td>
                             <td>{{ investment.administrative_level.type }}</td>
                             <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
@@ -213,6 +210,13 @@
                                 {% if investment.endorsed_by_pastoralist %}
                                 ME
                                 {% endif %}
+                            </td>
+                            <td>
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ investment.id }}" name="remove-from-cart">
+                                    <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}
@@ -320,13 +324,12 @@
         });
 
         function sum_subprojects() {
-            let rows = table.rows()
             let villages = [];
             let funding = 0;
             let subprojects = 0;
 
             table.rows().every( function ( rowIdx ) {
-                let firstVal = $( this.node() ).first().find('input:checked').val();
+                let firstVal = $( this.node() ).first().val();
 
                 if (firstVal != undefined) {
                     let subproject_data = table.row( rowIdx ).data();
@@ -342,7 +345,6 @@
                 }
             } );
 
-            $('.total-funding-display').html(numeral(funding).format('0,0'));
             $('.total-villages-display').html(numeral(villages.length).format('0,0'));
             $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
 

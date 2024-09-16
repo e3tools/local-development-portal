@@ -371,7 +371,11 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
             return redirect(reverse('investments:cart'))
         else:
             obj = self.get_object()
-            if "clear-package-input" in request.POST:
+            if "remove-from-cart" in request.POST:
+                investment = Investment.objects.get(pk=request.POST["remove-from-cart"])
+                package.funded_investments.remove(investment)
+                return redirect(reverse('investments:cart'))
+            elif "clear-package-input" in request.POST:
                 obj.funded_investments.clear()
                 obj.project = None
                 obj.save()
@@ -415,16 +419,18 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
             {"responsivePriority": 5, "targets": 4},
             {"responsivePriority": 6, "targets": 5},
             {"responsivePriority": 7, "targets": 6},
-            {"responsivePriority": 8, "targets": 7},
+            {"responsivePriority": 10, "targets": 7},
             {"responsivePriority": 9, "targets": 8},
-            {"responsivePriority": 10, "targets": 9},
+            {"responsivePriority": 8, "targets": 9},
         ]
         sectors = list()
         categories = list()
+        context['total_funding'] = 0
 
         for inv in context["object"].funded_investments.all():
             sectors.append(inv.sector)
             categories.append(inv.sector.category)
+            context['total_funding'] += inv.estimated_cost
 
         context["sectors"] = dict.fromkeys(sectors)
         context["categories"] = dict.fromkeys(categories)
