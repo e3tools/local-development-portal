@@ -3,7 +3,7 @@ from django.views import generic
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.mixins import LoginRequiredMixin
 from usermanager.models import Organization
-from administrativelevels.models import AdministrativeLevel, Sector
+from administrativelevels.models import AdministrativeLevel, Sector, Category
 from investments.models import Investment  # Make sure to import the Investment model
 
 
@@ -35,7 +35,7 @@ class DashboardSummaryView(LoginRequiredMixin, generic.TemplateView):
         filters_context["cantons"] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
         filters_context["villages"] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
         filters_context["organizations"] = Organization.objects.all()
-        filters_context["sectors"] = Sector.objects.all()
+        filters_context["sectors"] = Category.objects.all()
         filters_context["types"] = Investment.INVESTMENT_STATUS_CHOICES
 
         if "region-filter" in self.request.GET:

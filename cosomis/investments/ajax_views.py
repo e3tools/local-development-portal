@@ -103,7 +103,7 @@ class StatisticsView(View):
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
 
         # Sector priorities
-        sector_priorities = investments.values('sector__name').annotate(total=Count('sector__name'))
+        sector_priorities = investments.values('sector__category__name').annotate(total=Count('sector__category__name'))
 
         # Subprojects by sector and minority groups
         minority_groups = [
@@ -114,7 +114,7 @@ class StatisticsView(View):
         ]
 
         subprojects_by_sector_and_group = {
-            group: investments.filter(**{group: True}).values('sector__name').annotate(total=Count('sector__name'))
+            group: investments.filter(**{group: True}).values('sector__category__name').annotate(total=Count('sector__category__name'))
             for group in minority_groups
         }
 

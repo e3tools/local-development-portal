@@ -2021,7 +2021,7 @@ msgstr "Tous les statuts"
 
 #: dashboard/templates/dashboard_summary.html:151
 msgid "Total Sub-Project Priorities"
-msgstr "Total Priorités Sous-Projets"
+msgstr "Total prioritaires sous-projets communautaires"
 
 #: dashboard/templates/dashboard_summary.html:163
 msgid "Total Selected Sub-Projects"
