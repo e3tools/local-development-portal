@@ -47,9 +47,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="organization-select-id">{% translate 'Type' %}</label>
-                                        <select class="form-control" name="type-filter" id="type-select-id" style="width: 100%;">
+                                        <select
+                                            class="form-control"
+                                            name="type-filter"
+                                            id="type-select-id"
+                                            style="width: 100%;"
+
+                                        >
                                             <option selected value="">{% translate 'Type' %}</option>
-                                            {% for type in types %}
+                                            {% for type in sector_types %}
                                                 <option value="{{ type.0 }}">{{ type.1 }}</option>
                                             {% endfor %}
                                         </select>
@@ -72,6 +78,8 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+                                </div>
+                                <div class="horizontal-form">
                                     <div class="form-group">
                                         <label for="prefecture-select-id">{% translate 'Prefecture' %}</label>
                                         <select class="form-control" name="prefecture-filter" id="prefecture-select-id" empty-option="{% translate 'Prefecture' %}" style="width: 100%;" {% if not 'region-filter' in query_strings_raw %}disabled{% endif %}>
@@ -108,6 +116,8 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+                                </div>
+                                <div class="horizontal-form">
                                     <div class="form-group">
                                         <input type="button" class="btn btn-link adm-submit-reset mt-4" value="{% translate 'Reset' %}" id="adm-reset-hidden-id" style="margin-bottom: 3px;"/>
                                     </div>
@@ -150,7 +160,7 @@
                             </svg>
                             <h5 class="card-title mt-3" style="font-size: 15px;">{% translate "Total Sub-Project Priorities" %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3" id="total-investments" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-investments" style="position: absolute; bottom: 10px; right: 10px; font-size: 30px;">0</h2>
                     </div>
                 </div>
                 <div class="card count-card flex-fill mb-3" style="position: relative;">
@@ -162,7 +172,7 @@
                             </svg>
                             <h5 class="card-title mt-3" style="font-size: 15px;">{% translate 'Total Selected Sub-Projects' %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3" id="total-subprojects" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-subprojects" style="position: absolute; bottom: 10px; right: 10px; font-size: 30px;">0</h2>
                     </div>
                 </div>
                 <div class="card count-card flex-fill mb-3" style="position: relative;">
@@ -173,7 +183,7 @@
                             </svg>
                             <h5 class="card-title mt-3" style="font-size: 15px;">{% translate 'Completed Sub-Projects' %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3" id="total-completed-infrastructure" style="position: absolute; bottom: 10px; right: 10px; font-size: 45px;">0</h2>
+                        <h2 class="card-text mx-5 mb-3" id="total-completed-infrastructure" style="position: absolute; bottom: 10px; right: 10px; font-size: 30px;">0</h2>
                     </div>
                 </div>
             </div>
@@ -185,7 +195,7 @@
                             <div class="col-12 mb-3">
                                 <h6 class="card-title py-0">Nombre de priorités par secteurs</h6>
                             </div>
-                            <div id="noDataMessage" class="col-12 mt-3 mb-5" style="display: none; font-size:25px; ">
+                            <div id="noDataMessage" class="col-12 mt-3 mb-5" style="display: none; font-size:30px; ">
                                 <p class="text-center mt-5" style="font-size:20px; ">Priorités non encore identifié dans ce village</p>
                             </div>
                             <div class="col-6 mt-5">
@@ -351,9 +361,9 @@
             markers = [];
 
             subprojects.forEach((subproject, index) => {
-                if ((filterSector === null || subproject.sector__name === filterSector) &&
+                if ((filterSector === null || subproject.sector__category__name === filterSector) &&
                     subproject.latitude && subproject.longitude) {
-                    const sectorColor = sectorColors[subproject.sector__name] || getRandomColor();
+                    const sectorColor = sectorColors[subproject.sector__category__name] || getRandomColor();
                     // const markerElement = createCustomMarker(sectorColor);
                     const offset = calculateOffset(index);
                     const marker = new mapboxgl.Marker({
@@ -365,7 +375,7 @@
                     .setPopup(new mapboxgl.Popup({ offset: 20 }).setHTML(`
                             <h3 class="popover-header">${subproject.administrative_level__name}</h3>
                             <div class="popover-body">
-                               <h6> <strong> {% translate 'Sector' %}</strong> : ${subproject.sector__name}</h6>
+                               <h6> <strong> {% translate 'Sector' %}</strong> : ${subproject.sector__category__name}</h6>
                                <h6> <strong> {% translate 'Physical rate' %}</strong> : ${subproject.physical_execution_rate}%</h6>
                             </div>
                     `));
@@ -441,6 +451,7 @@
 
             $('#sector-select-id').on('change', function() {
                 filter_values['sector'] = $(this).val();
+                filter_values['type'] = null;
                 statisticsComponent.fetchAndDisplayStatistics();
             });
 
@@ -538,6 +549,7 @@
                 this.totalInvestmentsElement = $('#total-investments');
                 this.totalSubprojectsElement = $('#total-subprojects');
                 this.totalCompletedInfrastructureElement = $('#total-completed-infrastructure');
+                this.typeSelect = $('#type-select-id');
                 this.prioritiesChart = null;
                 this.minorityCharts = {
                     'endorsed_by_agriculturist': {chart: null, legendId: 'agriculturistLegend', canvasId: 'agriculturistChart', noDataMessageId: 'noDataMessageAgriculturist'},
@@ -551,8 +563,7 @@
                 const baseUrl = window.location.href.split('?')[0];
                 const requestUrl = `${baseUrl}ajax/statistics`;
 
-                console.log('Fetching statistics from:', requestUrl);
-                console.log('Request data:', filter_values);
+
 
                 $.ajax({
                     url: requestUrl,
@@ -563,9 +574,26 @@
                         // Update DOM elements with data
                         this.totalInvestmentsElement.text(data.total_investments);
                         this.totalSubprojectsElement.text(data.total_subprojects + '/' + data.total_investments);
-                        this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure);
+                        this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure + '/' + data.total_subprojects);
                         this.updatePrioritiesChart(data.sector_priorities);
                         this.updateMinorityCharts(data.subprojects_by_sector_and_group);
+                        if (data.sector_types && data.sector_types.length > 0) {
+                            // enable typeSelect and populate it with the fetched data
+                            var current_value = this.typeSelect.val();
+                            this.typeSelect.prop('disabled', false);
+                            this.typeSelect.html('');
+                            this.typeSelect.append(`<option value="0">-------</option>`)
+                            data.sector_types.forEach(type => {
+                                if (current_value == type.id) {
+                                    this.typeSelect.append(`<option value="${type.id}" selected>${type.name}</option>`);
+                                } else {
+                                    this.typeSelect.append(`<option value="${type.id}">${type.name}</option>`);
+                                }
+                            });
+                        } else {
+                            // disable typeSelect if no data is fetched
+                            this.typeSelect.prop('disabled', true);
+                        }
                         allSubprojects = data.subprojects;
                         // Uncomment if needed: updateMap(this.map, data.subprojects, filter_values['sector-filter']);
                     },
@@ -594,7 +622,7 @@
             }
 
             updatePrioritiesChart(sectorPriorities) {
-                const labels = sectorPriorities.map(item => item.sector__name);
+                const labels = sectorPriorities.map(item => item.sector__category__name);
                 const data = sectorPriorities.map(item => item.total);
 
                 labels.forEach((label, index) => {
@@ -645,7 +673,7 @@
 
             updateMinorityCharts(subprojectsBySectorAndGroup) {
                 for (const group in subprojectsBySectorAndGroup) {
-                    const labels = subprojectsBySectorAndGroup[group].map(item => item.sector__name);
+                    const labels = subprojectsBySectorAndGroup[group].map(item => item.sector__category__name);
                     const data = subprojectsBySectorAndGroup[group].map(item => item.total);
 
                     const backgroundColor = labels.map(label => sectorColors[label]);
