@@ -1590,7 +1590,7 @@ msgstr "Vue d'ensemble du canton"
 #: administrativelevels/templates/shared/priorities_table.html:54
 #: investments/models.py:34
 msgid "Not Funded"
-msgstr ""
+msgstr "Non financé"
 
 #: administrativelevels/templatetags/custom_tags.py:52
 msgid "Principal Administrator"
@@ -2032,23 +2032,20 @@ msgid "Completed Sub-Projects"
 msgstr "Sous-projets communautaires achevés"
 
 #: dashboard/templates/dashboard_summary.html:208
-#, fuzzy
 #| msgid "Agriculturist"
 msgid "agriculturist"
-msgstr "Agriculteur"
+msgstr "Agriculteurs"
 
 #: dashboard/templates/dashboard_summary.html:211
 msgid "women"
-msgstr "femmes"
+msgstr "Femmes"
 
 #: dashboard/templates/dashboard_summary.html:214
-#, fuzzy
 #| msgid "Youth"
 msgid "youth"
-msgstr "La Jeunesse"
+msgstr "Jeunes"
 
 #: dashboard/templates/dashboard_summary.html:217
-#, fuzzy
 #| msgid "Ethnic minorities"
 msgid "ethnic minorities"
 msgstr "Minorités ethniques"
@@ -2275,17 +2272,16 @@ msgstr ""
 
 #: investments/models.py:35
 msgid "Funded"
-msgstr ""
+msgstr "Sélectionné"
 
 #: investments/models.py:36
-#, fuzzy
 #| msgid "In progress"
 msgid "In Progress"
 msgstr "En cours"
 
 #: investments/models.py:38
 msgid "Paused"
-msgstr ""
+msgstr "En suspens"
 
 #: investments/models.py:45
 #, fuzzy

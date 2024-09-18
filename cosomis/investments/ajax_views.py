@@ -107,16 +107,6 @@ class StatisticsView(View):
         subprojects = investments.filter(investment_status=Investment.SUBPROJECT)
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
 
-        # Sector priorities
-        if sector_filter_active:
-            sector_priorities = investments.values('sector__name').annotate(
-                sector__category__name=F('sector__name'),  # Rename the key here
-                total=Count('sector__name')
-            )
-        else:
-            sector_priorities = investments.values('sector__category__name').annotate(
-                total=Count('sector__category__name'))
-
         # Subprojects by sector and minority groups
         minority_groups = [
             'endorsed_by_youth',
@@ -125,10 +115,28 @@ class StatisticsView(View):
             'endorsed_by_pastoralist'
         ]
 
-        subprojects_by_sector_and_group = {
-            group: investments.filter(**{group: True}).values('sector__category__name').annotate(total=Count('sector__category__name'))
-            for group in minority_groups
-        }
+        # Sector priorities
+        if sector_filter_active:
+            sector_priorities = investments.values('sector__name').annotate(
+                sector__category__name=F('sector__name'),  # Rename the key here
+                total=Count('sector__name')
+            )
+            subprojects_by_sector_and_group = {
+                group: investments.filter(**{group: True}).values('sector__name').annotate(
+                    sector__category__name=F('sector__name'),  # Rename the key here
+                    total=Count('sector__name')
+                )
+                for group in minority_groups
+            }
+        else:
+            sector_priorities = investments.values('sector__category__name').annotate(
+                total=Count('sector__category__name'))
+            subprojects_by_sector_and_group = {
+                group: investments.filter(**{group: True}).values('sector__category__name').annotate(
+                    total=Count('sector__category__name'))
+                for group in minority_groups
+            }
+
 
         # Fetch subprojects that have non-null latitude and longitude
         subprojects_with_coordinates = investments.exclude(
