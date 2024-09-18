@@ -75,9 +75,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#packages">{% translate 'Packages' %}</a>
                             </li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">Settings</a>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">{%  translate 'Settings' %}</a>
                             </li>
+                            <li><a href="{% url 'administrativelevels:project-upload-investments' project.id %}" class="nav-link">{% translate 'Upload more investments' %}</a></li>
                         </ul>
+
                     </div>
                     <div class="card-body">
                         <div class="tab-content">

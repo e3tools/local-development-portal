@@ -587,6 +587,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         context["investments"] = Investment.objects.filter(id__in=inv_ids)
         context["project_status"] = Investment.PROJECT_STATUS_CHOICES
         context["organization"] = project.owner.organization
+        context["project"] = project
 
         if context["organization"] is not None:
             user_qs = context["organization"].users.all().values_list("id")
