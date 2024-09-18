@@ -47,9 +47,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="organization-select-id">{% translate 'Type' %}</label>
-                                        <select class="form-control" name="type-filter" id="type-select-id" style="width: 100%;">
+                                        <select
+                                            class="form-control"
+                                            name="type-filter"
+                                            id="type-select-id"
+                                            style="width: 100%;"
+
+                                        >
                                             <option selected value="">{% translate 'Type' %}</option>
-                                            {% for type in types %}
+                                            {% for type in sector_types %}
                                                 <option value="{{ type.0 }}">{{ type.1 }}</option>
                                             {% endfor %}
                                         </select>
@@ -445,6 +451,7 @@
 
             $('#sector-select-id').on('change', function() {
                 filter_values['sector'] = $(this).val();
+                filter_values['type'] = null;
                 statisticsComponent.fetchAndDisplayStatistics();
             });
 
@@ -542,6 +549,7 @@
                 this.totalInvestmentsElement = $('#total-investments');
                 this.totalSubprojectsElement = $('#total-subprojects');
                 this.totalCompletedInfrastructureElement = $('#total-completed-infrastructure');
+                this.typeSelect = $('#type-select-id');
                 this.prioritiesChart = null;
                 this.minorityCharts = {
                     'endorsed_by_agriculturist': {chart: null, legendId: 'agriculturistLegend', canvasId: 'agriculturistChart', noDataMessageId: 'noDataMessageAgriculturist'},
@@ -555,8 +563,7 @@
                 const baseUrl = window.location.href.split('?')[0];
                 const requestUrl = `${baseUrl}ajax/statistics`;
 
-                console.log('Fetching statistics from:', requestUrl);
-                console.log('Request data:', filter_values);
+
 
                 $.ajax({
                     url: requestUrl,
@@ -567,9 +574,26 @@
                         // Update DOM elements with data
                         this.totalInvestmentsElement.text(data.total_investments);
                         this.totalSubprojectsElement.text(data.total_subprojects + '/' + data.total_investments);
-                        this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure);
+                        this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure + '/' + data.total_subprojects);
                         this.updatePrioritiesChart(data.sector_priorities);
                         this.updateMinorityCharts(data.subprojects_by_sector_and_group);
+                        if (data.sector_types && data.sector_types.length > 0) {
+                            // enable typeSelect and populate it with the fetched data
+                            var current_value = this.typeSelect.val();
+                            this.typeSelect.prop('disabled', false);
+                            this.typeSelect.html('');
+                            this.typeSelect.append(`<option value="0">-------</option>`)
+                            data.sector_types.forEach(type => {
+                                if (current_value == type.id) {
+                                    this.typeSelect.append(`<option value="${type.id}" selected>${type.name}</option>`);
+                                } else {
+                                    this.typeSelect.append(`<option value="${type.id}">${type.name}</option>`);
+                                }
+                            });
+                        } else {
+                            // disable typeSelect if no data is fetched
+                            this.typeSelect.prop('disabled', true);
+                        }
                         allSubprojects = data.subprojects;
                         // Uncomment if needed: updateMap(this.map, data.subprojects, filter_values['sector-filter']);
                     },

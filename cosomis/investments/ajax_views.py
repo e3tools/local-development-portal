@@ -1,5 +1,7 @@
 import math
-from django.db.models import Count, Q, Subquery
+from unicodedata import category
+
+from django.db.models import Count, Q, Subquery, F
 from django.http import JsonResponse
 from django.views import View
 
@@ -66,11 +68,11 @@ class StatisticsView(View):
         project_status = request.GET.get('project-status-filter', None)
         organization = request.GET.get('organization', None)
         sector = request.GET.get('sector', None)
-        investment_status = request.GET.get('type', None)
-
+        sector_type = request.GET.get('type', None)
+        sector_type_list = []
+        sector_filter_active = False
         # Initial queryset
         investments = Investment.objects.all()
-
         # Apply filters using Q objects
         filters = Q()
         if village_id and village_id is not None:
@@ -89,9 +91,12 @@ class StatisticsView(View):
         if organization and organization is not None:
             filters &= Q(packages__in=(Subquery(Package.objects.filter(project__owner__organization=organization).values('funded_investments'))))
         if sector and sector is not None:
-            filters &= Q(sector=sector)
-        if investment_status and investment_status is not None:
-            filters &= Q(investment_status=investment_status)
+            sector_type_list = list(Sector.objects.filter(category=sector).values('id', 'name'))
+            sector_filter_active = True
+            filters &= Q(sector__category=sector)
+        if sector_type and sector_type is not None:
+            print('sector_type', sector_type)
+            filters &= Q(sector=sector_type)
 
         investments = investments.filter(filters)
 
@@ -103,7 +108,14 @@ class StatisticsView(View):
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
 
         # Sector priorities
-        sector_priorities = investments.values('sector__category__name').annotate(total=Count('sector__category__name'))
+        if sector_filter_active:
+            sector_priorities = investments.values('sector__name').annotate(
+                sector__category__name=F('sector__name'),  # Rename the key here
+                total=Count('sector__name')
+            )
+        else:
+            sector_priorities = investments.values('sector__category__name').annotate(
+                total=Count('sector__category__name'))
 
         # Subprojects by sector and minority groups
         minority_groups = [
@@ -144,6 +156,7 @@ class StatisticsView(View):
             'total_subprojects': total_subprojects,
             'total_completed_infrastructure': total_completed_infrastructure,
             'sector_priorities': list(sector_priorities),
+            'sector_types': sector_type_list,
             'subprojects_by_sector_and_group': {
                 group: list(subprojects_by_sector_and_group[group]) for group in minority_groups
             },

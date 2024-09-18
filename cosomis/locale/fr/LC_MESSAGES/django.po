@@ -2025,11 +2025,11 @@ msgstr "Total prioritaires sous-projets communautaires"
 
 #: dashboard/templates/dashboard_summary.html:163
 msgid "Total Selected Sub-Projects"
-msgstr "Total sous-projets sélectionnés"
+msgstr "Total sous-projets communautaires sélectionnés"
 
 #: dashboard/templates/dashboard_summary.html:174
 msgid "Completed Sub-Projects"
-msgstr "Sous-projets achevés"
+msgstr "Sous-projets communautaires achevés"
 
 #: dashboard/templates/dashboard_summary.html:208
 #, fuzzy
