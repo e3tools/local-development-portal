@@ -212,11 +212,9 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{ investment.id }}" name="remove-from-cart">
-                                    <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
-                                </form>
+                                <a class="btn btn-xs btn-outline-danger remove-investment-link"
+                                   data-id="{{ investment.id }}"
+                                   data-name="{{ investment.title }}">{% translate 'Remove from cart' %}</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -247,6 +245,31 @@
                     <input type="hidden" name="clear-package-input">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
                     <input type="submit" class="btn btn-danger" name="clear-package-submit" value="{% translate 'Clear Package' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="removeInvestmentModal" tabindex="-1" role="dialog" aria-labelledby="removeInvestmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" name="remove-investment-form" id="remove-investment-form-id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clearPackageModal">
+                        {% translate 'Are you sure do you want to remove ' %}
+                        <span id="remove-investment-title-id"></span>
+                        {% translate ' from the package?' %}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    {% csrf_token %}
+                    <input type="hidden" name="remove-from-cart" value="">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+                    <input type="submit" class="btn btn-danger" name="clear-package-submit" value="{% translate 'Remove Investment' %}">
                 </div>
             </form>
         </div>
@@ -321,6 +344,12 @@
         $('.adm-submit-reset').on('click', function() {
             $('#adm-reset-hidden-id').attr('value', 'true');
             $('#adm-filter-form').submit();
+        });
+
+        $('.remove-investment-link').on('click', function() {
+            $('input[name="remove-from-cart"]').val(this.dataset.id);
+            $('#remove-investment-title-id').html(this.dataset.name);
+            $('#removeInvestmentModal').modal('show');
         });
 
         function sum_subprojects() {

@@ -374,6 +374,7 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
             if "remove-from-cart" in request.POST:
                 investment = Investment.objects.get(pk=request.POST["remove-from-cart"])
                 package.funded_investments.remove(investment)
+                messages.add_message(request, messages.SUCCESS, _("Investment removed from cart."))
                 return redirect(reverse('investments:cart'))
             elif "clear-package-input" in request.POST:
                 obj.funded_investments.clear()
