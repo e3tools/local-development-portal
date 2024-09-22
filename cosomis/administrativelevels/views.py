@@ -584,7 +584,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         inv_ids = list()
         for package in context["packages"]:
             inv_ids += package.funded_investments.all().values_list("id", flat=True)
-        context["investments"] = Investment.objects.filter(id__in=inv_ids)
+        context["investments"] = Investment.objects.filter(funded_by__id=self.object.id)
         context["project_status"] = Investment.PROJECT_STATUS_CHOICES
         context["organization"] = project.owner.organization
         context["project"] = project
