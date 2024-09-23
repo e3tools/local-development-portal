@@ -39,7 +39,10 @@ class IndexListView(
     LoginRequiredMixin, PageMixin, generic.edit.BaseFormView, generic.ListView
 ):
     template_name = "investments/list.html"
-    queryset = Investment.objects.filter(investment_status=Investment.PRIORITY)
+    queryset = Investment.objects.filter(
+        investment_status=Investment.PRIORITY,
+        project_status=Investment.NOT_FUNDED
+    )
     form_class = InvestmentsForm
     title = _("Investments")
 
