@@ -171,7 +171,7 @@
                                             {{ package.estimated_final_cost|intcomma }}
                                         </td>
                                         <td>{{ package.get_status_display }}</td>
-                                        <td><a class="btn btn-sm btn-primary">{% translate 'Detail' %}</a></td>
+                                        <td><a class="btn btn-sm btn-primary" href="{% url 'investments:package_detail' package.id %}">{% translate 'Detail' %}</a></td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>

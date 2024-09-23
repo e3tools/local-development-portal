@@ -7,7 +7,6 @@ from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Subquery, Sum
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin
 
@@ -359,6 +358,49 @@ class IndexListView(
 
     def get_success_url(self):
         return reverse("investments:cart")
+
+
+class PackageDetailView(IsInvestorMixin, PageMixin, generic.DetailView):
+    template_name = "investments/package.html"
+    queryset = Package.objects.all()
+
+    def get_queryset(self):
+        queryset = super(PackageDetailView, self).get_queryset()
+        return queryset.filter(project__organization=self.request.user.organization)
+
+    def get_context_data(self, **kwargs):
+        context = super(PackageDetailView, self).get_context_data(**kwargs)
+        context["datatable_config"] = get_datatable_config()
+        context["datatable_config"]["responsive"] = "true"
+        context["datatable_config"]["columnDefs"] = [
+            {"responsivePriority": 1, "targets": 0},
+            {"responsivePriority": 2, "targets": 1},
+            {"responsivePriority": 3, "targets": 2},
+            {"responsivePriority": 4, "targets": 3},
+            {"responsivePriority": 5, "targets": 4},
+            {"responsivePriority": 6, "targets": 5},
+            {"responsivePriority": 7, "targets": 6},
+            {"responsivePriority": 9, "targets": 7},
+            {"responsivePriority": 8, "targets": 8},
+        ]
+        sectors = list()
+        categories = list()
+        context['total_funding'] = 0
+
+        for inv in context["object"].funded_investments.all():
+            sectors.append(inv.sector)
+            categories.append(inv.sector.category)
+            context['total_funding'] += inv.estimated_cost
+
+        context['title'] = context["object"].status
+
+        context["sectors"] = dict.fromkeys(sectors)
+        context["categories"] = dict.fromkeys(categories)
+
+        context['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
+        context['projects'] = self.request.user.organization.projects.all()
+
+        return context
 
 
 class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
