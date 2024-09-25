@@ -7,7 +7,8 @@ from .models import Package, Investment
 
 
 class InvestmentsForm(forms.Form):
-    investments = forms.CharField()
+    investments = forms.CharField(required=False)
+    all_queryset = forms.CharField()
     project = forms.ModelChoiceField(queryset=Project.objects.all())
 
     def __init__(self, *args, context=None, **kwargs):
@@ -17,18 +18,24 @@ class InvestmentsForm(forms.Form):
         if 'user' not in self.context:
             raise 'Need user.'
         super().__init__(*args, **kwargs)
-        self.fields['investments'].queryset = Project.objects.filter(organization=context["user"].organization)
+        self.fields['project'].queryset = Project.objects.filter(organization=context["user"].organization)
         self.package = Package.objects.get_active_cart(
             user=self.context['user']
         )
 
     def clean_investments(self):
-        investment_ids = self.cleaned_data['investments'].split(',')
-        investment_ids.remove('')
-        return Investment.objects.filter(
-            id__in=investment_ids,
-            project_status=Investment.NOT_FUNDED
-        )
+        investment_ids = self.cleaned_data['investments'].split('-')
+        if '' in investment_ids: investment_ids.remove('')
+        return investment_ids
+
+    def clean_all_queryset(self):
+        return self.cleaned_data['all_queryset'] == 'true'
+
+    def clean(self):
+        qs = Investment.objects.filter(project_status=Investment.NOT_FUNDED)
+        inv_ids = self.cleaned_data['investments'] if 'investments' in self.cleaned_data else []
+        all_queryset = self.cleaned_data['all_queryset']
+        self.cleaned_data['investments'] = qs.exclude(id__in=inv_ids) if all_queryset else qs.filter(id__in=inv_ids)
 
     def save(self):
         investments = list()

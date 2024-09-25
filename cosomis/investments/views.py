@@ -46,7 +46,7 @@ class IndexListView(
     title = _("Investments")
 
     def post(self, request, *args, **kwargs):
-        if "investments" in request.POST:
+        if "cart-submitted" in request.POST:
             form = self.get_form()
             print(form.is_valid())
             print(form.errors)
@@ -148,6 +148,8 @@ class IndexListView(
         kwargs["query_strings"] = self.get_query_strings_context()
         kwargs["query_strings_raw"] = self.request.GET.copy()
 
+        kwargs["selected_investments_data_querystring"] = '&'.join([key + '=' + value for key, value in kwargs["query_strings_raw"].items()])
+
         if self.request.user.organization is not None:
             kwargs["projects"] = self.request.user.organization.projects.all()
             kwargs['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
@@ -185,20 +187,25 @@ class IndexListView(
 
         context["datatable_config"] = get_datatable_config()
         context["datatable_config"]["responsive"] = "true"
-        # context["datatable_config"]["server-side"] = "true"
-        # context["datatable_config"]["ajax"] = "/investments/ajax/datatable?format=datatables"
-        context["datatable_config"]["columnDefs"] = [
-            {"responsivePriority": 1, "targets": 0},
-            {"responsivePriority": 2, "targets": 1},
-            {"responsivePriority": 3, "targets": 2},
-            {"responsivePriority": 4, "targets": 3},
-            {"responsivePriority": 5, "targets": 4},
-            {"responsivePriority": 6, "targets": 5},
-            {"responsivePriority": 7, "targets": 6},
-            {"responsivePriority": 8, "targets": 7},
-            {"responsivePriority": 9, "targets": 8},
-            {"responsivePriority": 10, "targets": 9},
+        context["datatable_config"]["server-side"] = "true"
+        context["datatable_config"]["processing"] = "true"
+        context["datatable_config"]["searching"] = "false"
+        context["datatable_config"]["ajax"] = "/investments/ajax/datatable?format=datatables"
+        context["datatable_config"]["columns"] = [
+            {'data': 'select_input', 'name': 'select_input', 'searchable': 'false', 'orderable': 'false'},
+            {'data': 'title'},
+            {'data': 'administrative_level__type'},
+            {'data': 'estimated_cost'},
+            {'data': 'administrative_level__name'},
+            {'data': 'administrative_level__parent__name'},
+            {'data': 'administrative_level__parent__parent__name'},
+            {'data': 'administrative_level__parent__parent__parent__name'},
+            {'data': 'ranking'},
+            {'data': 'population_priority', 'name': 'population_priority', 'searchable': 'false', 'orderable': 'false'},
+
         ]
+        if len(kwargs["query_strings_raw"]) > 0 :
+            context["datatable_config"]["ajax"] += "&" + kwargs["selected_investments_data_querystring"]
         context.update(kwargs)
 
         return context

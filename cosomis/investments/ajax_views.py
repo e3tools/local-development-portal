@@ -1,11 +1,11 @@
 import math
-from unicodedata import category
 
-from django.db.models import Count, Q, Subquery, F
+from django.db.models import Count, Q, Subquery, F, Sum
 from django.http import JsonResponse
 from django.views import View
 
 from rest_framework import generics
+from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
@@ -49,12 +49,119 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
 
 
 class InvestmentModelViewSet(ModelViewSet):
-    queryset = Investment.objects.all()
+    queryset = Investment.objects.filter(
+        investment_status=Investment.PRIORITY,
+        project_status=Investment.NOT_FUNDED
+    )
     serializer_class = InvestmentSerializer
 
-    def list(self, request, *args, **kwargs):
-        print('en el get')
-        return super().list(request, *args, **kwargs)
+    @action(detail=False, methods=['POST'], url_path='results', url_name='results')
+    def selected_investments_data(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        inv_ids = request.data['selected_ids'].split('-')
+        if '' in inv_ids: inv_ids.remove('')
+
+        qs = qs.exclude(id__in=inv_ids) if request.data['all_queryset'] == 'true' else qs.filter(id__in=inv_ids)
+
+        return Response({
+            'total_funding_display': qs.aggregate(total_funding_display=Sum('estimated_cost'))['total_funding_display'] or 0,
+            'total_villages_display': qs.values('administrative_level').distinct().count(),
+            'total_subprojects_display': qs.count()
+        })
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if "region-filter" in self.request.GET and self.request.GET[
+            "region-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__parent__parent__id=self.request.GET[
+                    "region-filter"
+                ],
+                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION,
+            )
+        if "prefecture-filter" in self.request.GET and self.request.GET[
+            "prefecture-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__parent__id=self.request.GET[
+                    "prefecture-filter"
+                ],
+                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE,
+            )
+        if "commune-filter" in self.request.GET and self.request.GET[
+            "commune-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                administrative_level__parent__parent__id=self.request.GET[
+                    "commune-filter"
+                ],
+                administrative_level__parent__parent__type=AdministrativeLevel.COMMUNE,
+            )
+        if "canton-filter" in self.request.GET and self.request.GET[
+            "canton-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                administrative_level__parent__id=self.request.GET["canton-filter"],
+                administrative_level__parent__type=AdministrativeLevel.CANTON,
+            )
+        if "village-filter" in self.request.GET and self.request.GET[
+            "village-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                administrative_level__id=self.request.GET["village-filter"],
+                administrative_level__type=AdministrativeLevel.VILLAGE,
+            )
+
+        if "sector-filter" in self.request.GET and self.request.GET[
+            "sector-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
+        if "category-filter" in self.request.GET and self.request.GET[
+            "category-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                sector__category__id=self.request.GET["category-filter"]
+            )
+
+        if "subpopulation-filter" in self.request.GET and self.request.GET[
+            "subpopulation-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                **{self.request.GET["subpopulation-filter"]: True}
+            )
+
+        if "climate-contribution-filter" in self.request.GET and self.request.GET[
+            "climate-contribution-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                climate_contribution=self.request.GET["climate-contribution-filter"]
+            )
+
+        if "priorities-filter" in self.request.GET and self.request.GET[
+            "priorities-filter"
+        ] not in ["", None]:
+            priorities = [1]
+            if self.request.GET["priorities-filter"] == '2':
+                priorities.append(2)
+            elif self.request.GET["priorities-filter"] == '3':
+                priorities.append(2)
+                priorities.append(3)
+            queryset = queryset.filter(
+                ranking__in=priorities
+            )
+
+        if "is-funded-filter" in self.request.GET and self.request.GET[
+            "is-funded-filter"
+        ] not in ["", None]:
+            if self.request.GET["is-funded-filter"] == 'true':
+                queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
+            else:
+                queryset = queryset.exclude(
+                    project_status=Investment.FUNDED
+                )
+
+        return queryset
 
 
 class StatisticsView(View):

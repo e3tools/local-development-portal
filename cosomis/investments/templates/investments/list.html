@@ -19,6 +19,25 @@
         table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before {
             content: '-';
         }
+
+    .loader {
+        width: 15px;
+        height: 15px;
+        border: 3px solid #e3e3e3;
+        border-bottom-color: #3498db;
+        border-radius: 50%;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
     </style>
 {% endblock %}
 
@@ -395,29 +414,12 @@
                     <h6>{% translate 'Results' %}</h6>
                 </div>
                 <div class="row">
-                    <div class="col-12 mb-3">
+                    <div class="{% if not user.is_moderator %}col-9{% else %}col-12{% endif %} mb-3">
                         {% for key, value in query_strings.items %}
                             <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
                                 <span class="filter-badge-label">{{ key }} : {{ value|truncatechars:20 }}</span>
                             </span>
                         {% endfor %}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-3">
-                        <p class="text-sm">{% translate '# Villages:' %}
-                            <b class="d-block total-villages-display">0</b>
-                        </p>
-                    </div>
-                    <div class="col-3">
-                        <p class="text-sm">{% translate '# Sub-projects' %}:
-                            <b class="d-block total-subprojects-display">0</b>
-                        </p>
-                    </div>
-                    <div class="col-3">
-                        <p class="text-sm">{% translate 'Total funding selected' %}
-                            <b class="d-block total-funding-display">0 FCFA</b>
-                        </p>
                     </div>
                     {% if not user.is_moderator %}
                     <div class="col-3">
@@ -445,9 +447,30 @@
                                 <a href="{% url 'administrativelevels:projects' %}" class="underline">{% translate 'Click to your first project' %}</a>
                             </div>
                         {% endif %}
-                        <input type="submit" class="btn btn-primary btn-sm pull-right" value="{% translate 'Add to Cart' %}" id="investments-submit" name="investments-submit">
+                        <input type="submit" class="btn btn-primary btn-sm pull-right" name="investments-submit" value="{% translate 'Add to Cart' %}" id="investments-submit">
+
+                        <input type="hidden" name="all_queryset" class="checkbox-select-all-monitor" value="true">
+                        <input type="hidden" name="investments" class="inv-list" value="">
+                        <input type="hidden" name="cart-submitted" value="true">
                     </div>
                     {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p class="text-sm">{% translate '# Villages:' %} <span class="d-none loader"></span>
+                            <b class="d-block total-villages-display">0</b>
+                        </p>
+                    </div>
+                    <div class="col-3">
+                        <p class="text-sm">{% translate '# Sub-projects' %}: <span class="d-none loader"></span>
+                            <b class="d-block total-subprojects-display">0</b>
+                        </p>
+                    </div>
+                    <div class="col-3">
+                        <p class="text-sm">{% translate 'Total funding selected' %}: <span class="d-none loader"></span>
+                            <b class="d-block total-funding-display">0 FCFA</b>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -511,7 +534,6 @@
                         </tbody>
                     </table>
                     {% endif %}
-                    <input type="hidden" id="investments-input-id" value="" name="investments">
             </div>
         </div>
         </form>
@@ -524,21 +546,55 @@
 {{ block.super }}
 <script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
+
+    let investments_list = [];
+
+    function sum_subprojects() {
+        let base_url = window.location.href.split('?')[0]
+        let loader = $('.loader');
+
+        $.ajax({
+            type: "POST",
+            url: base_url + "ajax/datatable/results/?{{ selected_investments_data_querystring }}",
+            data: {
+                all_queryset: $('.checkbox-select-all-monitor').val(),
+                selected_ids: $('.inv-list').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            beforeSend: function() {
+                loader.removeClass('d-none');
+                loader.addClass('d-inline-block');
+            },
+            success: function(response) {
+                $('.total-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
+                $('.total-villages-display').html(numeral(response.total_villages_display).format('0,0'));
+                $('.total-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
+
+                loader.removeClass('d-inline-block');
+                loader.addClass('d-none');
+            }
+        })
+    }
+
     $( document ).ready(function() {
-        var table = $(".table").DataTable({{ datatable_config | safe }});
+        let table = $(".table").DataTable({{ datatable_config | safe }});
 
         sum_subprojects();
 
-        table.on('click', 'tr', function(){
-            sum_subprojects();
-        });
-
         $('#checkbox-select-all').on('change', function() {
-            var select_all_state = $(this).is(':checked')
-            table.rows().every( function ( rowIdx ) {
-                $( this.node() ).first().find('input').prop('checked', select_all_state);
-            } );
-            sum_subprojects();
+            let select_all_state = $(this).is(':checked')
+
+            if(select_all_state){
+                $('.project-table-check').prop( "checked", true );
+            }else{
+                $('.project-table-check').prop( "checked", false );
+            }
+
+            $('.inv-list').val('');
+            investments_list = []
+            $('.checkbox-select-all-monitor').val($(this).is(':checked'));
+
+            sum_subprojects()
         });
 
         $('.column-switch').on('change', function (e) {
@@ -588,37 +644,6 @@
         $('#category-select-id').on('change', function(){
             change_sectors_selects($(this), $('#sector-select-id'), [])
         });
-
-        function sum_subprojects() {
-            let rows = table.rows()
-            let villages = [];
-            let funding = 0;
-            let subprojects = 0;
-
-             $('#investments-input-id').val('');
-
-            table.rows().every( function ( rowIdx ) {
-                let firstVal = $( this.node() ).first().find('input:checked').val();
-
-                if (firstVal != undefined) {
-                    let subproject_data = table.row( rowIdx ).data();
-                    subprojects += 1;
-
-                    $('#investments-input-id').val($('#investments-input-id').val() + ',' + firstVal);
-
-                    funding = parseInt(funding) + parseInt(subproject_data[3]["@data-order"])
-
-                    if (!villages.includes(subproject_data[4])) {
-                        villages.push(subproject_data[4])
-                    }
-                }
-            } );
-
-            $('.total-funding-display').html(numeral(funding).format('0,0') + ' FCFA');
-            $('.total-villages-display').html(numeral(villages.length).format('0,0'));
-            $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
-
-        };
 
         function change_adm_levels_selects(select_input, select_to_fill, other_selects){
             let selected_value = select_input.find(":selected").val();
@@ -678,5 +703,26 @@
             }
         };
     });
+
+    $(document).on('change', '.project-table-check', function() {
+        let inv_list = $('.inv-list');
+        let mod_check_value = $('.checkbox-select-all-monitor').val() === 'true';
+
+        if(!$(this).is(':checked')){
+            $('#checkbox-select-all').prop( "checked", false );
+        }
+
+        if ($(this).is(':checked') !== mod_check_value){
+            investments_list.push(this.value);
+        }else{
+            let investment_index = investments_list.indexOf(this.value);
+            if (investment_index !== -1){
+                investments_list.splice(investment_index, 1);
+            }
+        }
+        inv_list.val(investments_list.join('-'));
+        sum_subprojects()
+    });
+
 </script>
 {% endblock %}
