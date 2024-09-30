@@ -498,7 +498,7 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
     template_name = "investments/moderator/approvals_list.html"
     package_model = Package
     user_model = User
-    ordering = ["status", "-created_date"]
+    ordering = ["-status", "-created_date"]
     allow_empty = True
     object_list = None
     title = _("Welcome, Moderator!")
@@ -552,7 +552,7 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
     def get_package_queryset(self):
         queryset = self.package_model._default_manager.exclude(
             status=Package.PENDING_SUBMISSION
-        ).order_by("created_date", "status")
+        )
         ordering = self.get_ordering()
         if ordering:
             if isinstance(ordering, str):

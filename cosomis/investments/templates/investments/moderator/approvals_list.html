@@ -114,6 +114,8 @@
                                     <th>Last modified</th>
                                     <th># of projects</th>
                                     <th>Total amount</th>
+                                    <th>Organization</th>
+                                    <th>User</th>
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
@@ -125,6 +127,8 @@
                                     <td>{{ package.updated_date|date:"d/m/Y" }}</td>
                                     <td>{{ package.funded_investments.all.count|intcomma }}</td>
                                     <td>{{ package.estimated_final_cost|intcomma }} FCFA</td>
+                                    <td>{{ package.user.organization }}</td>
+                                    <td>{{ package.user }}</td>
                                     <td>
                                         {% if package.status == package.PENDING_SUBMISSION %}
                                         {% translate 'Pending Submission' %}
