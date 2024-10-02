@@ -408,72 +408,68 @@
 <div class="row">
     <div class="col-12">
         <form action="" method="POST" id="investment-form" name="investments-form">
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <h6>{% translate 'Results' %}</h6>
-                </div>
-                <div class="row">
-                    <div class="{% if not user.is_moderator %}col-9{% else %}col-12{% endif %} mb-3">
-                        {% for key, value in query_strings.items %}
-                            <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
-                                <span class="filter-badge-label">{{ key }} : {{ value|truncatechars:20 }}</span>
-                            </span>
-                        {% endfor %}
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <h6>{% translate 'Results' %}</h6>
                     </div>
-                    {% if not user.is_moderator %}
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label for="project-select-id">{% translate 'Project' %}</label>
-                            <select class="form-control" name="project" id="project-select-id" style="width: 100%;" required>
-                                <option selected value="">{% translate 'project' %}</option>
-                                {% for project in projects %}
-                                    {% if cart_project %}
-                                        {% if cart_project.id == project.id %}
-                                        <option value="{{ project.id }}" selected>{{ project.name }}</option>
-                                        {% else %}
-                                        <option value="{{ project.id }}">{{ project.name }}</option>
-                                        {% endif %}
-                                    {% else %}
-                                        <option value="{{ project.id }}">{{ project.name }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
+                    <div class="row">
+                        <div class="{% if not user.is_moderator %}col-9{% else %}col-12{% endif %} mb-3">
+                            {% for key, value in query_strings.items %}
+                                <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
+                                    <span class="filter-badge-label">{{ key }} : {{ value|truncatechars:20 }}</span>
+                                </span>
+                            {% endfor %}
                         </div>
-                        {% if projects|length == 0 %}
-                            <div class="alert alert-danger" role="alert">
-                                {% translate 'Your organization must have a project to submit investments' %}
-                                </br>
-                                <a href="{% url 'administrativelevels:projects' %}" class="underline">{% translate 'Click to your first project' %}</a>
+                        {% if not user.is_moderator %}
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label for="project-select-id">{% translate 'Project' %}</label>
+                                <select class="form-control" name="project" id="project-select-id" style="width: 100%;" required>
+                                    <option selected value="">{% translate 'project' %}</option>
+                                    {% for project in projects %}
+                                        {% if cart_project %}
+                                            {% if cart_project.id == project.id %}
+                                            <option value="{{ project.id }}" selected>{{ project.name }}</option>
+                                            {% else %}
+                                            <option value="{{ project.id }}">{{ project.name }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            <option value="{{ project.id }}">{{ project.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
                             </div>
+                            {% if projects|length == 0 %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% translate 'Your organization must have a project to submit investments' %}
+                                    </br>
+                                    <a href="{% url 'administrativelevels:projects' %}" class="underline">{% translate 'Click to your first project' %}</a>
+                                </div>
+                            {% endif %}
+                            <input type="submit" class="btn btn-primary btn-sm pull-right" name="investments-submit" value="{% translate 'Add to Cart' %}" id="investments-submit">
+                        </div>
                         {% endif %}
-                        <input type="submit" class="btn btn-primary btn-sm pull-right" name="investments-submit" value="{% translate 'Add to Cart' %}" id="investments-submit">
-
-                        <input type="hidden" name="all_queryset" class="checkbox-select-all-monitor" value="true">
-                        <input type="hidden" name="investments" class="inv-list" value="">
-                        <input type="hidden" name="cart-submitted" value="true">
                     </div>
-                    {% endif %}
-                </div>
-                <div class="row">
-                    <div class="col-3">
-                        <p class="text-sm">{% translate '# Villages:' %} <span class="d-none loader"></span>
-                            <b class="d-block total-villages-display">0</b>
-                        </p>
-                    </div>
-                    <div class="col-3">
-                        <p class="text-sm">{% translate '# Sub-projects' %}: <span class="d-none loader"></span>
-                            <b class="d-block total-subprojects-display">0</b>
-                        </p>
-                    </div>
-                    <div class="col-3">
-                        <p class="text-sm">{% translate 'Total funding selected' %}: <span class="d-none loader"></span>
-                            <b class="d-block total-funding-display">0 FCFA</b>
-                        </p>
+                    <div class="row">
+                        <div class="col-3">
+                            <p class="text-sm">{% translate '# Villages:' %} <span class="d-none loader"></span>
+                                <b class="d-block total-villages-display">0</b>
+                            </p>
+                        </div>
+                        <div class="col-3">
+                            <p class="text-sm">{% translate '# Sub-projects' %}: <span class="d-none loader"></span>
+                                <b class="d-block total-subprojects-display">0</b>
+                            </p>
+                        </div>
+                        <div class="col-3">
+                            <p class="text-sm">{% translate 'Total funding selected' %}: <span class="d-none loader"></span>
+                                <b class="d-block total-funding-display">0 FCFA</b>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
+                <div class="card-body">
                     {% csrf_token %}
                     {% if investments.count == 0 %}
                         {% translate 'You have no investments' %}
@@ -534,8 +530,12 @@
                         </tbody>
                     </table>
                     {% endif %}
+
+                    <input type="hidden" name="all_queryset" class="checkbox-select-all-monitor" value="true">
+                    <input type="hidden" name="investments" class="inv-list" value="">
+                    <input type="hidden" name="cart-submitted" value="true">
+                </div>
             </div>
-        </div>
         </form>
     </div>
 </div>
@@ -548,6 +548,7 @@
 <script type="text/javascript">
 
     let investments_list = [];
+    let table = $(".table").DataTable({{ datatable_config | safe }});
 
     function sum_subprojects() {
         let base_url = window.location.href.split('?')[0]
@@ -577,25 +578,8 @@
     }
 
     $( document ).ready(function() {
-        let table = $(".table").DataTable({{ datatable_config | safe }});
 
         sum_subprojects();
-
-        $('#checkbox-select-all').on('change', function() {
-            let select_all_state = $(this).is(':checked')
-
-            if(select_all_state){
-                $('.project-table-check').prop( "checked", true );
-            }else{
-                $('.project-table-check').prop( "checked", false );
-            }
-
-            $('.inv-list').val('');
-            investments_list = []
-            $('.checkbox-select-all-monitor').val($(this).is(':checked'));
-
-            sum_subprojects()
-        });
 
         $('.column-switch').on('change', function (e) {
 
@@ -722,6 +706,29 @@
         }
         inv_list.val(investments_list.join('-'));
         sum_subprojects()
+    });
+
+    $(document).on('change','#checkbox-select-all', function() {
+        let select_all_state = $(this).is(':checked');
+        let master_checkbox = $('.checkbox-select-all-monitor');
+
+        if(select_all_state){
+            $('.project-table-check').prop( "checked", true );
+        }else{
+            $('.project-table-check').prop( "checked", false );
+        }
+
+        $('.inv-list').val('');
+        investments_list = []
+        master_checkbox.val($(this).is(':checked'));
+
+        sum_subprojects();
+        let urlObj = new URL(table.ajax.url());
+        let params = new URLSearchParams(urlObj.search);
+        params.set('all_queryset', master_checkbox.val());
+        urlObj.search = params.toString();
+        table.ajax.url(urlObj.toString());
+        table.ajax.reload();
     });
 
 </script>

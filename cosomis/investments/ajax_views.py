@@ -69,6 +69,16 @@ class InvestmentModelViewSet(ModelViewSet):
             'total_subprojects_display': qs.count()
         })
 
+    def get_serializer_context(self):
+        context = {
+            'request': self.request,
+            'format': self.format_kwarg,
+            'view': self
+        }
+        if 'all_queryset' in self.request.query_params:
+            context['all_queryset'] = self.request.query_params['all_queryset']
+        return context
+
     def get_queryset(self):
         queryset = super().get_queryset()
         if "region-filter" in self.request.GET and self.request.GET[
@@ -202,7 +212,6 @@ class StatisticsView(View):
             sector_filter_active = True
             filters &= Q(sector__category=sector)
         if sector_type and sector_type is not None:
-            print('sector_type', sector_type)
             filters &= Q(sector=sector_type)
 
         investments = investments.filter(filters)

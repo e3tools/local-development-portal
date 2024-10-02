@@ -48,8 +48,6 @@ class IndexListView(
     def post(self, request, *args, **kwargs):
         if "cart-submitted" in request.POST:
             form = self.get_form()
-            print(form.is_valid())
-            print(form.errors)
             if form.is_valid():
                 return self.form_valid(form)
             else:
@@ -190,7 +188,7 @@ class IndexListView(
         context["datatable_config"]["server-side"] = "true"
         context["datatable_config"]["processing"] = "true"
         context["datatable_config"]["searching"] = "false"
-        context["datatable_config"]["ajax"] = "/investments/ajax/datatable?format=datatables"
+        context["datatable_config"]["ajax"] = self.request.scheme + '://' + self.request.get_host() + self.request.path + "ajax/datatable?format=datatables"
         context["datatable_config"]["columns"] = [
             {'data': 'select_input', 'name': 'select_input', 'searchable': 'false', 'orderable': 'false'},
             {'data': 'title'},
@@ -302,7 +300,7 @@ class IndexListView(
                     project_status=Investment.FUNDED
                 )
 
-        return queryset
+        return queryset.none()
 
     def get_query_strings_context(self):
         resp = dict()
