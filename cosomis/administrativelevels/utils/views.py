@@ -175,3 +175,22 @@ class SectorCodesCSVView(LoginRequiredMixin, generic.View):
             writer.writerow(row)
 
         return response
+
+
+class VillagesCodesCSVView(LoginRequiredMixin, generic.View):
+    queryset = AdministrativeLevel.objects.filter(type=AdministrativeLevel.VILLAGE)
+
+    def get(self, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="administrative_level_codes.csv"'
+
+        writer = csv.writer(response)
+
+        writer.writerow(['id', 'region', 'prefecture', 'commune', 'canton', 'village'])
+
+        rows = self.queryset.values_list('id', 'parent__parent__parent__parent__name', 'parent__parent__parent__name',
+                                         'parent__parent__name', 'parent__name', 'name')
+        for row in rows:
+            writer.writerow(row)
+
+        return response

@@ -14,7 +14,7 @@
                             <a href="{% static 'investments/project_investments_template.csv' %}" target="_blank">{% translate 'downloading' %}</a> {%  translate 'the CSV template file.' %}
                             <br>
                             {% translate 'For additional reference, you can also download the' %} <a href="{% url 'administrativelevels:utils:sectors_codes' %}" target="_blank">Sectors</a> {% translate 'list, the' %}
-                            <a href="{% static 'investments/category_codes.csv' %}" target="_blank">{% translate 'Categories' %}</a> {% translate 'list and the' %} <a href="{% static 'investments/administrative_level_codes.csv ' %}" target="_blank">{% translate 'Villages' %}</a> {% translate 'list' %}.
+                            <a href="{% static 'investments/category_codes.csv' %}" target="_blank">{% translate 'Categories' %}</a> {% translate 'list and the' %} <a href="{% url 'administrativelevels:utils:villages_codes' %}" target="_blank">{% translate 'Villages' %}</a> {% translate 'list' %}.
                         </p>
                         <p class="text-center text-muted">
                         </p>
