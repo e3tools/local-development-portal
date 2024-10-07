@@ -1,13 +1,14 @@
-import json
+import csv
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
 from django.db.models import Subquery
 from django.views import generic
+from django.http import HttpResponse
+from django.http import JsonResponse
 
 from rest_framework import generics, response
 
 from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin
-from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task
+from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Sector
 
 
 class GetAdministrativeLevelForCVDByADLView(AJAXRequestMixin, LoginRequiredMixin, JSONResponseMixin, generic.View):
@@ -156,3 +157,21 @@ class FillAttachmentSelectFilters(generics.GenericAPIView):
         return response.Response({
             'values': [{'id': child.id, 'name': child.name} for child in child_qs]
         })
+
+
+class SectorCodesCSVView(LoginRequiredMixin, generic.View):
+    queryset = Sector.objects.all()
+
+    def get(self, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="sectors_codes.csv"'
+
+        writer = csv.writer(response)
+
+        writer.writerow(['id', 'name', 'category'])
+
+        rows = self.queryset.values_list('id', 'name', 'category__name')
+        for row in rows:
+            writer.writerow(row)
+
+        return response
