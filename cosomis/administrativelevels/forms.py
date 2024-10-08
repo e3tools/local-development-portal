@@ -45,22 +45,13 @@ class BulkUploadInvestmentsForm(forms.Form):
         'village_id',
         'ranking',
         'title',
-        'responsible_structure',
         'sector_id',
         'estimated_cost',
         'start_date',
         'duration',
-        'delays_consumed',
         'physical_execution_rate',
         'financial_implementation_rate',
-        'investment_status',
         'project_status',
-        'endorsed_by_youth',
-        'endorsed_by_women',
-        'endorsed_by_agriculturist',
-        'endorsed_by_pastoralist',
-        'climate_contribution',
-        'climate_contribution_text'
     ]
 
     def __init__(self, *args, **kwargs):
@@ -110,12 +101,6 @@ class BulkUploadInvestmentsForm(forms.Form):
                     financial_implementation_rate=row[headers_dict['financial_implementation_rate']],
                     investment_status=row[headers_dict['investment_status']],
                     project_status=row[headers_dict['project_status']],
-                    endorsed_by_youth=row[headers_dict['endorsed_by_youth']],
-                    endorsed_by_women=row[headers_dict['endorsed_by_women']],
-                    endorsed_by_agriculturist=row[headers_dict['endorsed_by_agriculturist']],
-                    endorsed_by_pastoralist=row[headers_dict['endorsed_by_pastoralist']],
-                    climate_contribution=row[headers_dict['climate_contribution']],
-                    climate_contribution_text=row[headers_dict['climate_contribution_text']],
                 ))
 
         Investment.objects.bulk_create(investments)
