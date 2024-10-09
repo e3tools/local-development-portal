@@ -566,12 +566,21 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        if 'investment' in request.POST:
+        if 'investment-status' in request.POST:
             investment = Investment.objects.filter(
                 packages__project=self.object,
-            ).get(id=request.POST['investment'])
+            ).get(id=request.POST['investment-status'])
             investment.project_status = request.POST['status']
             investment.save()
+            return super().get(request, *args, **kwargs)
+
+        if 'investment-progress' in request.POST:
+            investment = Investment.objects.filter(
+                packages__project=self.object,
+            ).get(id=request.POST['investment-progress'])
+            if 0 <= int(request.POST['progress']) <= 100:
+                investment.physical_execution_rate = int(request.POST['progress'])
+                investment.save()
             return super().get(request, *args, **kwargs)
 
         return super().post(request, *args, **kwargs)

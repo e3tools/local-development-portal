@@ -104,6 +104,7 @@
                                             <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
                                             <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
                                             <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Population priority' %}</th>
+                                            <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Physical execution rate' %}</th>
                                             <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Package status' %}</th>
                                             <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Status' %}</th>
                                         </tr>
@@ -133,6 +134,18 @@
                                             {% if investment.endorsed_by_pastoralist %}
                                             ME
                                             {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="progress-display" data-investment="{{ investment.id }}" 
+                                                 data-progress="{{ investment.physical_execution_rate }}" 
+                                                 data-name="{{ investment.title }}" style="cursor: pointer;">
+                                                <span>{{ investment.physical_execution_rate }}% {% translate 'Complete' %}</span>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-primary progress-bar-striped" role="progressbar" aria-valuenow="{{ investment.physical_execution_rate }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ investment.physical_execution_rate }}%">
+                                                        <span class="sr-only sr-only-focusable">{{ investment.physical_execution_rate }}% Complete</span>
+                                                    </div>
+                                                </div>
+                                            </div>                                        
                                         </td>
                                         <td>{{ investment.packages.all.first.get_status_display }}</td>
                                         <td>
@@ -216,10 +229,10 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <h4 class="mb-3" id="investment-name">{% translate "Investment" %}</h4>
+                <h4 class="mb-3 investment-name">{% translate "Investment" %}</h4>
                 <form action="" class="form-horizontal" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="investment" id="investment-hidden" value="">
+                    <input type="hidden" name="investment-status" id="investment-hidden" value="">
                     <div class="form-group row">
                         <div class="col-3 col-form-label">
                             <label for="project-status">{% translate "Project Status" %}</label>
@@ -235,6 +248,34 @@
                     <div class="form-group row">
                         <div class="col-sm-12">
                             <button class="btn btn-primary btn-block" type="submit">{% translate "Change status" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<div class="modal fade" id="executionRateModel" tabindex="-1" role="dialog" aria-labelledby="executionRateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 class="mb-3 investment-name">{% translate "Investment" %}</h4>
+                <form action="" class="form-horizontal" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="investment-progress" id="investment-progress-hidden" value="">
+                    <div class="form-group row">
+                        <div class="form-group col-12">
+                            <label for="physicalExecutionRange">{% translate 'Physical execution rate' %}</label>
+                            <input type="range" class="custom-range" id="physicalExecutionRange">
+                        </div>
+                        <div class="form-group col-12">
+                            <input type="number" max="100" min="0" class="form-control" name="progress" id="physicalExecutionNumber">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary btn-block" type="submit">{% translate "Update progress" %}</button>
                         </div>
                     </div>
                 </form>
@@ -259,9 +300,25 @@
         $('.investment-status-badge').on('click', function (){
             $('#investment-hidden').val($(this).data('investment'));
             $('#project-status').val($(this).data('status')).trigger("change");
-            $('#investment-name').html($(this).data('name'));
+            $('.investment-name').html($(this).data('name'));
             $("#investmentStatusModel").modal("show");
         });
+        
+        $('.progress-display').on('click', function (){
+            $('#investment-progress-hidden').val($(this).data('investment'));
+            $('.investment-name').html($(this).data('name'));
+            $("#physicalExecutionNumber").val($(this).data('progress'));
+            $("#physicalExecutionRange").val($(this).data('progress'));
+            $("#executionRateModel").modal("show");
+        });
+        
+        $("#physicalExecutionRange").on('change', function () {
+            $("#physicalExecutionNumber").val($(this).val());
+        })
+        
+        $("#physicalExecutionNumber").on('change', function () {
+            $("#physicalExecutionRange").val($(this).val());
+        })
 
     });
 </script>

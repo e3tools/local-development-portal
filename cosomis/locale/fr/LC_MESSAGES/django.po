@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-18 10:52+0200\n"
+"POT-Creation-Date: 2024-10-09 12:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,12 +25,13 @@ msgstr ""
 #: administrativelevels/templates/components/subprojects_list.html:26
 #: administrativelevels/templates/cvds_list.html:62
 #: administrativelevels/templates/geographical_unit_list.html:56
-#: administrativelevels/templates/project/detail.html:98
+#: administrativelevels/templates/project/detail.html:99
 #: investments/templates/investments/cart.html:176
-#: investments/templates/investments/list.html:333
-#: investments/templates/investments/list.html:461
+#: investments/templates/investments/list.html:352
+#: investments/templates/investments/list.html:480
 #: investments/templates/investments/moderator/package_review.html:271
 #: investments/templates/investments/moderator/package_review.html:379
+#: investments/templates/investments/package.html:180
 #: investments/templates/investments/profile.html:56
 msgid "Name"
 msgstr "Nom"
@@ -75,10 +76,10 @@ msgstr "Total des fonds"
 #: dashboard/templates/dashboard_summary.html:40
 #: dashboard/templates/dashboard_summary.html:42
 #: dashboard/templates/dashboard_summary.html:378
-#: investments/templates/investments/list.html:47
-#: investments/templates/investments/list.html:48
-#: investments/templates/investments/list.html:49
+#: investments/templates/investments/list.html:66
 #: investments/templates/investments/list.html:67
+#: investments/templates/investments/list.html:68
+#: investments/templates/investments/list.html:86
 #: investments/templates/investments/moderator/package_review.html:66
 #: investments/templates/investments/moderator/package_review.html:67
 #: investments/templates/investments/moderator/package_review.html:68
@@ -95,7 +96,7 @@ msgstr ""
 #: administrativelevels/templates/components/download.html:31
 #: administrativelevels/templates/cvds_list.html:67
 #: administrativelevels/templates/geographical_unit_list.html:61
-#: administrativelevels/templates/project/detail.html:103
+#: administrativelevels/templates/project/detail.html:104
 #: dashboard/templates/dashboard_administrativelevels.html:319
 #: dashboard/templates/dashboard_subprojects.html:355
 #: dashboard/templates/dashboard_summary.html:73
@@ -104,15 +105,16 @@ msgstr ""
 #: dashboard/views_subprojects.py:416 dashboard/views_subprojects.py:434
 #: dashboard/views_subprojects.py:436 dashboard/views_subprojects.py:462
 #: investments/templates/investments/cart.html:182
-#: investments/templates/investments/list.html:202
-#: investments/templates/investments/list.html:203
-#: investments/templates/investments/list.html:204
-#: investments/templates/investments/list.html:367
+#: investments/templates/investments/list.html:221
+#: investments/templates/investments/list.html:222
+#: investments/templates/investments/list.html:223
+#: investments/templates/investments/list.html:386
 #: investments/templates/investments/moderator/package_review.html:141
 #: investments/templates/investments/moderator/package_review.html:142
 #: investments/templates/investments/moderator/package_review.html:143
 #: investments/templates/investments/moderator/package_review.html:305
 #: investments/templates/investments/moderator/package_review.html:385
+#: investments/templates/investments/package.html:186
 msgid "Region"
 msgstr "Région"
 
@@ -122,23 +124,24 @@ msgstr "Région"
 #: administrativelevels/templates/components/download.html:32
 #: administrativelevels/templates/cvds_list.html:66
 #: administrativelevels/templates/geographical_unit_list.html:60
-#: administrativelevels/templates/project/detail.html:102
+#: administrativelevels/templates/project/detail.html:103
 #: dashboard/templates/dashboard_administrativelevels.html:323
 #: dashboard/templates/dashboard_subprojects.html:359
 #: dashboard/templates/dashboard_summary.html:84
 #: dashboard/templates/dashboard_summary.html:85
 #: dashboard/templates/dashboard_summary.html:86
 #: investments/templates/investments/cart.html:181
-#: investments/templates/investments/list.html:261
-#: investments/templates/investments/list.html:262
-#: investments/templates/investments/list.html:263
-#: investments/templates/investments/list.html:360
-#: investments/templates/investments/list.html:467
+#: investments/templates/investments/list.html:280
+#: investments/templates/investments/list.html:281
+#: investments/templates/investments/list.html:282
+#: investments/templates/investments/list.html:379
+#: investments/templates/investments/list.html:486
 #: investments/templates/investments/moderator/package_review.html:200
 #: investments/templates/investments/moderator/package_review.html:201
 #: investments/templates/investments/moderator/package_review.html:202
 #: investments/templates/investments/moderator/package_review.html:298
 #: investments/templates/investments/moderator/package_review.html:384
+#: investments/templates/investments/package.html:185
 msgid "Prefecture"
 msgstr "Préfecture"
 
@@ -148,23 +151,24 @@ msgstr "Préfecture"
 #: administrativelevels/templates/components/download.html:33
 #: administrativelevels/templates/cvds_list.html:65
 #: administrativelevels/templates/geographical_unit_list.html:59
-#: administrativelevels/templates/project/detail.html:101
+#: administrativelevels/templates/project/detail.html:102
 #: dashboard/templates/dashboard_administrativelevels.html:327
 #: dashboard/templates/dashboard_subprojects.html:363
 #: dashboard/templates/dashboard_summary.html:93
 #: dashboard/templates/dashboard_summary.html:94
 #: dashboard/templates/dashboard_summary.html:95
 #: investments/templates/investments/cart.html:180
-#: investments/templates/investments/list.html:221
-#: investments/templates/investments/list.html:222
-#: investments/templates/investments/list.html:223
-#: investments/templates/investments/list.html:355
-#: investments/templates/investments/list.html:466
+#: investments/templates/investments/list.html:240
+#: investments/templates/investments/list.html:241
+#: investments/templates/investments/list.html:242
+#: investments/templates/investments/list.html:374
+#: investments/templates/investments/list.html:485
 #: investments/templates/investments/moderator/package_review.html:160
 #: investments/templates/investments/moderator/package_review.html:161
 #: investments/templates/investments/moderator/package_review.html:162
 #: investments/templates/investments/moderator/package_review.html:293
 #: investments/templates/investments/moderator/package_review.html:383
+#: investments/templates/investments/package.html:184
 msgid "Commune"
 msgstr "Commune"
 
@@ -180,10 +184,10 @@ msgstr "Commune"
 #: dashboard/templates/dashboard_summary.html:102
 #: dashboard/templates/dashboard_summary.html:103
 #: dashboard/templates/dashboard_summary.html:104
-#: investments/templates/investments/list.html:280
-#: investments/templates/investments/list.html:281
-#: investments/templates/investments/list.html:282
-#: investments/templates/investments/list.html:465
+#: investments/templates/investments/list.html:299
+#: investments/templates/investments/list.html:300
+#: investments/templates/investments/list.html:301
+#: investments/templates/investments/list.html:484
 #: investments/templates/investments/moderator/package_review.html:219
 #: investments/templates/investments/moderator/package_review.html:220
 #: investments/templates/investments/moderator/package_review.html:221
@@ -213,8 +217,8 @@ msgstr "Les deux"
 #: dashboard/views_subprojects.py:161 dashboard/views_subprojects.py:180
 #: dashboard/views_subprojects.py:181 dashboard/views_subprojects.py:182
 #: dashboard/views_subprojects.py:187
-#: investments/templates/investments/list.html:66
-#: investments/templates/investments/list.html:68
+#: investments/templates/investments/list.html:85
+#: investments/templates/investments/list.html:87
 #: investments/templates/investments/moderator/package_review.html:48
 #: investments/templates/investments/moderator/package_review.html:49
 msgid "Type"
@@ -287,23 +291,24 @@ msgstr ""
 #: administrativelevels/templates/attachments/attachments.html:299
 #: administrativelevels/templates/components/download.html:35
 #: administrativelevels/templates/components/villages_overview_under_canton.html:24
-#: administrativelevels/templates/project/detail.html:100
+#: administrativelevels/templates/project/detail.html:101
 #: dashboard/templates/dashboard_administrativelevels.html:335
 #: dashboard/templates/dashboard_subprojects.html:371
 #: dashboard/templates/dashboard_summary.html:111
 #: dashboard/templates/dashboard_summary.html:112
 #: dashboard/templates/dashboard_summary.html:113
 #: investments/templates/investments/cart.html:179
-#: investments/templates/investments/list.html:240
-#: investments/templates/investments/list.html:241
-#: investments/templates/investments/list.html:242
-#: investments/templates/investments/list.html:350
-#: investments/templates/investments/list.html:464
+#: investments/templates/investments/list.html:259
+#: investments/templates/investments/list.html:260
+#: investments/templates/investments/list.html:261
+#: investments/templates/investments/list.html:369
+#: investments/templates/investments/list.html:483
 #: investments/templates/investments/moderator/package_review.html:179
 #: investments/templates/investments/moderator/package_review.html:180
 #: investments/templates/investments/moderator/package_review.html:181
 #: investments/templates/investments/moderator/package_review.html:288
 #: investments/templates/investments/moderator/package_review.html:382
+#: investments/templates/investments/package.html:183
 msgid "Village"
 msgstr "Village"
 
@@ -523,9 +528,9 @@ msgstr "Animateur(trice)"
 #: administrativelevels/templates/prefecture/prefecture_detail.html:79
 #: administrativelevels/templates/region/region_detail.html:79
 #: administrativelevels/templates/shared/priorities_table.html:10
-#: investments/templates/investments/list.html:127
-#: investments/templates/investments/list.html:128
-#: investments/templates/investments/list.html:129
+#: investments/templates/investments/list.html:146
+#: investments/templates/investments/list.html:147
+#: investments/templates/investments/list.html:148
 msgid "Priorities"
 msgstr "Priorités"
 
@@ -706,8 +711,8 @@ msgstr "Choisir les documents à visualiser"
 
 #: administrativelevels/templates/attachments/attachments.html:340
 #: administrativelevels/templates/commune/tabs/priorities.html:125
-#: investments/templates/investments/list.html:169
-#: investments/templates/investments/list.html:302
+#: investments/templates/investments/list.html:188
+#: investments/templates/investments/list.html:321
 #: investments/templates/investments/moderator/package_review.html:108
 #: investments/templates/investments/moderator/package_review.html:241
 msgid "Apply"
@@ -932,9 +937,9 @@ msgstr ""
 #: administrativelevels/templates/components/administrative_level_planning_status.html:41
 #: administrativelevels/templates/components/administrative_level_planning_status.html:56
 #: administrativelevels/templates/components/administrative_level_planning_status.html:71
-#: investments/templates/investments/list.html:111
-#: investments/templates/investments/list.html:114
-#: investments/templates/investments/list.html:119 investments/views.py:342
+#: investments/templates/investments/list.html:130
+#: investments/templates/investments/list.html:133
+#: investments/templates/investments/list.html:138 investments/views.py:349
 msgid "Yes"
 msgstr "Oui"
 
@@ -947,9 +952,9 @@ msgstr "Oui"
 #: administrativelevels/templates/components/administrative_level_planning_status.html:58
 #: administrativelevels/templates/components/administrative_level_planning_status.html:73
 #: administrativelevels/templates/shared/priorities_table.html:58
-#: investments/templates/investments/list.html:112
-#: investments/templates/investments/list.html:115
-#: investments/templates/investments/list.html:120 investments/views.py:342
+#: investments/templates/investments/list.html:131
+#: investments/templates/investments/list.html:134
+#: investments/templates/investments/list.html:139 investments/views.py:349
 msgid "No"
 msgstr "Non"
 
@@ -973,7 +978,7 @@ msgstr "Montant requis par habitant"
 #: administrativelevels/templates/commune/commune_detail.html:200
 #: administrativelevels/templates/commune/tabs/priorities.html:151
 #: administrativelevels/templates/commune/tabs/priorities.html:209
-#: administrativelevels/templates/project/detail.html:156
+#: administrativelevels/templates/project/detail.html:173
 #: administrativelevels/templates/shared/priorities_table.html:15
 msgid "Actions"
 msgstr "Actions"
@@ -1008,9 +1013,9 @@ msgstr "Financé par"
 #: administrativelevels/templates/commune/tabs/priorities.html:85
 #: administrativelevels/templates/commune/tabs/priorities.html:95
 #: administrativelevels/templates/shared/priorities_table.html:14
-#: investments/templates/investments/list.html:107
-#: investments/templates/investments/list.html:108
-#: investments/templates/investments/list.html:118
+#: investments/templates/investments/list.html:126
+#: investments/templates/investments/list.html:127
+#: investments/templates/investments/list.html:137
 msgid "Climate contribution"
 msgstr "Contribution climatique"
 
@@ -1029,8 +1034,8 @@ msgstr "Catégorie"
 
 #: administrativelevels/templates/commune/tabs/priorities.html:63
 #: administrativelevels/templates/commune/tabs/priorities.html:66
-#: investments/templates/investments/list.html:85
-#: investments/templates/investments/list.html:88
+#: investments/templates/investments/list.html:104
+#: investments/templates/investments/list.html:107
 #: investments/templates/investments/moderator/package_review.html:85
 #: investments/templates/investments/moderator/package_review.html:88
 msgid "Endorsed by"
@@ -1038,8 +1043,8 @@ msgstr "Soutenu par"
 
 #: administrativelevels/templates/commune/tabs/priorities.html:127
 #: dashboard/templates/dashboard_summary.html:122
-#: investments/templates/investments/list.html:170
-#: investments/templates/investments/list.html:303
+#: investments/templates/investments/list.html:189
+#: investments/templates/investments/list.html:322
 #: investments/templates/investments/moderator/package_review.html:109
 #: investments/templates/investments/moderator/package_review.html:242
 msgid "Reset"
@@ -1061,8 +1066,10 @@ msgid "Funding Needed"
 msgstr "Financement nécessaire"
 
 #: administrativelevels/templates/commune/tabs/priorities.html:149
-#: administrativelevels/templates/project/detail.html:106
-#: administrativelevels/templates/project/detail.html:153
+#: administrativelevels/templates/project/detail.html:109
+#: administrativelevels/templates/project/detail.html:169
+#: administrativelevels/templates/project/detail.html:172
+#: investments/templates/investments/package.html:80
 msgid "Status"
 msgstr "Statut"
 
@@ -1075,7 +1082,7 @@ msgstr "Ajouter au panier"
 #: administrativelevels/templates/commune/tabs/priorities.html:182
 #: administrativelevels/templates/commune/tabs/priorities.html:241
 #: administrativelevels/templates/shared/priorities_table.html:66
-#: investments/templates/investments/cart.html:218
+#: investments/templates/investments/cart.html:217
 msgid "Remove from cart"
 msgstr "Retirer du panier"
 
@@ -1134,8 +1141,9 @@ msgstr "Type de fichier"
 #: administrativelevels/templates/components/modal_upload_one_sheet.html:60
 #: administrativelevels/templates/components/upload.html:39
 #: administrativelevels/templates/upload.html:53
-#: investments/templates/investments/cart.html:248
-#: investments/templates/investments/moderator/approvals_list.html:176
+#: investments/templates/investments/cart.html:246
+#: investments/templates/investments/cart.html:271
+#: investments/templates/investments/moderator/approvals_list.html:180
 #: investments/templates/investments/moderator/package_review.html:451
 msgid "Close"
 msgstr "Fermer"
@@ -1376,7 +1384,7 @@ msgstr "Unités géographiques"
 #: administrativelevels/templates/cvd_detail.html:138
 #: administrativelevels/templates/geographical_unit_detail.html:165
 #: administrativelevels/templates/geographical_unit_detail.html:195
-#: administrativelevels/templates/project/detail.html:169
+#: administrativelevels/templates/project/detail.html:187
 msgid "Detail"
 msgstr "Détail"
 
@@ -1516,6 +1524,7 @@ msgstr "la liste des"
 
 #: administrativelevels/templates/project/create/bulk_upload_investments.html:17
 #: investments/templates/investments/cart.html:88
+#: investments/templates/investments/package.html:104
 msgid "Categories"
 msgstr "Catégories"
 
@@ -1529,7 +1538,7 @@ msgstr "liste"
 
 #: administrativelevels/templates/project/create/index.html:39
 #: administrativelevels/templates/project/list.html:10
-#: administrativelevels/views.py:641
+#: administrativelevels/views.py:651
 msgid "Create Project"
 msgstr "Créer un projet"
 
@@ -1553,59 +1562,76 @@ msgstr "Paquets"
 msgid "Settings"
 msgstr "Configuration"
 
-#: administrativelevels/templates/project/detail.html:81
+#: administrativelevels/templates/project/detail.html:80
 #, fuzzy
 #| msgid "Total investments"
 msgid "Upload more investments"
 msgstr "Télécharger plus d'investissements"
 
-#: administrativelevels/templates/project/detail.html:99
-#: administrativelevels/templates/project/detail.html:155
+#: administrativelevels/templates/project/detail.html:100
+#: administrativelevels/templates/project/detail.html:171
 #: investments/templates/investments/cart.html:178
-#: investments/templates/investments/list.html:343
-#: investments/templates/investments/list.html:463
+#: investments/templates/investments/list.html:362
+#: investments/templates/investments/list.html:482
 #: investments/templates/investments/moderator/package_review.html:281
 #: investments/templates/investments/moderator/package_review.html:381
+#: investments/templates/investments/package.html:182
 msgid "Estimate cost"
 msgstr "Coût estimé"
 
-#: administrativelevels/templates/project/detail.html:104
+#: administrativelevels/templates/project/detail.html:105
 #: investments/templates/investments/cart.html:183
-#: investments/templates/investments/list.html:372
-#: investments/templates/investments/list.html:468
+#: investments/templates/investments/list.html:391
+#: investments/templates/investments/list.html:487
 #: investments/templates/investments/moderator/package_review.html:310
 #: investments/templates/investments/moderator/package_review.html:386
+#: investments/templates/investments/package.html:187
 msgid "Village priority"
 msgstr "Priorité du village"
 
-#: administrativelevels/templates/project/detail.html:105
+#: administrativelevels/templates/project/detail.html:106
 #: investments/templates/investments/cart.html:184
-#: investments/templates/investments/list.html:377
-#: investments/templates/investments/list.html:469
+#: investments/templates/investments/list.html:396
+#: investments/templates/investments/list.html:488
 #: investments/templates/investments/moderator/package_review.html:315
 #: investments/templates/investments/moderator/package_review.html:387
+#: investments/templates/investments/package.html:188
 msgid "Population priority"
 msgstr "Priorité de la population"
 
-#: administrativelevels/templates/project/detail.html:154
+#: administrativelevels/templates/project/detail.html:107
+#: administrativelevels/templates/project/detail.html:269
+msgid "Physical execution rate"
+msgstr "Taux d'exécution physique"
+
+#: administrativelevels/templates/project/detail.html:108
+msgid "Package status"
+msgstr "Statut du colis"
+
+#: administrativelevels/templates/project/detail.html:142
+msgid "Complete"
+msgstr "Achevé"
+
+#: administrativelevels/templates/project/detail.html:170
 msgid "Date"
-msgstr ""
-
-#: administrativelevels/templates/project/detail.html:214
-#, fuzzy
-#| msgid "Investments"
-msgid "Investment"
-msgstr "Investissements"
-
-#: administrativelevels/templates/project/detail.html:220
-#, fuzzy
-#| msgid "Sub-Project Status"
-msgid "Project Status"
-msgstr "Statut du sous-projet"
+msgstr "Date"
 
 #: administrativelevels/templates/project/detail.html:232
+#: administrativelevels/templates/project/detail.html:263
+msgid "Investment"
+msgstr "Investissement"
+
+#: administrativelevels/templates/project/detail.html:238
+msgid "Project Status"
+msgstr "Statut du projet"
+
+#: administrativelevels/templates/project/detail.html:250
 msgid "Change status"
 msgstr "Changement de statut"
+
+#: administrativelevels/templates/project/detail.html:278
+msgid "Update progress"
+msgstr "Mettre à jour la progression"
 
 #: administrativelevels/templates/project/list.html:54
 msgid "Search a project"
@@ -1613,9 +1639,10 @@ msgstr "Rechercher un projet"
 
 #: administrativelevels/templates/project/list.html:67
 #: investments/templates/investments/cart.html:64
-#: investments/templates/investments/cart.html:269
-#: investments/templates/investments/cart.html:271
-#: investments/templates/investments/list.html:425
+#: investments/templates/investments/cart.html:292
+#: investments/templates/investments/cart.html:294
+#: investments/templates/investments/list.html:427
+#: investments/templates/investments/package.html:70
 msgid "Project"
 msgstr "Projet"
 
@@ -1697,17 +1724,17 @@ msgid "Create Administrative level"
 msgstr "Créer niveau administratif"
 
 #: administrativelevels/views.py:468 dashboard/views_summary.py:64
-#: investments/views.py:131 investments/views.py:635
+#: investments/views.py:131 investments/views.py:686
 msgid "Endorsed by youth"
 msgstr "Soutenu par les jeunes"
 
 #: administrativelevels/views.py:469 dashboard/views_summary.py:65
-#: investments/views.py:132 investments/views.py:636
+#: investments/views.py:132 investments/views.py:687
 msgid "Endorsed by women"
 msgstr "Soutenu pas le femmes"
 
 #: administrativelevels/views.py:470 dashboard/views_summary.py:66
-#: investments/views.py:133 investments/views.py:637
+#: investments/views.py:133 investments/views.py:688
 msgid "Endorsed by agriculturist"
 msgstr "Soutenu par le agriculteurs et éléveur"
 
@@ -1719,17 +1746,17 @@ msgid "Endorsed by ethnic minorities"
 msgstr "Minorités ethniques"
 
 #: administrativelevels/views.py:478 investments/views.py:141
-#: investments/views.py:346
+#: investments/views.py:353
 msgid "Priority 1"
 msgstr "Priorité 1"
 
 #: administrativelevels/views.py:479 investments/views.py:142
-#: investments/views.py:348
+#: investments/views.py:355
 msgid "Priorities 1 and 2"
 msgstr "Priorité 1 et 2"
 
 #: administrativelevels/views.py:480 investments/views.py:143
-#: investments/views.py:350
+#: investments/views.py:357
 msgid "All priorities"
 msgstr "Toutes les priorités"
 
@@ -1737,7 +1764,7 @@ msgstr "Toutes les priorités"
 msgid "Projects"
 msgstr "Projets"
 
-#: administrativelevels/views.py:675 cosomis/templates/layouts/sidebar.html:55
+#: administrativelevels/views.py:685 cosomis/templates/layouts/sidebar.html:55
 msgid "Gallery"
 msgstr "Galerie"
 
@@ -1786,7 +1813,7 @@ msgid "Not approved"
 msgstr "Non approuvé"
 
 #: cosomis/constants.py:38 investments/models.py:100
-#: investments/templates/investments/moderator/approvals_list.html:134
+#: investments/templates/investments/moderator/approvals_list.html:138
 msgid "Approved"
 msgstr "Approuvé"
 
@@ -1840,11 +1867,11 @@ msgstr ""
 "Veuillez cocher cette câche et cliquez sur le bouton de confirmation pour la "
 "validation."
 
-#: cosomis/settings.py:162
+#: cosomis/settings.py:151
 msgid "English"
 msgstr "Anglais"
 
-#: cosomis/settings.py:163
+#: cosomis/settings.py:152
 msgid "French"
 msgstr "Français"
 
@@ -1935,10 +1962,11 @@ msgstr "Se déconnecter"
 
 #: cosomis/templates/layouts/sidebar.html:38
 #: investments/templates/investments/cart.html:104
+#: investments/templates/investments/package.html:120
 msgid "Summary"
 msgstr "Résumé"
 
-#: cosomis/templates/layouts/sidebar.html:62 investments/views.py:44
+#: cosomis/templates/layouts/sidebar.html:62 investments/views.py:46
 msgid "Investments"
 msgstr "Investissements"
 
@@ -2229,6 +2257,7 @@ msgstr "Tableau de bord des sous-projets"
 #: dashboard/views_subprojects.py:314 dashboard/views_subprojects.py:328
 #: dashboard/views_subprojects.py:354 dashboard/views_subprojects.py:358
 #: investments/templates/investments/cart.html:76
+#: investments/templates/investments/package.html:92
 #, fuzzy
 #| msgid "Sector"
 msgid "Sectors"
@@ -2301,11 +2330,11 @@ msgstr "Etape"
 msgid "Dashboard"
 msgstr "Tableau de bord des sous-projets"
 
-#: investments/forms.py:51
+#: investments/forms.py:58
 msgid "Reject reason"
 msgstr ""
 
-#: investments/forms.py:52
+#: investments/forms.py:59
 msgid ""
 "You are about to send this submission for revision. The submitter will see "
 "flagged investments. Please leave comments to help with re-submission."
@@ -2340,24 +2369,24 @@ msgid "Percentage"
 msgstr "Pourcentage"
 
 #: investments/models.py:98
-#: investments/templates/investments/moderator/approvals_list.html:130
+#: investments/templates/investments/moderator/approvals_list.html:134
 #, fuzzy
 #| msgid "VDP Submission"
 msgid "Pending Submission"
 msgstr "VDP Soumission"
 
 #: investments/models.py:99
-#: investments/templates/investments/moderator/approvals_list.html:132
+#: investments/templates/investments/moderator/approvals_list.html:136
 msgid "Pending Approval"
 msgstr ""
 
 #: investments/models.py:101
-#: investments/templates/investments/moderator/approvals_list.html:136
+#: investments/templates/investments/moderator/approvals_list.html:140
 msgid "Rejected"
 msgstr ""
 
 #: investments/models.py:102
-#: investments/templates/investments/moderator/approvals_list.html:138
+#: investments/templates/investments/moderator/approvals_list.html:142
 #, fuzzy
 #| msgid "Under construction"
 msgid "Under Execution"
@@ -2376,23 +2405,29 @@ msgstr ""
 
 #: investments/templates/investments/cart.html:34
 #: investments/templates/investments/cart.html:108
-#: investments/templates/investments/list.html:418
+#: investments/templates/investments/list.html:466
 #: investments/templates/investments/moderator/package_review.html:356
+#: investments/templates/investments/package.html:40
+#: investments/templates/investments/package.html:124
 msgid "Total funding selected"
 msgstr "Financement total sélectionné"
 
 #: investments/templates/investments/cart.html:44
-#: investments/templates/investments/list.html:413
+#: investments/templates/investments/list.html:461
 #: investments/templates/investments/moderator/package_review.html:351
+#: investments/templates/investments/package.html:50
 msgid "# Sub-projects"
 msgstr "# Sous-projets"
 
 #: investments/templates/investments/cart.html:54
 #: investments/templates/investments/cart.html:128
+#: investments/templates/investments/package.html:60
+#: investments/templates/investments/package.html:144
 msgid "# Villages"
 msgstr "# Villages"
 
 #: investments/templates/investments/cart.html:118
+#: investments/templates/investments/package.html:134
 msgid "# Subprojects"
 msgstr "# Sous-projets"
 
@@ -2401,102 +2436,120 @@ msgid "Submit For Approval"
 msgstr "Soumettre à l'approbation"
 
 #: investments/templates/investments/cart.html:152
+#: investments/templates/investments/package.html:162
 msgid "Investments in your package"
 msgstr "Investissements dans votre paquet"
 
 #: investments/templates/investments/cart.html:166
-#: investments/templates/investments/cart.html:249
+#: investments/templates/investments/cart.html:247
 msgid "Clear Package"
 msgstr "Paquet clair"
 
 #: investments/templates/investments/cart.html:177
-#: investments/templates/investments/list.html:338
+#: investments/templates/investments/list.html:357
 #: investments/templates/investments/moderator/package_review.html:276
 #: investments/templates/investments/moderator/package_review.html:380
+#: investments/templates/investments/package.html:181
 msgid "Subproject type"
 msgstr "Type de sous-projet"
 
-#: investments/templates/investments/cart.html:240
+#: investments/templates/investments/cart.html:238
 msgid "Are you sure do you want to clear the package?"
 msgstr ""
 
+#: investments/templates/investments/cart.html:260
+msgid "Are you sure do you want to remove "
+msgstr ""
+
 #: investments/templates/investments/cart.html:262
+#, fuzzy
+#| msgid "Your package"
+msgid " from the package?"
+msgstr "Votre paquet"
+
+#: investments/templates/investments/cart.html:272
+#, fuzzy
+#| msgid "Investments"
+msgid "Remove Investment"
+msgstr "Investissements"
+
+#: investments/templates/investments/cart.html:285
 msgid "Select project"
 msgstr "Rechercher un niveau"
 
-#: investments/templates/investments/cart.html:265
+#: investments/templates/investments/cart.html:288
 msgid "You need to select a project related to this investments."
 msgstr ""
 
-#: investments/templates/investments/cart.html:280
+#: investments/templates/investments/cart.html:303
 msgid "Save"
 msgstr ""
 
-#: investments/templates/investments/list.html:34
+#: investments/templates/investments/list.html:53
 #: investments/templates/investments/moderator/package_review.html:34
 msgid "Choose filters"
 msgstr "Choisir les filtres"
 
-#: investments/templates/investments/list.html:146
-#: investments/templates/investments/list.html:147
-#: investments/templates/investments/list.html:148
+#: investments/templates/investments/list.html:165
+#: investments/templates/investments/list.html:166
+#: investments/templates/investments/list.html:167
 msgid "Funding Status"
 msgstr "État Du Financement"
 
-#: investments/templates/investments/list.html:151
-#: investments/templates/investments/list.html:154
-#: investments/templates/investments/list.html:158
+#: investments/templates/investments/list.html:170
+#: investments/templates/investments/list.html:173
+#: investments/templates/investments/list.html:177
 msgid "Is funded"
 msgstr "Est financé"
 
-#: investments/templates/investments/list.html:152
-#: investments/templates/investments/list.html:155
-#: investments/templates/investments/list.html:159
+#: investments/templates/investments/list.html:171
+#: investments/templates/investments/list.html:174
+#: investments/templates/investments/list.html:178
 msgid "Is not funded"
 msgstr "N'est pas financé"
 
-#: investments/templates/investments/list.html:188
+#: investments/templates/investments/list.html:207
 #: investments/templates/investments/moderator/package_review.html:127
 msgid "Choose the Administrative level"
 msgstr "Choisissez les niveaux administratifs"
 
-#: investments/templates/investments/list.html:320
+#: investments/templates/investments/list.html:339
 #: investments/templates/investments/moderator/package_review.html:258
 msgid "Choose the columns to display"
 msgstr "Choisir les documents à visualiser"
 
-#: investments/templates/investments/list.html:395
+#: investments/templates/investments/list.html:414
 #: investments/templates/investments/moderator/package_review.html:332
 msgid "Results"
 msgstr "Résultats"
 
-#: investments/templates/investments/list.html:408
-#: investments/templates/investments/moderator/package_review.html:346
-msgid "# Villages:"
-msgstr "# Villages:"
-
-#: investments/templates/investments/list.html:427
+#: investments/templates/investments/list.html:429
 msgid "project"
 msgstr "Projet"
 
-#: investments/templates/investments/list.html:443
+#: investments/templates/investments/list.html:445
 msgid "Your organization must have a project to submit investments"
 msgstr ""
 
-#: investments/templates/investments/list.html:445
+#: investments/templates/investments/list.html:447
 msgid "Click to your first project"
 msgstr ""
 
-#: investments/templates/investments/list.html:448
+#: investments/templates/investments/list.html:450
 msgid "Add to Cart"
 msgstr "Ajouter une priorité"
 
 #: investments/templates/investments/list.html:456
+#: investments/templates/investments/moderator/package_review.html:346
+msgid "# Villages:"
+msgstr "# Villages:"
+
+#: investments/templates/investments/list.html:475
 #: investments/templates/investments/moderator/package_review.html:374
 msgid "You have no investments"
 msgstr "Vous n'avez pas d'investissements"
 
-#: investments/templates/investments/list.html:462
+#: investments/templates/investments/list.html:481
 msgid "Source"
 msgstr ""
 
@@ -2523,15 +2576,15 @@ msgstr ""
 msgid "Submission approval requests"
 msgstr ""
 
-#: investments/templates/investments/moderator/approvals_list.html:143
+#: investments/templates/investments/moderator/approvals_list.html:147
 msgid "Review by"
 msgstr ""
 
-#: investments/templates/investments/moderator/approvals_list.html:168
+#: investments/templates/investments/moderator/approvals_list.html:172
 msgid "Are you sure do you want to remove the package?"
 msgstr ""
 
-#: investments/templates/investments/moderator/approvals_list.html:177
+#: investments/templates/investments/moderator/approvals_list.html:181
 msgid "Remove"
 msgstr ""
 
@@ -2560,28 +2613,34 @@ msgstr "À propos de l'organisation"
 msgid "Total investments amount"
 msgstr ""
 
-#: investments/views.py:364
+#: investments/views.py:414
 msgid "Your package"
 msgstr "Votre paquet"
 
-#: investments/views.py:385
+#: investments/views.py:427
+#, fuzzy
+#| msgid "Remove from cart"
+msgid "Investment removed from cart."
+msgstr "Retirer du panier"
+
+#: investments/views.py:436
 msgid "Package submitted."
 msgstr "Paquet soumis."
 
-#: investments/views.py:405
+#: investments/views.py:456
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
 msgstr ""
 
-#: investments/views.py:451
+#: investments/views.py:502
 msgid "Welcome, Moderator!"
 msgstr "Bienvenue, Monsieur le Modérateur !"
 
-#: investments/views.py:525
+#: investments/views.py:576
 msgid "Investment Package Review"
 msgstr ""
 
-#: investments/views.py:638
+#: investments/views.py:689
 msgid "Endorsed by pastoralist"
 msgstr "Soutenu par les minorités ethniques"
 
