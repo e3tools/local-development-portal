@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import markdown
 import zipfile
 import requests
 from io import BytesIO
@@ -21,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
 from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, IntegerField
 from django.db.models.functions import Coalesce
+from django.templatetags.static import static
 
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project, Category, Sector
 from investments.models import Attachment, Investment, Package
@@ -676,6 +678,42 @@ class BulkUploadInvestmentsView(PageMixin, IsInvestorMixin, SingleObjectMixin, F
 
     def get_success_url(self):
         return reverse('administrativelevels:project-detail', kwargs={'pk': self.object.pk})
+
+
+# Class that looks for the file in static/investments/upload_manual.md transforms it in pdf and returns in pdf
+class DownloadManualView(PageMixin, LoginRequiredMixin, DetailView):
+
+    def get(self, request, *args, **kwargs):
+        md_url = request.build_absolute_uri(static('investments/upload_manual.md'))
+        response = requests.get(md_url)
+        md = response.text
+
+        pdf = self.md_to_pdf(md)
+
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = 'attachment; filename="upload_manual.pdf"'
+        return response
+
+    def md_to_pdf(self, md):
+        import markdown
+        from xhtml2pdf import pisa
+        import io
+
+        # Convert Markdown to HTML
+        html = markdown.markdown(md)
+
+        # Create a file-like buffer to receive PDF data
+        result = io.BytesIO()
+
+        # Convert HTML to PDF
+        pisa_status = pisa.CreatePDF(io.StringIO(html), dest=result)
+
+        # Check for errors
+        if pisa_status.err:
+            return None
+
+        # Return the PDF data
+        return result.getvalue()
 
 
 # Attachments

@@ -27,6 +27,7 @@ urlpatterns = [
     path('projects/', views.ProjectListView.as_view(), name='projects'),
     path('projects/<int:pk>/', views.ProjectDetailView.as_view(), name='project-detail'),
     path('projects/<int:pk>/upload-investments/', views.BulkUploadInvestmentsView.as_view(), name='project-upload-investments'),
+    path('projects/download-manual/', views.DownloadManualView.as_view(), name='download-manual'),
     path('projects/create/', views.ProjectCreateView.as_view(), name='project-create'),
 
     path('utils/', include('administrativelevels.utils.urls')),

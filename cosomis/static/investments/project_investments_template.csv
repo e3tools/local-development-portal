@@ -1,6 +1,6 @@
-ranking,village_id,title,responsible_structure,sector_id,estimated_cost,start_date,duration,delays_consumed,physical_execution_rate,financial_implementation_rate,investment_status,project_status,endorsed_by_youth,endorsed_by_women,endorsed_by_agriculturist,endorsed_by_pastoralist,climate_contribution,climate_contribution_text
-1,47,Project 1,Department 1,1,521264,2023-01-31,31,0,83,14,p,N,True,False,True,False,1,High
-2,47,Project 2,Department 2,1,398562,2023-02-28,33,5,63,19,s,C,False,True,True,False,0,Moderate
-3,47,Project 3,Department 3,1,555854,2023-03-31,15,4,76,66,p,P,True,True,False,True,1,Low
-4,47,Project 4,Department 4,1,563121,2023-04-30,35,4,72,6,s,N,True,False,False,True,0,High
-5,47,Project 5,Department 5,1,210271,2023-05-31,13,5,44,99,p,C,False,True,True,False,0,Moderate
+ranking,village_id,title,responsible_structure,sector_id,estimated_cost,start_date,duration,delays_consumed,physical_execution_rate,financial_implementation_rate,project_status
+1,47,Project 1,Department 1,1,521264,2023-01-31,31,0,83,14,N
+2,47,Project 2,Department 2,1,398562,2023-02-28,33,5,63,19,C
+3,47,Project 3,Department 3,1,555854,2023-03-31,15,4,76,66,P
+4,47,Project 4,Department 4,1,563121,2023-04-30,35,4,72,6,N
+5,47,Project 5,Department 5,1,210271,2023-05-31,13,5,44,99,C
