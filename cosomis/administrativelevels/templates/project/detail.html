@@ -67,10 +67,10 @@
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
 {#                            <li class="nav-item">#}
-{#                                <a class="nav-link active" data-toggle="tab" href="#investments_map">{% translate 'Investments map' %}</a>#}
+{#                                <a class="nav-link" data-toggle="tab" href="#investments_map">{% translate 'Investments map' %}</a>#}
 {#                            </li>#}
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#investments_list">{% translate 'Investments list' %}</a>
+                                <a class="nav-link active" data-toggle="tab" href="#investments_list">{% translate 'Investments list' %}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#packages">{% translate 'Packages' %}</a>
@@ -96,17 +96,18 @@
                                 <table class="table investments-datatable rounded-table table-striped" style="width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th data-priority="1" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
-                                            <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
-                                            <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
-                                            <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
-                                            <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
-                                            <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
-                                            <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
-                                            <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Population priority' %}</th>
-                                            <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Physical execution rate' %}</th>
-                                            <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Package status' %}</th>
-                                            <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Status' %}</th>
+                                            <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
+                                            <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
+                                            <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
+                                            <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
+                                            <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
+                                            <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
+                                            <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
+                                            <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Population priority' %}</th>
+                                            <th data-priority="10" class="align-middle rounded-0 border-0">{% translate 'Physical execution rate' %}</th>
+                                            <th data-priority="11" class="align-middle rounded-0 border-0">{% translate 'Package status' %}</th>
+                                            <th data-priority="12" class="align-middle rounded-0 border-0">{% translate 'Status' %}</th>
+                                            <th data-priority="1" class="align-middle rounded-0 border-0">{% translate 'Actions' %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -136,22 +137,22 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="progress-display" data-investment="{{ investment.id }}" 
-                                                 data-progress="{{ investment.physical_execution_rate }}" 
-                                                 data-name="{{ investment.title }}" style="cursor: pointer;">
-                                                <span>{{ investment.physical_execution_rate }}% {% translate 'Complete' %}</span>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-primary progress-bar-striped" role="progressbar" aria-valuenow="{{ investment.physical_execution_rate }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ investment.physical_execution_rate }}%">
-                                                        <span class="sr-only sr-only-focusable">{{ investment.physical_execution_rate }}% Complete</span>
-                                                    </div>
+                                            <span>{{ investment.physical_execution_rate }}% {% translate 'Complete' %}</span>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-primary progress-bar-striped" role="progressbar" aria-valuenow="{{ investment.physical_execution_rate }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ investment.physical_execution_rate }}%">
+                                                    <span class="sr-only sr-only-focusable">{{ investment.physical_execution_rate }}% Complete</span>
                                                 </div>
-                                            </div>                                        
+                                            </div>
                                         </td>
                                         <td>{{ investment.packages.all.first.get_status_display }}</td>
+                                        <td>{{ investment.project_status | projectStatus }}</td>
                                         <td>
-                                            <span class="badge badge-pill {{ investment.project_status | projectStatusColor }} investment-status-badge" data-investment="{{ investment.id }}" 
-                                                   data-name="{{ investment.title }}" data-status="{{ investment.project_status }}" style="font-size: 12px; padding: 10px; cursor: pointer;"
-                                            >{{ investment.project_status | projectStatus }}
+                                            <span class="badge badge-pill {{ investment.project_status | projectStatusColor }} investment-update-badge" 
+                                                  data-investment="{{ investment.id }}" data-name="{{ investment.title }}" 
+                                                  data-status="{{ investment.project_status }}" data-progress="{{ investment.physical_execution_rate }}" 
+                                                  data-latitude="{{ investment.latitude }}" data-longitude="{{ investment.longitude }}"
+                                                  style="font-size: 12px; padding: 10px; cursor: pointer;"
+                                            >{% translate 'Update' %}
                                                 <i class="nav-icon fas fa-chevron-down ml-2"></i>
                                             </span>
                                         </td>
@@ -225,20 +226,22 @@
 {% endblock %}
 
 {% block modals %}
-<div class="modal fade" id="investmentStatusModel" tabindex="-1" role="dialog" aria-labelledby="investmentStatusModalLabel" aria-hidden="true">
+<div class="modal fade" id="investmentUpdateModel" tabindex="-1" role="dialog" aria-labelledby="investmentUpdateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="investment-name">{% translate "Investment" %}</h4>
+            </div>
             <div class="modal-body">
-                <h4 class="mb-3 investment-name">{% translate "Investment" %}</h4>
                 <form action="" class="form-horizontal" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="investment-status" id="investment-hidden" value="">
+                    <input type="hidden" name="investment" id="investment-hidden" value="">
                     <div class="form-group row">
                         <div class="col-3 col-form-label">
                             <label for="project-status">{% translate "Project Status" %}</label>
                         </div>
                         <div class="col-9">
-                            <select class="custom-select" id="project-status" name="status" style="width: 100%">
+                            <select class="custom-select" id="project-status" name="project_status" style="width: 100%">
                                 {% for proj_status in project_status %}
                                     <option value="{{ proj_status.0 }}">{{ proj_status.1 }}</option>
                                 {% endfor %}
@@ -246,36 +249,33 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-sm-12">
-                            <button class="btn btn-primary btn-block" type="submit">{% translate "Change status" %}</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-    
-<div class="modal fade" id="executionRateModel" tabindex="-1" role="dialog" aria-labelledby="executionRateModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h4 class="mb-3 investment-name">{% translate "Investment" %}</h4>
-                <form action="" class="form-horizontal" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="investment-progress" id="investment-progress-hidden" value="">
-                    <div class="form-group row">
-                        <div class="form-group col-12">
+                        <div class="form-group col-9">
                             <label for="physicalExecutionRange">{% translate 'Physical execution rate' %}</label>
                             <input type="range" class="custom-range" id="physicalExecutionRange">
                         </div>
-                        <div class="form-group col-12">
-                            <input type="number" max="100" min="0" class="form-control" name="progress" id="physicalExecutionNumber">
+                        <div class="form-group col-3">
+                            <input type="number" max="100" min="0" class="form-control" name="physical_execution_rate" id="physicalExecutionNumber">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-3 col-form-label">
+                            <label for="project-latitude">{% translate "Latitude" %}</label>
+                        </div>
+                        <div class="form-group col-9">
+                            <input type="number" step="0.00000001" class="form-control" name="latitude" id="project-latitude">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-3 col-form-label">
+                            <label for="project-longitude">{% translate "Longitude" %}</label>
+                        </div>
+                        <div class="form-group col-9">
+                            <input type="number" step="0.00000001" class="form-control" name="longitude" id="project-longitude">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-12">
-                            <button class="btn btn-primary btn-block" type="submit">{% translate "Update progress" %}</button>
+                            <button class="btn btn-primary btn-block" type="submit">{% translate "Update" %}</button>
                         </div>
                     </div>
                 </form>
@@ -297,26 +297,25 @@
         $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
         $('#world-map').vectorMap({ map: 'africa_en' });
         
-        $('.investment-status-badge').on('click', function (){
+        $('.investment-update-badge').on('click', function (){
             $('#investment-hidden').val($(this).data('investment'));
             $('#project-status').val($(this).data('status')).trigger("change");
             $('.investment-name').html($(this).data('name'));
-            $("#investmentStatusModel").modal("show");
-        });
-        
-        $('.progress-display').on('click', function (){
-            $('#investment-progress-hidden').val($(this).data('investment'));
-            $('.investment-name').html($(this).data('name'));
+            
             $("#physicalExecutionNumber").val($(this).data('progress'));
             $("#physicalExecutionRange").val($(this).data('progress'));
-            $("#executionRateModel").modal("show");
+            
+            $("#project-latitude").val($(this).data('latitude'));
+            $("#project-longitude").val($(this).data('longitude'));
+            
+            $("#investmentUpdateModel").modal("show");
         });
-        
-        $("#physicalExecutionRange").on('change', function () {
+
+        $("#physicalExecutionRange").on('input', function () {
             $("#physicalExecutionNumber").val($(this).val());
         })
-        
-        $("#physicalExecutionNumber").on('change', function () {
+
+        $("#physicalExecutionNumber").on('keyup change', function () {
             $("#physicalExecutionRange").val($(this).val());
         })
 

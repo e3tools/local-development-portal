@@ -17,6 +17,7 @@ from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixi
 from .forms import AdministrativeLevelForm
 from cosomis.mixins import PageMixin
 from django.http import HttpResponse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
@@ -29,7 +30,11 @@ from investments.models import Attachment, Investment, Package
 
 from static.config.datatable import get_datatable_config
 
-from .forms import AttachmentFilterForm, VillageSearchForm, ProjectForm, BulkUploadInvestmentsForm
+from .forms import (
+    AttachmentFilterForm, VillageSearchForm,
+    ProjectForm, BulkUploadInvestmentsForm,
+    UpdateInvestmentForm
+)
 
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredMixin, ListView):
@@ -564,25 +569,23 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
     template_name = 'project/detail.html'
     context_object_name = "project"
     form_class = ProjectForm
+    investment_form_class = UpdateInvestmentForm
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        if 'investment-status' in request.POST:
+        if 'investment' in request.POST:
             investment = Investment.objects.filter(
                 packages__project=self.object,
-            ).get(id=request.POST['investment-status'])
-            investment.project_status = request.POST['status']
-            investment.save()
-            return super().get(request, *args, **kwargs)
-
-        if 'investment-progress' in request.POST:
-            investment = Investment.objects.filter(
-                packages__project=self.object,
-            ).get(id=request.POST['investment-progress'])
-            if 0 <= int(request.POST['progress']) <= 100:
-                investment.physical_execution_rate = int(request.POST['progress'])
-                investment.save()
+            ).get(id=request.POST['investment'])
+            investment_form = self.investment_form_class(
+                instance=investment, data=request.POST, files=request.FILES
+            )
+            if investment_form.is_valid():
+                investment_form.save()
+                messages.add_message(request, messages.SUCCESS, _("Investment updated."))
+            else:
+                messages.add_message(request, messages.ERROR, _("Investment could not be updated."))
             return super().get(request, *args, **kwargs)
 
         return super().post(request, *args, **kwargs)

@@ -9,6 +9,13 @@ from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import gettext_lazy as _
 
 
+class UpdateInvestmentForm(forms.ModelForm):
+
+    class Meta:
+        model = Investment
+        fields = ['physical_execution_rate', 'project_status', 'latitude', 'longitude']
+
+
 class ProjectForm(forms.ModelForm):
 
     start_date = forms.DateField(input_formats=["%d/%m/%Y"])
