@@ -88,19 +88,16 @@ class BulkUploadInvestmentsForm(forms.Form):
                         init_headers.remove(header)
             else:
                 investments.append(Investment(
-                    ranking=row[headers_dict['ranking']],
                     title=row[headers_dict['title']],
-                    responsible_structure=row[headers_dict['responsible_structure']],
                     administrative_level=AdministrativeLevel.objects.get(id=row[headers_dict['village_id']]),
                     sector=Sector.objects.get(id=row[headers_dict['sector_id']]),
                     estimated_cost=row[headers_dict['estimated_cost']],
                     start_date=row[headers_dict['start_date']],
                     duration=row[headers_dict['duration']],
-                    delays_consumed=row[headers_dict['delays_consumed']],
                     physical_execution_rate=row[headers_dict['physical_execution_rate']],
                     financial_implementation_rate=row[headers_dict['financial_implementation_rate']],
-                    investment_status=row[headers_dict['investment_status']],
                     project_status=row[headers_dict['project_status']],
+                    delays_consumed=0
                 ))
 
         Investment.objects.bulk_create(investments)
