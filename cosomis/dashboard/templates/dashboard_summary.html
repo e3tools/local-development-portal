@@ -364,7 +364,7 @@
                 if ((filterSector === null || subproject.sector__category__name === filterSector) &&
                     subproject.latitude && subproject.longitude) {
                     const sectorColor = sectorColors[subproject.sector__category__name] || getRandomColor();
-                    // const markerElement = createCustomMarker(sectorColor);
+                    const markerElement = createCustomMarker(sectorColor);
                     const offset = calculateOffset(index);
                     const marker = new mapboxgl.Marker({
                         color: sectorColor,
@@ -595,7 +595,7 @@
                             this.typeSelect.prop('disabled', true);
                         }
                         allSubprojects = data.subprojects;
-                        // Uncomment if needed: updateMap(this.map, data.subprojects, filter_values['sector-filter']);
+                        updateMap(this.map, data.subprojects, filter_values['sector-filter']);
                     },
                     error: (jqXHR, textStatus, errorThrown) => {
                         console.error('Error fetching statistics:', {
@@ -733,7 +733,7 @@
                     `;
                     legendItem.addEventListener('click', function() {
                         const selectedSector = data.labels[index];
-                        {#updateMap(statisticsComponent.map, allSubprojects, selectedSector);#}
+                        updateMap(statisticsComponent.map, allSubprojects, selectedSector);
                     });
                     legend.appendChild(legendItem);
                 });
