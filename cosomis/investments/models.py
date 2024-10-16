@@ -1,4 +1,6 @@
 from boto3.session import Session
+from botocore.exceptions import NoCredentialsError, ClientError
+from django.conf import settings
 from django.db import models
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
@@ -138,12 +140,16 @@ class Attachment(BaseModel):
     """
     parent info and tasks info
     """
+    AWS_STORAGE_BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
+    AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
 
     PHOTO = "Photo"
     DOCUMENT = "Document"
     TYPE_CHOICES = ((PHOTO, _("Photo")), (DOCUMENT, _("Document")))
+
     adm = models.ForeignKey(
-        AdministrativeLevel, on_delete=models.CASCADE, related_name="attachments"
+        AdministrativeLevel, on_delete=models.CASCADE, related_name="attachments", null=True, blank=True
     )
     investment = models.ForeignKey(
         Investment,
@@ -159,33 +165,30 @@ class Attachment(BaseModel):
     name = models.CharField(max_length=255, null=True, blank=True)
     order = models.PositiveSmallIntegerField(default=0)
 
-    def get_thumbnail(self):
-        s3_client = Session(aws_access_key_id="", aws_secret_access_key="").client("s3")
-
-        # try:
-        #     # Download the image from the URL
-        #     response = requests.get(str(self.url).split("?")[0])
-        #     response.raise_for_status()
-        #
-        #     # Open the image from the downloaded content
-        #     with Image.open(BytesIO(response.content)) as img:
-        #         # Create a thumbnail
-        #         thumbnail = img.copy()
-        #         thumbnail.thumbnail((100, 100))
-        #
-        #         # Save the thumbnail
-        #         thumbnail.save('aux/test.png', format="PNG")
-        #         print(f"Thumbnail created and saved at: 'aux/'")
-        #
-        # except Exception as e:
-        #     print(f"Error: {e}")
+    @classmethod
+    def investment_upload(cls, investment, image, object_name=None):
+        s3_client = Session(aws_access_key_id=cls.AWS_ACCESS_KEY_ID, aws_secret_access_key=cls.AWS_SECRET_ACCESS_KEY).client("s3")
 
         try:
-            response = s3_client.upload_file(
-                self.file_path, self.bucket_name, self.object_name
-            )
-            print(f"File uploaded successfully. Response: {response}")
+            if object_name is None:
+                object_name = image.name
 
-        except Exception as e:
-            print(f"Error: {e}")
-        return
+            response = s3_client.upload_fileobj(
+                image, cls.AWS_STORAGE_BUCKET_NAME, object_name
+            )
+            file_url = f"https://{cls.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{object_name}"
+
+            new_attachment = cls.objects.create(
+                name=object_name,
+                type=cls.PHOTO,
+                investment=investment,
+                url=file_url
+            )
+
+            return True, new_attachment
+
+        except NoCredentialsError:
+            return False, "Credentials not available"
+
+        except ClientError as e:
+            return False, f"Failed to upload file: {e}"

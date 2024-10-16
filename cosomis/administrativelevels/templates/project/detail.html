@@ -155,6 +155,12 @@
                                             >{% translate 'Update' %}
                                                 <i class="nav-icon fas fa-chevron-down ml-2"></i>
                                             </span>
+                                            {% if investment.project_status != investment.NOT_FUNDED %}
+                                                <span class="badge badge-pill badge-primary image-update-badge mt-1" 
+                                                      data-investment="{{ investment.id }}" data-name="{{ investment.title }}" 
+                                                      style="font-size: 12px; padding: 10px; cursor: pointer;"
+                                                >{% translate 'Upload Image' %}</span>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -283,6 +289,38 @@
         </div>
     </div>
 </div>
+    
+<div class="modal fade" id="imageUpdateModel" tabindex="-1" role="dialog" aria-labelledby="imageUpdateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="investment-name">{% translate "Investment" %}</h4>
+            </div>
+            <div class="modal-body">
+                <form action="" class="form-horizontal" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="investment" id="investment-image-hidden" value="">
+                    <div class="form-group row">
+                        <div class="col-3 col-form-label">
+                            <label>{% translate "Image" %}</label>
+                        </div>
+                        <div class="col-9">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="image_input" id="investmentImage">
+                                <label class="custom-file-label" for="investmentImage">{% translate 'Choose image' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary btn-block" type="submit">{% translate "Update" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
@@ -309,6 +347,13 @@
             $("#project-longitude").val($(this).data('longitude'));
             
             $("#investmentUpdateModel").modal("show");
+        });
+        
+        $('.image-update-badge').on('click', function (){
+            $('#investment-image-hidden').val($(this).data('investment'));
+            $('.investment-name').html($(this).data('name'));
+            
+            $("#imageUpdateModel").modal("show");
         });
 
         $("#physicalExecutionRange").on('input', function () {

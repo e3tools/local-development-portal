@@ -574,6 +574,18 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
+        if 'image_input' in request.FILES:
+            investment = Investment.objects.filter(
+                packages__project=self.object,
+            ).exclude(project_status=Investment.NOT_FUNDED).get(id=request.POST['investment'])
+            succeeded, new_attachment = Attachment.investment_upload(investment=investment, image=request.FILES.get('image_input'))
+            if succeeded:
+                messages.add_message(request, messages.SUCCESS, _("Investment updated."))
+            else:
+                messages.add_message(request, messages.ERROR, _("Investment could not be updated."))
+                raise Exception(new_attachment)
+            return super().get(request, *args, **kwargs)
+
         if 'investment' in request.POST:
             investment = Investment.objects.filter(
                 packages__project=self.object,
