@@ -1,0 +1,254 @@
+{% load static i18n humanize custom_tags %}
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="button-priorities-investments-type-tab" data-toggle="pill"
+                data-target="#priorities-investments-type-tab" type="button" role="tab"
+                aria-controls="priorities-investments-type-tab" aria-selected="true">{% translate 'Investment Types' %}
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="button-priorities-villages-tab" data-toggle="pill"
+                data-target="#priorities-villages-tab" type="button" role="tab" aria-controls="priorities-villages-tab"
+                aria-selected="false">{% translate 'Individual Villages' %}
+        </button>
+    </li>
+</ul>
+
+<form action="" method="POST" id="filter-form">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-2">
+            <div class="form-group">
+                <label for="category-select-id">{% translate 'Sector' %}</label>
+                <select class="form-control" name="category-filter" id="category-select-id"
+                        empty-option="{% translate 'Category' %}" style="width: 100%;">
+                    <option selected value="">{% translate 'Sector' %}</option>
+                    {% for category in categories %}
+                        {% if 'category-filter' in query_strings_raw %}
+                            {% if query_strings_raw|get_item:'category-filter' == category.id %}
+                                <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                            {% else %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <label for="sector-select-id">{% translate 'Type' %}</label>
+                <select class="form-control" name="sector-filter" id="sector-select-id"
+                        empty-option="{% translate 'Sector' %}" style="width: 100%;"
+                        {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
+                    <option selected value="">{% translate 'Type' %}</option>
+                    {% for sector in sectors %}
+                        {% if 'sector-filter' in query_strings_raw %}
+                            {% if query_strings_raw|get_item:'sector-filter' == sector.id %}
+                                <option value="{{ sector.id }}" selected>{{ sector.name }}</option>
+                            {% else %}
+                                <option value="{{ sector.id }}">{{ sector.name }}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="{{ sector.id }}">{{ sector.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <label for="endorse-by-select-id">{% translate 'Endorsed by' %}</label>
+                <select class="form-control" name="subpopulation-filter" id="endorse-by-select-id"
+                        style="width: 100%;">
+                    <option value=''>{% translate "Endorsed by" %}</option>
+                    {% for subpopulation in subpopulations %}
+                        {% if 'subpopulation-filter' in query_strings_raw %}
+                            {% if query_strings_raw|get_item:'subpopulation-filter' == subpopulation.id %}
+                                <option value="{{ subpopulation.id }}" selected>{{ subpopulation.name }}</option>
+                            {% else %}
+                                <option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <label for="category-select-id">{% translate 'Climate contribution' %}</label>
+                <select class="form-control" name="climate-contribution-filter" id="climate-contribution-select-id"
+                        empty-option="{% translate 'Climate contribution' %}" style="width: 100%;">
+                    {% if 'climate-contribution-filter' in query_strings_raw %}
+                        {% if query_strings_raw|get_item:'climate-contribution-filter' == 'True' %}
+                            <option value="True" selected>{% translate 'Yes' %}</option>
+                            <option value="False">{% translate 'No' %}</option>
+                        {% else %}
+                            <option value="True">{% translate 'Yes' %}</option>
+                            <option value="False" selected>{% translate 'No' %}</option>
+                        {% endif %}
+                    {% else %}
+                        <option selected value="">{% translate 'Climate contribution' %}</option>
+                        <option value="True">{% translate 'Yes' %}</option>
+                        <option value="False">{% translate 'No' %}</option>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <label for="category-select-id">{% translate 'Priorities' %}</label>
+                <select class="form-control" name="priorities-filter" id="Priorities-select-id"
+                        empty-option="{% translate 'Priorities' %}" style="width: 100%;">
+                    <option value=''>{% translate "Priorities" %}</option>
+                    {% for priority in priorities %}
+                        {% if 'priorities-filter' in query_strings_raw %}
+                            {% if query_strings_raw|get_item:'priorities-filter' == priority.id %}
+                                <option value="{{ priority.id }}" selected>{{ priority.name }}</option>
+                            {% else %}
+                                <option value="{{ priority.id }}">{{ priority.name }}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="{{ priority.id }}">{{ priority.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-2 mt-4 text-right">
+            <div class="row">
+                <div class="col-12">
+                    <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}"
+                           style="margin-bottom: 3px;">
+                    <input type="button" class="btn btn-primary submit-reset" value="{% translate 'Reset' %}"
+                           style="margin-bottom: 3px;"/>
+                    <input type="hidden" id="reset-hidden-id" name="reset-hidden" value="">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="tab-content" id="priorityTabsContent">
+    <div class="tab-pane fade show active" id="priorities-investments-type-tab" role="tabpanel"
+         aria-labelledby="priorities-investments-type-tab">
+        {% if investments.count == 0 %}
+            <h3>{% translate 'You have no priorities' %}</h3>
+        {% else %}
+            <table class="table datatable rounded-table" style="width: 100%">
+                <thead>
+                <tr>
+                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Investment Type' %}</th>
+                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sector' %}</th>
+                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Funding Needed' %}</th>
+                    <th class="align-middle border-bottom-0 rounded-0" colspan="4">{% translate 'Priorities' %}</th>
+                    <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Status' %}</th>
+                    <th class="align-middle border-top-right-corner border-bottom-0"
+                        rowspan="2">{% translate 'Actions' %}</th>
+                </tr>
+                <tr>
+                    <th class="bg-yellow rounded-0 border-sides-0 white-font">J</th>
+                    <th class="bg-blue rounded-0 border-sides-0 white-font">F</th>
+                    <th class="bg-orange rounded-0 border-sides-0 white-font">ME</th>
+                    <th class="bg-green rounded-0 border-sides-0 white-font">AE</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for investment in investments %}
+                    <tr>
+                        <td>{% translate investment.get_investment_status_display %}</td>
+                        <td>{{ investment.sector }}</td>
+                        <td>{% if investment.project_status == investment.NOT_FUNDED %}✓{% else %}-{% endif %}</td>
+                        <td>
+                            {% if investment.endorsed_by_youth %}✓{% endif %}</td>
+                        <td>
+                            {% if investment.endorsed_by_women %}✓{% endif %}</td>
+                        <td>
+                            {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
+                        <td>
+                            {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
+                        <td>{% translate investment.get_project_status_display %}</td>
+                        <td>
+                            {% if investment.project_status == investment.NOT_FUNDED %}
+                            <form method="post">
+                                {% csrf_token %}
+                                {% if investment.id not in cart_items_id %}
+                                <input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
+                                {% else %}
+                                <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
+                                {% endif %}
+                                <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    <div class="tab-pane fade" id="priorities-villages-tab" role="tabpanel" aria-labelledby="priorities-villages-tab">
+        {% if investments.count == 0 %}
+            <h3>{% translate 'You have no priorities' %}</h3>
+        {% else %}
+            <table class="table datatable rounded-table" style="width: 100%">
+                <thead>
+                <tr>
+                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Village Name' %}</th>
+                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sub-Project' %}</th>
+                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sector' %}</th>
+                    <th class="align-middle border-bottom-0 rounded-0" colspan="4">{% translate 'Priorities' %}</th>
+                    <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Village Priority' %}</th>
+                    <th class="align-middle rounded-0 border-bottom-0"
+                        rowspan="2">{% translate 'Funding Needed' %}</th>
+                    <th class="align-middle border-top-right-corner border-bottom-0"
+                        rowspan="2">{% translate 'Actions' %}</th>
+                </tr>
+                <tr>
+                    <th class="bg-yellow rounded-0 border-sides-0 white-font">J</th>
+                    <th class="bg-blue rounded-0 border-sides-0 white-font">F</th>
+                    <th class="bg-orange rounded-0 border-sides-0 white-font">ME</th>
+                    <th class="bg-green rounded-0 border-sides-0 white-font">AE</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for investment in investments %}
+                    <tr>
+                        <td><a href="{% url 'administrativelevels:detail' investment.administrative_level.id %}">{{ investment.administrative_level.name }}</a></td>
+                        <td>{{ investment.title }}</td>
+                        <td>{{ investment.sector }}</td>
+                        <td>
+                            {% if investment.endorsed_by_youth %}✓{% endif %}</td>
+                        <td>
+                            {% if investment.endorsed_by_women %}✓{% endif %}</td>
+                        <td>
+                            {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
+                        <td>
+                            {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
+                        <td>{{ investment.ranking }}</td>
+                        <td>{{ investment.estimated_cost|intcomma }}</td>
+                        <td>
+                            {% if investment.project_status == investment.NOT_FUNDED %}
+                            <form method="post">
+                                {% csrf_token %}
+                                {% if investment.id not in cart_items_id %}
+                                <input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
+                                {% else %}
+                                <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
+                                {% endif %}
+                                <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+

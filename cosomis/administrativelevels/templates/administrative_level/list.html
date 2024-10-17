@@ -1,0 +1,262 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="" style="display: inline-block;"></div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="col-3 pull-right" style="display: inline-block;">
+                        <form method="get" class="d-flex">
+
+                            <input type="hidden" name="type" value="{{ type }}">
+                            <input class="form-control" name="search" placeholder="{% translate 'Search a level' %}...">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="col-9 justify-content-left">
+                    <div class="row">
+                        <div class="col-12 adl-filter">
+                            {% for field in form %}
+                            <div class="form-group row">
+                                <label class="col-3 col-form-label">{{ field.label }}</label>
+                                <div class="col-6">
+                                    {{ field }}
+                                </div>
+                                <div class="col-3">
+                                 <a id="check_{{ field.name }}" href="" class="btn btn-primary" style="display: none;">{% translate 'Check' %}</a>
+                                </div>
+                                {% comment%}
+                                <div class="col-3" >
+                                    <span class="_mobile"><i class="fa fa-eye"></i></span>
+                                    <a id="profil">{{field.label}}</a>
+                                </div>
+                                {% endcomment %}
+                                {% if field.errors %}
+                                <div class="alert alert-danger alert-sm form_alert">{{ field.errors }}</div>
+                                {% endif %}
+                                <div class="clearfix"></div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    </div>
+
+                     <strong id="villages_title">{% translate 'Choice the village in canton' %} : </strong><br>
+                    <div id="search_results">
+
+                    </div>
+                    <a
+                        class="btn btn-primary pull right" style="display: none;"
+                        type="button" id="seeVillage"
+                        href="#"
+
+                    >
+                        {% translate 'See village' %}
+                    </a>
+
+                </div>
+                <div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+
+        var url_village= "";
+
+        function set_datas(element, data) {
+
+            let options = '';
+            $.each(data, function (index, value) {
+                let option = '<option value="' + value.id + '">';
+
+                option += value.name + '</option>';
+                options += option
+            });
+
+            element.html(options);
+            element.val(null).trigger('change');
+        }
+
+
+        var administrative_level_ids = ["id_region", "id_prefecture", "id_commune", "id_canton"];
+        var administrative_level_ids_length = administrative_level_ids.length;
+         document.getElementById("seeVillage").style.display = "none";
+         document.getElementById("villages_title").style.display = "none"
+          // Parcourir les identifiants et griser les champs sauf id_region
+          administrative_level_ids.forEach(function(id) {
+            var element = document.getElementById(id);
+            if (id !== "id_region") {
+              element.disabled = true; // Désactive le champ
+
+            }
+          });
+
+        $(document).ready(function () {
+
+                $('.adl-filter select').on("change", function () {
+                    let elt_id = $(this).attr('id');
+                    if(elt_id && administrative_level_ids.includes(elt_id) && $(this).val() && $(this).val() != '') {
+                        const type = elt_id.split('_')[1].toLowerCase();
+                        const identifier = `check_`+ type ;
+                        document.getElementById(identifier).style.display = "block";
+                        let url = `{% url 'administrativelevels:list' %}` + type + '/' + $(this).val();
+                        document.getElementById(identifier).setAttribute('href', url);
+
+                        $.ajax({
+                            type: 'GET',
+                            url: "{% url 'administrativelevels:utils:get_choices_for_next_administrative_level_no_condition' %}",
+                            data: {
+                                parent_id: $(this).val(),
+                            },
+
+                            success: function (data) {
+
+                                let next_index_adl_id = null;
+                                try{
+                                    next_index_adl_id = administrative_level_ids.indexOf(elt_id) + 1;
+                                }catch(e){
+                                    //id don't exist
+                                }
+                                if (elt_id == "id_region") {
+                                    set_datas($(`#id_prefecture`), data);
+                                }
+                                else if (elt_id == "id_prefecture") {
+                                    set_datas($(`#id_commune`), data);
+                                }
+                                else if (elt_id == "id_commune") {
+                                    set_datas($(`#id_canton`), data);
+                                }
+                                else if (elt_id == "id_canton") {
+                                    let container = $("#search_results")
+                                    container.html('');
+                                    let container_txt_html = "";
+                                    data.forEach(function (item, index) {
+                                        
+                                        if (item.disabled){
+                                            container_txt_html += `<input type='radio' class='radio-button-search' name='options' value="${item.id}" id="${item.id}" disabled> `;
+                                            container_txt_html += `<label for="${item.id}" class="text-muted">${item.name}</label> &nbsp; &nbsp; &nbsp; `;
+                                        }else{
+                                            container_txt_html += `<input type='radio' class='radio-button-search' name='options' value="${item.id}" id="${item.id}"> `;
+                                            container_txt_html += `<label for="${item.id}">${item.name}</label> &nbsp; &nbsp; &nbsp; `;
+                                        }
+
+
+                                        if ( container_txt_html !== ""){
+                                            {#document.getElementById("seeVillage").style.display = "block";#}
+                                            document.getElementById("villages_title").style.display = "block";
+                                        }
+
+                                    });
+
+                                    container.html(container_txt_html);
+
+                                    $(".radio-button-search").click(function(event){
+                                       let url = `{% url "administrativelevels:village_detail" 0 %}`.replace('0', this.value);
+                                        url_village = url;
+                                        document.getElementById("seeVillage").style.display = "block";
+                                        //window.location.href = url;
+                                        document.getElementById("seeVillage").disabled = false;
+                                        document.getElementById("seeVillage").setAttribute('href', url);
+                                    });
+                                    if(url_village == ""){
+                                        document.getElementById("seeVillage").disabled = true;
+                                    }
+
+
+                                    $("#seeVillage").click(function(event){
+                                        window.location.href = url_village;
+                                    });
+                                    container[0].style.display = "block";
+                                }
+                                let i_start = 0
+                                if(next_index_adl_id !== null ){
+                                    $(`#${administrative_level_ids[next_index_adl_id]}`).prop('disabled', false);
+                                    i_start = next_index_adl_id+1;
+                                }
+                            },
+                            error: function (data) {
+                                alert(error_server_message + "Error " + data.status);
+                                $(`#${elt_id}`).attr('disabled', false);
+                            }
+                        }).done(function () {
+                            $(`#${elt_id}`).attr('disabled', false);
+                        });
+                    } else {
+                        const next_index = administrative_level_ids.indexOf(elt_id);
+
+                        for(let i=next_index; i < administrative_level_ids_length; i++) {
+                            const elt_id = administrative_level_ids[i]
+                            const type = elt_id.split('_')[1].toLowerCase();
+                            const identifier = `check_`+ type ;
+
+                            $(`#${elt_id}`).val(null).trigger('change.select2');
+                            document.getElementById(identifier).style.display = "none";
+                            if (i !== next_index) {
+                                $(`#${elt_id}`).prop('disabled', true);
+                            }
+                            if (i == administrative_level_ids_length - 1) {
+                                document.getElementById("villages_title").style.display = "none";
+                                document.getElementById("search_results").style.display = "none";
+                            }
+                        }
+                    }
+
+                });
+
+        });
+    </script>
+{% endblock %}
+{% block select2 %}
+<script src="{% static '\admin\js\vendor\select2\i18n\fr.js' %}"></script>
+<script type="text/javascript">
+    $("#id_region").select2({
+        language: '{{ current_language }}',
+        placeholder: "{% translate 'Region' %}",
+        allowClear: true,
+        width: 'inherit'
+    });
+    $("#id_prefecture").select2({
+        placeholder: "{% translate 'Prefecture' %}",
+        language: '{{ current_language }}',
+        allowClear: true,
+        width: 'inherit'
+    });
+    $("#id_commune").select2({
+        placeholder: "{% translate 'Commune' %}",
+        language: '{{ current_language }}',
+        allowClear: true,
+        width: 'inherit'
+    });
+    $("#id_canton").select2({
+        placeholder: "{% translate 'Canton' %}",
+        language: '{{ current_language }}',
+        allowClear: true,
+        width: 'inherit'
+    });
+
+    $('b[role="presentation"]').hide();
+    $('.select2-selection__arrow').append(
+        '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+
+</script>
+{% endblock select2 %}

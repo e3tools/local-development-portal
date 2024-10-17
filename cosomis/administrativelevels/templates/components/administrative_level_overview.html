@@ -1,0 +1,105 @@
+{% load static i18n %}
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Total population" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.population }}</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Number of households" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.nbr_menages }}</span><br/>
+    </div>
+</div>
+{% if datas.object.type != "Village" %}
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Villages" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.nbr_villages }}</span><br/>
+    </div>
+</div>
+{% endif %}
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Men" %}/{% translate "Women" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.nbr_men }}/{{ datas.nbr_women }}</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Young" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>###</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Elderly" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>###</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Handicap" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>###</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Farmers" %}/{% translate "Breeders" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>###</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Ethnic minorities" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.nbr_ethnic_minorities }}</span><br/>
+    </div>
+</div>
+
+<div class="row" style="border-bottom: 2px solid black;">
+    <div class="col-6">
+        <span class="font-weight-bold">{% translate "Minorities" %}</span><br/>
+    </div>
+    <div class="col-6">
+        <span>{{ datas.minorities }}</span><br/>
+    </div>
+</div>
+
+{% if datas.object.type == "Village" %}
+    {% include 'components/village_attachments_images.html' with datas=datas %}
+    {% include 'components/administrative_level_planning_status.html' with datas=datas %}
+    {% include 'components/prioritie_needs.html' with datas=datas %}
+    {% include 'components/subcomponent_priorities.html' with datas=datas %}
+    {% include 'components/vision_obstacles.html' with datas=datas %}
+    {% include 'components/overview_village_civil_servants_associations.html' with datas=datas %}
+{% else %}
+    {% include 'components/villages_overview_under_canton.html' with datas=datas %}
+{% endif %}
+
+{% include 'components/overview_canton_infrastructure_and_services.html' with datas=datas %}
+{% include 'components/overview_canton_community_details.html' with datas=datas %}

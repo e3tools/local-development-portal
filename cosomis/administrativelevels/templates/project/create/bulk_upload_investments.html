@@ -1,0 +1,36 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n static bootstrap4 %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card m-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-center">
+                            {% translate 'Please upload a CSV file containing all the investments you want to attach to the newly created project. You can find an example by' %}
+                            <a href="{% static 'investments/project_investments_template.xlsx' %}" target="_blank">{% translate 'downloading' %}</a> {%  translate 'the CSV template file.' %}
+                            <br>
+                            {% translate 'For additional reference, you can also download the' %} <a href="{% url 'administrativelevels:utils:sectors_codes' %}" target="_blank">Sectors</a> {% translate 'list and the' %} <a href="{% url 'administrativelevels:utils:villages_codes' %}" target="_blank">{% translate 'Villages' %}</a> {% translate 'list' %}.
+                        </p>
+                        <p class="text-center">
+                            {% translate 'For additional instructions please download the manual' %} <a href="{% url 'administrativelevels:download-manual' %}" target="_blank">{% translate 'here' %}</a>.
+                        </p>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class ="col-4">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% bootstrap_field form.xlsx_file %}
+                            <input type="submit" class="btn btn-primary btn-block" value="{% translate 'Upload' %}">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% load bootstrap4 static %}
+<script src="{% static 'js/disableOnSubmit.js' %}"></script>
+
+<div class="modal-dialog modal-confirmation">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title mx-auto">
+                <div class="fs29 text-bold-family text-{% if form_class_color %}{{ form_class_color }}{% else %}primary{% endif %}">
+                    {{ title }}
+                </div>
+                {% if subtitle %}
+                    <p>
+                        <small class="subtitle">{{ subtitle }}</small>
+                    </p>
+                {% endif %}
+            </div>
+            <button type="button" class="border-0 bg-transparent close-modal" data-dismiss="modal" aria-label="Close">
+                <div class="circle-icon bg-{% if form_class_color %}{{ form_class_color }}{% else %}primary{% endif %}">
+                    <div class="center-27">
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+            </button>
+        </div>
+        <form id="{{ id_form }}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="overlay-wrapper">
+                    {% if picture %}
+                        <div class="text-center">
+                            <img id="modal_form_picture" src="{{ picture }}" class="{{ picture_class }}">
+                        </div>
+                    {% endif %}
+                    {% bootstrap_form form %}
+                    <div class="overlay submit-spin">
+                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="submit" class="btn btn-lg btn-{% if form_class_color %}{{ form_class_color }}{% else %}primary{% endif %} padding-inline-60 text-right">
+                    {{ submit_button }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+    <script type="text/javascript">
+        
+
+        $(document).ready(function () {
+
+            //Datetimepicker Input
+            $('b[role="presentation"]').hide();
+            $('.select2-selection__arrow').append(
+                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+            let dp1_form = '<div class="input-group-prepend" data-target="#{id}" data-toggle="datetimepicker">' +
+                '<div class="input-group-text"><i class="fa fa-calendar text-primary"></i></div></div>';
+            let dp2_form = '<div class="input-group date" id="{id}" data-target-input="nearest"></div>';
+            //Datemask dd/mm/yyyy
+            $('.datetimepicker-input').inputmask({alias: "datetime", inputFormat: "dd/mm/yyyy"});
+            let defaultDate_form = Date.now();
+            
+            let help_text1_form = null;
+            {% for field in form %}
+                {% if field.name == "begin" or field.name == "end" %}
+                console.log("{{ field.name }}");
+                    $(('#id_{{ field.name }}')).before(dp1_form.replace('{id}', '{{ field.name }}')).parent().wrapInner(
+                        dp2_form.replace('{id}', '{{ field.name }}'));
+                    
+                    help_text1_form = $('#{{ field.name }} small')[0];
+                    $('#{{ field.name }} small').remove();
+                    $('#{{ field.name }}').after(help_text1_form);
+
+                    {% if field.value %}
+                    defaultDate_form = '{{ field.value|date:'Y-m-d' }}';//moment('{{ field.value }}').format('YYYY-MM-DD'); //moment("{{ field.value }}", "YYYY-MM-DD");
+                    {% else %}
+                        defaultDate_form = false;
+                    {% endif %}
+        
+                    if(defaultDate_form){
+                        $('#{{ field.name }}').datetimepicker({
+                            maxDate: Date.now(),
+                            useCurrent: false,
+                            defaultDate: defaultDate_form,
+                            format: "DD/MM/YYYY",
+                            widgetPositioning: {
+                                vertical: 'bottom',
+                            }
+                        });
+                    }else{
+                        $('#{{ field.name }}').datetimepicker({
+                            maxDate: Date.now(),
+                            format: "DD/MM/YYYY",
+                            widgetPositioning: {
+                                vertical: 'bottom',
+                            }
+                        });
+                    }
+        
+                    
+
+                {% endif %}
+            {% endfor %}
+            //End Datetimepicker Input
+        });
+    </script>

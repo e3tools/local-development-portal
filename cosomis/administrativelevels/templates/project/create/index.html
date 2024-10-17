@@ -1,0 +1,66 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags bootstrap4 %}
+
+{% block extracss %}
+    <link rel="stylesheet" href="{% static 'AdminLTE/plugins/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-4">
+                                {% bootstrap_field form.name %}
+                            </div>
+                            <div class="col-4">
+                                {% bootstrap_field form.total_amount %}
+                            </div>
+                            <div class="col-4">
+                                {% bootstrap_field form.start_date %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                {% bootstrap_field form.description %}
+                            </div>
+                            <div class="col-4">
+                                {% bootstrap_field form.sector %}
+                            </div>
+                            <div class="col-4">
+                                {% bootstrap_field form.end_date %}
+                            </div>
+                        </div>
+                        <div class="row justify-content-end">
+                            <div class="col-4">
+                                <input type="submit" class="btn btn-block btn-primary" value="{% translate 'Create Project' %}">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'AdminLTE/plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#id_start_date, #id_end_date').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            autoApply: true,
+            minYear: 2020,
+            maxYear: parseInt(moment().format('YYYY'),10) + 10,
+            locale: {
+              format: 'DD/MM/YYYY'
+            }
+        });
+    });
+    </script>
+{% endblock %}

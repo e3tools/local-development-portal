@@ -1,0 +1,133 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:search' %}">{% translate 'Administrative levels' %}</a>
+                        </div>
+                    {% comment %}
+                        <div class="btn-group pull-right">
+                            {% if user.is_superuser or user|has_group:"Admin" %}
+                                {% include 'components/upload.html' %}
+                                <div> &nbsp; &nbsp; </div>
+                            {% endif %}
+                            {% include 'components/download.html' with export_url='administrativelevels:download' %}
+                        </div>
+                    {% endcomment %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-8">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                {% if form.errors %}
+                                    <div class="alert alert-danger alert-sm form_alert">{{ form.errors }}</div>
+                                {% endif %}
+                                
+                                {% for field in form %}
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                        <div class="col-sm-9">
+                                            {{ field }}
+                                        </div>
+                                        {% if field.errors %}
+                                            <div class="alert alert-danger alert-sm form_alert">{{ field.errors }}</div>
+                                        {% endif %}
+                                        <div class="clearfix"></div>
+                                    </div>
+                                {% endfor %}
+
+                                <button type="submit" class="btn btn-primary float-right" >{% translate 'Submit' %}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+        var champ = document.getElementById("id_type");
+        champ.disabled = true;
+        });
+        function set_datas(element, data){
+            $(element).next().find('b[role="presentation"]').hide();
+            $(element).next().find('.select2-selection__arrow').append(
+                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+
+            let options = '';
+            $.each(data, function (index, value) {
+                let option = '<option value="' + value.id + '">';
+                
+                option += value.name + '</option>';
+                options += option
+
+            });
+
+            element.html(options);
+            element.trigger('change');
+            let element_val = element.val();
+            if (element_val !== '') {
+                element.val(element_val)
+            }
+        }
+
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+            let headquarters_village = $("#id_headquarters_village");
+            let villages = $("#id_villages");
+
+            {% if object or cvd %}
+
+            {% else %}
+            headquarters_village.html('');
+            villages.html('');
+            {% endif %}
+
+            $(document).on("change", "#id_geographical_unit", function () {
+                console.log($(this).val());
+                $(this).attr('disabled', true);
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'administrativelevels:utils:get_choices_for_next_administrative_level_by_geographical_unit' %}",
+                    data: {
+                        geographical_unit_id: $(this).val(),
+                    },
+                    success: function (data) {
+                        if (data.length > 0) {
+                            set_datas(headquarters_village, data);
+                            set_datas(villages, data);
+                        }
+                    },
+                    error: function (data) {
+                        alert(error_server_message + "Error " + data.status);
+                        $("#id_geographical_unit").attr('disabled', false);
+                    }
+                }).done(function () {
+                        $("#id_geographical_unit").attr('disabled', false);
+                    }
+                );
+
+
+
+
+
+
+            });
+            
+        });
+    </script>
+{% endblock %}

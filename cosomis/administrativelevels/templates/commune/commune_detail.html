@@ -1,0 +1,425 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize bootstrap4 custom_tags %}
+
+{% block extracss %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+    <link href="{% static 'AdminLTE/plugins/bootstrap-switch/css/bootstrap3/bootstrap-switch.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col-md-8 col-12">
+            <div class="clearfix" id="attachments_images">
+
+            </div>
+            <div class="overlay" id="spin-attachments-images">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+            </div>
+        </div>
+        <div class="col-md-4 col-12 mt-4 mt-md-0">
+            <div class="card col-12">
+                <div class="card-header pb-0">
+                    <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
+                </div>
+                <div class="card-body p-2">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.total_population }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_men }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_women }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_young }}</td>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_elder }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Handicap" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_handicap }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agruculture" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_agriculturist }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_pastoralist }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Minorities" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_minorities }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Languages" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{% if object.main_languages %}{{ object.main_languages }}{% else %}-{% endif %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card col-12">
+                <div class="card-header pb-0">
+                    <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
+                </div>
+                <div class="card-body p-2">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity.name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task.name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">
+                                {% if development_plan %}
+                                <a href="{{ development_plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.facilitator }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <div class="col-12">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
+                                                            href="#priorities">{% translate "Priorities" %}</a></li>
+                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                      href="#villages">{% translate "Villages" %}</a>
+                            </li>
+                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
+                                                            href="#diagnostics">{% translate "Diagnostics" %}</a></li>
+                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
+                                                            href="#climate">{% translate "Climate" %}</a></li>
+                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                      href="#subprojects">{% translate "Subprojects" %}</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="priorities" class="tab-pane active pt-3">
+                                {% include 'commune/tabs/priorities.html' %}
+                            </div>
+                            <div id="villages" class="tab-pane fade pt-3">
+                                <table class="table rounded-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="align-middle border-top-left-corner">{% translate 'Name' %}</th>
+                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Canton' %}</th>
+                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Population' %}</th>
+                                            <th class="align-middle border-bottom-0 rounded-0">{% translate 'Invested Capital' %}</th>
+                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Required Capital' %}</th>
+                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Invested' %}</th>
+                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Required' %}</th>
+                                            <th class="align-middle border-top-right-corner border-bottom-0">{% translate 'Actions' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for village in villages %}
+                                        <tr>
+                                            <td><a href="{% url 'administrativelevels:detail' village.id %}">{{ village.name }}</a></td>
+                                            <td><a href="{% url 'administrativelevels:detail' village.parent.id %}">{{ village.parent.name }}</a></td>
+                                            <td>{{ village.total_population|intcomma }}</td>
+                                            <td>{{ village.total_founded|intcomma }}</td>
+                                            <td>{{ village.total_estimated_cost|intcomma }}</td>
+                                            <td>
+                                                {% widthratio village.total_founded village.total_population 1 as investment_percapita %}
+                                                {{ investment_percapita|intcomma }}
+                                            </td>
+                                            <td class="border-sides--light">
+                                                {% widthratio village.total_estimated_cost village.total_population 1 as investment_percapita_required %}
+                                                {{ investment_percapita_required|intcomma }}
+                                            </td>
+                                            <td><i class="nav-icon fa fa-bars" data-toggle="modal"
+                                                   data-target="#exampleModal"></i></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="diagnostics" class="tab-pane fade">
+                                <h3>{% translate "In construction" %}</h3>
+                            </div>
+                            <div id="climate" class="tab-pane fade position-relative">
+                                {% include 'climate/tabs/mapbox.html' %}
+                            </div>
+                            <div id="subprojects" class="tab-pane fade pt-3">
+                                {% if subprojects.count == 0 %}
+                                    <h3>{% translate 'You have no Sub-projects' %}</h3>
+                                {% else %}
+                                <table class="table rounded-table">
+                                    <thead>
+                                    <tr>
+                                        <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
+                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+                                        <th class="align-middle border-bottom-0 rounded-0" colspan="4">{%  translate 'Priorities' %}</th>
+                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{%  translate 'Beneficiaries' %}</th>
+                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Estimated cost' %}</th>
+                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Funded by' %}</th>
+                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Climate contribution' %}</th>
+                                        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">{% translate 'Actions' %}</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-yellow rounded-0 border-sides-0 white-font">J</th>
+                                        <th class="bg-blue rounded-0 border-sides-0 white-font">F</th>
+                                        <th class="bg-orange rounded-0 border-sides-0 white-font">ME</th>
+                                        <th class="bg-green rounded-0 border-sides-0 white-font">AE</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for subproject in subprojects %}
+                                        <tr>
+                                            <td>{{ subproject.ranking }}</td>
+                                            {% if subproject.title == "Autre" %}
+                                            <td class="border-sides--light">
+                                                <a 
+                                                        href="" data-container="body" data-toggle="popover" 
+                                                        data-placement="top" data-trigger="hover" 
+                                                        data-content="{% if subproject.description %}{{ subproject.description }}{% else %}-{% endif %}">
+                                                    {{ subproject.title }}
+                                                </a>
+                                            </td>
+                                            {% else %}
+                                            <td class="border-sides--light">{{ subproject.title }}</td>
+                                            {% endif %}
+                                            <td class="border-sides--light">
+                                                {% if subproject.endorsed_by_youth %}✓{% endif %}</td>
+                                            <td class="border-sides--light">
+                                                {% if subproject.endorsed_by_women %}✓{% endif %}</td>
+                                            <td class="border-sides--light">
+                                                {% if subproject.endorsed_by_pastoralist %}✓{% endif %}</td>
+                                            <td class="border-sides--light">
+                                                {% if subproject.endorsed_by_agriculturist %}✓{% endif %}</td>
+                                            <td class="border-sides--light">{{ subproject.beneficiaries }}</td>
+                                            <td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
+                                            <td class="border-sides--light">{{ subproject.responsible_structure }}</td>
+                                            <td class="border-sides--light">{% if subproject.climate_contribution %}{{ subproject.climate_contribution_text }}{% else %}
+                                                {% translate "No" %}{% endif %}</td>
+                                            <td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block modals %}
+    {{ block.super }}
+
+    <div class="modal fade" id="taskModalLong" tabindex="-1" role="dialog" aria-labelledby="taskModalLongTitle"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div id="modal-content" class="modal-content">
+                {#            <div class="modal-header">#}
+                {#                <h4 class="modal-title text-primary" id="taskModalTitle">...</h4>#}
+                {##}
+                {#                <span class="badge badge-pill badge-lg badge-info ml-1" id="taskModalStatus">...</span>#}
+                {##}
+                {#                <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+                {#                    <span aria-hidden="true">&times;</span>#}
+                {#                </button>#}
+                {#            </div>#}
+                {#            <div class="modal-body">#}
+                {#                <p id="taskModalDescription">#}
+                {#                    ...#}
+                {#                </p>#}
+                {#                <br>#}
+                {#                <div id="taskModalAttrs"></div>#}
+                {#            </div>#}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'AdminLTE/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
+
+    <!-- Attachments script for carrousel -->
+    <script type="text/javascript">
+
+        $('[data-toggle="popover"]').popover();
+        let spin_attachments_images = $("#spin-attachments-images");
+        let attachments_images = $("#attachments_images");
+        spin_attachments_images.show();
+        attachments_images.html(`
+    {% if images_data.exists_at_least_image %}
+
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                {% for image in images_data.images %}
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"
+            {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
+                {% endfor %}
+            </ol>
+            <div class="carousel-inner">
+                {% for image in images_data.images %}
+                    <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
+                        <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
+                            <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
+                            style="height: 500px !important;"
+                            alt="{{ image.task }}">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+    {% else %}
+    <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
+                <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
+    alt="Card image">
+    </a>
+
+    {% endif %}
+    `);
+        spin_attachments_images.hide();
+    </script>
+
+    <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
+    <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
+    <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
+
+    <!-- Planning cycle script -->
+    <script type="text/javascript" async>
+        $(document).ready(function () {
+            
+            $(".pc-btn").on('click', function () {
+
+                let phase_id = $(this).attr("id").split("-")[3];
+                let activity_buttons = $("#v-phase-" + phase_id + "-pills-tab").children();
+                let has_selected = false;
+                $(".tasks-pane").removeClass("active show");
+                activity_buttons.each(function () {
+                    if ($(this).hasClass("active")) {
+                        let activity_id = $(this).attr("id").split("-")[3];
+                        $("#activity-" + activity_id + "-content").tab("show");
+                        has_selected = true;
+                    }
+                });
+                if (!has_selected) {
+                    let single_button = $("#v-phase-" + phase_id + "-pills-tab").children(":first-child");
+                    let activity_id = single_button.attr("id").split("-")[3];
+                    single_button.addClass("active")
+                    $("#activity-" + activity_id + "-content").tab("show");
+                }
+            });
+
+            $('#taskModalLong').on('shown.bs.modal', function (e) {
+                let pk = e.relatedTarget.id.split('-')[3];
+                let base_url = "{% url 'administrativelevels:utils:task_detail' 0 %}";
+                base_url = base_url.replace(0, pk);
+                $.ajax({
+                    type: "GET",
+                    url: base_url,
+                    success: function (response) {
+                        $('#modal-content').html(response);
+                    }
+                });
+            });
+            
+        });
+    </script>
+    
+    <!-- Priorities script -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datatable').DataTable({searching: false});
+    
+            $('.submit-reset').on('click', function() {
+                $('#reset-hidden-id').attr('value', 'true');
+                $('#filter-form').submit();
+            });
+    
+            $('#category-select-id').on('change', function(){
+                change_sectors_selects($(this), $('#sector-select-id'), [])
+            });
+    
+            function change_sectors_selects(select_input, select_to_fill){
+                let selected_value = select_input.find(":selected").val();
+    
+                if (selected_value != '') {
+                    let base_url = "{% url 'investments:home_investments' %}";
+                    $.ajax({
+                        type : "POST",
+                        url: base_url + "ajax/sectors",
+                        data: {
+                          value: selected_value,
+                          csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function(response){
+                            select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                            response.values.forEach((element) => {
+                                select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                            })
+                        }
+                    });
+                    select_to_fill.prop('disabled', false);
+                }
+                else {
+                    select_to_fill.prop('disabled', 'disabled');
+                    select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                }
+            };
+        });
+    </script>
+{% endblock %}

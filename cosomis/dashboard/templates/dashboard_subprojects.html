@@ -1,0 +1,378 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n bootstrap4 custom_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="clearfix"></div>
+            <div class="row administrative-level-filter">
+                <div class="col-2">
+                    {% bootstrap_field form_adl.region show_label=False %}
+                </div>
+                <div class="col-2">
+                    {% bootstrap_field form_adl.prefecture show_label=False %}
+                </div>
+                <div class="col-2">
+                    {% bootstrap_field form_adl.commune show_label=False %}
+                </div>
+                <div class="col-2">
+                    {% bootstrap_field form_adl.canton show_label=False %}
+                </div>
+                <div class="col-2">
+                    {% bootstrap_field form_adl.village show_label=False %}
+                </div>
+                <div class="col-2">
+                    <a class="btn fs12 text-bold-family text-primary pull-right p-0" style="margin-top: 8px;"
+                        id="clear_all_filters">
+                        {% translate "Clear all filters" %}
+                    </a>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="card">
+
+
+                <div class="container">
+                    <ul class="nav nav-tabs">
+                        <li style="width: 20%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link active" data-toggle="tab" href="#Number-of-sub-projects-by-administrative-level-and-sector">{% translate "Number of sub-projects by administrative level and sector" %}</a></li>
+                        <li style="width: 20%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link" data-toggle="tab" href="#Amount-of-sub-projects-by-administrative-level-and-sector">{% translate "Amount of sub-projects by administrative level and sector" %}</a></li>
+                        <li style="width: 20%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link" data-toggle="tab" href="#Subprojects-by-village-sector-and-step">{% translate "Subprojects by village, sector and step" %}</a></li>
+                        <li style="width: 20%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link" data-toggle="tab" href="#Subprojects-by-step">{% translate "Subprojects by step" %}</a></li>
+                        <li style="width: 20%;" class="nav-item btn"><a style="font-size: 11px;" class="nav-link" data-toggle="tab" href="#Subprojects-by-current-step">{% translate "Subprojects by current step" %}</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="Number-of-sub-projects-by-administrative-level-and-sector" class="tab-pane active">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="subprojects-number-list">
+                                        <h3>{% translate "Number of sub-projects by administrative level and sector" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="subprojects-number-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="Amount-of-sub-projects-by-administrative-level-and-sector" class="tab-pane fade">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="subprojects-amount-list">
+                                        <h3>{% translate "Amount of sub-projects by administrative level and sector" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="subprojects-amount-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="Subprojects-by-village-sector-and-step" class="tab-pane fade">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="subprojects-sectors-steps-number-list">
+                                        <h3>{% translate "Number of sub-projects by administrative level, sector and step" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="subprojects-sectors-steps-number-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="Subprojects-by-step" class="tab-pane fade">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="subprojects-steps-number-list">
+                                        <h3>{% translate "Subprojects by step" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="subprojects-steps-number-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div id="Subprojects-by-current-step" class="tab-pane fade">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="subprojects-current-steps-number-list">
+                                        <h3>{% translate "Subprojects by current step" %}</h3>
+                                    </div>
+                                </div>
+                                <div class="overlay" id="subprojects-current-steps-number-spin">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+                    
+            </div>
+
+
+            {% comment %} <div class="card">
+                <div class="card-body table-responsive">
+                    <div id="subprojects-number-list">
+                        <h3>{% translate "Subprojects by administrative level and sector" %}</h3>
+                    </div>
+                </div>
+                <div class="overlay" id="subprojects-number-spin">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div>
+            </div>
+            <br /><br />
+
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <div id="subprojects-sectors-steps-number-list">
+                        <h3>{% translate "Number of sub-projects by administrative level, sector and step" %}</h3>
+                    </div>
+                </div>
+                <div class="overlay" id="subprojects-sectors-steps-number-spin">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div>
+            </div>
+            <br /><br />
+
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <div id="subprojects-steps-number-list">
+                        <h3>{% translate "Subprojects by step" %}</h3>
+                    </div>
+                </div>
+                <div class="overlay" id="subprojects-steps-number-spin">
+                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div>
+            </div>
+            <br /><br /> {% endcomment %}
+
+
+            {% comment %} <div class="card">
+                <div class="card-body">
+
+                </div>
+            </div> {% endcomment %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+            let administrative_level_ids = ["id_region", "id_prefecture", "id_commune", "id_canton", "id_village"];
+            let subprojects_number_spin = $('#subprojects-number-spin');
+            let subprojects_number = $('#subprojects-number-list');
+            let subprojects_amount_spin = $('#subprojects-amount-spin');
+            let subprojects_amount = $('#subprojects-amount-list');
+            let subprojects_sectors_steps_number_spin = $('#subprojects-sectors-steps-number-spin');
+            let subprojects_sectors_steps_number = $('#subprojects-sectors-steps-number-list');
+            let subprojects_steps_number_spin = $('#subprojects-steps-number-spin');
+            let subprojects_steps_number = $('#subprojects-steps-number-list');
+            let subprojects_current_steps_number_spin = $('#subprojects-current-steps-number-spin');
+            let subprojects_current_steps_number = $('#subprojects-current-steps-number-list');
+            var administrative_level_id = null;
+            var administrative_level_type = null;
+
+
+
+
+            function loadSubprojects(administrative_level_id=null, administrative_level_type=null) {
+                subprojects_number_spin.show();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'dashboard:dashboard_subprojects_sectors' %}",
+                    data: {
+                        administrative_level_id: administrative_level_id,
+                        administrative_level_type: administrative_level_type
+                    },
+                    success: function (response) {
+                        subprojects_number_spin.hide();
+                        
+                        subprojects_number.html(response);
+                    },
+                    error: function (data) {
+                        subprojects_number_spin.hide();
+                        alert(error_server_message + "Error " + data.status);
+                    }
+                });
+            }
+
+            function loadSubprojectsAmount(administrative_level_id=null, administrative_level_type=null) {
+                subprojects_amount_spin.show();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'dashboard:dashboard_subprojects_sectors_amount' %}",
+                    data: {
+                        administrative_level_id: administrative_level_id,
+                        administrative_level_type: administrative_level_type
+                    },
+                    success: function (response) {
+                        subprojects_amount_spin.hide();
+                        
+                        subprojects_amount.html(response);
+                    },
+                    error: function (data) {
+                        subprojects_amount_spin.hide();
+                        alert(error_server_message + "Error " + data.status);
+                    }
+                });
+            }
+
+            function loadSubprojectsSectorsAndSteps(administrative_level_id=null, administrative_level_type=null) {
+                subprojects_sectors_steps_number_spin.show();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'dashboard:dashboard_subprojects_sectors_and_steps' %}",
+                    data: {
+                        administrative_level_id: administrative_level_id,
+                        administrative_level_type: administrative_level_type
+                    },
+                    success: function (response) {
+                        subprojects_sectors_steps_number_spin.hide();
+                        
+                        subprojects_sectors_steps_number.html(response);
+                    },
+                    error: function (data) {
+                        subprojects_sectors_steps_number_spin.hide();
+                        alert(error_server_message + "Error " + data.status);
+                    }
+                });
+            }
+
+            function loadSubprojectsSteps(administrative_level_id=null, administrative_level_type=null) {
+                subprojects_steps_number_spin.show();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'dashboard:dashboard_subprojects_steps_already_track' %}",
+                    data: {
+                        administrative_level_id: administrative_level_id,
+                        administrative_level_type: administrative_level_type
+                    },
+                    success: function (response) {
+                        subprojects_steps_number_spin.hide();
+                        
+                        subprojects_steps_number.html(response);
+                    },
+                    error: function (data) {
+                        subprojects_steps_number_spin.hide();
+                        alert(error_server_message + "Error " + data.status);
+                    }
+                });
+            }
+
+            function loadSubprojectsCurrentSteps(administrative_level_id=null, administrative_level_type=null) {
+                subprojects_current_steps_number_spin.show();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'dashboard:dashboard_subprojects_current_steps' %}",
+                    data: {
+                        administrative_level_id: administrative_level_id,
+                        administrative_level_type: administrative_level_type
+                    },
+                    success: function (response) {
+                        subprojects_current_steps_number_spin.hide();
+                        
+                        subprojects_current_steps_number.html(response);
+                    },
+                    error: function (data) {
+                        subprojects_current_steps_number_spin.hide();
+                        alert(error_server_message + "Error " + data.status);
+                    }
+                });
+            }
+            
+            loadSubprojects();
+            loadSubprojectsAmount();
+            loadSubprojectsSectorsAndSteps();
+            loadSubprojectsSteps();
+            loadSubprojectsCurrentSteps();
+            $('.administrative-level-filter select').on('change', function () {
+                let elt_id;
+                for(let i=0; i<administrative_level_ids.length; i++){
+                    elt_id = administrative_level_ids[i];
+                    if($(this).attr('id') != elt_id) $(`#${elt_id}`).val(null).trigger('change.select2');
+                }
+                administrative_level_id = null;
+                administrative_level_type = null;
+                if($(this).attr('id') && $(this).val()){
+                    administrative_level_type = $(this).attr('id').split('_')[1];
+                    administrative_level_id = $(this).val();
+                }
+                loadSubprojects(administrative_level_id, administrative_level_type);
+                loadSubprojectsAmount(administrative_level_id, administrative_level_type);
+                loadSubprojectsSectorsAndSteps(administrative_level_id, administrative_level_type);
+                loadSubprojectsSteps(administrative_level_id, administrative_level_type);
+                loadSubprojectsCurrentSteps(administrative_level_id, administrative_level_type);
+            });
+
+
+
+            $("#clear_all_filters").on("click", function () {
+                $('.administrative-level-filter input').val('');
+                $('.administrative-level-filter select').val(null).trigger('change.select2');
+                loadSubprojects();
+                loadSubprojectsAmount();
+                loadSubprojectsSectorsAndSteps();
+                loadSubprojectsSteps();
+                loadSubprojectsCurrentSteps();
+            });
+
+
+        });
+    </script>
+{% endblock %}
+
+
+
+{% block select2 %}
+    <script type="text/javascript">
+        $("#id_region").select2({
+            placeholder: "{% translate 'Region' %}",
+            allowClear: true
+        });
+        $("#id_prefecture").select2({
+            placeholder: "{% translate 'Prefecture' %}",
+            allowClear: true,
+        });
+        $("#id_commune").select2({
+            placeholder: "{% translate 'Commune' %}",
+            allowClear: true,
+        });
+         $("#id_canton").select2({
+            placeholder: "{% translate 'Canton' %}",
+            allowClear: true,
+        });
+         $("#id_village").select2({
+            placeholder: "{% translate 'Village' %}",
+            allowClear: true,
+        });
+
+        $('b[role="presentation"]').hide();
+        $('.select2-selection__arrow').append(
+            '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+
+    </script>
+{% endblock select2 %}

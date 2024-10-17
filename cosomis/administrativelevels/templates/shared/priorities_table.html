@@ -1,0 +1,76 @@
+{% load static i18n humanize custom_tags %}
+{% if investments.count == 0 %}
+    <h3>{% translate 'You have no priorities' %}</h3>
+{% else %}
+    <table class="table datatable rounded-table">
+    <thead>
+    <tr>
+        <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+        <th class="align-middle border-bottom-0 rounded-0" colspan="4">{%  translate 'Priorities' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{%  translate 'Beneficiaries' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Estimated cost' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Funded by' %}</th>
+        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Climate contribution' %}</th>
+        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">{% translate 'Actions' %}</th>
+    </tr>
+    <tr>
+        <th class="bg-yellow rounded-0 border-sides-0 white-font">J</th>
+        <th class="bg-blue rounded-0 border-sides-0 white-font">F</th>
+        <th class="bg-orange rounded-0 border-sides-0 white-font">ME</th>
+        <th class="bg-green rounded-0 border-sides-0 white-font">AE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for investment in investments %}
+        <tr>
+            <td>{{ investment.ranking }}</td>
+            {% if investment.title == "Autre" %}
+            <td class="border-sides--light">
+                <a 
+                        href="" data-container="body" data-toggle="popover" 
+                        data-placement="top" data-trigger="hover" 
+                        data-content="{% if investment.description %}{{ investment.description }}{% else %}-{% endif %}">
+                    {{ investment.title }}
+                </a>
+            </td>
+            {% else %}
+            <td class="border-sides--light">{{ investment.title }}</td>
+            {% endif %}
+            <td class="border-sides--light">
+                {% if investment.endorsed_by_youth %}✓{% endif %}</td>
+            <td class="border-sides--light">
+                {% if investment.endorsed_by_women %}✓{% endif %}</td>
+            <td class="border-sides--light">
+                {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
+            <td class="border-sides--light">
+                {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
+            <td class="border-sides--light">{{ investment.beneficiaries }}</td>
+            <td class="border-sides--light">{{ investment.estimated_cost|intcomma }}</td>
+            <td class="border-sides--light">
+                {% if investment.funded_by %}
+                    {{ investment.funded_by.name }}
+                {% else %}
+                    {% translate "Not Funded" %}
+                {% endif %}
+            </td>
+            <td class="border-sides--light">{% if investment.climate_contribution %}{{ investment.climate_contribution_text }}{% else %}
+                {% translate "No" %}{% endif %}</td>
+            <td>
+                {% if investment.project_status == investment.NOT_FUNDED %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% if investment.id not in cart_items_id %}
+                    <input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
+                    {% else %}
+                    <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
+                    {% endif %}
+                    <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}

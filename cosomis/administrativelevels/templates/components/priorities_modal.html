@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<!-- Link modal -->
+<h6>
+    <a data-toggle="modal" data-target="#priorities-list-modal" 
+        href="#" class="font-weight-bold text-primary">
+        {% if object.get_list_priorities|length > 5 %}
+            {% translate 'View All Priorities' %}
+        {% else %}
+            <h5 class="font-weight-bold"><i class="fas fa-eye"></i></h5>
+        {% endif %}
+        </a>
+</h6>
+
+<!-- Modal  modal-dialog-centered -->
+<div class="modal fade" id="priorities-list-modal" tabindex="-1" role="dialog"
+    aria-labelledby="UploadTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+           {% include 'components/priorities_list.html' %}
+            
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+

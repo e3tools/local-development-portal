@@ -1,0 +1,61 @@
+{% load static i18n %}
+<script type="text/javascript">
+    let spin_population_community_details = $("#spin-population-community-details");
+    let population_and_community_details = $("#population_and_community_details");
+    spin_population_community_details.show();
+    population_and_community_details.html(`
+    <br />
+    <div class="row">
+        <div class="col-6">
+            <p><b>{% translate "Households added last year" %}:</b> ###</p>
+            <p><b>{% translate "Added due to conflict" %}:</b> ###</p>
+        </div>
+        <div class="col-6">
+            <p><b>{% translate "Demographic trends" %}: ###</b></p>
+        </div>
+    </div>
+    <div class="row" style="margin: auto; background-color: #dafefe; padding: 11px;">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <b>{% translate "Main languages" %}:</b>
+                        </div>
+                        <div class="col-6">
+                            {% for ethnic in datas.languages %}
+                                <span>{% if forloop.counter != 1 %}, {% endif %}{{ ethnic }}{% if forloop.last %}.{% endif %}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <b>{% translate "Main religions" %}:</b>
+                        </div>
+                        <div class="col-6">
+                            {% for religion in datas.religions %}
+                                <span>{% if forloop.counter != 1 %}, {% endif %}{{ religion }}{% if forloop.last %}.{% endif %}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-4">
+                            <b>{% translate "Ethnies" %}:</b>
+                        </div>
+                        <div class="col-8">
+                            {% for ethnic in datas.languages %}
+                                <span>{% if forloop.counter != 1 %}, {% endif %}{{ ethnic }}{% if ethnic != "Autres" %}s{% endif %}{% if forloop.last %}.{% endif %}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `);
+    spin_population_community_details.hide();
+</script>

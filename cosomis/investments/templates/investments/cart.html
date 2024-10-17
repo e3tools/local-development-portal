@@ -1,0 +1,392 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize custom_tags %}
+
+{% block extracss %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+    <style>
+        .table th {
+            padding: 5px 30px 0 30px;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.025);
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control::before {
+            content: '>';
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before {
+            content: '-';
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row mb-3">
+    <div class="col-8">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <p class="text-sm">{% translate 'Total funding selected' %}:</p>
+                    </div>
+                    <div class="col-8">
+                        <p class="text-sm">
+                            <b class="d-block total-funding-display">{{ total_funding|intcomma }}</b>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <p class="text-sm">{% translate '# Sub-projects' %}:</p>
+                    </div>
+                    <div class="col-8">
+                        <p class="text-sm">
+                            <b class="d-block total-subprojects-display">0</b>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <p class="text-sm">{% translate '# Villages' %}:</p>
+                    </div>
+                    <div class="col-8">
+                        <p class="text-sm">
+                            <b class="d-block total-villages-display">0</b>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <p class="text-sm">{% translate 'Project' %}:</p>
+                    </div>
+                    <div class="col-8">
+                        <p class="text-sm">
+                            <b class="d-block">{{ object.project.name }}</b>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <h6>{% translate 'Sectors' %} ({{ sectors|length }}):</h6>
+
+                        {% for sector in sectors %}
+                        <span class="badge badge-pill badge-info mr-1 mb-1"
+                              style="font-size: 12px; padding: 10px;">{{ sector.name }}
+                        </span>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <h6>{% translate 'Categories' %} ({{ categories|length }}):</h6>
+
+                        {% for category in categories %}
+                        <span class="badge badge-pill badge-info mr-1 mb-1"
+                              style="font-size: 12px; padding: 10px;">{{ category.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h6>
+                    {% translate 'Summary' %}
+                </h6>
+                <div class="row">
+                    <div class="col-8">
+                        <p class="text-sm float-right">{% translate 'Total funding selected' %}:</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="text-sm">
+                            <b class="d-block total-funding-display">{{ total_funding|intcomma }}</b>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <p class="text-sm float-right">{% translate '# Subprojects' %}:</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="text-sm">
+                            <b class="d-block total-subprojects-display">0</b>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <p class="text-sm float-right">{% translate '# Villages' %}:</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="text-sm">
+                            <b class="d-block total-villages-display">0</b>
+                        </p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12">
+                        <input type="submit" class="btn btn-success btn-block" value="{% translate 'Submit For Approval' %}" id="investments-submit" name="investments-submit">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <h6>{% translate 'Investments in your package' %}</h6>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-3">
+
+                        {% for key, value in query_strings.items %}
+                        <span class="badge badge-pill badge-info mr-1"
+                              style="font-size: 12px; padding: 10px;">{{ key }}: {{ value }}
+                            <button type="button" class="close align-middle" aria-label="Close" style="font-size: 1rem; margin-left: 4px;">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </span>
+                        {% endfor %}
+                        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#clearPackageModal">
+                            {% translate 'Clear Package' %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <form action="" method="POST" name="investments-form" id="investment-form">
+                    {% csrf_token %}
+                    <table class="table datatable display" style="width: 100%;">
+                        <thead>
+                        <th>{% translate 'Name' %}</th>
+                        <th>{% translate 'Subproject type' %}</th>
+                        <th>{% translate 'Estimate cost' %}</th>
+                        <th>{% translate 'Village' %}</th>
+                        <th>{% translate 'Commune' %}</th>
+                        <th>{% translate 'Prefecture' %}</th>
+                        <th>{% translate 'Region' %}</th>
+                        <th>{% translate 'Village priority' %}</th>
+                        <th>{% translate 'Population priority' %}</th>
+                        <th></th>
+                        </thead>
+                        <tbody>
+                        {% for investment in object.funded_investments.all %}
+                        <tr>
+                            <td>{{ investment.title }}</td>
+                            <td>{{ investment.administrative_level.type }}</td>
+                            <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
+                                {{ investment.estimated_cost|intcomma }}
+                            </td>
+                            <td>{{ investment.administrative_level.name }}</td>
+                            <td>{{ investment.administrative_level.parent.name }}</td>
+                            <td>{{ investment.administrative_level.parent.parent.name }}</td>
+                            <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
+                            <td>{{ investment.administrative_level.rank }}</td>
+                            <td>
+                                {% if investment.endorsed_by_youth %}
+                                J,
+                                {% endif %}
+                                {% if investment.endorsed_by_women %}
+                                F,
+                                {% endif %}
+                                {% if investment.endorsed_by_agriculturist %}
+                                AG,
+                                {% endif %}
+                                {% if investment.endorsed_by_pastoralist %}
+                                ME
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="btn btn-xs btn-outline-danger remove-investment-link"
+                                   data-id="{{ investment.id }}"
+                                   data-name="{{ investment.title }}">{% translate 'Remove from cart' %}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <input type="hidden" id="investments-input-id" value="" name="investments">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block modals %}
+<div class="modal fade" id="clearPackageModal" tabindex="-1" role="dialog" aria-labelledby="clearPackageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" name="clear-package-form" id="clear-package-form-id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clearPackageModalLabel">{% translate 'Are you sure do you want to clear the package?' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    {% csrf_token %}
+                    <input type="hidden" name="clear-package-input">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+                    <input type="submit" class="btn btn-danger" name="clear-package-submit" value="{% translate 'Clear Package' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="removeInvestmentModal" tabindex="-1" role="dialog" aria-labelledby="removeInvestmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" name="remove-investment-form" id="remove-investment-form-id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clearPackageModal">
+                        {% translate 'Are you sure do you want to remove ' %}
+                        <span id="remove-investment-title-id"></span>
+                        {% translate ' from the package?' %}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    {% csrf_token %}
+                    <input type="hidden" name="remove-from-cart" value="">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+                    <input type="submit" class="btn btn-danger" name="clear-package-submit" value="{% translate 'Remove Investment' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="nonProjectModal" data-backdrop="static" tabindex="-1" role="dialog"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">{% translate 'Select project' %}</h5>
+                </div>
+                <div class="modal-body">
+                    <p>{% translate 'You need to select a project related to this investments.' %}</p>
+                        <div class="horizontal-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="project-select-id">{% translate 'Project' %}</label>
+                                <select class="form-control" name="project" id="project-select-id" required style="width: 100%;">
+                                    <option selected value="">{% translate 'Project' %}</option>
+                                    {% for project in projects %}
+                                        <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="{% translate 'Save' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script src="{% static 'js/numeral.min.js' %}"></script>
+<script type="text/javascript">
+    $( document ).ready(function() {
+
+        if ('{{ cart_project }}' === 'None') {
+            $('#investments-submit').attr('disabled','disabled');
+            $('#nonProjectModal').modal('show');
+        }
+
+        let table = $(".datatable").DataTable({{ datatable_config | safe }});
+
+        sum_subprojects();
+
+        table.on('click', 'tr', function(){
+            sum_subprojects();
+        });
+
+        $('.column-switch').on('change', function (e) {
+
+            // Get the column API object
+            var column = table.column($(this).attr('data-column'));
+
+            // Toggle the visibility
+            column.visible(!column.visible());
+        });
+
+        $('.submit-reset').on('click', function() {
+            $('#reset-hidden-id').attr('value', 'true');
+            $('#filter-form').submit();
+        });
+
+        $('.adm-submit-reset').on('click', function() {
+            $('#adm-reset-hidden-id').attr('value', 'true');
+            $('#adm-filter-form').submit();
+        });
+
+        $('.remove-investment-link').on('click', function() {
+            $('input[name="remove-from-cart"]').val(this.dataset.id);
+            $('#remove-investment-title-id').html(this.dataset.name);
+            $('#removeInvestmentModal').modal('show');
+        });
+
+        function sum_subprojects() {
+            let villages = [];
+            let funding = 0;
+            let subprojects = 0;
+
+            table.rows().every( function ( rowIdx ) {
+                let firstVal = $( this.node() ).first().val();
+
+                if (firstVal != undefined) {
+                    let subproject_data = table.row( rowIdx ).data();
+                    subprojects += 1;
+
+                    $('#investments-input-id').val($('#investments-input-id').val() + ',' + firstVal);
+
+                    funding = parseInt(funding) + parseInt(subproject_data[3]["@data-order"])
+
+                    if (!villages.includes(subproject_data[4])) {
+                        villages.push(subproject_data[4])
+                    }
+                }
+            } );
+
+            $('.total-villages-display').html(numeral(villages.length).format('0,0'));
+            $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
+
+        };
+
+        // Get the 'Check out' button by ID
+        var checkOut = document.getElementById('investments-submit');
+
+        // When the 'Add to Cart' button is clicked
+        checkOut.addEventListener('click', function () {
+            // Submit the form with the ID 'investment-form'
+            document.getElementById('investment-form').submit();
+        });
+    });
+</script>
+{% endblock %}

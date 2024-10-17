@@ -1,0 +1,92 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize custom_tags %}
+
+{% block custom_title %}
+    <div class="col-sm-9">
+        <div class="m-0 main-title">{{ title | safe }}</div>
+    </div>
+    <div class="col-sm-3">
+        <a href="{% url 'administrativelevels:project-create' %}" class="btn btn-block btn-primary">
+            {% translate 'Create Project' %}
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-9 justify-content-left">
+                            <div class="row">
+                                <div class="col-12 adl-filter">
+                                    {% for field in form %}
+                                    <div class="form-group row">
+                                        <label class="col-3 col-form-label">{{ field.label }}</label>
+                                        <div class="col-6">
+                                            {{ field }}
+                                        </div>
+                                        <div class="col-3">
+                                         <a id="check_{{ field.name }}" href="" class="btn btn-primary" style="display: none;">{% translate 'Check' %}</a>
+                                        </div>
+                                        {% comment%}
+                                        <div class="col-3" >
+                                            <span class="_mobile"><i class="fa fa-eye"></i></span>
+                                            <a id="profil">{{field.label}}</a>
+                                        </div>
+                                        {% endcomment %}
+                                        {% if field.errors %}
+                                        <div class="alert alert-danger alert-sm form_alert">{{ field.errors }}</div>
+                                        {% endif %}
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+        
+                            </div>
+                        </div>
+                        <div class="col-3 pull-right" style="display: inline-block;">
+                            <form method="get" class="d-flex">
+    
+                                <input type="hidden" name="type" value="{{ type }}">
+                                <input class="form-control" name="search" placeholder="{% translate 'Search a project' %}...">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                </div>
+    
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>{% translate "Project" %}</th>
+                                        <th>{% translate "Number of Investments" %}</th>
+                                        <th>{% translate "Total Funds" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for project in projects %}
+                                    <tr>
+                                        <td><a href="{% url 'administrativelevels:project-detail' project.id %}">{{ project.name }}</a></td>
+                                        <td>{{ project.investments_count|intcomma }}</td>
+                                        <td>{{ project.investments_total|intcomma }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="3" class="text-right"><p><b>Total</b> {{ total_mount_invested|intcomma }}</p></td>
+                                    </tr>
+                                </tfooter>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

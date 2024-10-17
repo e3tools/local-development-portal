@@ -1,0 +1,129 @@
+{% load static i18n humanize custom_tags %}
+{% block extracss %}
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+<style>
+    body { margin: 0; padding: 0; }
+    #mapid { display: block; height: 300px; top: 0; bottom: 0; width: 100%; }
+    #legend { }
+</style>
+{% endblock %}
+<h4 class="mt-1">
+    {% blocktrans with village.name as village_name %}
+        Climate Overview for {{ village_name }}
+    {% endblocktrans %}
+</h4>
+<span class="font-italic gray">
+                                    {% blocktrans with village.name as village_name and village.latitude as village_latitude and village.longitude as village_longitude and village.kilometers as village_kilometers %}
+                                        This section describes the {{ village_kilometers }} km<sup>2</sup>
+                                        are centered on {{ village_latitude }} / {{ village_longitude }},
+                                        which includes {{ village_name }}. You can view other data ain other areas by
+                                        using
+                                        <u>Climate Cluster Vulnerability Tool</u> and you can download a summary of
+                                        {{ village_name }}
+                                        in <u>PDF</u> or <u>MS-Word</u> format.
+                                    {% endblocktrans %}
+                                </span>
+<div class="container-fluid mt-2 row">
+    <div class="col">
+        <div class="row mt-3">
+            <strong>{% translate "Ecosystem Classifications" %}: </strong> <a href="#"> Cropland Mosaic, Cropland,
+            Grassland</a>
+        </div>
+        <div class="row mt-3">
+            <strong>{% translate "Key environmental indicators" %}: </strong>
+            <!-- TODO: Make conditionals so the indicators change -->
+            <div class="col-12">
+                <a href="#">High population growth</a>
+                - {% translate "This area is experiencing population growth at a rate [x5] higher than the regional average" %}
+            </div>
+            <div class="col-12">
+                <a href="#">Fluctuating/unreliable rainfall</a>
+                - {% translate "year over year rainfall patterns vary widely and have the potential to disrupt agricultural and pastoral activities" %}
+            </div>
+            <div class="col-12">
+                <a href="#">Long distances to water supply</a> -
+                {% blocktrans with village.water_km as village_water_km and village.regional_water_km as regional_water_km %}
+                    the typical distance a person needs to go to access water is village_water_km km<sup>2</sup>, the
+                    regional average distance is regional_water_km km<sup>2</sup>
+                {% endblocktrans %}
+            </div>
+        </div>
+        <div class="row mt-3">
+            <strong>{% translate "Nearby ecosystems" %}: </strong>
+            <div class="col-12">
+                {% blocktrans %}
+                    The broader area, [4x] km<sup>2</sup>, contains the following ecosystems: Cropland Mosaic, Cropland,
+                    Grassland, Barren, Forrest
+                {% endblocktrans %}
+            </div>
+        </div>
+        <div class="row mt-3">
+            <strong>{% translate "Nearby environmental indicators" %}: </strong>
+            <div class="col-12">
+                <a href="#">High population growth</a>
+                - {% translate "This area is experiencing population growth at a rate [x5] higher than the regional average" %}
+            </div>
+            <div class="col-12">
+                <a href="#">Fluctuating/unreliable rainfall</a>
+                - {% translate "year over year rainfall patterns vary widely and have the potential to disrupt agricultural and pastoral activities" %}
+            </div>
+            <div class="col-12">
+                <a href="#">Long distances to water supply</a> -
+                {% blocktrans with village.water_km as village_water_km and village.regional_water_km as regional_water_km %}
+                    the typical distance a person needs to go to access water is village_water_km km<sup>2</sup>, the
+                    regional average distance is regional_water_km km<sup>2</sup>
+                {% endblocktrans %}
+            </div>
+            <div class="col-12">
+                <a href="#">Conflicts and violence</a>
+                - {% translate "there have been [x] number of violent evcents from 2000 - 2020, the regional average for this time period is [y]" %}
+            </div>
+        </div>
+        <div class="row mt-3">
+            <strong>{% translate "Local implications" %}: </strong>
+            <div>
+                {% translate "Communities addressing similar environments indicators, have taken or consider taking the following measures:" %}
+            </div>
+            <div class="col-12">
+                <a href="#">Investment type</a>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <strong>{% translate "Current climate related investments" %}: </strong>
+            {% for investment in investments %}
+                <div>
+                    <u>{{ investment.title }}</u>:
+                    {% if investment.contribution_to_climate %}{% translate "Yes" %}{% else %}
+                        {% translate "No" %}{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div style="width: 400px; height: fit-content" class="border center-block">
+        <div class="overlay-wrapper">
+            <div id="mapid"></div>
+            <div class="overlay z-index1000 map-spin irs--round">
+                <i class="fas fa-3x fa-sync-alt fa-spin">
+                </i>
+            </div>
+            <div class="second-overlay z-index1000 map-spin" id="load-percentage"></div>
+        </div>
+        <div id="legend" class="text-left"></div>
+    </div>
+</div>
+
+{% block javascript %}
+    <script src="{% static 'plugins/mapbox-gl-js/v2.4.1/mapbox-gl.js' %}"></script>
+    <script src="{% static 'js/climateMapbox.js' %}"></script>
+    <script>
+        loadGeoJsonMap(
+            '{% static "geojson/togo.geojson" %}',
+            '{{ mapbox_access_token }}',
+            [
+                {{ object.longitude }},
+                {{ object.latitude  }}
+            ],
+            '{{ object.type.lower }}'
+        );
+    </script>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div >
+                <div class="row">
+                    <div class="col-5" class="input-group mb-3 search-bar">
+                        <div method="get" class="d-flex">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <input class="form-control" id="search" placeholder="{% translate 'Search in table' %}...">
+                        </div>
+                    </div>
+                    <div class="col-6" class="input-group mb-3 search-bar">
+                        <form method="get" class="d-flex">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <input class="form-control" name="search" placeholder="{% translate 'Search in database' %}...">
+                            <input class="btn btn-primary" type="submit" value="{% translate 'Search' %}">
+                        </form>
+                    </div>
+                    <div class="col-1" class="input-group mb-3 search-bar">
+                        <form method="get" class="d-flex">
+                            <input type="hidden" name="search" value="All">
+                            <input class="btn btn-primary" type="submit" value="{% translate 'All' %}">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="btn-group pull-left">
+                            {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Accountant" %}
+                                {% if user.is_superuser or user|has_group:"Admin" %}
+                                <a class="btn btn-primary" href="{% url 'administrativelevels:cvd_create' %}">{% translate 'Create CVD' %}</a>
+                                <div> &nbsp; &nbsp; </div>
+                                {% endif %}
+                                {% include 'components/modal_upload_one_sheet.html' with type_object="cvd" show_just_villages=False %}
+                                <div> &nbsp; &nbsp; </div>
+                            {% endif %}
+                            {% include 'components/download.html' with export_url='administrativelevels:download_cvd' %}
+                        </div>
+
+                        <div class="btn-group pull-right">
+                            {% if user.is_superuser or user|has_group:"Admin" %}
+                                <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_unit_create' %}">{% translate 'Create geographical unit' %}</a>
+                                <div> &nbsp; &nbsp; </div>
+                            {% endif %}
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_units_list' %}">{% translate 'Geographical units' %}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive">
+                    <table id="table" class="table">
+                        <thead>
+                        <tr>
+                            <th>{% translate 'Name' %}</th>
+                            <th>{% translate 'Code' %}</th>
+                            <th>{% translate 'Canton' %}</th>
+                            <th>{% translate 'Commune' %}</th>
+                            <th>{% translate 'Prefecture' %}</th>
+                            <th>{% translate 'Region' %}</th>
+                            <th>{% translate 'Action' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for cvd in cvds %}
+                            <tr>
+                                <td>{{ cvd.get_name }}</td>
+                                <td>{{ cvd.unique_code }}</td>
+                                <td>{{ cvd.get_canton }}</td>
+                                <td>{{ cvd.get_canton.parent.name }}</td>
+                                <td>{{ cvd.get_canton.parent.parent.name }}</td>
+                                <td>{{ cvd.get_canton.parent.parent.parent.name }}</td>
+                                <td>
+                                     <a href="{% url 'administrativelevels:cvd_detail' cvd.pk %}"
+                                       class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
+                                        <span class="_mobile"><i class="fa fa-eye"></i></span>
+                                    </a>
+                                    {% if user.is_superuser or user|has_group:"Admin" or user|has_group:"Evaluator" or user|has_group:"Accountant" %}
+                                    <a href="{% url 'administrativelevels:cvd_update' cvd.pk %}"
+                                       class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
+                                        <span class="_mobile"><i class="fa fa-edit"></i></span>
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        
+                        <tfoot>
+                            <tr>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            <th rowspan="1" colspan="1"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            {% if cvds.has_previous %}
+                                <li>
+                                    <a class="page-link" href="?page={{ cvds.previous_page_number }}">
+                                        <i class="fa fa-arrow-left text-bold"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="page-item">
+                                <p class="page-link text-bold">
+                                    {% translate 'Page' %} {{ cvds.number }} {% translate 'of' %} {{ cvds.paginator.num_pages }}
+                                </p>
+                            </li>
+                            {% if cvds.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ cvds.next_page_number }}">
+                                        <i class="fa fa-arrow-right text-bold"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+
+            let table = $('#table').DataTable({
+                language: {
+                    url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
+                },
+                dom: "ltipr",
+                columnDefs: [
+                    {
+                        targets: 1,
+                        orderable: false,
+                        searchable: false,
+                    }
+                ],
+                lengthMenu: [10, 50, 100],
+                pageLength: 10,
+                order: [],
+                initComplete: function () {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            var column = this;
+                            
+                            // Create select element and listener
+                            var select = $('<select style="width:50px !important;"><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $(`#table`).DataTable.util.escapeRegex($(this).val());
+            
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+            
+                            // Add list of options
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append('<option value="' + d + '">' + d + '</option>');
+                                });
+                        });
+                }
+            });
+            $('#search').on('keyup', function () {
+                table.search($(this).val()).draw();
+            });
+        });
+    </script>
+{% endblock %}

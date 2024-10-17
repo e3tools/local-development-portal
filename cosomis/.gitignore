@@ -1,0 +1,14 @@
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+/cosomis/.develop.env
+
+# Environment variables
+/cosomis/.env
+
+#media
+/media/
+
+.env

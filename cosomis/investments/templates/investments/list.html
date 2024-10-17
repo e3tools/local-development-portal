@@ -1,0 +1,735 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize custom_tags %}
+
+{% block extracss %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+    <style>
+        .table th {
+            padding: 5px 30px 0 30px;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.025);
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control::before {
+            content: '>';
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before {
+            content: '-';
+        }
+
+    .loader {
+        width: 15px;
+        height: 15px;
+        border: 3px solid #e3e3e3;
+        border-bottom-color: #3498db;
+        border-radius: 50%;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button aria-controls="collapseOne" aria-expanded="false" class="btn btn-link"
+                                data-target="#collapseOne" data-toggle="collapse">
+                             {% translate 'Choose filters' %}
+                        </button>
+                    </h5>
+                </div>
+                <div aria-labelledby="headingOne" class="collapse show" id="collapseOne">
+                    <form action="" method="POST" id="filter-form">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="category-select-id">{% translate 'Sector' %}</label>
+                                                <select class="form-control" name="category-filter" id="category-select-id" empty-option="{% translate 'Sector' %}" style="width: 100%;">
+                                                    <option selected value="">{% translate 'Sector' %}</option>
+                                                    {% for category in categories %}
+                                                        {% if 'category-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'category-filter' == category.id %}
+                                                            <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ category.id }}">{{ category.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ category.id }}">{{ category.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="sector-select-id">{% translate 'Type' %}</label>
+                                                <select class="form-control" name="sector-filter" id="sector-select-id" empty-option="{% translate 'Sector' %}" style="width: 100%;" {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
+                                                    <option selected value="">{% translate 'Type' %}</option>
+                                                    {% for sector in sectors %}
+                                                        {% if 'sector-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'sector-filter' == sector.id %}
+                                                            <option value="{{ sector.id }}" selected>{{ sector.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ sector.id }}">{{ sector.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ sector.id }}">{{ sector.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="endorse-by-select-id">{% translate 'Endorsed by' %}</label>
+                                                <select class="form-control" name="subpopulation-filter" id="endorse-by-select-id"
+                                                        style="width: 100%;">
+                                                    <option value=''>{% translate "Endorsed by" %}</option>
+                                                    {% for subpopulation in subpopulations %}
+                                                        {% if 'subpopulation-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'subpopulation-filter' == subpopulation.id %}
+                                                            <option value="{{ subpopulation.id }}" selected>{{ subpopulation.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="climate-contribution-select-id">{% translate 'Climate contribution' %}</label>
+                                                <select class="form-control" name="climate-contribution-filter" id="climate-contribution-select-id" empty-option="{% translate 'Climate contribution' %}" style="width: 100%;">
+                                                    {% if 'climate-contribution-filter' in query_strings_raw %}
+                                                        {% if query_strings_raw|get_item:'climate-contribution-filter' == 'True' %}
+                                                            <option value="True" selected>{% translate 'Yes' %}</option>
+                                                            <option value="False">{% translate 'No' %}</option>
+                                                        {% else %}
+                                                            <option value="True">{% translate 'Yes' %}</option>
+                                                            <option value="False" selected>{% translate 'No' %}</option>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <option selected value="">{% translate 'Climate contribution' %}</option>
+                                                        <option value="True">{% translate 'Yes' %}</option>
+                                                        <option value="False">{% translate 'No' %}</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="Priorities-select-id">{% translate 'Priorities' %}</label>
+                                                <select class="form-control" name="priorities-filter" id="Priorities-select-id" empty-option="{% translate 'Priorities' %}" style="width: 100%;">
+                                                    <option value=''>{% translate "Priorities" %}</option>
+                                                    {% for priority in priorities %}
+                                                        {% if 'priorities-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'priorities-filter' == priority.id %}
+                                                            <option value="{{ priority.id }}" selected>{{ priority.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ priority.id }}">{{ priority.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ priority.id }}">{{ priority.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="funded-select-id">{% translate 'Funding Status' %}</label>
+                                                <select class="form-control" name="is-funded-filter" id="funded-select-id" empty-option="{% translate 'Funding Status' %}" style="width: 100%;">
+                                                    <option value=''>{% translate "Funding Status" %}</option>
+                                                    {% if 'is-funded-filter' in query_strings_raw %}
+                                                        {% if query_strings_raw|get_item:'is-funded-filter' == 'true' %}
+                                                        <option value='true' selected>{% translate "Is funded" %}</option>
+                                                        <option value='false'>{% translate "Is not funded" %}</option>
+                                                        {% else %}
+                                                        <option value='true'>{% translate "Is funded" %}</option>
+                                                        <option value='false' selected>{% translate "Is not funded" %}</option>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <option value='true'>{% translate "Is funded" %}</option>
+                                                        <option value='false'>{% translate "Is not funded" %}</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3 mt-4 text-right">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}" style="margin-bottom: 3px;">
+                                            <input type="button" class="btn btn-primary submit-reset" value="{% translate 'Reset' %}" style="margin-bottom: 3px;"/>
+                                            <input type="hidden" id="reset-hidden-id" name="reset-hidden" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-header" id="headingAdministrativeLevel">
+                    <h5 class="mb-0">
+                        <button aria-controls="collapseAdministrativeLevel" aria-expanded="false"
+                                class="btn btn-link collapsed" data-target="#collapseAdministrativeLevel"
+                                data-toggle="collapse">
+                            {% translate 'Choose the Administrative level' %}
+                        </button>
+                    </h5>
+                </div>
+                <div aria-labelledby="headingAdministrativeLevel" class="collapse show"
+                     id="collapseAdministrativeLevel">
+                    <form action="" method="POST" id="adm-filter-form">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-9">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="region-select-id">{% translate 'Region' %}</label>
+                                                <select class="form-control" name="region-filter" empty-option="{% translate 'Region' %}" style="width: 100%;" id="region-select-id">
+                                                    <option selected value="">{% translate 'Region' %}</option>
+                                                    {% for region in regions %}
+                                                        {% if 'region-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'region-filter' == region.id %}
+                                                            <option value="{{ region.id }}" selected>{{ region.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ region.id }}">{{ region.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ region.id }}">{{ region.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="commune-select-id">{% translate 'Commune' %}</label>
+                                                <select class="form-control" name="commune-filter" id="commune-select-id" empty-option="{% translate 'Commune' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                                    <option selected value="">{% translate 'Commune' %}</option>
+                                                    {% for commune in communes %}
+                                                        {% if 'commune-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'commune-filter' == commune.id %}
+                                                            <option value="{{ commune.id }}" selected>{{ commune.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="village-select-id">{% translate 'Village' %}</label>
+                                                <select class="form-control" name="village-filter" id="village-select-id" empty-option="{% translate 'Village' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                                    <option selected value="">{% translate 'Village' %}</option>
+                                                    {% for village in villages %}
+                                                        {% if 'village-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'village-filter' == village.id %}
+                                                            <option value="{{ village.id }}" selected>{{ village.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ village.id }}">{{ village.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ village.id }}">{{ village.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="prefecture-select-id">{% translate 'Prefecture' %}</label>
+                                                <select class="form-control" name="prefecture-filter" id="prefecture-select-id" empty-option="{% translate 'Prefecture' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                                    <option selected value="">{% translate 'Prefecture' %}</option>
+                                                    {% for prefecture in prefectures %}
+                                                        {% if 'prefecture-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'prefecture-filter' == prefecture.id %}
+                                                            <option value="{{ prefecture.id }}" selected>{{ prefecture.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="canton-select-id">{% translate 'Canton' %}</label>
+                                                <select class="form-control" name="canton-filter" id="canton-select-id" empty-option="{% translate 'Canton' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                                    <option selected value="">{% translate 'Canton' %}</option>
+                                                    {% for canton in cantons %}
+                                                        {% if 'canton-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'canton-filter' == canton.id %}
+                                                            <option value="{{ canton.id }}" selected>{{ canton.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ canton.id }}">{{ canton.name }}</option>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <option value="{{ canton.id }}">{{ canton.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3 mt-4 text-right">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}" style="margin-bottom: 3px;">
+                                            <input type="button" class="btn btn-primary adm-submit-reset" value="{% translate 'Reset' %}" style="margin-bottom: 3px;"/>
+                                            <input type="hidden" id="adm-reset-hidden-id" name="reset-hidden" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="headingColumns">
+                    <h5 class="mb-0">
+                        <button aria-controls="collapseColumns" aria-expanded="false" class="btn btn-link collapsed"
+                                data-target="#collapseColumns" data-toggle="collapse">
+                            {% translate 'Choose the columns to display' %}
+                        </button>
+                    </h5>
+                </div>
+                <div aria-labelledby="headingColumns" class="collapse show" id="collapseColumns">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-9">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="1" id="customSwitchName" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchName">{% translate 'Name' %}</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="2" id="customSwitchSubproject" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchSubproject">{% translate 'Subproject type' %}</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="3" id="customSwitchEstimate" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchEstimate">{% translate 'Estimate cost' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="4" id="customSwitchVillage" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchVillage">{% translate 'Village' %}</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="5" id="customSwitchCommunity" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchCommunity">{% translate 'Commune' %}</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="6" id="customSwitchPrefecture" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchPrefecture">{% translate 'Prefecture' %}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="7" id="customSwitchRegion" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchRegion">{% translate 'Region' %}</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="8" id="customSwitchVillagePriority" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchVillagePriority">{% translate 'Village priority' %}</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input checked class="custom-control-input column-switch"
+                                                   data-column="9" id="customSwitchPopulation" type="checkbox">
+                                            <label class="custom-control-label" for="customSwitchPopulation">{% translate 'Population priority' %}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <form action="" method="POST" id="investment-form" name="investments-form">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <h6>{% translate 'Results' %}</h6>
+                    </div>
+                    <div class="row">
+                        <div class="{% if not user.is_moderator %}col-9{% else %}col-12{% endif %} mb-3">
+                            {% for key, value in query_strings.items %}
+                                <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
+                                    <span class="filter-badge-label">{{ key }} : {{ value|truncatechars:20 }}</span>
+                                </span>
+                            {% endfor %}
+                        </div>
+                        {% if not user.is_moderator %}
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label for="project-select-id">{% translate 'Project' %}</label>
+                                <select class="form-control" name="project" id="project-select-id" style="width: 100%;" required>
+                                    <option selected value="">{% translate 'project' %}</option>
+                                    {% for project in projects %}
+                                        {% if cart_project %}
+                                            {% if cart_project.id == project.id %}
+                                            <option value="{{ project.id }}" selected>{{ project.name }}</option>
+                                            {% else %}
+                                            <option value="{{ project.id }}">{{ project.name }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            <option value="{{ project.id }}">{{ project.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% if projects|length == 0 %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% translate 'Your organization must have a project to submit investments' %}
+                                    </br>
+                                    <a href="{% url 'administrativelevels:projects' %}" class="underline">{% translate 'Click to your first project' %}</a>
+                                </div>
+                            {% endif %}
+                            <input type="submit" class="btn btn-primary btn-sm pull-right" name="investments-submit" value="{% translate 'Add to Cart' %}" id="investments-submit">
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p class="text-sm">{% translate '# Villages:' %} <span class="d-none loader"></span>
+                                <b class="d-block total-villages-display">0</b>
+                            </p>
+                        </div>
+                        <div class="col-3">
+                            <p class="text-sm">{% translate '# Sub-projects' %}: <span class="d-none loader"></span>
+                                <b class="d-block total-subprojects-display">0</b>
+                            </p>
+                        </div>
+                        <div class="col-3">
+                            <p class="text-sm">{% translate 'Total funding selected' %}: <span class="d-none loader"></span>
+                                <b class="d-block total-funding-display">0 FCFA</b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% csrf_token %}
+                    {% if investments.count == 0 %}
+                        {% translate 'You have no investments' %}
+                    {% else %}
+                        <table class="table rounded-table table-striped" style="width: 100%;">
+                            <thead>
+                                <th data-priority="1" class="align-middle border-top-left-corner"><input class="" id="checkbox-select-all" type="checkbox" checked></th>
+                                <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
+                                <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Source' %}</th>
+                                <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
+                                <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
+                                <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Canton' %}</th>
+                                <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
+                                <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
+                                <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
+                                <th data-priority="10" class="align-middle border-top-right-corner border-bottom-0">{% translate 'Population priority' %}</th>
+                            </thead>
+                        <tbody>
+                        {% for investment in object_list %}
+                        <tr>
+                            <td>
+                                <input class="project-table-check" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox" checked>
+                            </td>
+                            <td>{{ investment.title }}</td>
+                            <td>{{ investment.administrative_level.type }}</td>
+                            <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
+                                {{ investment.estimated_cost|intcomma }} FCFA
+                            </td>
+                            <td>
+                                <a href="{% url 'administrativelevels:village_detail' investment.administrative_level.id %}" target="_blank">
+                                    {{ investment.administrative_level.name }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'administrativelevels:detail' investment.administrative_level.parent.id %}" target="_blank">
+                                    {{ investment.administrative_level.parent.name }}
+                                </a>
+                            </td>
+                            <td>{{ investment.administrative_level.parent.parent.name }}</td>
+                            <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
+                            <td>{{ investment.ranking }}</td>
+                            <td>
+                                {% if investment.endorsed_by_youth %}
+                                    J{% if investment.endorsed_by_women or investment.endorsed_by_agriculturist or investment.endorsed_by_pastoralist %},{% endif %}
+                                {% endif %}
+                                {% if investment.endorsed_by_women %}
+                                    F{% if investment.endorsed_by_agriculturist or investment.endorsed_by_pastoralist %},{% endif %}
+                                {% endif %}
+                                {% if investment.endorsed_by_agriculturist %}
+                                    AG{% if investment.endorsed_by_pastoralist %},{% endif %}
+                                {% endif %}
+                                {% if investment.endorsed_by_pastoralist %}
+                                    ME
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+
+                    <input type="hidden" name="all_queryset" class="checkbox-select-all-monitor" value="true">
+                    <input type="hidden" name="investments" class="inv-list" value="">
+                    <input type="hidden" name="cart-submitted" value="true">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script src="{% static 'js/numeral.min.js' %}"></script>
+<script type="text/javascript">
+
+    let investments_list = [];
+    let table = $(".table").DataTable({{ datatable_config | safe }});
+
+    function sum_subprojects() {
+        let base_url = window.location.href.split('?')[0]
+        let loader = $('.loader');
+
+        $.ajax({
+            type: "POST",
+            url: base_url + "ajax/datatable/results/?{{ selected_investments_data_querystring }}",
+            data: {
+                all_queryset: $('.checkbox-select-all-monitor').val(),
+                selected_ids: $('.inv-list').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            beforeSend: function() {
+                loader.removeClass('d-none');
+                loader.addClass('d-inline-block');
+            },
+            success: function(response) {
+                $('.total-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
+                $('.total-villages-display').html(numeral(response.total_villages_display).format('0,0'));
+                $('.total-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
+
+                loader.removeClass('d-inline-block');
+                loader.addClass('d-none');
+            }
+        })
+    }
+
+    $( document ).ready(function() {
+
+        sum_subprojects();
+
+        $('.column-switch').on('change', function (e) {
+
+            // Get the column API object
+            var column = table.column($(this).attr('data-column'));
+
+            // Toggle the visibility
+            column.visible(!column.visible());
+        });
+
+        $('.submit-reset').on('click', function() {
+            $('#reset-hidden-id').attr('value', 'true');
+            $('#filter-form').submit();
+        });
+
+        $('.adm-submit-reset').on('click', function() {
+            $('#adm-reset-hidden-id').attr('value', 'true');
+            $('#adm-filter-form').submit();
+        });
+
+        $('#region-select-id').on('change', function(){
+            change_adm_levels_selects(
+                $(this), $('#prefecture-select-id'),
+                [$('#commune-select-id'), $('#canton-select-id'), $('#village-select-id')]
+            )
+        });
+
+        $('#prefecture-select-id').on('change', function(){
+            change_adm_levels_selects(
+                $(this), $('#commune-select-id'),
+                [$('#canton-select-id'), $('#village-select-id')]
+            )
+        });
+
+        $('#commune-select-id').on('change', function(){
+            change_adm_levels_selects(
+                $(this), $('#canton-select-id'),
+                [$('#village-select-id')]
+            )
+        });
+
+        $('#canton-select-id').on('change', function(){
+            change_adm_levels_selects($(this), $('#village-select-id'), [])
+        });
+
+        $('#category-select-id').on('change', function(){
+            change_sectors_selects($(this), $('#sector-select-id'), [])
+        });
+
+        function change_adm_levels_selects(select_input, select_to_fill, other_selects){
+            let selected_value = select_input.find(":selected").val();
+
+            if (selected_value != '') {
+                let base_url = window.location.href.split('?')[0]
+                $.ajax({
+                    type : "POST",
+                    url: base_url + "ajax/adm-levels",
+                    data: {
+                      value: selected_value,
+                      csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function(response){
+                        select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                        response.values.forEach((element) => {
+                            select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                        })
+                    }
+                });
+                select_to_fill.prop('disabled', false);
+            }
+            else {
+                select_to_fill.prop('disabled', 'disabled');
+                select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+            }
+            other_selects.forEach((select) => {
+                select.prop('disabled', 'disabled');
+                select.html("<option selected value=''>" + select.attr('empty-option') + "</option>");
+            });
+        };
+
+        function change_sectors_selects(select_input, select_to_fill){
+            let selected_value = select_input.find(":selected").val();
+
+            if (selected_value != '') {
+                let base_url = window.location.href.split('?')[0]
+                $.ajax({
+                    type : "POST",
+                    url: base_url + "ajax/sectors",
+                    data: {
+                      value: selected_value,
+                      csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function(response){
+                        select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                        response.values.forEach((element) => {
+                            select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                        })
+                    }
+                });
+                select_to_fill.prop('disabled', false);
+            }
+            else {
+                select_to_fill.prop('disabled', 'disabled');
+                select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+            }
+        };
+    });
+
+    $(document).on('change', '.project-table-check', function() {
+        let inv_list = $('.inv-list');
+        let mod_check_value = $('.checkbox-select-all-monitor').val() === 'true';
+
+        if(!$(this).is(':checked')){
+            $('#checkbox-select-all').prop( "checked", false );
+        }
+
+        if ($(this).is(':checked') !== mod_check_value){
+            investments_list.push(this.value);
+        }else{
+            let investment_index = investments_list.indexOf(this.value);
+            if (investment_index !== -1){
+                investments_list.splice(investment_index, 1);
+            }
+        }
+        inv_list.val(investments_list.join('-'));
+        sum_subprojects()
+    });
+
+    $(document).on('change','#checkbox-select-all', function() {
+        let select_all_state = $(this).is(':checked');
+        let master_checkbox = $('.checkbox-select-all-monitor');
+
+        if(select_all_state){
+            $('.project-table-check').prop( "checked", true );
+        }else{
+            $('.project-table-check').prop( "checked", false );
+        }
+
+        $('.inv-list').val('');
+        investments_list = []
+        master_checkbox.val($(this).is(':checked'));
+
+        sum_subprojects();
+        let urlObj = new URL(table.ajax.url());
+        let params = new URLSearchParams(urlObj.search);
+        params.set('all_queryset', master_checkbox.val());
+        urlObj.search = params.toString();
+        table.ajax.url(urlObj.toString());
+        table.ajax.reload();
+    });
+
+</script>
+{% endblock %}

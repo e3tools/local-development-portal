@@ -1,0 +1,99 @@
+{% load static i18n custom_tags %}
+
+{% make_list "dashboard_subprojects" "dashboard_administrativelevels" "dashboard_indicators" as active_dashboard %}
+
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-light-primary soft-shadow sidebar-no-expand">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <a href="{% url 'investments:profile' %}" class="image">
+                {% if user.photo %}
+                    <img src="{{ user.photo.url }}" class="img-circle" alt="User Image"/>
+                {% else %}
+                    <img src="{% static 'images/default-avatar.jpg' %}" class="img-circle" alt="User Image"/>
+                {% endif %}
+            </a>
+            <div class="info">
+                {% if user.last_name != "" or user.first_name != "" %}
+                <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.first_name }} {{ user.last_name }}</a>
+                {% else %}
+                <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.username }}</a>
+                {% endif %}
+                <p class="email">{{ user.email | truncatechars:22 }}</p>
+                <p class="">{{ user|get_group_high }}</p>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            {% with request.resolver_match.url_name as url_name %}
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                <li class="nav-item">
+                    <a href="{% url 'investments:home_investments' %}"
+                       class="nav-link {% if url_name == 'home_investments' %}active{% endif %}">
+                        <i class="nav-icon fa fa-comments-dollar"></i>
+                        <p>{% translate "Investments" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a
+                        href="{% url 'administrativelevels:search' %}"
+                        {% comment %}href="{% url 'administrativelevels:list' %}"{% endcomment %}
+                       class="nav-link {% if url_name == 'search' %}active{% endif %}">
+                        <i class="nav-icon fa fa-home"></i>
+                        <p>{% translate "Locality profile" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'dashboard:dashboard_summary' %}"
+                        class="nav-link {% if url_name == 'dashboard_summary' %}active{% endif %}">
+                        <i class="nav-icon fa fa-tachometer"></i>
+                        <p>{% translate "Dashboard" %}</p>
+                    </a>
+                </li>
+                {% if not request.user.is_moderator %}
+                <li class="nav-item">
+                    <a href="{% url 'administrativelevels:projects' %}"
+                       class="nav-link {% if url_name == 'projects' %}active{% endif %}">
+                        <i class="nav-icon fas fa-project-diagram"></i>
+                        <p>{% translate "Project tracking" %}</p>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a href="{% url 'administrativelevels:attachments' %}?type=Photo"
+                       class="nav-link {% if url_name == 'attachments' %}active{% endif %}">
+                        <i class="nav-icon fa fa-images"></i>
+                        <p>{% translate "Gallery" %}</p>
+                    </a>
+                </li>
+                {% if not request.user.is_moderator %}
+                 <li class="nav-item">
+                    <a href="{% url 'investments:profile' %}"
+                       class="nav-link {% if url_name == 'profile' %}active{% endif %}">
+                        <i class="nav-icon fa fa-user"></i>
+                        <p>{% translate "User" %}</p>
+                    </a>
+                </li>
+                {% endif %}
+
+            </ul>
+            {% endwith %}
+        </nav>
+        <nav class="toogle-sidebar-button">
+            <ul class="nav nav-pills nav-sidebar flex-column">
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-widget="pushmenu">
+                        <i class="fa text-primary" ></i>
+                        <p>{% translate "Toggle Sidebar" %}</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

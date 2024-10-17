@@ -1,0 +1,150 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div >
+                <div class="row">
+                    <div class="col-5" class="input-group mb-3 search-bar">
+                        <div method="get" class="d-flex">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <input class="form-control" id="search" placeholder="{% translate 'Search in table' %}...">
+                        </div>
+                    </div>
+                    <div class="col-6" class="input-group mb-3 search-bar">
+                        <form method="get" class="d-flex">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            </div>
+                            <input class="form-control" name="search" placeholder="{% translate 'Search in database' %}..." 
+                                {% if search %}value="{{ search }}"{% endif %} >
+                            <input class="btn btn-primary" type="submit" value="{% translate 'Search' %}">
+                        </form>
+                    </div>
+                    <div class="col-1" class="input-group mb-3 search-bar">
+                        <form method="get" class="d-flex">
+                            <input type="hidden" name="search" value="All">
+                            <input class="btn btn-primary" type="submit" value="{% translate 'All' %}">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        {% if user.is_superuser or user|has_group:"Admin" %}
+                        <div class="btn-group pull-left">
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_unit_create' %}">{% translate 'Create geographical unit' %}</a>
+                        </div>
+                        {% endif %}
+                        <div class="btn-group pull-right">
+                            {% if user.is_superuser or user|has_group:"Admin" %}
+                                <a class="btn btn-primary" href="{% url 'administrativelevels:cvd_create' %}">{% translate 'Create CVD' %}</a>
+                                <div> &nbsp; &nbsp; </div>
+                            {% endif %}
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:cvds_list' %}">{% translate 'CVD list' %}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive">
+                    <table id="table" class="table">
+                        <thead>
+                        <tr>
+                            <th>{% translate 'Name' %}</th>
+                            <th>{% translate 'Code' %}</th>
+                            <th>{% translate 'Canton' %}</th>
+                            <th>{% translate 'Commune' %}</th>
+                            <th>{% translate 'Prefecture' %}</th>
+                            <th>{% translate 'Region' %}</th>
+                            <th>{% translate 'Action' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for geographicalunit in geographicalunits %}
+                            <tr>
+                                <td>{{ geographicalunit.get_name }}</td>
+                                <td>{{ geographicalunit.unique_code }}</td>
+                                <td>{{ geographicalunit.canton.name }}</td>
+                                <td>{{ geographicalunit.canton.parent.name }}</td>
+                                <td>{{ geographicalunit.canton.parent.parent.name }}</td>
+                                <td>{{ geographicalunit.canton.parent.parent.parent.name }}</td>
+                                <td>
+                                     <a href="{% url 'administrativelevels:geographical_unit_detail' geographicalunit.pk %}"
+                                       class="btn btn-primary btn-xs" title="{% translate 'View details' %}">
+                                        <span class="_mobile"><i class="fa fa-eye"></i></span>
+                                    </a>
+                                    {% if user.is_superuser or user|has_group:"Admin" %}
+                                    <a href="{% url 'administrativelevels:geographical_unit_update' geographicalunit.pk %}"
+                                       class="btn btn-primary btn-xs" title="{% translate 'Edit' %}">
+                                        <span class="_mobile"><i class="fa fa-edit"></i></span>
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            {% if geographicalunits.has_previous %}
+                                <li>
+                                    <a class="page-link" href="?page={{ geographicalunits.previous_page_number }}">
+                                        <i class="fa fa-arrow-left text-bold"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="page-item">
+                                <p class="page-link text-bold">
+                                    {% translate 'Page' %} {{ geographicalunits.number }} {% translate 'of' %} {{ geographicalunits.paginator.num_pages }}
+                                </p>
+                            </li>
+                            {% if geographicalunits.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ geographicalunits.next_page_number }}">
+                                        <i class="fa fa-arrow-right text-bold"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+
+            let table = $('#table').DataTable({
+                language: {
+                    url: '{% static 'AdminLTE/plugins/datatables/locale/lang.json' %}'.replace('lang', '{{ lang }}')
+                },
+                dom: "ltipr",
+                columnDefs: [
+                    {
+                        targets: 1,
+                        orderable: false,
+                        searchable: false,
+                    }
+                ],
+                lengthMenu: [10, 50, 100],
+                pageLength: 10,
+                order: [[0, 'desc']]
+            });
+            $('#search').on('keyup', function () {
+                table.search($(this).val()).draw();
+            });
+        });
+    </script>
+{% endblock %}

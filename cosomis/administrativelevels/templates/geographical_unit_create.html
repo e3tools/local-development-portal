@@ -1,0 +1,145 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12">
+                        <div class="btn-group pull-left">
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:geographical_units_list' %}">{% translate 'Geographical units' %}</a>
+                        </div>
+                        <div class="btn-group pull-right">
+                            {% if user.is_superuser or user|has_group:"Admin" %}
+                                <a class="btn btn-primary" href="{% url 'administrativelevels:cvd_create' %}">{% translate 'Create CVD' %}</a>
+                                <div> &nbsp; &nbsp; </div>
+                            {% endif %}
+                            <a class="btn btn-primary" href="{% url 'administrativelevels:cvds_list' %}">{% translate 'CVD list' %}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-8">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                {% if form.errors %}
+                                    <div class="alert alert-danger alert-sm form_alert">{{ form.errors }}</div>
+                                {% endif %}
+                                
+                                {% for field in form %}
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                        <div class="col-sm-9">
+                                            {{ field }}
+                                        </div>
+                                        {% if field.errors %}
+                                            <div class="alert alert-danger alert-sm form_alert">{{ field.errors }}</div>
+                                        {% endif %}
+                                        <div class="clearfix"></div>
+                                    </div>
+                                {% endfor %}
+                                 
+                                <button type="submit" class="btn btn-primary float-right" >{% translate 'Submit' %}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        function set_datas(element, data){
+            $(element).next().find('b[role="presentation"]').hide();
+            $(element).next().find('.select2-selection__arrow').append(
+                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+
+            let options = '';
+            $.each(data, function (index, value) {
+                let option = '<option value="' + value.id + '">';
+                
+                option += value.name + '</option>';
+                options += option
+
+            });
+
+            element.html(options);
+            element.trigger('change');
+            let element_val = element.val();
+            if (element_val !== '') {
+                element.val(element_val)
+            }
+        }
+
+        $(document).ready(function () {
+            {% get_current_language as lang %}
+            let child = $("#id_villages");
+            let geographical_unit_id = null;
+            
+            {% if object or geographicalunit %}
+            geographical_unit_id = "{{ object.id }}";
+            {% else %}
+            child.html('');
+            {% endif %}
+
+            $(document).on("change", "#id_canton", function () {
+                $(this).attr('disabled', true);
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'administrativelevels:utils:get_choices_for_next_administrative_level' %}",
+                    data: {
+                        parent_id: $(this).val(),
+                        geographical_unit_id: geographical_unit_id
+                    },
+                    success: function (data) {
+                        if (data.length > 0) {
+                            set_datas(child, data);
+                            {% comment %} $(child).next().find('b[role="presentation"]').hide();
+                            $(child).next().find('.select2-selection__arrow').append(
+                                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+
+                            let options = '';
+                            $.each(data, function (index, value) {
+                                let administrative_id = value.id;
+                                let option = '<option id="' + administrative_id + '" value="' + value.id + '">';
+                                
+                                option += value.name + '</option>';
+                                options += option
+
+                            });
+                            child.html(options);
+                            child.trigger('change');
+                            let child_val = child.val();
+                            if (child_val !== '') {
+                                child.val(child_val)
+                            } {% endcomment %}
+                        }
+                    },
+                    error: function (data) {
+                        alert(error_server_message + "Error " + data.status);
+                        $("#id_canton").attr('disabled', false);
+                    }
+                }).done(function () {
+                        $("#id_canton").attr('disabled', false);
+                    }
+                );
+
+
+
+
+
+
+            });
+            
+        });
+    </script>
+{% endblock %}
