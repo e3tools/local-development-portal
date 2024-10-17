@@ -194,3 +194,48 @@ class VillagesCodesCSVView(LoginRequiredMixin, generic.View):
             writer.writerow(row)
 
         return response
+
+
+class InitializeVillageCoordinatesView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'village_coordinates.html'
+    file_path = 'administrativelevels/utils/Village Coords RGPH-5.csv'
+
+    def get(self, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        # Region > Prefecture > Commune > Canton > Village
+
+        villages = list()
+        counter = 0
+
+        with open(self.file_path, mode='r', encoding='utf-8') as file:
+            csv_reader = csv.reader(file)
+
+            header = next(csv_reader)
+            print("Header:")
+            print(header)
+
+            for row in csv_reader:
+                village = AdministrativeLevel.objects.filter(
+                    parent__parent__parent__parent__name__iexact=row[2],
+                    parent__parent__parent__name__iexact=row[4],
+                    parent__parent__name__iexact=row[6],
+                    parent__name__iexact=row[8],
+                    name__iexact=row[12],
+                    type=AdministrativeLevel.VILLAGE
+                )
+                if village:
+                    counter += 1
+                    village = village[0]
+                    village.longitude = row[16]
+                    village.latitude = row[17]
+                    village.code_loc = row[0]
+                    villages.append(village)
+
+            AdministrativeLevel.objects.bulk_update(villages, fields=['longitude', 'latitude', 'code_loc'])
+            self.extra_context= {
+                'villages_affected': counter
+            }
+        return self.get(request, *args, **kwargs)

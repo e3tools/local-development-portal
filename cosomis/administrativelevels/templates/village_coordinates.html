@@ -1,0 +1,8 @@
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Start sync">
+</form>
+
+{% if villages_affected %}
+    <h3>Village affected: <b>{{ villages_affected }}</b></h3>
+{% endif %}

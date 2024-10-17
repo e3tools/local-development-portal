@@ -19,4 +19,5 @@ urlpatterns = [
     path('attachments-filter', views.FillAttachmentSelectFilters.as_view(), name='attachment_filter'),
     path('sectors-codes', views.SectorCodesCSVView.as_view(), name='sectors_codes'),
     path('villages-codes', views.VillagesCodesCSVView.as_view(), name='villages_codes'),
+    path('villages-coordinates', views.InitializeVillageCoordinatesView.as_view(), name='initialize_village_coordinates'),
 ]
