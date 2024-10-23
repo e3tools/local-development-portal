@@ -21,3 +21,7 @@ cosomis/cosomis/*.env
 *.db
 
 .idea/
+
+cosomis/AWSCLIV2.pkg
+
+cosomis/coso_subprojects.xlsx
