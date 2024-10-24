@@ -1,4 +1,5 @@
 import csv
+import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Subquery
 from django.views import generic
@@ -202,6 +203,7 @@ class InitializeVillageCoordinatesView(LoginRequiredMixin, generic.TemplateView)
 
     def get(self, *args, **kwargs):
         context = self.get_context_data(**kwargs)
+        self.create_json()
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
@@ -239,3 +241,209 @@ class InitializeVillageCoordinatesView(LoginRequiredMixin, generic.TemplateView)
                 'villages_affected': counter
             }
         return self.get(request, *args, **kwargs)
+
+    def create_json(self):
+        """
+        [2] REGION
+        [4] PREFECTURE
+        [6] COMMUNE
+        [8] CANTON/QUARTIER
+        [12] VILLAGE/QUARTIER
+        [16] LONGITUDE
+        [17] LATITUDE
+        """
+        # Region > Prefecture > Commune > Canton > Village
+
+        data = {'regions': []}
+
+        with open(self.file_path, mode='r', encoding='utf-8') as file:
+            csv_reader = csv.reader(file)
+
+            header = next(csv_reader)
+            print("Header:")
+            print(header)
+
+            for row in csv_reader:
+                region_flag = False
+                for region in data['regions']:
+                    if row[2] == region['name']:
+                        region_flag = True
+                        region_node = region
+                if not region_flag:
+                    region_node = {
+                        'name': row[2],
+                        'bd_id': None,
+                        'is_in_file': True,
+                        'type': AdministrativeLevel.REGION,
+                        'children': [],
+                    }
+                    data['regions'].append(region_node)
+
+                prefecture_flag = False
+                for prefecture in region_node['children']:
+                    if row[4] == prefecture['name']:
+                        prefecture_flag = True
+                        prefecture_node = prefecture
+                if not prefecture_flag:
+                    prefecture_node = {
+                        'name': row[4],
+                        'bd_id': None,
+                        'is_in_file': True,
+                        'type': AdministrativeLevel.PREFECTURE,
+                        'children': [],
+                    }
+                    region_node['children'].append(prefecture_node)
+
+                commune_flag = False
+                for commune in prefecture_node['children']:
+                    if row[6] == commune['name']:
+                        commune_flag = True
+                        commune_node = commune
+                if not commune_flag:
+                    commune_node = {
+                        'name': row[6],
+                        'bd_id': None,
+                        'is_in_file': True,
+                        'type': AdministrativeLevel.COMMUNE,
+                        'children': [],
+                    }
+                    prefecture_node['children'].append(commune_node)
+
+                canton_flag = False
+                for canton in commune_node['children']:
+                    if row[8] == canton['name']:
+                        canton_flag = True
+                        canton_node = canton
+                if not canton_flag:
+                    canton_node = {
+                        'name': row[8],
+                        'bd_id': None,
+                        'is_in_file': True,
+                        'type': AdministrativeLevel.CANTON,
+                        'children': [],
+                    }
+                    commune_node['children'].append(canton_node)
+
+                village_flag = False
+                for village in commune_node['children']:
+                    if row[12] == village['name']:
+                        village_flag = True
+                        village_node = village
+                if not village_flag:
+                    village_node = {
+                        'name': row[12],
+                        'bd_id': None,
+                        'is_in_file': True,
+                        'type': AdministrativeLevel.VILLAGE,
+                    }
+                    canton_node['children'].append(village_node)
+
+
+        region_qs = AdministrativeLevel.objects.filter(type=AdministrativeLevel.REGION)
+        for region in region_qs:
+            bd_region_flag = False
+            for json_region in data['regions']:
+                if region.name == json_region['name']:
+                    bd_region_flag = True
+                    json_region['bd_id'] = region.id
+
+                    prefecture_qs = region.children.all()
+                    for prefecture in prefecture_qs:
+                        bd_prefecture_flag = False
+                        for json_prefecture in json_region['children']:
+                            if prefecture.name == json_prefecture['name']:
+                                bd_prefecture_flag = True
+                                json_prefecture['bd_id'] = prefecture.id
+
+                                commune_qs = prefecture.children.all()
+                                for commune in commune_qs:
+                                    bd_commune_flag = False
+                                    for json_commune in json_prefecture['children']:
+                                        if commune.name == json_commune['name']:
+                                            bd_commune_flag = True
+                                            json_commune['bd_id'] = commune.id
+
+                                            canton_qs = commune.children.all()
+                                            for canton in canton_qs:
+                                                bd_canton_flag = False
+                                                for json_canton in json_commune['children']:
+                                                    if canton.name == json_canton['name']:
+                                                        bd_canton_flag = True
+                                                        json_canton['bd_id'] = canton.id
+
+                                                        village_qs = canton.children.all()
+                                                        for village in village_qs:
+                                                            db_bd_village_flag = False
+                                                            for json_village in json_canton['children']:
+                                                                if village.name == json_village['name']:
+                                                                    db_bd_village_flag = True
+                                                                    json_village['bd_id'] = village.id
+
+                                                            if db_bd_village_flag:
+                                                                village_node = {
+                                                                    'name': village.name,
+                                                                    'bd_id': village.id,
+                                                                    'is_in_file': False,
+                                                                    'type': AdministrativeLevel.VILLAGE,
+                                                                }
+                                                                json_commune['children'].append(village_node)
+
+                                                if not bd_canton_flag:
+                                                    canton_node = {
+                                                        'name': canton.name,
+                                                        'bd_id': canton.id,
+                                                        'is_in_file': False,
+                                                        'type': AdministrativeLevel.CANTON,
+                                                        'children': self.map_children(canton),
+                                                    }
+                                                    json_commune['children'].append(canton_node)
+                                    if not bd_commune_flag:
+                                        commune_node = {
+                                            'name': commune.name,
+                                            'bd_id': commune.id,
+                                            'is_in_file': False,
+                                            'type': AdministrativeLevel.COMMUNE,
+                                            'children': self.map_children(commune),
+                                        }
+                                        json_prefecture['children'].append(commune_node)
+                        if not bd_prefecture_flag:
+                            prefecture_node = {
+                                'name': prefecture.name,
+                                'bd_id': prefecture.id,
+                                'is_in_file': False,
+                                'type': AdministrativeLevel.PREFECTURE,
+                                'children': self.map_children(prefecture),
+                            }
+                            json_region['children'].append(prefecture_node)
+            if not bd_region_flag:
+                region_node = {
+                    'name': region.name,
+                    'bd_id': region.id,
+                    'is_in_file': False,
+                    'type': AdministrativeLevel.REGION,
+                    'children': self.map_children(region),
+                }
+                data['regions'].append(region_node)
+
+
+        with open('administrativelevels/utils/congruence.json', 'w', encoding='utf-8') as json_file:
+            json.dump(data, json_file, ensure_ascii=False, indent=4)
+
+        return
+
+    def map_children(self, parent):
+        if parent.type != AdministrativeLevel.CANTON:
+            return [{
+                'name': node.name,
+                'bd_id': node.id,
+                'is_in_file': False,
+                'type': node.type,
+                'children': self.map_children(node),
+            } for node in parent.children.all()]
+        else:
+            return [{
+                'name': node.name,
+                'bd_id': node.id,
+                'is_in_file': False,
+                'type': node.type,
+            } for node in parent.children.all()]
