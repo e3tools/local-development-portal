@@ -222,7 +222,8 @@ class StatisticsView(View):
         total_subprojects = investments.exclude(funded_by=None).count()
         subprojects = investments.filter(investment_status=Investment.SUBPROJECT)
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
-
+        total_funded_priorities = investments.filter(investment_status=Investment.PRIORITY, funded_by__isnull=False).count()
+        total_unfunded_priorities = investments.filter(investment_status=Investment.PRIORITY,funded_by__isnull=True).count()
         # Subprojects by sector and minority groups
         minority_groups = [
             'endorsed_by_youth',
@@ -284,7 +285,9 @@ class StatisticsView(View):
             'subprojects_by_sector_and_group': {
                 group: list(subprojects_by_sector_and_group[group]) for group in minority_groups
             },
-            'subprojects': filtered_subprojects  # Use the filtered subprojects without NaN
+            'subprojects': filtered_subprojects,  # Use the filtered subprojects without NaN
+            'total_funded_priorities': total_funded_priorities,
+            'total_unfunded_priorities': total_unfunded_priorities,
         }
 
         return JsonResponse(data)

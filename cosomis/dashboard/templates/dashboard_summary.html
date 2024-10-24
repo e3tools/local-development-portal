@@ -186,6 +186,18 @@
                         <h2 class="card-text mx-5 mb-3" id="total-completed-infrastructure" style="position: absolute; bottom: 10px; right: 10px; font-size: 30px;">0</h2>
                     </div>
                 </div>
+                <div class="card count-card flex-fill mb-3" style="position: relative;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <h6 class="card-title py-0">{% translate 'Total Funded / Unfunded Investments' %}</h6>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <canvas id="fundedPrioritiesChart" class="bar"></canvas>
+                            </div>
+                        </div>
+                      </div>
+                </div>
             </div>
 
             <div class="col-md-5 d-flex flex-column">
@@ -548,6 +560,7 @@
                 this.map = map;
                 this.totalInvestmentsElement = $('#total-investments');
                 this.totalSubprojectsElement = $('#total-subprojects');
+                this.totalFundedPrioritiesElement = $('#total-funded-priorities');
                 this.totalCompletedInfrastructureElement = $('#total-completed-infrastructure');
                 this.typeSelect = $('#type-select-id');
                 this.prioritiesChart = null;
@@ -557,6 +570,7 @@
                     'endorsed_by_youth': {chart: null, legendId: 'youthLegend', canvasId: 'youthChart', noDataMessageId: 'noDataMessageYouth'},
                     'endorsed_by_pastoralist': {chart: null, legendId: 'ethnicMinoritiesLegend', canvasId: 'ethnicMinoritiesChart', noDataMessageId: 'noDataMessageEthnicMinorities'}
                 };
+                this.fundedPrioritiesChart = null;
             }
 
             fetchAndDisplayStatistics() {
@@ -574,9 +588,16 @@
                         // Update DOM elements with data
                         this.totalInvestmentsElement.text(data.total_investments);
                         this.totalSubprojectsElement.text(data.total_subprojects + '/' + data.total_investments);
+                        this.totalFundedPrioritiesElement.text(data.total_funded_priorities + '/' + data.total_unfunded_priorities);
                         this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure + '/' + data.total_subprojects);
                         this.updatePrioritiesChart(data.sector_priorities);
                         this.updateMinorityCharts(data.subprojects_by_sector_and_group);
+                        this.updateFundedPriorityCharts(
+                          [
+                              {'sector__category__name': 'Funded', 'total': data.total_funded_priorities },
+                              { 'sector__category__name': 'Unfunded', 'total': data.total_unfunded_priorities}
+                          ]
+                        );
                         if (data.sector_types && data.sector_types.length > 0) {
                             // enable typeSelect and populate it with the fetched data
                             var current_value = this.typeSelect.val();
@@ -718,6 +739,51 @@
                     }
                 }
             }
+
+            updateFundedPriorityCharts(sectorPriorities) {
+                const labels = sectorPriorities.map(item => item.sector__category__name);
+                const data = sectorPriorities.map(item => item.total);
+
+                labels.forEach((label, index) => {
+                    if (!sectorColors[label]) {
+                        sectorColors[label] = getRandomColor();
+                    }
+                });
+
+                const backgroundColor = labels.map(label => sectorColors[label]);
+
+                const chartData = {
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColor
+                    }],
+                    labels: labels
+                };
+
+                 $('#fundedPrioritiesChart').show();
+                 $('#fundedPrioritiesLegend').hide();
+
+
+                 if (this.fundedPrioritiesChart) {
+                        this.fundedPrioritiesChart.data = chartData;
+                        this.fundedPrioritiesChart.update();
+                 } else {
+                        const ctx = document.getElementById('fundedPrioritiesChart').getContext('2d');
+                        this.fundedPrioritiesChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: chartData,
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    createLegend('fundedPrioritiesLegend', chartData, this);
+                }
+
         }
 
         function createLegend(legendId, data, statisticsComponent) {

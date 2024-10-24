@@ -2099,6 +2099,10 @@ msgstr "Total priorités sous-projets communautaires"
 msgid "Total Selected Sub-Projects"
 msgstr "Total sous-projets communautaires sélectionnés"
 
+#: dashboard/templates/dashboard_summary.html:196
+msgid "Total Funded / Unfunded Investments"
+msgstr "Total des investissements financés / non financés"
+
 #: dashboard/templates/dashboard_summary.html:184
 msgid "Completed Sub-Projects"
 msgstr "Sous-projets communautaires achevés"
