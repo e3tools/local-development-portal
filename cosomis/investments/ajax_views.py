@@ -222,8 +222,8 @@ class StatisticsView(View):
         total_subprojects = investments.exclude(funded_by=None).count()
         subprojects = investments.filter(investment_status=Investment.SUBPROJECT)
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
-        total_funded_priorities = investments.filter(investment_status=Investment.PRIORITY, project_status=Investment.FUNDED).count()
-        total_unfunded_priorities = investments.filter(investment_status=Investment.PRIORITY, project_status=Investment.FUNDED).count()
+        total_funded_priorities = investments.filter(investment_status=Investment.PRIORITY, funded_by__isnull=False).count()
+        total_unfunded_priorities = investments.filter(investment_status=Investment.PRIORITY,funded_by__isnull=True).count()
         # Subprojects by sector and minority groups
         minority_groups = [
             'endorsed_by_youth',
