@@ -67,6 +67,8 @@
                     {% endif %}
                     <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
                 </form>
+                {% else %}
+                    {% translate "Is funded" %}
                 {% endif %}
             </td>
         </tr>
