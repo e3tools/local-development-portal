@@ -85,6 +85,8 @@
                                         {% translate 'Rejected' %}
                                         {% elif package.status == package.UNDER_EXECUTION %}
                                         {% translate 'Under Execution' %}
+                                        {% elif package.status == package.PARTIALLY_APPROVED %}
+                                        {% translate 'Partially Approve' %}
                                         {% endif %}
                                     </td>
                                     <td>
