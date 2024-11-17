@@ -69,6 +69,7 @@ def update_or_create_priorities_document(priorities_document):
                             financial_implementation_rate=0,
                             physical_execution_rate=0,
                             administrative_level=administrative_level,
+                            start_date=priorities_document['form_response'][0]['dateDeLaReunion']
                             # beneficiaries= priority.get("nombreEstimeDeBeneficiaires"),
                         )
                 except Exception as e:
