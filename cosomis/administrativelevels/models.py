@@ -72,7 +72,7 @@ class AdministrativeLevel(BaseModel):
     population_minorities = models.IntegerField(default=0)
     main_languages = models.CharField(max_length=50, blank=True, null=True)
     identified_priority = models.DateField(null=True, blank=True)
-
+    facilitator = models.CharField(max_length=50, blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
