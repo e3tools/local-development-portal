@@ -275,6 +275,7 @@ class Project(BaseModel):
     end_date = models.DateField(null=True, blank=True)
     total_amount = models.PositiveBigIntegerField(default=0)
     sector = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    collaborators = models.TextField(null=True, blank=True, max_length=100)
 
 
 class Phase(BaseModel):

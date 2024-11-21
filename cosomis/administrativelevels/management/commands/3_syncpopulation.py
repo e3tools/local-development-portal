@@ -1,8 +1,5 @@
-from django.core.management.base import BaseCommand, CommandError
-import time
+from django.core.management.base import BaseCommand
 from no_sql_client import NoSQLClient
-from cloudant.result import Result
-from cloudant.document import Document
 from administrativelevels.models import AdministrativeLevel
 
 class Command(BaseCommand):
@@ -95,6 +92,7 @@ def extract_population_data(form_response):
             extracted_population_data["total_population"] = entry["population"].get("populationTotaleDuVillage", 0)
             extracted_population_data["population_men"] = entry["population"].get("populationNombreDeHommes", 0)
             extracted_population_data["population_women"] = entry["population"].get("populationNombreDeFemmes", 0)
+            extracted_population_data["population_minorities"] = entry["population"].get("populationEthniquesDansVillage", 0)
 
         elif "personnesVulnerables" in entry and entry["personnesVulnerables"] is not None:
             persons_vulnerable = entry["personnesVulnerables"]

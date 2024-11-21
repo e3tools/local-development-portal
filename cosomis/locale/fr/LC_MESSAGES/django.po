@@ -468,8 +468,8 @@ msgstr "Eleveurs"
 #: administrativelevels/templates/components/administrative_level_overview.html:86
 #: administrativelevels/templates/prefecture/prefecture_detail.html:58
 #: administrativelevels/templates/region/region_detail.html:58
-msgid "Minorities"
-msgstr "Minorités"
+msgid "Ethnic groups"
+msgstr "Groupes ethniques"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:64
 #: administrativelevels/templates/canton/canton_detail.html:63
@@ -3103,3 +3103,6 @@ msgstr "Jeunes"
 
 msgid "Agriculturist"
 msgstr "Agriculteurs"
+
+msgid "Collaborator"
+msgstr "Collaborateurs"
