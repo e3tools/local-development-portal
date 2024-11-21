@@ -238,6 +238,19 @@ class StatisticsView(View):
         total_completed_infrastructure = investments.filter(project_status=Investment.COMPLETED).count()
         total_funded_priorities = investments.filter(investment_status=Investment.PRIORITY, funded_by__isnull=False).count()
         total_unfunded_priorities = investments.filter(investment_status=Investment.PRIORITY,funded_by__isnull=True).count()
+
+        # Calcul du montant total des priorités financées
+        total_amount_funding = investments.filter(
+            investment_status=Investment.PRIORITY,
+            funded_by__isnull=False
+        ).aggregate(total_funding=Sum('estimated_cost'))['total_funding'] or 0
+
+        # Calcul du montant total des priorités non financées
+        total_amount_unfunding = investments.filter(
+            investment_status=Investment.PRIORITY,
+            funded_by__isnull=True
+        ).aggregate(total_unfunding=Sum('estimated_cost'))['total_unfunding'] or 0
+
         # Subprojects by sector and minority groups
         minority_groups = [
             'endorsed_by_youth',
@@ -303,6 +316,8 @@ class StatisticsView(View):
             'subprojects': filtered_subprojects,  # Use the filtered subprojects without NaN
             'total_funded_priorities': total_funded_priorities,
             'total_unfunded_priorities': total_unfunded_priorities,
+            'total_amount_funding': total_amount_funding,  # Montant total financé
+            'total_amount_unfunding': total_amount_unfunding,  # Montant total non financé
         }
 
         return JsonResponse(data)

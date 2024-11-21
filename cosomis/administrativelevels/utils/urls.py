@@ -17,7 +17,7 @@ urlpatterns = [
          name='get_ancestor_administrative_levels'),
     path('task-detail/<int:pk>', views.TaskDetailAjaxView.as_view(), name='task_detail'),
     path('attachments-filter', views.FillAttachmentSelectFilters.as_view(), name='attachment_filter'),
-    path('sectors-codes', views.SectorCodesCSVView.as_view(), name='sectors_codes'),
-    path('villages-codes', views.VillagesCodesCSVView.as_view(), name='villages_codes'),
+    path('sectors-codes', views.SectorCodesXLSXView.as_view(), name='sectors_codes'),
+    path('villages-codes', views.VillagesCodesXLSXView.as_view(), name='villages_codes'),
     path('villages-coordinates', views.InitializeVillageCoordinatesView.as_view(), name='initialize_village_coordinates'),
 ]

@@ -259,9 +259,9 @@
             <form action="" method="POST" name="remove-investment-form" id="remove-investment-form-id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="clearPackageModal">
-                        {% translate 'Are you sure do you want to remove ' %}
-                        <span id="remove-investment-title-id"></span>
-                        {% translate ' from the package?' %}
+                        {% translate 'Are you sure do you want to remove : ' %} <<
+                        <span id="remove-investment-title-id"></span> >>
+                        {% translate ' from the package ?' %}
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -271,7 +271,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="remove-from-cart" value="">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
-                    <input type="submit" class="btn btn-danger" name="clear-package-submit" value="{% translate 'Remove Investment' %}">
+                    <input type="submit" class="btn btn-danger" name="clear-package-submit" value="{% translate 'Remove investment' %}">
                 </div>
             </form>
         </div>

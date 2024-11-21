@@ -276,6 +276,7 @@ class Project(BaseModel):
     total_amount = models.PositiveBigIntegerField(default=0)
     sector = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     collaborators = models.TextField(null=True, blank=True, max_length=100)
+    source_of_financing = models.CharField(_("Source of financing"),null=True, blank=True,max_length=100)
 
 
 class Phase(BaseModel):

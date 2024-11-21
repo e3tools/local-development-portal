@@ -689,8 +689,8 @@ class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
-
+        #return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
+        return reverse('administrativelevels:projects')
 
 class BulkUploadInvestmentsView(PageMixin, IsInvestorMixin, SingleObjectMixin, FormView):
     form_class = BulkUploadInvestmentsForm
