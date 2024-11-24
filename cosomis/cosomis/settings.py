@@ -55,7 +55,8 @@ CREATED_APPS = [
     'administrativelevels',
     'authentication',
     'investments',
-    'dashboard'
+    'dashboard',
+    'cdd_funnel',
 ]
 
 THIRD_PARTY_APPS = [

@@ -3109,3 +3109,9 @@ msgstr "Collaborateurs"
 
 msgid "Are you sure do you want to submit the package?"
 msgstr "Êtes-vous sûr de vouloir soumettre le package?"
+
+msgid "Villages with uncompleted tasks"
+msgstr "Villages avec des tâches inachevées"
+
+msgid "Uncompleted tasks"
+msgstr "Tâches inachevées"

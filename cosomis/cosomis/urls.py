@@ -41,6 +41,7 @@ urlpatterns += i18n_patterns(
     path('administrative-levels/', include('administrativelevels.urls')),
     path('investments/', include('investments.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('cdd-funnel/', include('cdd_funnel.urls')),
 )
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -80,6 +80,15 @@
                 </li>
                 {% endif %}
 
+                {% if request.user.is_staff %}
+                 <li class="nav-item">
+                    <a href="{% url 'cdd_funnel:main_funnel' %}"
+                       class="nav-link {% if url_name == 'main_funnel' %}active{% endif %}">
+                        <i class="nav-icon fa fa-funnel-dollar"></i>
+                        <p>{% translate "CDD Funnel" %}</p>
+                    </a>
+                </li>
+                {% endif %}
             </ul>
             {% endwith %}
         </nav>
