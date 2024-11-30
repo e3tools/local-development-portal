@@ -100,6 +100,7 @@ class TaskDetailAjaxView(generic.TemplateView):
                 'task': {
                     'form_response': task.form_responses,  # This is now a properly formatted JSON string or a dict
                     'form': task.form,  # This is now a properly formatted JSON string or a dict
+                    'attachments_ids': ','.join([str(attachment.id) for attachment in task.attachments.all()]),
                     'attachments': [{
                         "name": attachment.name,
                         "type": attachment.type,

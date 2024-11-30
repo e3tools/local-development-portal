@@ -939,7 +939,7 @@ def attachment_download_zip(self, adm_id: int):
     buffer = BytesIO()
     zip_file = zipfile.ZipFile(buffer, "w")
     for id in ids:
-        url = Attachment.objects.get(id=int(id)).url
+        url = Attachment.objects.get(id=int(id)).url.split("?")[0]
         response = requests.get(url)
         if response.status_code == 200:
             content_disposition = response.headers.get("content-disposition")

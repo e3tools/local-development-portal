@@ -147,6 +147,8 @@
         {% endwith %}
 
         {% if task.task.attachments %}
+        <a target="_blank" class="download" href="{% url 'administrativelevels:attachment_download_zip' adm_id=pk %}?ids={{ task.task.attachments_ids }}">{% translate 'Download all' %}</a>
+        <br>
         {% for attach in task.task.attachments %}
             <div class="form-group">
                 <label>{{ attach.name }}</label>
