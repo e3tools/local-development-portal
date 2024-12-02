@@ -88,6 +88,19 @@ class AdministrativeLevel(BaseModel):
     def __str__(self):
         return self.name
 
+    def get_current_task(self):
+        if self.type == self.VILLAGE:
+            phases = Phase.objects.filter(village=self).order_by('-order')
+            for phase in phases:
+                activities = phase.activities.all().order_by('-order')
+                for activity in activities:
+                    tasks = activity.tasks.all().order_by('-order')
+                    for task in tasks:
+                        if task.status == Task.COMPLETED:
+                            return task
+        else:
+            return None
+
     def get_list_priorities(self):
         """Method to get the list of the all priorities that the administrative is linked"""
         return self.villagepriority_set.get_queryset()

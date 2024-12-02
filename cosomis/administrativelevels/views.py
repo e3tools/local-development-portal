@@ -200,7 +200,7 @@ class AdministrativeLevelDetailView(
         context['development_plan'] = self._get_development_plan(context['phases'])
 
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
-        current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
+        current_task = admin_level.get_current_task()
         current_activity = current_task.activity if current_task else None
         current_phase = current_activity.phase if current_activity else None
 
