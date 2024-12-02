@@ -879,25 +879,30 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         queryset = super().get_queryset()
         empty_list = ["", None]
 
-        if "tasks" in self.request.GET and self.request.GET["tasks"] not in empty_list:
+        request_get = self.request.GET.copy()
+        for filter_hierarchy in self.filter_hierarchy:
+            if filter_hierarchy in request_get and request_get[filter_hierarchy] in [None, ""]:
+                request_get.pop(filter_hierarchy)
+
+        if "tasks" in request_get and request_get["tasks"] not in empty_list:
             queryset = queryset.filter(
-                task__id=self.request.GET["tasks"]
+                task__id=request_get["tasks"]
             )
-        elif "activities" in self.request.GET and self.request.GET["activities"] not in empty_list:
+        elif "activities" in request_get and request_get["activities"] not in empty_list:
             queryset = queryset.filter(
-                task__activity__id=self.request.GET["activities"]
+                task__activity__id=request_get["activities"]
             )
-        elif "phase" in self.request.GET and self.request.GET["phase"] not in empty_list:
+        elif "phase" in request_get and request_get["phase"] not in empty_list:
             queryset = queryset.filter(
-                task__activity__phase__name=self.request.GET["phase"]
+                task__activity__phase__name=request_get["phase"]
             )
         else:
             adm_lvls = [adm_name[0].lower() for adm_name in AdministrativeLevel.TYPE]
-            adm_list = [adm_type for adm_type in adm_lvls if adm_type in self.request.GET]
+            adm_list = [adm_type for adm_type in adm_lvls if adm_type in request_get]
             adm_type = adm_list[0] if adm_list else None
 
-            if adm_type and self.request.GET[adm_type] not in empty_list:
-                administrative_levels = AdministrativeLevel.objects.get(id=self.request.GET[adm_type])
+            if adm_type and request_get[adm_type] not in empty_list:
+                administrative_levels = AdministrativeLevel.objects.get(id=request_get[adm_type])
                 descendants = administrative_levels.get_all_descendants()
                 queryset = queryset.filter(adm__id__in=[decs.id for decs in descendants] + [administrative_levels.id])
 
