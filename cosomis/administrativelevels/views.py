@@ -226,9 +226,7 @@ class AdministrativeLevelDetailView(
             "first_image": images[0] if len(images) > 0 else None,
         }
 
-        context["investments"] = Investment.objects.filter(
-            administrative_level=admin_level.id
-        )
+        context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
         context['children_coordinates'] = self._get_villages_coordinates_from_administrative_level(self.object)
