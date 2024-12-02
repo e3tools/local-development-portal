@@ -330,6 +330,7 @@ class StatisticsView(View):
         ).values(
             'id',
             'title',
+            'administrative_level__id',
             'administrative_level__name',
             'latitude',
             'longitude',
