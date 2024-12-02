@@ -898,15 +898,15 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
             queryset = queryset.filter(
                 task__activity__phase__name=request_get["phase"]
             )
-        else:
-            adm_lvls = [adm_name[0].lower() for adm_name in AdministrativeLevel.TYPE]
-            adm_list = [adm_type for adm_type in adm_lvls if adm_type in request_get]
-            adm_type = adm_list[0] if adm_list else None
 
-            if adm_type and request_get[adm_type] not in empty_list:
-                administrative_levels = AdministrativeLevel.objects.get(id=request_get[adm_type])
-                descendants = administrative_levels.get_all_descendants()
-                queryset = queryset.filter(adm__id__in=[decs.id for decs in descendants] + [administrative_levels.id])
+        adm_lvls = [adm_name[0].lower() for adm_name in AdministrativeLevel.TYPE]
+        adm_list = [adm_type for adm_type in adm_lvls if adm_type in request_get]
+        adm_type = adm_list[0] if adm_list else None
+
+        if adm_type and request_get[adm_type] not in empty_list:
+            administrative_levels = AdministrativeLevel.objects.get(id=request_get[adm_type])
+            descendants = administrative_levels.get_all_descendants()
+            queryset = queryset.filter(adm__id__in=[decs.id for decs in descendants] + [administrative_levels.id])
 
         ordering = self.get_ordering()
         if ordering:
