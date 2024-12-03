@@ -1,3 +1,4 @@
+import json
 from django import template
 from django.utils.translation import gettext_lazy
 import json
@@ -232,6 +233,8 @@ def get_step_color(key):
 
 @register.filter
 def get_item(dictionary, key):
+    if isinstance(dictionary, str):
+        dictionary = json.loads(dictionary)
     try:
         return int(dictionary.get(key))
     except ValueError:

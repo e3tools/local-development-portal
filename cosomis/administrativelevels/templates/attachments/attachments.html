@@ -294,7 +294,7 @@
                                         <select class="form-control" name="phase" id="id_phase" style="width: 100%;">
                                             <option selected value="">---</option>
                                             {% for phase in phases %}
-                                                {% if 'phase' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.phase == phase %}
+                                                {% if 'phase' in filter_hierarchy_query_strings and filter_hierarchy_query_strings|get_item:'phase' == phase %}
                                                     <option value="{{ phase }}" selected>{{ phase }}</option>
                                                 {% else %}
                                                     <option value="{{ phase }}">{{ phase }}</option>

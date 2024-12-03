@@ -876,6 +876,7 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
             if key_filter in self.request.GET and self.request.GET[key_filter] not in ['', None]:
                 resp = _build_filter_hierarchy(idx, self.request.GET[key_filter])
                 return json.dumps(resp)
+        return {}
 
     def get_queryset(self):
         queryset = super().get_queryset()
