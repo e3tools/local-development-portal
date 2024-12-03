@@ -344,9 +344,9 @@
             let current_page = "{{ request.path }}";
             let query_string = {{ filter_hierarchy_query_strings|safe }};
             const filter_inputs = [$('#id_region'), $('#id_prefecture'), $('#id_commune'), $('#id_canton'), 
-                $('#id_village')]
+                $('#id_village')];
         
-            const development_inputs = [$('#id_phase'), $('#id_activity'), $('#id_task')]
+            const development_inputs = [$('#id_phase'), $('#id_activity'), $('#id_task')];
 
             $('input[type=checkbox]').click(function (event) {
                 if (event.stopPropagation) {
@@ -356,7 +356,8 @@
                 }
             });
             
-            init_change_filters_selects(0);
+            init_change_filters_selects(0, filter_inputs);
+            init_change_filters_selects(0, development_inputs);
             
             filter_inputs.forEach((input) => {
                 input.on('change', function(){
@@ -509,16 +510,16 @@
                 });
             }
             
-            function init_change_filters_selects(base_index){
+            function init_change_filters_selects(base_index, context_inputs){
                 let empty_option = new Option("---", "", false, false);
                 let base_url = "{% url 'administrativelevels:utils:attachment_filter' %}";
-                let current_select = filter_inputs[base_index]
-                let select_to_fill = filter_inputs[base_index + 1]
+                let current_select = context_inputs[base_index]
+                let select_to_fill = context_inputs[base_index + 1]
                 
                 if ( query_string.hasOwnProperty(current_select.attr('name')) && query_string[current_select.attr('name')] !== "" ){
                     let selected_value = query_string[current_select.attr('name')];
                     current_select.val(selected_value);
-                    if ( base_index === 0 ) {  // I don't know why us only needed on index 0
+                    if ( base_index === 0 ) {  // I don't know why is only needed on index 0
                         current_select.trigger('change');
                     }
                     
@@ -537,7 +538,7 @@
                                 select_to_fill.append(new Option(element.name, element.id, false, false));
                             });
                             select_to_fill.prop('disabled', false);
-                            return init_change_filters_selects(base_index + 1);
+                            return init_change_filters_selects(base_index + 1, context_inputs);
                         }
                     });
                 }

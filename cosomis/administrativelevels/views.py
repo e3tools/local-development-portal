@@ -868,8 +868,14 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
                 if hasattr(adm_lvl, "parent") and adm_lvl.parent is not None and len(self.filter_hierarchy) > index + 1:
                     resp[next_filter_level] = adm_lvl.parent.id
 
-            if len(self.filter_hierarchy) > index + 1 and 'village' in self.request.GET and self.request.GET['village'] is not None:
-                return _build_filter_hierarchy(index + 1, resp[next_filter_level])
+            while len(self.filter_hierarchy) > index + 1:
+                if self.filter_hierarchy[index + 1] in self.request.GET and self.request.GET[self.filter_hierarchy[index + 1]] != "":
+                    if self.filter_hierarchy[index + 1] in resp:
+                        return _build_filter_hierarchy(index + 1, resp[self.filter_hierarchy[index + 1]])
+                    else:
+                        return _build_filter_hierarchy(index + 1, self.request.GET[self.filter_hierarchy[index + 1]])
+                else:
+                    index += 1
             return resp
 
         for idx, key_filter in enumerate(self.filter_hierarchy):
