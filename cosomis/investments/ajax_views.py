@@ -67,15 +67,36 @@ class InvestmentModelViewSet(ModelViewSet):
                 project_amount = project.total_amount
                 project_id = project.id
             else:
-                project = None
                 project_amount = 0
                 project_id = None
         except:
-            project = None
             project_amount = 0
             project_id = None
 
         qs = qs.exclude(id__in=inv_ids) if request.data['all_queryset'] == 'true' else qs.filter(id__in=inv_ids)
+
+        return Response({
+            'total_funding_display': qs.aggregate(total_funding_display=Sum('estimated_cost'))['total_funding_display'] or 0,
+            'total_villages_display': qs.values('administrative_level').distinct().count(),
+            'total_subprojects_display': qs.count(),
+            'project_total_fund': project_amount,
+            'project_id': project_id,
+        })
+
+    @action(detail=False, methods=['POST'], url_path='total-results', url_name='total_results')
+    def total_investments_data(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        try:
+            if request.data['project_id']:
+                project = Project.objects.filter(id=request.data['project_id']).first()
+                project_amount = project.total_amount
+                project_id = project.id
+            else:
+                project_amount = 0
+                project_id = None
+        except:
+            project_amount = 0
+            project_id = None
 
         return Response({
             'total_funding_display': qs.aggregate(total_funding_display=Sum('estimated_cost'))['total_funding_display'] or 0,

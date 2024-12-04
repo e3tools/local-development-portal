@@ -591,18 +591,35 @@
                     </div>
                     <div class="row">
                         <div class="col-3">
-                            <p class="text-sm">{% translate '# Villages:' %} <span class="d-none loader"></span>
+                            <p class="text-sm">{% translate 'Total villages available' %}:
                                 <b class="d-block total-villages-display">0</b>
                             </p>
                         </div>
                         <div class="col-3">
-                            <p class="text-sm">{% translate '# Sub-projects' %}: <span class="d-none loader"></span>
+                            <p class="text-sm">{% translate 'Total sub-projects available' %}:
                                 <b class="d-block total-subprojects-display">0</b>
                             </p>
                         </div>
                         <div class="col-3">
-                            <p class="text-sm">{% translate 'Total funding selected' %}: <span class="d-none loader"></span>
+                            <p class="text-sm">{% translate 'Total funding required' %}:
                                 <b class="d-block total-funding-display">0 FCFA</b>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p class="text-sm">{% translate '# Villages selected' %}: <span class="d-none loader"></span>
+                                <b class="d-block total-selected-villages-display">0</b>
+                            </p>
+                        </div>
+                        <div class="col-3">
+                            <p class="text-sm">{% translate '# Sub-projects selected' %}: <span class="d-none loader"></span>
+                                <b class="d-block total-selected-subprojects-display">0</b>
+                            </p>
+                        </div>
+                        <div class="col-3">
+                            <p class="text-sm">{% translate 'Total funding selected' %}: <span class="d-none loader"></span>
+                                <b class="d-block total-selected-funding-display">0 FCFA</b>
                             </p>
                         </div>
                     </div>
@@ -614,7 +631,7 @@
                     {% else %}
                         <table class="table rounded-table table-striped" style="width: 100%;">
                             <thead>
-                                <th data-priority="1" class="align-middle border-top-left-corner"><input class="" id="checkbox-select-all" type="checkbox" checked></th>
+                                <th data-priority="1" class="align-middle border-top-left-corner"><input class="" id="checkbox-select-all" type="checkbox"></th>
                                 <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
                                 <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Source' %}</th>
                                 <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
@@ -629,7 +646,7 @@
                         {% for investment in object_list %}
                         <tr>
                             <td>
-                                <input class="project-table-check" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox" checked>
+                                <input class="project-table-check" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox">
                             </td>
                             <td>{{ investment.title }}</td>
                             <td>{{ investment.administrative_level.type }}</td>
@@ -669,7 +686,7 @@
                     </table>
                     {% endif %}
 
-                    <input type="hidden" name="all_queryset" class="checkbox-select-all-monitor" value="true">
+                    <input type="hidden" name="all_queryset" class="checkbox-select-all-monitor" value="false">
                     <input type="hidden" name="investments" class="inv-list" value="">
                     <input type="hidden" name="cart-submitted" value="true">
                 </div>
@@ -712,6 +729,34 @@
                 loader.addClass('d-inline-block');
             },
             success: function(response) {
+                $('.total-selected-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
+                $('.total-selected-villages-display').html(numeral(response.total_villages_display).format('0,0'));
+                $('.total-selected-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
+
+                loader.removeClass('d-inline-block');
+                loader.addClass('d-none');
+            }
+        })
+    }
+
+    function init_total_values() {
+        let base_url = window.location.href.split('?')[0]
+        let loader = $('.loader');
+
+        $.ajax({
+            type: "POST",
+            url: base_url + "ajax/datatable/total-results/?{{ selected_investments_data_querystring|safe }}",
+            data: {
+                all_queryset: $('.checkbox-select-all-monitor').val(),
+                selected_ids: $('.inv-list').val(),
+                project_id: $('#project-select-id').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            beforeSend: function() {
+                loader.removeClass('d-none');
+                loader.addClass('d-inline-block');
+            },
+            success: function(response) {
                 $('.total-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
                 $('.total-villages-display').html(numeral(response.total_villages_display).format('0,0'));
                 $('.total-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
@@ -724,6 +769,7 @@
 
     $( document ).ready(function() {
 
+        init_total_values();
         sum_subprojects();
 
         $('.column-switch').on('change', function (e) {
