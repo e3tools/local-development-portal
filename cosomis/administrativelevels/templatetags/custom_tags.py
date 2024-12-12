@@ -1,6 +1,7 @@
 from django import template
 from django.utils.translation import gettext_lazy
-import json
+from django.utils.safestring import mark_safe
+from django.shortcuts import reverse
 
 from administrativelevels.models import Project
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
@@ -424,3 +425,20 @@ def project_status_color(raw_status):
     if raw_status == Investment.COMPLETED:
         return "badge-success"
     return ""
+
+
+@register.filter(name="villageBreadcrumb")
+def village_breadcrumb(investment, top_administrative_level):
+
+    def _draw_village(administrative_level):
+        reverse_str = 'administrativelevels:{}_detail'.format(administrative_level.type.lower())
+        html_element_list = [
+            f"<a href=\"{reverse(reverse_str, kwargs={'pk': administrative_level.id})}\" target='_blank'>{administrative_level.name}</a>"
+        ]
+        if administrative_level.parent is not None and administrative_level.id != top_administrative_level.id:
+            html_element_list += _draw_village(administrative_level.parent)
+        return html_element_list
+
+    final_list = _draw_village(investment.administrative_level)
+    final_list.reverse()
+    return mark_safe('/'.join(final_list))

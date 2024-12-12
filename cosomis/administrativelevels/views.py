@@ -164,13 +164,10 @@ class AdministrativeLevelDetailView(
     PageMixin, LoginRequiredApproveRequiredMixin, DetailView
 ):
     """Class to present the detail page of one village"""
-
+    __investment_repository = DbInvestmentRepository()
     model = AdministrativeLevel
     template_name = "administrative_level/detail/index.html"
     active_level1 = "administrative_levels"
-
-    def __init__(self):
-        self.__investment_repository = DbInvestmentRepository()
 
     def post(self, request, *args, **kwargs):
         if 'cart-toggle' in request.POST:
@@ -227,8 +224,8 @@ class AdministrativeLevelDetailView(
         }
 
         context["investments"] = Investment.objects.filter(
-            administrative_level=admin_level.id
-        )
+            administrative_level__id__in=self._get_children_ids(admin_level)
+        ).order_by("ranking")
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
         context['children_coordinates'] = self._get_villages_coordinates_from_administrative_level(self.object)
@@ -286,6 +283,13 @@ class AdministrativeLevelDetailView(
             phase_node["status"] = activities_status
             phases.append(phase_node)
         return phases
+
+    def _get_children_ids(self, admin_level):
+        ids = [admin_level.id]
+        children = admin_level.children.all()
+        for child in children:
+            ids += self._get_children_ids(child)
+        return ids
 
     def _get_development_plan(self, phases):
         phase = next((phase for phase in phases if phase['order'] == 3), None)
