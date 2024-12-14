@@ -353,7 +353,7 @@
         $(document).ready(function () {
             
             let current_page = "{{ request.path }}";
-            let query_string = {{ filter_hierarchy_query_strings|safe }};
+            let query_string = "{{ filter_hierarchy_query_strings|safe }}";
             const filter_inputs = [$('#id_region'), $('#id_prefecture'), $('#id_commune'), $('#id_canton'), 
                 $('#id_village'), $('#id_phase'), $('#id_activity'), $('#id_task')]
 
