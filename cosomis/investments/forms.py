@@ -85,9 +85,10 @@ class PackageApprovalForm(forms.Form):
         package.save()
         package_funded_investments = PackageFundedInvestment.objects.filter(package_id=package.id)
         for package_item in package_funded_investments:
-            package_item.status = package.status
-            package_item.rejection_reason = package.rejection_reason
-            package_item.save()
+            if package_item.status == Package.PENDING_APPROVAL:
+                package_item.status = package.status
+                package_item.rejection_reason = package.rejection_reason
+                package_item.save()
 
 
 class UserApprovalForm(forms.Form):
