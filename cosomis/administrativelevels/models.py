@@ -73,6 +73,7 @@ class AdministrativeLevel(BaseModel):
     population_minorities = models.IntegerField(default=0)
     main_languages = models.CharField(max_length=50, blank=True, null=True)
     identified_priority = models.DateField(null=True, blank=True)
+    infrastructure = models.JSONField(null=True, blank=True)
 
     # climate properties
 

@@ -12,7 +12,7 @@ class AdministrativeLevelAdmin(admin.ModelAdmin):
                 "fields": ["name", "rank", "rural", "frontalier", "status_color", "status_description", "total_population",
                            "population_men", "population_women", "population_young", "population_elder",
                            "population_handicap", "population_agriculturist", "population_pastoralist",
-                           "population_minorities", "main_languages", "identified_priority"],
+                           "population_minorities", "main_languages", "identified_priority", "infrastructure"],
             },
         ),
         (

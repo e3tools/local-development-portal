@@ -170,6 +170,7 @@ class AdministrativeLevelDetailView(
     active_level1 = "administrative_levels"
 
     def __init__(self):
+        super().__init__()
         self.__investment_repository = DbInvestmentRepository()
 
     def post(self, request, *args, **kwargs):

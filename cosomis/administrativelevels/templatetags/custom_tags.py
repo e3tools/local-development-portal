@@ -10,6 +10,13 @@ from cosomis.utils import structure_the_words as utils_structure_the_words
 register = template.Library()
 
 
+@register.filter(name="humanize_snakecase")
+def humanize_snakecase(value):
+    resp = value.split('_')
+    resp = [val.capitalize() for val in resp]
+    return ' '.join(resp)
+
+
 @register.filter(name="imgAWSS3Filter")
 def img_aws_s3_filter(uri):
     return uri.split("?")[0]
