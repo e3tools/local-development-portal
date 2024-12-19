@@ -387,7 +387,14 @@
                     })
                     .setLngLat([subproject.longitude, subproject.latitude])
                     .setPopup(new mapboxgl.Popup({ offset: 20 }).setHTML(`
-                            <h3 class="popover-header">${subproject.administrative_level__name}</h3>
+                            <h3 class="popover-header">
+                                <a
+                                    href="${"{% url 'administrativelevels:village_detail' 0 %}".replace(0, subproject.administrative_level__id)}"
+                                    target="_blank"
+                                >
+                                ${subproject.administrative_level__name}
+                                </a>
+                            </h3>
                             <div class="popover-body">
                                <h6> <strong> {% translate 'Type of subproject' %}</strong> : ${subproject.sector__name}</h6>
                                <h6> <strong> {% translate 'Physical rate' %}</strong> : ${subproject.physical_execution_rate}%</h6>

@@ -200,7 +200,7 @@ class AdministrativeLevelDetailView(
         context['development_plan'] = self._get_development_plan(context['phases'])
 
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
-        current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
+        current_task = admin_level.get_current_task()
         current_activity = current_task.activity if current_task else None
         current_phase = current_activity.phase if current_activity else None
 
@@ -226,9 +226,7 @@ class AdministrativeLevelDetailView(
             "first_image": images[0] if len(images) > 0 else None,
         }
 
-        context["investments"] = Investment.objects.filter(
-            administrative_level=admin_level.id
-        )
+        context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
         context['children_coordinates'] = self._get_villages_coordinates_from_administrative_level(self.object)
@@ -881,27 +879,32 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         queryset = super().get_queryset()
         empty_list = ["", None]
 
-        if "tasks" in self.request.GET and self.request.GET["tasks"] not in empty_list:
-            queryset = queryset.filter(
-                task__id=self.request.GET["tasks"]
-            )
-        elif "activities" in self.request.GET and self.request.GET["activities"] not in empty_list:
-            queryset = queryset.filter(
-                task__activity__id=self.request.GET["activities"]
-            )
-        elif "phase" in self.request.GET and self.request.GET["phase"] not in empty_list:
-            queryset = queryset.filter(
-                task__activity__phase__name=self.request.GET["phase"]
-            )
-        else:
-            adm_lvls = [adm_name[0].lower() for adm_name in AdministrativeLevel.TYPE]
-            adm_list = [adm_type for adm_type in adm_lvls if adm_type in self.request.GET]
-            adm_type = adm_list[0] if adm_list else None
+        request_get = self.request.GET.copy()
+        for filter_hierarchy in self.filter_hierarchy:
+            if filter_hierarchy in request_get and request_get[filter_hierarchy] in [None, ""]:
+                request_get.pop(filter_hierarchy)
 
-            if adm_type and self.request.GET[adm_type] not in empty_list:
-                administrative_levels = AdministrativeLevel.objects.get(id=self.request.GET[adm_type])
-                descendants = administrative_levels.get_all_descendants()
-                queryset = queryset.filter(adm__id__in=[decs.id for decs in descendants] + [administrative_levels.id])
+        if "tasks" in request_get and request_get["tasks"] not in empty_list:
+            queryset = queryset.filter(
+                task__id=request_get["tasks"]
+            )
+        elif "activities" in request_get and request_get["activities"] not in empty_list:
+            queryset = queryset.filter(
+                task__activity__id=request_get["activities"]
+            )
+        elif "phase" in request_get and request_get["phase"] not in empty_list:
+            queryset = queryset.filter(
+                task__activity__phase__name=request_get["phase"]
+            )
+
+        adm_lvls = [adm_name[0].lower() for adm_name in AdministrativeLevel.TYPE]
+        adm_list = [adm_type for adm_type in adm_lvls if adm_type in request_get]
+        adm_type = adm_list[0] if adm_list else None
+
+        if adm_type and request_get[adm_type] not in empty_list:
+            administrative_levels = AdministrativeLevel.objects.get(id=request_get[adm_type])
+            descendants = administrative_levels.get_all_descendants()
+            queryset = queryset.filter(adm__id__in=[decs.id for decs in descendants] + [administrative_levels.id])
 
         ordering = self.get_ordering()
         if ordering:
