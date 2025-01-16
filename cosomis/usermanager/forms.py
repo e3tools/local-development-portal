@@ -8,6 +8,8 @@ from django import forms
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext
 
+from usermanager.models import Organization
+
 UserModel = get_user_model()
 
 
@@ -107,9 +109,6 @@ class EmailAuthenticationForm(AuthenticationForm):
             self.user_cache = authenticate(
                 self.request, username=username, password=password
             )
-            print('-----')
-            print(self.user_cache)
-            print('-----')
             if self.user_cache is None:
                 raise self.get_invalid_login_error()
             else:
@@ -152,10 +151,11 @@ class UserCreationForm(forms.ModelForm):
         }),
         help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),
     )
+    organization = forms.ModelChoiceField(queryset=Organization.objects.all())
 
     class Meta:
         model = UserModel
-        fields = ("username",)
+        fields = ("username", "password1", "password2", "organization")
         field_classes = {"username": UsernameField}
 
     def __init__(self, *args, **kwargs):

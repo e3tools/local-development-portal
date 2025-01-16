@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
+from django.db.models import Subquery, Sum
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
 
@@ -25,6 +26,7 @@ from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
 class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
     template_name = "investments/profile.html"
 
+
     def get_object(self, queryset=None):
         """
         Return the object the view is displaying.
@@ -33,6 +35,30 @@ class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
         Subclasses can override this to return any object.
         """
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "{} {} ".format(self.request.user.first_name, self.request.user.last_name) + _("profile")
+
+        context["organization"] = self.request.user.organization
+
+        if context["organization"] is not None:
+            user_qs = context["organization"].users.all().values_list("id")
+            investments_qs = Investment.objects.filter(
+                packages__user__id__in=Subquery(user_qs)
+            )
+            context["organization"].total_investments = investments_qs.count()
+            context["organization"].total_investments_amount = investments_qs.aggregate(
+                Sum("estimated_cost")
+            )["estimated_cost__sum"]
+
+        user_investments_qs = Investment.objects.filter(packages__user=self.request.user)
+        context['user_investments'] = user_investments_qs.count()
+        context['user_investments_commited_funds'] = user_investments_qs.aggregate(
+                Sum("estimated_cost")
+            )["estimated_cost__sum"]
+        context['user_investments_target_communities'] = user_investments_qs.values('administrative_level').distinct().count()
+        return context
 
 
 class IndexListView(

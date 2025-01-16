@@ -19,7 +19,7 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-4 col-6">
+            <div class="col-lg-3 col-6">
 
                 <div class="small-box bg-info">
                     <div class="inner">
@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-6">
+            <div class="col-lg-3 col-6">
 
                 <div class="small-box bg-warning">
                     <div class="inner">
@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-6">
+            <div class="col-lg-3 col-6">
 
                 <div class="small-box bg-success">
                     <div class="inner">
@@ -55,6 +55,20 @@
                     </div>
                     <div class="icon">
                         <i class="fa fa-solid fa-money-bill"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+
+                <div class="small-box">
+                    <div class="inner">
+                        <h3>{{ project.updated_date|date }}</h3>
+                        <p>
+                        <p>{% translate "Last update" %}</p></p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-solid fa-calendar"></i>
                     </div>
                 </div>
             </div>
@@ -103,7 +117,7 @@
                                             <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
                                             <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
                                             <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
-                                            <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Population priority' %}</th>
+                                            <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Package Status' %}</th>
                                             <th data-priority="10" class="align-middle rounded-0 border-0">{% translate 'Physical execution rate' %}</th>
                                             <th data-priority="11" class="align-middle rounded-0 border-0">{% translate 'Package status' %}</th>
                                             <th data-priority="12" class="align-middle rounded-0 border-0">{% translate 'Status' %}</th>
@@ -123,18 +137,9 @@
                                         <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
                                         <td>{{ investment.ranking }}</td>
                                         <td>
-                                            {% if investment.endorsed_by_youth %}
-                                            J,
-                                            {% endif %}
-                                            {% if investment.endorsed_by_women %}
-                                            F,
-                                            {% endif %}
-                                            {% if investment.endorsed_by_agriculturist %}
-                                            AG,
-                                            {% endif %}
-                                            {% if investment.endorsed_by_pastoralist %}
-                                            ME
-                                            {% endif %}
+                                            {% for i_package in investment.packages.all %}
+                                                {{ i_package.get_status_display }} 
+                                            {% endfor %}
                                         </td>
                                         <td>
                                             <span>{{ investment.physical_execution_rate }}% {% translate 'Complete' %}</span>
@@ -151,6 +156,7 @@
                                                   data-investment="{{ investment.id }}" data-name="{{ investment.title }}" 
                                                   data-status="{{ investment.project_status }}" data-progress="{{ investment.physical_execution_rate }}" 
                                                   data-latitude="{{ investment.latitude }}" data-longitude="{{ investment.longitude }}"
+                                                  data-updated="{{ investment.updated_date|date }}"
                                                   style="font-size: 12px; padding: 10px; cursor: pointer;"
                                             >{% translate 'Update' %}
                                                 <i class="nav-icon fas fa-chevron-down ml-2"></i>
@@ -260,6 +266,7 @@
                         <div class="form-group col-9">
                             <label for="physicalExecutionRange">{% translate 'Physical execution rate' %}</label>
                             <input type="range" class="custom-range" id="physicalExecutionRange">
+                            <small class="form-text text-muted">{% translate "Last updated" %} <span id="lastUpdatedHelpTextId"></span></small>
                         </div>
                         <div class="form-group col-3">
                             <input type="number" max="100" min="0" class="form-control" name="physical_execution_rate" id="physicalExecutionNumber">
@@ -346,6 +353,7 @@
         $('.investment-update-badge').on('click', function (){
             $('#investment-hidden').val($(this).data('investment'));
             $('#project-status').val($(this).data('status')).trigger("change");
+            $('#lastUpdatedHelpTextId').html($(this).data('updated'));
             $('.investment-name').html($(this).data('name'));
             
             $("#physicalExecutionNumber").val($(this).data('progress'));

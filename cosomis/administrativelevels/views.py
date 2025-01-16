@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import translation
-from django.views.generic import DetailView, ListView, CreateView, FormView
+from django.views.generic import DetailView, ListView, CreateView, FormView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import BaseFormView
 
@@ -197,6 +197,10 @@ class AdministrativeLevelDetailView(
 
         context["context_object_name"] = admin_level.type.lower()
 
+        if admin_level.children.all():
+            context['children_services_infrastructures'], context['children_services_infrastructures_total_ids'] = self.__get_upper_services_infrastructure(admin_level)
+            context['children_services_infrastructures_total_ids'] = list(set(context['children_services_infrastructures_total_ids']))
+
         context['phases'] = self._get_planning_cycle()
         context['development_plan'] = self._get_development_plan(context['phases'])
 
@@ -234,9 +238,7 @@ class AdministrativeLevelDetailView(
 
         context['children_coordinates'] = self._get_villages_coordinates_from_administrative_level(self.object)
 
-        package = Package.objects.get_active_cart(
-            user=self.request.user
-        )
+        package = Package.objects.get_active_cart(user=self.request.user)
         context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
 
         return context
@@ -319,6 +321,87 @@ class AdministrativeLevelDetailView(
                 coordinates += self._get_villages_coordinates_from_administrative_level(child)
         return coordinates
 
+    def __get_upper_services_infrastructure(self, parent):
+        children = parent.children.all()
+        final_resp = dict()
+        final_total_ids = list()
+        for child in children:
+            grandchildren = child.children.all()
+            if grandchildren:
+                base_resp, total_ids = self.__get_upper_services_infrastructure(child)
+            else:
+                base_resp = child.infrastructure
+                if base_resp is not None:
+                    for key, value in base_resp.items():
+                        for k, v in base_resp[key].items():
+                            if base_resp[key][k]:
+                                base_resp[key][k] = {'ids_true': [child.id]}
+                            else:
+                                base_resp[key][k] = {'ids_true': []}
+                            total_ids = [child.id]
+                else:
+                    final_total_ids += [child.id]
+                    print('###')
+                    print("Village without infrastructure: ", child.id)
+                    print('###')
+
+            if base_resp is not None:
+                for key, value in base_resp.items():
+                    if key in final_resp:
+                        for i, v  in base_resp[key].items():
+                            if i in final_resp[key]:
+                                final_resp[key][i]['ids_true'] += base_resp[key][i]['ids_true']
+                            else:
+                                final_resp[key][i] = base_resp.key.i
+                            final_total_ids += total_ids
+                    else:
+                        final_resp[key] = base_resp[key]
+                        final_total_ids += total_ids
+
+        return final_resp, final_total_ids
+
+
+class AdministrativeLevelInfrastructureDistributionDetailView(
+    PageMixin, LoginRequiredApproveRequiredMixin, TemplateView
+):
+    template_name = 'administrative_level/infrastructure.html'
+    category = None
+    
+    def get_context_data(self, **kwargs):
+        obj = AdministrativeLevel.objects.get(id=self.kwargs['pk'])
+        context = super().get_context_data(**kwargs)
+        context['title'] = "{} {}".format(obj.type, obj.name)
+        context['villages_that_has_it'], villages = self.__get_villages_services_infrastructure(obj)
+        context['villages_that_dont_has_it'] = [village for village in villages if village not in context['villages_that_has_it']]
+        context['infrastructure'] = self.kwargs['infrastructure']
+        context['category'] = self.category
+        return context
+
+    def __get_villages_services_infrastructure(self, parent):
+        children = parent.children.all()
+        has_it = list()
+        villages = list()
+        for child in children:
+            grandchildren = child.children.all()
+            if grandchildren:
+                has_it_aux, dont_has_it_aux = self.__get_villages_services_infrastructure(child)
+                has_it += has_it_aux
+                villages += dont_has_it_aux
+            else:
+                if child.infrastructure is not None:
+                    has_it_bool = False
+                    for key, value in child.infrastructure.items():
+                        for k, v in child.infrastructure[key].items():
+                            if k == self.kwargs['infrastructure'] and child.infrastructure[key][k] == True:
+                                has_it_bool = True
+                                if self.category is None:
+                                    self.category = key
+                    if has_it_bool:
+                        has_it.append(child)
+                villages.append(child)
+
+        return has_it, villages
+
 
 class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
 
@@ -327,6 +410,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
     active_level1 = "administrative_levels"
 
     def __init__(self):
+        super().__init__()
         self.__investment_repository = DbInvestmentRepository()
 
     def post(self, request, *args, **kwargs):

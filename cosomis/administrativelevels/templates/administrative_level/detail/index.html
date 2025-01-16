@@ -192,7 +192,11 @@
                             </div>
                             <div id="infrastructure_services" class="tab-pane fade">
                                 <div class="card-body">
-                                    {% include 'administrative_level/detail/tabs/service_infrastructure.html' %}
+                                    {% if children_services_infrastructures %}
+                                        {% include 'administrative_level/detail/tabs/upper_service_infrastructure.html' %}
+                                    {% else %}
+                                        {% include 'administrative_level/detail/tabs/service_infrastructure.html' %}
+                                    {% endif %}
                                 </div>
                             </div>
                             <div id="planning_cycle" class="tab-pane fade">
@@ -336,5 +340,19 @@
             });
             
         });
+    </script>
+
+    <!-- Infrastructure script -->
+    <script type="text/javascript">
+    
+        $(document).ready(function () {
+            $(".trigger-infrastructure-modal").on('click', function(){
+                let infrastructure_name = $(this).data("infrastructure");
+                let villages = $(this).data("villages");
+                let true_ids = $(this).data("trueids");
+                $('#infrastructuresModal').modal('show');
+            });
+        });
+        
     </script>
 {% endblock %}
