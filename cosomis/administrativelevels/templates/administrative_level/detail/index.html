@@ -191,28 +191,13 @@
                             </div>{% endcomment %}
                             </div>
                             <div id="infrastructure_services" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
-                                {% comment %} <div class="row">
-                                <div class="col-12"></div>
-                            </div>
-                            <div class="card">
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5>{% translate "Infrastructure and Services" %}</h5>
-                                                    <div id="infrastructure_and_services"></div>
-                                                </div>
-
-                                                <div class="overlay" id="spin-infrastructure-services">
-                                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% if children_services_infrastructures %}
+                                        {% include 'administrative_level/detail/tabs/upper_service_infrastructure.html' %}
+                                    {% else %}
+                                        {% include 'administrative_level/detail/tabs/service_infrastructure.html' %}
+                                    {% endif %}
                                 </div>
-                            </div>{% endcomment %}
                             </div>
                             <div id="planning_cycle" class="tab-pane fade">
                                 <div class="card">
@@ -249,24 +234,7 @@
     <div class="modal fade" id="taskModalLong" tabindex="-1" role="dialog" aria-labelledby="taskModalLongTitle"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div id="modal-content" class="modal-content">
-                {#            <div class="modal-header">#}
-                {#                <h4 class="modal-title text-primary" id="taskModalTitle">...</h4>#}
-                {##}
-                {#                <span class="badge badge-pill badge-lg badge-info ml-1" id="taskModalStatus">...</span>#}
-                {##}
-                {#                <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
-                {#                    <span aria-hidden="true">&times;</span>#}
-                {#                </button>#}
-                {#            </div>#}
-                {#            <div class="modal-body">#}
-                {#                <p id="taskModalDescription">#}
-                {#                    ...#}
-                {#                </p>#}
-                {#                <br>#}
-                {#                <div id="taskModalAttrs"></div>#}
-                {#            </div>#}
-            </div>
+            <div id="modal-content" class="modal-content"></div>
         </div>
     </div>
 
@@ -372,5 +340,19 @@
             });
             
         });
+    </script>
+
+    <!-- Infrastructure script -->
+    <script type="text/javascript">
+    
+        $(document).ready(function () {
+            $(".trigger-infrastructure-modal").on('click', function(){
+                let infrastructure_name = $(this).data("infrastructure");
+                let villages = $(this).data("villages");
+                let true_ids = $(this).data("trueids");
+                $('#infrastructuresModal').modal('show');
+            });
+        });
+        
     </script>
 {% endblock %}

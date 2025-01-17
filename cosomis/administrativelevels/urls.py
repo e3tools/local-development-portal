@@ -21,6 +21,8 @@ urlpatterns = [
     path('region/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='region_detail'),
     path('prefecture/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='prefecture_detail'),
 
+    path('<int:pk>/infrastructure/<slug:infrastructure>/', views.AdministrativeLevelInfrastructureDistributionDetailView.as_view(), name='infrastructure'),
+
     # The path of the detail of village
     path('attachments/', views.AttachmentListView.as_view(), name='attachments'),  # The path of the attachments list
 

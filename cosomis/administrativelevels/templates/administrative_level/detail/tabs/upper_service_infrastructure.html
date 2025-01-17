@@ -1,0 +1,35 @@
+{% load static i18n humanize custom_tags %}
+
+<div class="row">
+    {% for key, subdict in children_services_infrastructures.items %}
+    <div class="col-md-6 col-sm-12">
+        <table class="table datatable rounded-table">
+            <thead>
+            <tr>
+                <th style="border-radius: 10px 10px 0 0;">{% translate key|humanize_snakecase %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item_name, value in subdict.items reversed %}
+                <tr>
+                    <td>
+                        <div 
+                                class="progress-group text-left"
+                                data-villages="{{ children_services_infrastructures_total_ids }}"
+                                data-trueids="{{ value.ids_true }}"
+                                data-infrastructure="{% translate key|humanize_snakecase %}"
+                        >
+                            <a href="">{{ item_name|humanize_snakecase }}</a>
+                            <span class="float-right"><b>{{ value.ids_true|length }}</b>/{{ children_services_infrastructures_total_ids|length }}</span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-primary" style="width: {{ value|InfrastructurePercentage:children_services_infrastructures_total_ids }}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>

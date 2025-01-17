@@ -3,11 +3,19 @@ from django.utils.translation import gettext_lazy
 import json
 
 from administrativelevels.models import Project
+from itertools import zip_longest
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
 from investments.models import Investment
 from cosomis.utils import structure_the_words as utils_structure_the_words
 
 register = template.Library()
+
+
+@register.filter(name="humanize_snakecase")
+def humanize_snakecase(value):
+    resp = value.split('_')
+    resp = [val.capitalize() for val in resp]
+    return ' '.join(resp)
 
 
 @register.filter(name="imgAWSS3Filter")
@@ -424,3 +432,12 @@ def project_status_color(raw_status):
     if raw_status == Investment.COMPLETED:
         return "badge-success"
     return ""
+
+@register.filter(name="InfrastructurePercentage")
+def get_infrastructure_percentage(infrastructure_dict, total_ids):
+    return len(infrastructure_dict["ids_true"]) * 100 / len(total_ids)
+
+
+@register.filter(name="zip")
+def zip_lists(a, b):
+    return zip_longest(a, b, fillvalue={'name': '', 'id': 0})
