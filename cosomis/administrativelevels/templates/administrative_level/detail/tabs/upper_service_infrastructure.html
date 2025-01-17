@@ -19,7 +19,7 @@
                                 data-trueids="{{ value.ids_true }}"
                                 data-infrastructure="{% translate key|humanize_snakecase %}"
                         >
-                            <a href="">{{ item_name|humanize_snakecase }}</a>
+                            <a href="{% url 'administrativelevels:infrastructure' object.id item_name %}">{% translate item_name|humanize_snakecase %}</a>
                             <span class="float-right"><b>{{ value.ids_true|length }}</b>/{{ children_services_infrastructures_total_ids|length }}</span>
                             <div class="progress progress-sm">
                                 <div class="progress-bar bg-primary" style="width: {{ value|InfrastructurePercentage:children_services_infrastructures_total_ids }}%"></div>
