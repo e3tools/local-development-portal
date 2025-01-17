@@ -42,3 +42,28 @@ def package_status_email_notification(package):
 
     # Send the email
     email.send()
+
+
+def sign_up_email_notification(user):
+    context = {
+        'user_name': user.first_name if user.first_name else user.username.split('@')[0],
+        'current_year': datetime.now().year,
+    }
+    template_name = 'email/welcome.html'
+    subject = 'Welcome to the emergency program to strengthen community resilience and security'
+    # Render the HTML content
+    html_content = render_to_string(template_name, context)
+
+    # Create the email
+    email = EmailMessage(
+        subject=subject,
+        body=html_content,
+        from_email=settings.EMAIL_HOST_USER,
+        to=[user.email],
+    )
+
+    # Specify the content type as HTML
+    email.content_subtype = 'html'
+
+    # Send the email
+    email.send()
