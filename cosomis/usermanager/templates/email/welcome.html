@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Emergency Program to Strengthen Community Resilience and Security</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #0073e6;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 20px;
+            color: #333;
+        }
+
+        .content h2 {
+            font-size: 20px;
+            color: #0073e6;
+        }
+
+        .content p {
+            line-height: 1.6;
+        }
+
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            color: #999;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0073e6;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Welcome {{ user_name }}!</h1>
+    </div>
+    <div class="content">
+        <p>Dear {{ user_name }},</p>
+        <p>Thank you for signing up to the <strong>Emergency Program to Strengthen Community Resilience and Security!</strong> We’re thrilled to have you join us in this important initiative to enhance collaboration, resilience, and safety in communities worldwide.</p>
+    </div>
+    <div class="footer">
+        <p>&copy; {{ current_year }} Your Company. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>
