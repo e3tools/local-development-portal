@@ -91,7 +91,9 @@
                             </li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings">{%  translate 'Settings' %}</a>
                             </li>
-                            <li><a href="{% url 'administrativelevels:project-upload-investments' project.id %}" class="nav-link">{% translate 'Upload more investments' %}</a></li>
+                            {% if request.user.is_superuser %}
+                                <li><a href="{% url 'administrativelevels:project-upload-investments' project.id %}" class="nav-link">{% translate 'Upload more investments' %}</a></li>
+                            {% endif %}
                         </ul>
 
                     </div>

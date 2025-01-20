@@ -786,7 +786,7 @@ class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
         #return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
         return reverse('administrativelevels:projects')
 
-class BulkUploadInvestmentsView(PageMixin, IsInvestorMixin, SingleObjectMixin, FormView):
+class BulkUploadInvestmentsView(PageMixin, AdminPermissionRequiredMixin, SingleObjectMixin, FormView):
     form_class = BulkUploadInvestmentsForm
     template_name = 'project/create/bulk_upload_investments.html'
     queryset = Project.objects.all()
