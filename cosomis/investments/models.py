@@ -128,6 +128,7 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     funded_investments = models.ManyToManyField(Investment, through="PackageFundedInvestment", related_name="packages")
     draft_status = models.BooleanField(default=True)
     status = models.CharField(max_length=50, choices=STATUS, default=PENDING_SUBMISSION)
+    acknowledge_by_investor = models.BooleanField(default=False)
 
     review_by = models.ForeignKey(User, on_delete=models.SET_NULL,
                                   help_text=_("User who reviews the status of the Package. This user must be a moderator."),

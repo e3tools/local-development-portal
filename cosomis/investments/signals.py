@@ -18,4 +18,5 @@ def email_notification_track(sender, instance, **kwargs):
         # print(f"The field 'name' changed from '{old_instance.status}' to '{instance.status}'")
         # if instance.status == Package.REJECTED:
         #     raise TypeError('The field "status" must be set to "Package.REJECTED"')
+        instance.acknowledge_by_investor = False
         package_status_email_notification(instance)

@@ -2,6 +2,7 @@ from django.conf import settings
 from datetime import datetime, timedelta
 from investments.models import Package
 from usermanager.models import User
+from django.db.models import Count
 
 
 def notifications(request):
@@ -10,11 +11,13 @@ def notifications(request):
             'has_urgent_approvals': False
         }
     try:
-        if request.user.is_moderator or request.user.is_superuser:
+        if request.user.is_moderator:
             max_response_day = settings.MAX_RESPONSE_DAYS if hasattr(settings, 'MAX_RESPONSE_DAYS') else 3
             urgent_day = datetime.now() - timedelta(days=max_response_day)
 
-            packages_qs = Package.objects.filter(status=Package.PENDING_APPROVAL)
+            packages_qs = Package.objects.annotate(
+                investments_count=Count('funded_investments')
+            ).filter(status=Package.PENDING_APPROVAL).exclude(investments_count=0)
             users_qs = User.objects.filter(is_approved=None, is_moderator=False)
 
             has_urgent_packages = packages_qs.filter(updated_date__lte=urgent_day).exists()
@@ -30,6 +33,7 @@ def notifications(request):
             last_login_date = request.user.last_login - timedelta(days=max_response_day*10)
 
             packages_qs = Package.objects.filter(status__in=[Package.APPROVED, Package.REJECTED],
+                                                 acknowledge_by_investor=False,
                                                  user_id=request.user.id,
                                                  updated_date__gte=last_login_date)
 
