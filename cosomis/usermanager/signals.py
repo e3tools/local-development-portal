@@ -7,5 +7,4 @@ from .models import User
 @receiver(post_save, sender=User)
 def email_notification_welcome(sender, instance, created, **kwargs):
     if created:
-        print('notification sent!')
         sign_up_email_notification(instance)
