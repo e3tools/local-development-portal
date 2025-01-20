@@ -23,7 +23,7 @@
 
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>{{ organization }}</h3>
+                        <h4>{{ organization }}</h4>
                         <p>{% translate "Organization" %}</p>
                     </div>
                     <div class="icon">
@@ -36,7 +36,7 @@
 
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>{{ organization.total_investments }}</h3>
+                        <h4>{{ organization.total_investments }}</h4>
                         <p>{% translate "Total Investments" %}</p>
                     </div>
                     <div class="icon">
@@ -49,7 +49,7 @@
 
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>{{ organization.total_investments_amount|intcomma }} FCFA</h3>
+                        <h4>{{ organization.total_investments_amount|intcomma }} FCFA</h4>
                         <p>
                         <p>{% translate "Total Investments Amount" %}</p></p>
                     </div>
@@ -63,7 +63,7 @@
 
                 <div class="small-box">
                     <div class="inner">
-                        <h3>{{ project.updated_date|date }}</h3>
+                        <h4>{{ project.updated_date|date }}</h4>
                         <p>
                         <p>{% translate "Last update" %}</p></p>
                     </div>
