@@ -74,19 +74,21 @@
 <body>
 <div class="email-container">
     <div class="header">
-        <h1>Status Update</h1>
+        <h1>Mise à jour du statut</h1>
     </div>
     <div class="content">
-        <h2>Package Status Update</h2>
-        <p>Dear {{ user_name }},</p>
-        <p>We regret to inform you that the status of your package submitted on <strong>{{ package_submission_date }}</strong> has been updated.</p>
-        <p><strong>New Status:</strong> Rejected</p>
-        <p>Unfortunately, after a thorough review, we were unable to approve your package. This could be due to specific issues with the items submitted or discrepancies in the details provided.</p>
-        <p>If you would like more information about the reasons for this decision or need assistance in resolving the issues, please do not hesitate to contact our support team. We are here to help and guide you through the next steps.</p>
-        <a href="{{ support_url }}" class="button">Contact Support</a>
+        <h2>Mise à jour de l'état du paquet</h2>
+        <p>Chère {{ user_name }},</p>
+        <p>Nous avons le regret de vous informer que le statut de votre colis soumis le <strong>{{ package_submission_date }}</strong> a été mis à jour.</p>
+        <p><strong>Nouveau statut:</strong> Rejeté</p>
+        <p>Malheureusement, après un examen approfondi, nous n'avons pas pu approuver votre colis. Cela peut être dû à
+            des problèmes spécifiques avec les articles soumis ou à des divergences dans les informations fournies.</p>
+        <p>Si vous souhaitez plus d'informations sur les raisons de cette décision ou si vous avez besoin d'aide pour
+            résoudre les problèmes, n'hésitez pas à contacter notre équipe d'assistance. Nous sommes là pour vous aider et vous guider dans les prochaines étapes.</p>
+        <a href="{{ support_url }}" class="button">Contacter l'assistance</a>
     </div>
     <div class="footer">
-        <p>&copy; {{ current_year }} COORDINATION GÉNÉRALE DU PURS. All rights reserved.</p>
+        <p>&copy; {{ current_year }} COORDINATION GÉNÉRALE DU PURS. Tous droits réservés.</p>
     </div>
 </div>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status Update Notification</title>
+    <title>Notification de mise à jour du statut</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,22 +74,21 @@
 <body>
 <div class="email-container">
     <div class="header">
-        <h1>Status Update</h1>
+        <h1>Mise à jour du statut</h1>
     </div>
     <div class="content">
-        <h2>Package Status Update</h2>
-        <p>Dear {{ user_name }},</p>
-        <p>We are writing to inform you that the status of your package submitted on <strong>{{ package_submission_date }}</strong> has been
-            updated.</p>
-        <p><strong>Previous Status:</strong> Pending Approval</p>
-        <p><strong>New Status:</strong> Partially Approved</p>
-        <p>Some items in your package have been approved, while others are still under review. Our team is working
-            diligently to complete the approval process for the remaining items.</p>
-        <p>If you have any questions or need further assistance, please don't hesitate to contact us.</p>
-        <a href="{{ package_tracking_url }}" class="button">Track Your Package</a>
+        <h2>Mise à jour de l'état du paquet</h2>
+        <p>Chère {{ user_name }},</p>
+        <p>Nous avons le plaisir de vous informer que le statut de votre colis soumis le <strong>{{ package_submission_date }}</strong> a été mis à jour.</p>
+        <p><strong>Statut précédent:</strong> En attente d'approbation</p>
+        <p><strong>Nouveau statut:</strong> Partiellement approuvé</p>
+        <p>Certains articles de votre colis ont été approuvés, tandis que d'autres sont encore en cours d'examen.
+            Notre équipe travaille avec diligence pour terminer le processus d'approbation des articles restants.</p>
+        <p>Si vous avez des questions ou avez besoin d'aide supplémentaire, n'hésitez pas à nous contacter.</p>
+        <a href="{{ package_tracking_url }}" class="button">Suivez votre colis</a>
     </div>
     <div class="footer">
-        <p>&copy; {{ current_year }} COORDINATION GÉNÉRALE DU PURS. All rights reserved.</p>
+        <p>&copy; {{ current_year }} COORDINATION GÉNÉRALE DU PURS. Tous droits réservés.</p>
     </div>
 </div>
 </body>
