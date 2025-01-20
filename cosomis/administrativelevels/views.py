@@ -160,9 +160,7 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredApproveRequiredM
         return ctx
 
 
-class AdministrativeLevelDetailView(
-    PageMixin, LoginRequiredApproveRequiredMixin, DetailView
-):
+class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
     """Class to present the detail page of one village"""
 
     model = AdministrativeLevel

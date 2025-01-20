@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
-from django.db.models import Subquery, Sum
+from django.db.models import Subquery, Sum, Count
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
 
@@ -564,10 +564,16 @@ class InvestorApprovesListView(IsInvestorMixin, PageMixin, generic.ListView):
         return self.render_to_response(context)
 
     def get_package_queryset(self):
-        queryset = self.package_model._default_manager.filter(
+        queryset = self.package_model._default_manager.annotate(
+            investments_count=Count('funded_investments')
+        ).filter(
             user_id=self.request.user.id
-        )
+        ).exclude(investments_count=0)
         ordering = self.get_ordering()
+        packages_list = list(queryset)
+        for pck in packages_list:
+            pck.acknowledge_by_investor = True
+        Package.objects.bulk_update(packages_list, fields=['acknowledge_by_investor'])
         if ordering:
             if isinstance(ordering, str):
                 ordering = (ordering,)
