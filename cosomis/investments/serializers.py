@@ -20,11 +20,11 @@ class InvestmentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_select_input(self, obj):
-        if 'all_queryset' in self.context and self.context['all_queryset'] == 'false':
+        if 'all_queryset' in self.context and self.context['all_queryset'] == 'true':
             return '<input class="project-table-check" id="checkbox-' + str(obj.id) + '" value="' + str(
-                obj.id) + '" type="checkbox">'
+                obj.id) + '" type="checkbox" checked>'
         return '<input class="project-table-check" id="checkbox-' + str(obj.id) + '" value="' + str(
-            obj.id) + '" type="checkbox" checked>'
+            obj.id) + '" type="checkbox">'
 
     def get_administrative_level__type(self, obj):
         return obj.administrative_level.type
