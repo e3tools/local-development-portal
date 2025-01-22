@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
 from administrativelevels.models import AdministrativeLevel, Sector, Project, GeoSegment
-from .models import Investment, Package
+from .models import Investment, PackageFundedInvestment
 from .serializers import InvestmentSerializer
 
 
@@ -52,7 +52,9 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
 class InvestmentModelViewSet(ModelViewSet):
     queryset = Investment.objects.filter(
         investment_status=Investment.PRIORITY,
-        project_status=Investment.NOT_FUNDED
+        funded_by__isnull=True,
+    ).exclude(
+        id__in=PackageFundedInvestment.objects.values_list("investment_id", flat=True)
     )
     serializer_class = InvestmentSerializer
 
