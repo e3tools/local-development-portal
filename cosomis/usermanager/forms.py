@@ -151,7 +151,10 @@ class UserCreationForm(forms.ModelForm):
         }),
         help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),
     )
-    organization = forms.ModelChoiceField(queryset=Organization.objects.all())
+    organization = forms.ModelChoiceField(
+        label=_("Organization"),
+        queryset=Organization.objects.all()
+    )
 
     class Meta:
         model = UserModel

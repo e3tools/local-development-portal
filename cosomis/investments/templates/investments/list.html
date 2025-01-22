@@ -331,12 +331,12 @@
                                 <div class="row">
                                     <div class="col-4">
                                         <div class="form-group">
-                                            <label>Average Monthly Maximum Temperature (°c)</label>
+                                            <label>{% translate 'Average Monthly Maximum Temperature (°c)' %}</label>
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text">min</span>
+                                                            <span class="input-group-text">{% translate 'min' %}</span>
                                                         </div>
                                                         {% if 'temperature-min-filter' in query_strings_raw %}
                                                         <input type="number" class="form-control" id="temperature-min-filter" name="temperature-min-filter"
@@ -350,7 +350,7 @@
                                                 <div class="col-md-6">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text">max</span>
+                                                            <span class="input-group-text">{% translate 'max' %}</span>
                                                         </div>
                                                         {% if 'temperature-max-filter' in query_strings_raw %}
                                                         <input type="number" class="form-control" id="temperature-max-filter" name="temperature-max-filter"
@@ -410,7 +410,7 @@
                                 <div class="row">
                                     <div class="col-4">
                                         <div class="form-group">
-                                            <label>Precipitation Change (%)</label>
+                                            <label>{% translate 'Precipitation Change' %}</label>
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="input-group">
