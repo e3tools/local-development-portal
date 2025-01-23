@@ -26,3 +26,15 @@ class SignupView(RedirectURLMixin, generic.CreateView):
             return resolve_url(self.next_page)
         else:
             return resolve_url(settings.LOGIN_REDIRECT_URL)
+
+
+class EmailVerificationView(generic.TemplateView):
+    template_name = 'email_confirmed_successfully.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(confirm_email_token=self.kwargs['confirm_email_token'])
+        user.email_was_confirm = True
+        user.confirm_email_token = None
+        user.save()
+        return context

@@ -175,6 +175,8 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+FRONTEND_URL_ROOT = 'https://portail.purs.gouv.tg'
+
 LOGIN_URL = '/'
 
 LOGIN_REDIRECT_URL = 'investments:home_investments'

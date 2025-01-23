@@ -35,7 +35,7 @@ class UserCustomAdmin(UserAdmin):
                 ),
             },
         ),
-        (_("Management"), {"fields": ("is_password_change", "email_was_confirm", "is_approved")}),
+        (_("Management"), {"fields": ("is_password_change", "email_was_confirm", "is_approved", "confirm_email_token")}),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
