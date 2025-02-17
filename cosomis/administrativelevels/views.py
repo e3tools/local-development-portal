@@ -713,7 +713,14 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         inv_ids = list()
         for package in context["packages"]:
             inv_ids += package.funded_investments.all().values_list("id", flat=True)
-        context["investments"] = Investment.objects.filter(funded_by__id=self.object.id)
+        context["investments"] = Investment.objects.filter(funded_by__id=self.object.id).exclude(
+            packages__in=Subquery(
+                Package.objects.filter(
+                    user=self.request.user,
+                    status__in=[Package.PENDING_SUBMISSION]
+                ).values_list("id")
+            )
+        )
         context["project_status"] = Investment.PROJECT_STATUS_CHOICES
         context["organization"] = project.owner.organization
         context["project"] = project
@@ -722,6 +729,13 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             user_qs = context["organization"].users.all().values_list("id")
             investments_qs = Investment.objects.filter(
                 packages__user__id__in=Subquery(user_qs)
+            ).exclude(
+                packages__in=Subquery(
+                    Package.objects.filter(
+                        user=self.request.user,
+                        status__in=[Package.PENDING_SUBMISSION]
+                    ).values_list("id")
+                )
             )
             context["organization"].total_investments = investments_qs.count()
             context["organization"].total_investments_amount = investments_qs.aggregate(
@@ -783,6 +797,7 @@ class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
     def get_success_url(self):
         #return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
         return reverse('administrativelevels:projects')
+
 
 class BulkUploadInvestmentsView(PageMixin, AdminPermissionRequiredMixin, SingleObjectMixin, FormView):
     form_class = BulkUploadInvestmentsForm
