@@ -242,6 +242,7 @@ class Attachment(BaseModel):
                 name=object_name,
                 type=cls.PHOTO,
                 investment=investment,
+                adm=investment.administrative_level,
                 url=file_url
             )
 

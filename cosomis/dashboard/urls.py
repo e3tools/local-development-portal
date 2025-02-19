@@ -2,7 +2,6 @@ from django.urls import path
 from django.conf.urls import include
 
 from . import views_subprojects, views_excel, views_administrativelevels, views_summary
-from .views_summary import DashboardSummaryView
 from investments.ajax_views import FillAdmLevelsSelectFilters, StatisticsView
 
 app_name = 'dashboard'

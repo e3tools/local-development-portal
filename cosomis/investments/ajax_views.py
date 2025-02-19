@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
 from administrativelevels.models import AdministrativeLevel, Sector, Project, GeoSegment
-from .models import Investment, PackageFundedInvestment
+from .models import Investment, PackageFundedInvestment, Attachment
 from .serializers import InvestmentSerializer
 
 
@@ -367,6 +367,11 @@ class StatisticsView(View):
             subproject for subproject in subprojects_with_coordinates
             if not (math.isnan(subproject['latitude']) or math.isnan(subproject['longitude']))
         ]
+
+        for subproject in filtered_subprojects:
+            attachments = list(Attachment.objects.filter(investment__id=subproject['id']).values_list('url', flat=True)[:3])
+            if attachments:
+                subproject['attachments'] = attachments
 
         data = {
             'total_communities': total_communities,
