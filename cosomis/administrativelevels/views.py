@@ -679,7 +679,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
 
         if 'image_input' in request.FILES:
             investment = Investment.objects.filter(
-                packages__project=self.object,
+                funded_by__id=self.object.id,
             ).exclude(project_status=Investment.NOT_FUNDED).get(id=request.POST['investment'])
             succeeded, new_attachment = Attachment.investment_upload(investment=investment, image=request.FILES.get('image_input'))
             if succeeded:
@@ -782,6 +782,9 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         queryset = super().get_queryset()
         queryset = queryset.filter(organization=self.request.user.organization)
         return queryset
+
+    def get_success_url(self):
+        return reverse('administrativelevels:project-detail', kwargs={'pk': self.object.pk})
 
 
 class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
