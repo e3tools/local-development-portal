@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
@@ -50,6 +51,34 @@ def sign_up_email_notification(user):
         'current_year': datetime.now().year,
     }
     template_name = 'email/welcome.html'
+    subject = 'Welcome to the emergency program to strengthen community resilience and security'
+    # Render the HTML content
+    html_content = render_to_string(template_name, context)
+
+    # Create the email
+    email = EmailMessage(
+        subject=subject,
+        body=html_content,
+        from_email=settings.EMAIL_HOST_USER,
+        to=[user.email],
+    )
+
+    # Specify the content type as HTML
+    email.content_subtype = 'html'
+
+    # Send the email
+    email.send()
+
+
+def confirm_email_notification(user):
+    user.confirm_email_token = uuid.uuid4()
+    user.save()
+    context = {
+        'user_name': user.first_name if user.first_name else user.username.split('@')[0],
+        'current_year': datetime.now().year,
+        'confirmation_link': '{}{}'.format(settings.FRONTEND_URL_ROOT, reverse('usermanager:email-verification', args=[user.confirm_email_token])),
+    }
+    template_name = 'email/confirmation_email.html'
     subject = 'Welcome to the emergency program to strengthen community resilience and security'
     # Render the HTML content
     html_content = render_to_string(template_name, context)

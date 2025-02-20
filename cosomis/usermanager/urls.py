@@ -1,6 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
-from .views import SignupView
+from .views import SignupView, EmailVerificationView
 
 from usermanager.forms import EmailAuthenticationForm
 from usermanager.forms import PassCodeAuthenticationForm
@@ -16,5 +16,6 @@ urlpatterns = [
         authentication_form=PassCodeAuthenticationForm,
         template_name='login.html',
         redirect_authenticated_user=True), name='pass-code-login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout')
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('email-verification/<slug:confirm_email_token>', EmailVerificationView.as_view(), name='email-verification')
 ]
