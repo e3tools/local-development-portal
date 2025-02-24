@@ -3,7 +3,7 @@ from .models import Investment, Package, Attachment
 
 
 class InvestmentAdmin(admin.ModelAdmin):
-    list_display = ("title", "get_administrative_level_name", "sector", "investment_status", "project_status")
+    list_display = ("title", "get_administrative_level_name", "sector", "funded_by", "investment_status", "project_status")
     search_fields = ("title", "administrative_level__name","investment_status")
     def get_administrative_level_name(self, obj):
         return obj.administrative_level.name

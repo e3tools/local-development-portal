@@ -154,6 +154,7 @@
                                         <td>{{ investment.packages.all.first.get_status_display }}</td>
                                         <td>{{ investment.project_status | projectStatus }}</td>
                                         <td>
+                                        {% if investment|display_update_investment_button %}
                                             <span class="badge badge-pill {{ investment.project_status | projectStatusColor }} investment-update-badge" 
                                                   data-investment="{{ investment.id }}" data-name="{{ investment.title }}" 
                                                   data-status="{{ investment.project_status }}" data-progress="{{ investment.physical_execution_rate }}" 
@@ -169,6 +170,7 @@
                                                       style="font-size: 12px; padding: 10px; cursor: pointer;"
                                                 >{% translate 'Upload Image' %}</span>
                                             {% endif %}
+                                        {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}

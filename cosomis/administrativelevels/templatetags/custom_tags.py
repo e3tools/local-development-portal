@@ -5,7 +5,7 @@ import json
 from administrativelevels.models import Project
 from itertools import zip_longest
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
-from investments.models import Investment
+from investments.models import Investment, Package
 from cosomis.utils import structure_the_words as utils_structure_the_words
 
 register = template.Library()
@@ -441,3 +441,11 @@ def get_infrastructure_percentage(infrastructure_dict, total_ids):
 @register.filter(name="zip")
 def zip_lists(a, b):
     return zip_longest(a, b, fillvalue={'name': '', 'id': 0})
+
+
+@register.filter(name="display_update_investment_button")
+def display_update_investment_button(investment):
+    obj = investment.packages.all().first()
+    if obj is not None:
+        return obj.status not in [Package.PENDING_SUBMISSION, Package.PENDING_APPROVAL, Package.REJECTED]
+    return True
