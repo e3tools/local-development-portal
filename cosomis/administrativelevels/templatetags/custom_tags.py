@@ -449,3 +449,8 @@ def display_update_investment_button(investment):
     if obj is not None:
         return obj.status not in [Package.PENDING_SUBMISSION, Package.PENDING_APPROVAL, Package.REJECTED]
     return True
+
+
+@register.filter(name="attachments_urls_list")
+def attachments_urls_list(investment):
+    return ",".join([attachment.url for attachment in investment.attachments.all()])
