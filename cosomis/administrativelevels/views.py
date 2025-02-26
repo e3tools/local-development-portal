@@ -708,7 +708,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
     def get_context_data(self, **kwargs):
         self.title = self.object.name
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
-        project = kwargs["object"]
+        project = self.object
         context["packages"] = project.packages.all().order_by("created_date")
         inv_ids = list()
         for package in context["packages"]:
@@ -769,7 +769,9 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
 
     def form_valid(self, form):
         form.save()
-        return super().form_valid(form)
+        messages.add_message(self.request, messages.SUCCESS, _("Project updated."))
+        context = self.get_context_data()
+        return self.render_to_response(context)
 
     def get_form_kwargs(self):
         """Return the keyword arguments for instantiating the form."""
