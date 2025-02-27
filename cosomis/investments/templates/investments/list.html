@@ -568,16 +568,29 @@
                                     {% for project in projects %}
                                         {% if cart_project %}
                                             {% if cart_project.id == project.id %}
-                                            <option value="{{ project.id }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
+                                            <option value="{{ project.id }}" data-budget="{{ project.total_amount|intcomma }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
                                             {% else %}
-                                            <option value="{{ project.id }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
+                                            <option value="{{ project.id }}" data-budget="{{ project.total_amount|intcomma }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
                                             {% endif %}
                                         {% else %}
-                                            <option value="{{ project.id }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
+                                            <option value="{{ project.id }}" data-budget="{{ project.total_amount|intcomma }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
                                         {% endif %}
                                     {% endfor %}
                                 </select>
                             </div>
+                            <p class="text-sm">{% translate 'Total funds available' %}:
+                                <b class="d-block project-total-funds-display">
+                                    {% if cart_project %}
+                                        {% for project in projects %}
+                                            {% if cart_project.id == project.id %}
+                                                {{ project.total_amount|intcomma }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ projects.0.total_amount|intcomma }}
+                                    {% endif %}
+                                </b>
+                            </p>
                             {% if projects|length == 0 %}
                                 <div class="alert alert-danger" role="alert">
                                     {% translate 'Your organization must have a project to submit investments' %}
@@ -818,6 +831,11 @@
 
         $('#category-select-id').on('change', function(){
             change_sectors_selects($(this), $('#sector-select-id'), [])
+        });
+
+        $('#project-select-id').on('change', function(){
+            let selectedOption = $("#project-select-id option:selected");
+            $('.project-total-funds-display').html(selectedOption.data('budget'));
         });
 
         function change_adm_levels_selects(select_input, select_to_fill, other_selects){
