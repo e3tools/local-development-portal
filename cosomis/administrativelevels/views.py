@@ -746,6 +746,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         context["datatable_config"]["responsive"] = "true"
 
         context["investments_datatable_config"] = context["datatable_config"].copy()
+        context["investments_datatable_config"]["pageLength"] = 500
         context["investments_datatable_config"]["columnDefs"] = [
             {"responsivePriority": 1, "targets": 0},
             {"responsivePriority": 2, "targets": 1},
