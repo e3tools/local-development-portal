@@ -270,7 +270,7 @@ class Sector(BaseModel):
 
 
 class Project(BaseModel):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      null=True, blank=True, related_name="projects",
@@ -281,9 +281,9 @@ class Project(BaseModel):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     total_amount = models.PositiveBigIntegerField(default=0)
-    sector = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
-    collaborators = models.TextField(null=True, blank=True, max_length=100)
-    source_of_financing = models.CharField(_("Source of financing"), null=True, blank=True, max_length=100)
+    sectors = models.ManyToManyField(Category)
+    implementation_partner = models.TextField(null=True, blank=True, help_text=_("e.g., WORLD BANK,UNFPA,WFP"))
+    source_of_financing = models.CharField(_("Source of financing"), null=True, blank=True, max_length=255)
 
 
 class Phase(BaseModel):

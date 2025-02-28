@@ -218,7 +218,7 @@
                                     
                                     {% bootstrap_field form.organization %}
 
-                                    {% bootstrap_field form.collaborators %}
+                                    {% bootstrap_field form.implementation_partner %}
                                     
                                     {% bootstrap_field form.start_date %}
                                     
@@ -226,7 +226,7 @@
                                     
                                     {% bootstrap_field form.total_amount %}
                                     
-                                    {% bootstrap_field form.sector %}
+                                    {% bootstrap_field form.sectors %}
 
                                     <div class="form-group row">
                                         <div class="col-sm-10">
@@ -357,6 +357,7 @@
 {{ block.super }}
 <script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/jquery.vmap.js' %}"></script>
 <script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/maps/continents/jquery.vmap.africa.js' %}"></script>
+    <script src="{% static 'AdminLTE/plugins/daterangepicker/daterangepicker.js' %}"></script>
 <script type="text/javascript">
 
     $( document ).ready(function() {
@@ -422,11 +423,22 @@
 
         $("#physicalExecutionRange").on('input', function () {
             $("#physicalExecutionNumber").val($(this).val());
-        })
+        });
 
         $("#physicalExecutionNumber").on('keyup change', function () {
             $("#physicalExecutionRange").val($(this).val());
-        })
+        });
+        
+        $('#id_start_date, #id_end_date').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            autoApply: true,
+            minYear: 2020,
+            maxYear: parseInt(moment().format('YYYY'),10) + 10,
+            locale: {
+              format: 'DD/MM/YYYY'
+            }
+        });
 
     });
 </script>
