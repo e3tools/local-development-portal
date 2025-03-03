@@ -56,6 +56,13 @@
                 </li>
                 {% if not request.user.is_moderator %}
                 <li class="nav-item">
+                    <a href="{% url 'administrativelevels:project-create' %}"
+                       class="nav-link {% if url_name == 'project-create' %}active{% endif %}">
+                        <i class="nav-icon fas fa-paperclip"></i>
+                        <p>{% translate "Project create" %}</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{% url 'administrativelevels:projects' %}"
                        class="nav-link {% if url_name == 'projects' %}active{% endif %}">
                         <i class="nav-icon fas fa-project-diagram"></i>
