@@ -83,6 +83,7 @@ class Investment(BaseModel): # Investment module
     funded_by = models.ForeignKey(
         Project,
         on_delete=models.SET_NULL,
+        related_name="investments",
         null=True,
         blank=True,
     )
