@@ -15,16 +15,16 @@ def package_status_email_notification(package):
     }
     if package.status == package.PENDING_APPROVAL:
         template_name = 'email/package/pending_approval.html'
-        subject = '[%s] The status of your investments package changed' % package.PENDING_APPROVAL
+        subject = '[%s] The status of your investments in %s project changed' % (package.project.name, package.PENDING_APPROVAL)
     elif package.status == package.APPROVED:
         template_name = 'email/package/approved.html'
-        subject = '[%s] The status of your investments package changed' % package.APPROVED
+        subject = '[%s] The status of your investments in %s project changed' % (package.project.name, package.APPROVED)
     elif package.status == package.REJECTED:
         template_name = 'email/package/rejected.html'
-        subject = '[%s] The status of your investments package changed' % package.REJECTED
+        subject = '[%s] The status of your investments in %s project changed' % (package.project.name, package.REJECTED)
     elif package.status == package.PARTIALLY_APPROVED:
         template_name = 'email/package/partially_approved.html'
-        subject = '[%s] The status of your investments package changed' % package.PARTIALLY_APPROVED
+        subject = '[%s] The status of your investments in %s project changed' % (package.project.name, package.PARTIALLY_APPROVED)
     else:
         return
     # Render the HTML content
