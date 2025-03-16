@@ -77,14 +77,12 @@
                     <!-- /.col -->
                 </div>
             </form>
-            {% comment %}
-                <p class="mb-1">
-                    #} {# <a href="forgot-password.html">I forgot my password</a>#} {#
+                <p class="mt-1 mb-0">
+                    <a href="{% url 'usermanager:password_reset' %}">{% translate 'I forgot my password' %}</a>
                 </p>
-          {% endcomment %}
-                        <p class="mt-1 mb-0">
-                            <a href="{% url 'usermanager:signup' %}" class="text-center">{% translate 'Sign up as a partner' %}</a>
-                        </p>
+                <p class="mt-1 mb-0">
+                    <a href="{% url 'usermanager:signup' %}" class="text-center">{% translate 'Sign up as a partner' %}</a>
+                </p>
         </div>
         <!-- /.login-card-body -->
     </div>

@@ -116,21 +116,31 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 
 EXTERNAL_DATABASE_NAME = 'cddp'
 
-# DATABASES = {
-#     'default': env.db(),
-#     EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': '/Users/asucr/Downloads/database1.db',  # This is where you put the name of the db file.
-        # If one doesn't exist, it will be created at migration time.
-        'NAME': os.path.join(BASE_DIR, 'database1.db'),
-    }
- }
+    'default': env.db(),
+    # EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
+}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         #'NAME': '/Users/asucr/Downloads/database1.db',  # This is where you put the name of the db file.
+#         # If one doesn't exist, it will be created at migration time.
+#         'NAME': os.path.join(BASE_DIR, 'database1.db'),
+#     }
+#  }
 
 MAX_RESPONSE_DAYS = 3
+
+
+# Email configuration
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Example for Gmail
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'pursldp@gmail.com'
+EMAIL_HOST_PASSWORD = 'rzfayjwictywsyfj'
 
 
 # Internationalization
@@ -164,6 +174,8 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+FRONTEND_URL_ROOT = 'https://portail.purs.gouv.tg'
 
 LOGIN_URL = '/'
 

@@ -198,22 +198,6 @@
 {% endblock %}
 
 {% block modals %}
-{#  Deprecated  #}
-    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close btn-closeModal" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body mb-5">
-                </div>
-            </div>
-        </div>
-    </div>
-{#  /Deprecated  #}
-
     <div class="modal fade" id="attachmentFilterModal" tabindex="-1" role="dialog"
          aria-labelledby="attachmentFilterModalLabel"
          aria-hidden="true">
@@ -228,7 +212,6 @@
                 <div class="card-body">
                     <form action="" method="get">
                         <div class="form-checkbox-row">
-
                             <div class="form-checkbox">
                                 <label for="id_type_0"><input type="radio" name="type" value="Photo" id="id_type_0" required="" {% if 'type' in query_strings_raw and query_strings_raw.type == 'Photo' %}checked=""{% endif %}> Photo</label>
                             </div>
@@ -240,7 +223,6 @@
                             <div class="form-checkbox">
                                 <label for="id_type_2"><input type="radio" name="type" value="" id="id_type_2" required="" {% if not 'type' in query_strings_raw or query_strings_raw.type not in 'Photo,Document' %}checked=""{% endif %}> Both</label>
                             </div>
-
                         </div>
                         <br><br>
                         <div class="row">
@@ -309,8 +291,15 @@
                                         <label for="id_phase">{% translate 'Phase' %}</label>
                                     </div>
                                     <div class="form-select-row">
-                                        <select class="form-control" name="phase" id="id_phase" style="width: 100%;" disabled>
+                                        <select class="form-control" name="phase" id="id_phase" style="width: 100%;">
                                             <option selected value="">---</option>
+                                            {% for phase in phases %}
+                                                {% if 'phase' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.phase == phase %}
+                                                    <option value="{{ phase }}" selected>{{ phase }}</option>
+                                                {% else %}
+                                                    <option value="{{ phase }}">{{ phase }}</option>
+                                                {% endif %}
+                                            {% endfor %}
                                         </select>
                                     </div>
                                 </div>
@@ -355,7 +344,9 @@
             let current_page = "{{ request.path }}";
             let query_string = {{ filter_hierarchy_query_strings|safe }};
             const filter_inputs = [$('#id_region'), $('#id_prefecture'), $('#id_commune'), $('#id_canton'), 
-                $('#id_village'), $('#id_phase'), $('#id_activity'), $('#id_task')]
+                $('#id_village')]
+        
+            const development_inputs = [$('#id_phase'), $('#id_activity'), $('#id_task')]
 
             $('input[type=checkbox]').click(function (event) {
                 if (event.stopPropagation) {
@@ -369,7 +360,13 @@
             
             filter_inputs.forEach((input) => {
                 input.on('change', function(){
-                    change_filters_selects(input);
+                    change_filters_selects(input, filter_inputs);
+                });
+            });
+            
+            development_inputs.forEach((input) => {
+                input.on('change', function(){
+                    change_filters_selects(input, development_inputs);
                 });
             });
 
@@ -468,11 +465,11 @@
                 spin_attachments.hide();
             });
 
-            function change_filters_selects(select_input){
+            function change_filters_selects(select_input, context_inputs){
                 let empty_option = new Option("---", "", false, false);
-                let base_index = filter_inputs.indexOf(select_input);
-                let select_to_fill = filter_inputs[base_index + 1]
-                let other_selects = filter_inputs.slice(base_index + 2)
+                let base_index = context_inputs.indexOf(select_input);
+                let select_to_fill = context_inputs[base_index + 1]
+                let other_selects = context_inputs.slice(base_index + 2)
                 
                 let selected_value = select_input.find(":selected").val();
 
@@ -490,7 +487,11 @@
                             select_to_fill.empty();
                             select_to_fill.append(empty_option);
                             response.values.forEach((element) => {
-                                select_to_fill.append(new Option(element.name, element.id, false, false));
+                                if (['task', 'activity', 'phase'].includes(select_input.attr('name'))){
+                                    select_to_fill.append(new Option(element.name, element.name, false, false));
+                                }else{
+                                    select_to_fill.append(new Option(element.name, element.id, false, false));
+                                }
                             })
                         }
                     });

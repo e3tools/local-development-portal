@@ -1,0 +1,36 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize bootstrap4 custom_tags %}
+
+{% block extracss %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+    <link rel="stylesheet" href="{% static 'AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}" />
+{% endblock %}
+
+
+{% block content %}
+    <div class="row justify-content-lg-center">
+    
+    <div class="col-md-6 col-sm-12">
+        <table class="table datatable rounded-table">
+            <thead>
+            <tr>
+                <th class="align-middle" style="border-radius: 10px 10px 0 0;" colspan="2">{{ infrastructure|humanize_snakecase }} ({% translate category|humanize_snakecase %})</th>
+            </tr>
+            <tr>
+                <th class="rounded-0 border-sides-0 align-content-center">{% translate "Has It" %}</th>
+                <th class="rounded-0 border-sides-0 align-content-center">{% translate "Don't has it" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for has_it, dont_has_it in villages_that_has_it|default:''|zip:villages_that_dont_has_it|default:'' %}
+                <tr>
+                    <td><a href="{% url 'administrativelevels:village_detail' pk=has_it.id %}">{{ has_it.name }}</a></td>
+                    <td><a href="{% url 'administrativelevels:village_detail' pk=dont_has_it.id %}">{{ dont_has_it.name }}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+{% endblock %}

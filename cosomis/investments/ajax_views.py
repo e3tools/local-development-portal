@@ -10,8 +10,8 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
-from administrativelevels.models import AdministrativeLevel, Sector, Project
-from .models import Investment, Package
+from administrativelevels.models import AdministrativeLevel, Sector, Project, GeoSegment
+from .models import Investment, PackageFundedInvestment, Attachment
 from .serializers import InvestmentSerializer
 
 
@@ -52,7 +52,9 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
 class InvestmentModelViewSet(ModelViewSet):
     queryset = Investment.objects.filter(
         investment_status=Investment.PRIORITY,
-        project_status=Investment.NOT_FUNDED
+        funded_by__isnull=True,
+    ).exclude(
+        id__in=PackageFundedInvestment.objects.values_list("investment_id", flat=True)
     )
     serializer_class = InvestmentSerializer
 
@@ -61,12 +63,15 @@ class InvestmentModelViewSet(ModelViewSet):
         qs = self.get_queryset()
         inv_ids = request.data['selected_ids'].split('-')
         if '' in inv_ids: inv_ids.remove('')
-        if request.data['project_id']:
-            project = Project.objects.filter(id=request.data['project_id']).first()
-            project_amount = project.total_amount
-            project_id = project.id
-        else:
-            project = None
+        try:
+            if request.data['project_id']:
+                project = Project.objects.filter(id=request.data['project_id']).first()
+                project_amount = project.total_amount
+                project_id = project.id
+            else:
+                project_amount = 0
+                project_id = None
+        except:
             project_amount = 0
             project_id = None
 
@@ -80,8 +85,34 @@ class InvestmentModelViewSet(ModelViewSet):
             'project_id': project_id,
         })
 
+    @action(detail=False, methods=['POST'], url_path='total-results', url_name='total_results')
+    def total_investments_data(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        try:
+            if request.data['project_id']:
+                project = Project.objects.filter(id=request.data['project_id']).first()
+                project_amount = project.total_amount
+                project_id = project.id
+            else:
+                project_amount = 0
+                project_id = None
+        except:
+            project_amount = 0
+            project_id = None
+
+        return Response({
+            'total_funding_display': qs.aggregate(total_funding_display=Sum('estimated_cost'))['total_funding_display'] or 0,
+            'total_villages_display': qs.values('administrative_level').distinct().count(),
+            'total_subprojects_display': qs.count(),
+            'project_total_fund': project_amount,
+            'project_id': project_id,
+        })
+
     def get_serializer_context(self):
-        project = Project.objects.filter(id=self.request.query_params['project_id']).first() if 'project_id' in self.request.query_params and self.request.query_params['project_id'] else None
+        try:
+            project = Project.objects.filter(id=self.request.query_params['project_id']).first() if 'project_id' in self.request.query_params and self.request.query_params['project_id'] else None
+        except:
+            project = None
         context = {
             'request': self.request,
             'format': self.format_kwarg,
@@ -185,7 +216,40 @@ class InvestmentModelViewSet(ModelViewSet):
                     project_status=Investment.FUNDED
                 )
 
+        queryset = self._climate_filters(queryset)
+
         return queryset
+
+    def _climate_filters(self, base_queryset):
+        apply_filter = False
+        geoseg_queryset = GeoSegment.objects.all()
+        if "temperature-max-filter" in self.request.GET and self.request.GET[
+            "temperature-max-filter"] not in ["", None]:
+            geoseg_queryset = geoseg_queryset.filter(tmmx_avg_2020_diff__lte=self.request.GET["temperature-max-filter"])
+            apply_filter = True
+        if "temperature-min-filter" in self.request.GET and self.request.GET[
+            "temperature-min-filter"] not in ["", None]:
+            geoseg_queryset = geoseg_queryset.filter(tmmx_avg_2020_diff__gte=self.request.GET["temperature-min-filter"])
+            apply_filter = True
+
+        if "precipitation-min-filter" in self.request.GET and self.request.GET[
+            "precipitation-min-filter"] not in ["", None]:
+            geoseg_queryset = geoseg_queryset.filter(pr_avg_2020_diff__lte=self.request.GET["precipitation-min-filter"])
+            apply_filter = True
+        if "precipitation-max-filter" in self.request.GET and self.request.GET[
+            "precipitation-max-filter"] not in ["", None]:
+            geoseg_queryset = geoseg_queryset.filter(pr_avg_2020_diff__gte=self.request.GET["precipitation-max-filter"])
+            apply_filter = True
+
+        if "land-type-filter" in self.request.GET and self.request.GET[
+            "land-type-filter"] not in ["", None]:
+            geoseg_queryset = geoseg_queryset.filter(lc_gencat_20=self.request.GET["land-type-filter"])
+            apply_filter = True
+
+        if apply_filter:
+            return base_queryset.filter(administrative_level__geo_segment__id__in=Subquery(geoseg_queryset.values("id")))
+        else:
+            return base_queryset
 
 
 class StatisticsView(View):
@@ -220,7 +284,7 @@ class StatisticsView(View):
         if project_status and project_status is not None:
             filters &= Q(project_status=project_status)
         if organization and organization is not None:
-            filters &= Q(packages__in=(Subquery(Package.objects.filter(project__owner__organization=organization).values('funded_investments'))))
+            filters &= Q(funded_by__organization__id=organization)
         if sector and sector is not None:
             sector_type_list = list(Sector.objects.filter(category=sector).values('id', 'name'))
             sector_filter_active = True
@@ -289,6 +353,7 @@ class StatisticsView(View):
         ).values(
             'id',
             'title',
+            'administrative_level__id',
             'administrative_level__name',
             'latitude',
             'longitude',
@@ -302,6 +367,11 @@ class StatisticsView(View):
             subproject for subproject in subprojects_with_coordinates
             if not (math.isnan(subproject['latitude']) or math.isnan(subproject['longitude']))
         ]
+
+        for subproject in filtered_subprojects:
+            attachments = list(Attachment.objects.filter(investment__id=subproject['id']).values_list('url', flat=True)[:3])
+            if attachments:
+                subproject['attachments'] = attachments
 
         data = {
             'total_communities': total_communities,

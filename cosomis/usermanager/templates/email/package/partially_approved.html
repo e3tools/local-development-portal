@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification de mise à jour du statut</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #0073e6;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 20px;
+            color: #333;
+        }
+
+        .content h2 {
+            font-size: 20px;
+            color: #0073e6;
+        }
+
+        .content p {
+            line-height: 1.6;
+        }
+
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            color: #999;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0073e6;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Mise à jour du statut</h1>
+    </div>
+    <div class="content">
+        <h2>Mise à jour de l'état du paquet</h2>
+        <p>Chère {{ user_name }},</p>
+        <p>Nous avons le plaisir de vous informer que le statut de votre colis soumis le <strong>{{ package_submission_date }}</strong> a été mis à jour.</p>
+        <p><strong>Statut précédent:</strong> En attente d'approbation</p>
+        <p><strong>Nouveau statut:</strong> Partiellement approuvé</p>
+        <p>Certains articles de votre colis ont été approuvés, tandis que d'autres sont encore en cours d'examen.
+            Notre équipe travaille avec diligence pour terminer le processus d'approbation des articles restants.</p>
+        <p>Si vous avez des questions ou avez besoin d'aide supplémentaire, n'hésitez pas à nous contacter.</p>
+        <a href="{{ package_tracking_url }}" class="button">Suivez votre colis</a>
+    </div>
+    <div class="footer">
+        <p>&copy; {{ current_year }} COORDINATION GÉNÉRALE DU PURS. Tous droits réservés.</p>
+    </div>
+</div>
+</body>
+</html>

@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from administrativelevels.models import Project
 from usermanager.models import User
+from usermanager.utils import confirm_email_notification
 from .models import Package, Investment, PackageFundedInvestment
 
 
@@ -109,3 +110,4 @@ class UserApprovalForm(forms.Form):
             pass
 
         self.cleaned_data['user'].save()
+        confirm_email_notification(self.cleaned_data['user'])

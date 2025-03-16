@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import translation
-from django.views.generic import DetailView, ListView, CreateView, FormView
+from django.views.generic import DetailView, ListView, CreateView, FormView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import BaseFormView
 
@@ -160,9 +160,7 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredApproveRequiredM
         return ctx
 
 
-class AdministrativeLevelDetailView(
-    PageMixin, LoginRequiredApproveRequiredMixin, DetailView
-):
+class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
     """Class to present the detail page of one village"""
 
     model = AdministrativeLevel
@@ -170,6 +168,7 @@ class AdministrativeLevelDetailView(
     active_level1 = "administrative_levels"
 
     def __init__(self):
+        super().__init__()
         self.__investment_repository = DbInvestmentRepository()
 
     def post(self, request, *args, **kwargs):
@@ -196,11 +195,15 @@ class AdministrativeLevelDetailView(
 
         context["context_object_name"] = admin_level.type.lower()
 
+        if admin_level.children.all():
+            context['children_services_infrastructures'], context['children_services_infrastructures_total_ids'] = self.__get_upper_services_infrastructure(admin_level)
+            context['children_services_infrastructures_total_ids'] = list(set(context['children_services_infrastructures_total_ids']))
+
         context['phases'] = self._get_planning_cycle()
         context['development_plan'] = self._get_development_plan(context['phases'])
 
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
-        current_task = tasks_qs.filter(status=Task.IN_PROGRESS).first()
+        current_task = admin_level.get_current_task()
         current_activity = current_task.activity if current_task else None
         current_phase = current_activity.phase if current_activity else None
 
@@ -226,16 +229,12 @@ class AdministrativeLevelDetailView(
             "first_image": images[0] if len(images) > 0 else None,
         }
 
-        context["investments"] = Investment.objects.filter(
-            administrative_level=admin_level.id
-        )
+        context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
         context['children_coordinates'] = self._get_villages_coordinates_from_administrative_level(self.object)
 
-        package = Package.objects.get_active_cart(
-            user=self.request.user
-        )
+        package = Package.objects.get_active_cart(user=self.request.user)
         context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
 
         return context
@@ -318,6 +317,87 @@ class AdministrativeLevelDetailView(
                 coordinates += self._get_villages_coordinates_from_administrative_level(child)
         return coordinates
 
+    def __get_upper_services_infrastructure(self, parent):
+        children = parent.children.all()
+        final_resp = dict()
+        final_total_ids = list()
+        for child in children:
+            grandchildren = child.children.all()
+            if grandchildren:
+                base_resp, total_ids = self.__get_upper_services_infrastructure(child)
+            else:
+                base_resp = child.infrastructure
+                if base_resp is not None:
+                    for key, value in base_resp.items():
+                        for k, v in base_resp[key].items():
+                            if base_resp[key][k]:
+                                base_resp[key][k] = {'ids_true': [child.id]}
+                            else:
+                                base_resp[key][k] = {'ids_true': []}
+                            total_ids = [child.id]
+                else:
+                    final_total_ids += [child.id]
+                    print('###')
+                    print("Village without infrastructure: ", child.id)
+                    print('###')
+
+            if base_resp is not None:
+                for key, value in base_resp.items():
+                    if key in final_resp:
+                        for i, v  in base_resp[key].items():
+                            if i in final_resp[key]:
+                                final_resp[key][i]['ids_true'] += base_resp[key][i]['ids_true']
+                            else:
+                                final_resp[key][i] = base_resp.key.i
+                            final_total_ids += total_ids
+                    else:
+                        final_resp[key] = base_resp[key]
+                        final_total_ids += total_ids
+
+        return final_resp, final_total_ids
+
+
+class AdministrativeLevelInfrastructureDistributionDetailView(
+    PageMixin, LoginRequiredApproveRequiredMixin, TemplateView
+):
+    template_name = 'administrative_level/infrastructure.html'
+    category = None
+    
+    def get_context_data(self, **kwargs):
+        obj = AdministrativeLevel.objects.get(id=self.kwargs['pk'])
+        context = super().get_context_data(**kwargs)
+        context['title'] = "{} {}".format(obj.type, obj.name)
+        context['villages_that_has_it'], villages = self.__get_villages_services_infrastructure(obj)
+        context['villages_that_dont_has_it'] = [village for village in villages if village not in context['villages_that_has_it']]
+        context['infrastructure'] = self.kwargs['infrastructure']
+        context['category'] = self.category
+        return context
+
+    def __get_villages_services_infrastructure(self, parent):
+        children = parent.children.all()
+        has_it = list()
+        villages = list()
+        for child in children:
+            grandchildren = child.children.all()
+            if grandchildren:
+                has_it_aux, dont_has_it_aux = self.__get_villages_services_infrastructure(child)
+                has_it += has_it_aux
+                villages += dont_has_it_aux
+            else:
+                if child.infrastructure is not None:
+                    has_it_bool = False
+                    for key, value in child.infrastructure.items():
+                        for k, v in child.infrastructure[key].items():
+                            if k == self.kwargs['infrastructure'] and child.infrastructure[key][k] == True:
+                                has_it_bool = True
+                                if self.category is None:
+                                    self.category = key
+                    if has_it_bool:
+                        has_it.append(child)
+                villages.append(child)
+
+        return has_it, villages
+
 
 class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
 
@@ -326,6 +406,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
     active_level1 = "administrative_levels"
 
     def __init__(self):
+        super().__init__()
         self.__investment_repository = DbInvestmentRepository()
 
     def post(self, request, *args, **kwargs):
@@ -598,7 +679,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
 
         if 'image_input' in request.FILES:
             investment = Investment.objects.filter(
-                packages__project=self.object,
+                funded_by__id=self.object.id,
             ).exclude(project_status=Investment.NOT_FUNDED).get(id=request.POST['investment'])
             succeeded, new_attachment = Attachment.investment_upload(investment=investment, image=request.FILES.get('image_input'))
             if succeeded:
@@ -627,12 +708,19 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
     def get_context_data(self, **kwargs):
         self.title = self.object.name
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
-        project = kwargs["object"]
+        project = self.object
         context["packages"] = project.packages.all().order_by("created_date")
         inv_ids = list()
         for package in context["packages"]:
             inv_ids += package.funded_investments.all().values_list("id", flat=True)
-        context["investments"] = Investment.objects.filter(funded_by__id=self.object.id)
+        context["investments"] = Investment.objects.filter(funded_by__id=self.object.id).exclude(
+            packages__in=Subquery(
+                Package.objects.filter(
+                    user=self.request.user,
+                    status__in=[Package.PENDING_SUBMISSION]
+                ).values_list("id")
+            )
+        )
         context["project_status"] = Investment.PROJECT_STATUS_CHOICES
         context["organization"] = project.owner.organization
         context["project"] = project
@@ -641,6 +729,13 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             user_qs = context["organization"].users.all().values_list("id")
             investments_qs = Investment.objects.filter(
                 packages__user__id__in=Subquery(user_qs)
+            ).exclude(
+                packages__in=Subquery(
+                    Package.objects.filter(
+                        user=self.request.user,
+                        status__in=[Package.PENDING_SUBMISSION]
+                    ).values_list("id")
+                )
             )
             context["organization"].total_investments = investments_qs.count()
             context["organization"].total_investments_amount = investments_qs.aggregate(
@@ -651,6 +746,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         context["datatable_config"]["responsive"] = "true"
 
         context["investments_datatable_config"] = context["datatable_config"].copy()
+        context["investments_datatable_config"]["pageLength"] = 500
         context["investments_datatable_config"]["columnDefs"] = [
             {"responsivePriority": 1, "targets": 0},
             {"responsivePriority": 2, "targets": 1},
@@ -674,7 +770,9 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
 
     def form_valid(self, form):
         form.save()
-        return super().form_valid(form)
+        messages.add_message(self.request, messages.SUCCESS, _("Project updated."))
+        context = self.get_context_data()
+        return self.render_to_response(context)
 
     def get_form_kwargs(self):
         """Return the keyword arguments for instantiating the form."""
@@ -687,6 +785,9 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         queryset = super().get_queryset()
         queryset = queryset.filter(organization=self.request.user.organization)
         return queryset
+
+    def get_success_url(self):
+        return reverse('administrativelevels:project-detail', kwargs={'pk': self.object.pk})
 
 
 class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
@@ -703,7 +804,8 @@ class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
         #return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
         return reverse('administrativelevels:projects')
 
-class BulkUploadInvestmentsView(PageMixin, IsInvestorMixin, SingleObjectMixin, FormView):
+
+class BulkUploadInvestmentsView(PageMixin, AdminPermissionRequiredMixin, SingleObjectMixin, FormView):
     form_class = BulkUploadInvestmentsForm
     template_name = 'project/create/bulk_upload_investments.html'
     queryset = Project.objects.all()
@@ -804,6 +906,7 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         context["regions"] = AdministrativeLevel.objects.filter(
             type=AdministrativeLevel.REGION
         )
+        context['phases'] = Phase.objects.all().values_list('name', flat=True).distinct()
 
         query_params: dict = self.request.GET
 
@@ -846,24 +949,28 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
             current_filter_level = self.filter_hierarchy[index]
             next_filter_level = self.filter_hierarchy[index + 1] if index + 1 < len(self.filter_hierarchy) else None
             if current_filter_level == "task":
-                task = Task.objects.get(id=int(get_value))
-                resp[current_filter_level] = task.id
-                resp[next_filter_level] = task.activity.id
+                # task = Task.objects.get(id=int(get_value))
+                resp[current_filter_level] = get_value
+                resp[next_filter_level] = self.request.GET[next_filter_level]
             if current_filter_level == "activity":
-                activity = Activity.objects.get(id=int(get_value))
-                resp[current_filter_level] = activity.id
-                resp[next_filter_level] = activity.phase.id
+                # activity = Activity.objects.get(id=int(get_value))
+                resp[current_filter_level] = get_value
+                resp[next_filter_level] = self.request.GET[next_filter_level]
             if current_filter_level == "phase":
-                phase = Phase.objects.get(id=int(get_value))
-                resp[current_filter_level] = phase.id
-                resp[next_filter_level] = phase.village.id
+                # phase = Phase.objects.filter(name=get_value)
+                resp[current_filter_level] = get_value
+                if next_filter_level in self.request.GET:
+                    resp[next_filter_level] = int(self.request.GET[next_filter_level])
             if current_filter_level in [adm_type[0].lower() for adm_type in AdministrativeLevel.TYPE]:
-                adm_lvl = AdministrativeLevel.objects.get(id=int(get_value))
+                try:
+                    adm_lvl = AdministrativeLevel.objects.get(id=int(self.request.GET[current_filter_level]))
+                except:
+                    adm_lvl = AdministrativeLevel.objects.get(id=int(get_value))
                 resp[current_filter_level] = adm_lvl.id
                 if hasattr(adm_lvl, "parent") and adm_lvl.parent is not None and len(self.filter_hierarchy) > index + 1:
                     resp[next_filter_level] = adm_lvl.parent.id
 
-            if len(self.filter_hierarchy) > index + 1:
+            if len(self.filter_hierarchy) > index + 1 and 'village' in self.request.GET and self.request.GET['village'] is not None:
                 return _build_filter_hierarchy(index + 1, resp[next_filter_level])
             return resp
 
@@ -876,27 +983,32 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         queryset = super().get_queryset()
         empty_list = ["", None]
 
-        if "tasks" in self.request.GET and self.request.GET["tasks"] not in empty_list:
-            queryset = queryset.filter(
-                task__id=self.request.GET["tasks"]
-            )
-        elif "activities" in self.request.GET and self.request.GET["activities"] not in empty_list:
-            queryset = queryset.filter(
-                task__activity__id=self.request.GET["activities"]
-            )
-        elif "phase" in self.request.GET and self.request.GET["phase"] not in empty_list:
-            queryset = queryset.filter(
-                task__activity__phase__id=self.request.GET["phase"]
-            )
-        else:
-            adm_lvls = [adm_name[0].lower() for adm_name in AdministrativeLevel.TYPE]
-            adm_list = [adm_type for adm_type in adm_lvls if adm_type in self.request.GET]
-            adm_type = adm_list[0] if adm_list else None
+        request_get = self.request.GET.copy()
+        for filter_hierarchy in self.filter_hierarchy:
+            if filter_hierarchy in request_get and request_get[filter_hierarchy] in [None, ""]:
+                request_get.pop(filter_hierarchy)
 
-            if adm_type and self.request.GET[adm_type] not in empty_list:
-                administrative_levels = AdministrativeLevel.objects.get(id=self.request.GET[adm_type])
-                descendants = administrative_levels.get_all_descendants()
-                queryset = queryset.filter(adm__id__in=[decs.id for decs in descendants])
+        if "tasks" in request_get and request_get["tasks"] not in empty_list:
+            queryset = queryset.filter(
+                task__id=request_get["tasks"]
+            )
+        elif "activities" in request_get and request_get["activities"] not in empty_list:
+            queryset = queryset.filter(
+                task__activity__id=request_get["activities"]
+            )
+        elif "phase" in request_get and request_get["phase"] not in empty_list:
+            queryset = queryset.filter(
+                task__activity__phase__name=request_get["phase"]
+            )
+
+        adm_lvls = [adm_name[0].lower() for adm_name in AdministrativeLevel.TYPE]
+        adm_list = [adm_type for adm_type in adm_lvls if adm_type in request_get]
+        adm_type = adm_list[0] if adm_list else None
+
+        if adm_type and request_get[adm_type] not in empty_list:
+            administrative_levels = AdministrativeLevel.objects.get(id=request_get[adm_type])
+            descendants = administrative_levels.get_all_descendants()
+            queryset = queryset.filter(adm__id__in=[decs.id for decs in descendants] + [administrative_levels.id])
 
         ordering = self.get_ordering()
         if ordering:
@@ -939,7 +1051,7 @@ def attachment_download_zip(self, adm_id: int):
     buffer = BytesIO()
     zip_file = zipfile.ZipFile(buffer, "w")
     for id in ids:
-        url = Attachment.objects.get(id=int(id)).url
+        url = Attachment.objects.get(id=int(id)).url.split("?")[0]
         response = requests.get(url)
         if response.status_code == 200:
             content_disposition = response.headers.get("content-disposition")

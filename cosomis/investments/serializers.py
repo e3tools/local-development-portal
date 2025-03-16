@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.urls import reverse
 
 from investments.models import Investment
 from django.utils.translation import gettext_lazy as _
@@ -20,17 +21,18 @@ class InvestmentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_select_input(self, obj):
-        if 'all_queryset' in self.context and self.context['all_queryset'] == 'false':
+        if 'all_queryset' in self.context and self.context['all_queryset'] == 'true':
             return '<input class="project-table-check" id="checkbox-' + str(obj.id) + '" value="' + str(
-                obj.id) + '" type="checkbox">'
+                obj.id) + '" type="checkbox" checked>'
         return '<input class="project-table-check" id="checkbox-' + str(obj.id) + '" value="' + str(
-            obj.id) + '" type="checkbox" checked>'
+            obj.id) + '" type="checkbox">'
 
     def get_administrative_level__type(self, obj):
         return obj.administrative_level.type
 
     def get_administrative_level__name(self, obj):
-        return obj.administrative_level.name
+        url = reverse('administrativelevels:village_detail', args=[obj.administrative_level.id])
+        return '<a href="{}">{}</a>'.format(url, obj.administrative_level.name)
 
     def get_administrative_level__parent__name(self, obj):
         return obj.administrative_level.parent.name

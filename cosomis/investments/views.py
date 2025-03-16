@@ -8,11 +8,12 @@ from django.urls import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
+from django.db.models import Subquery, Sum, Count
 from urllib.parse import urlencode
 from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
 
 from usermanager.models import User
-from administrativelevels.models import AdministrativeLevel, Category, Sector, Project
+from administrativelevels.models import AdministrativeLevel, Category, Sector, Project, GeoSegment
 
 from usermanager.permissions import IsInvestorMixin, IsModeratorMixin
 
@@ -25,6 +26,7 @@ from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
 class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
     template_name = "investments/profile.html"
 
+
     def get_object(self, queryset=None):
         """
         Return the object the view is displaying.
@@ -33,6 +35,30 @@ class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
         Subclasses can override this to return any object.
         """
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "{} {} ".format(self.request.user.first_name, self.request.user.last_name) + _("profile")
+
+        context["organization"] = self.request.user.organization
+
+        if context["organization"] is not None:
+            user_qs = context["organization"].users.all().values_list("id")
+            investments_qs = Investment.objects.filter(
+                packages__user__id__in=Subquery(user_qs)
+            )
+            context["organization"].total_investments = investments_qs.count()
+            context["organization"].total_investments_amount = investments_qs.aggregate(
+                Sum("estimated_cost")
+            )["estimated_cost__sum"]
+
+        user_investments_qs = Investment.objects.filter(packages__user=self.request.user)
+        context['user_investments'] = user_investments_qs.count()
+        context['user_investments_commited_funds'] = user_investments_qs.aggregate(
+                Sum("estimated_cost")
+            )["estimated_cost__sum"]
+        context['user_investments_target_communities'] = user_investments_qs.values('administrative_level').distinct().count()
+        return context
 
 
 class IndexListView(
@@ -143,6 +169,8 @@ class IndexListView(
             {"id": 2, "name": _("Priorities 1 and 2")},
             {"id": 3, "name": _("All priorities")}
         ]
+
+        kwargs["land_types"] = ['Grassland', 'Cropland', 'Savanna', 'Cropland Mosaic', 'Urban/Built-Up Land', 'Water']
 
         kwargs["query_strings"] = self.get_query_strings_context()
         kwargs["query_strings_raw"] = self.request.GET.copy()
@@ -536,10 +564,16 @@ class InvestorApprovesListView(IsInvestorMixin, PageMixin, generic.ListView):
         return self.render_to_response(context)
 
     def get_package_queryset(self):
-        queryset = self.package_model._default_manager.filter(
+        queryset = self.package_model._default_manager.annotate(
+            investments_count=Count('funded_investments')
+        ).filter(
             user_id=self.request.user.id
-        )
+        ).exclude(investments_count=0)
         ordering = self.get_ordering()
+        packages_list = list(queryset)
+        for pck in packages_list:
+            pck.acknowledge_by_investor = True
+        Package.objects.bulk_update(packages_list, fields=['acknowledge_by_investor'])
         if ordering:
             if isinstance(ordering, str):
                 ordering = (ordering,)
@@ -586,6 +620,7 @@ class InvestorApprovesListView(IsInvestorMixin, PageMixin, generic.ListView):
         if self.extra_context is not None:
             context.update(self.extra_context)
         return context
+
 
 class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
     template_name = "investments/moderator/approvals_list.html"
@@ -659,6 +694,7 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
             is_approved=None, is_moderator=False
         ).order_by("date_joined")
         return queryset
+
 
 class ModeratorPackageReviewView(
     IsModeratorMixin, PageMixin, generic.FormView, generic.DetailView
