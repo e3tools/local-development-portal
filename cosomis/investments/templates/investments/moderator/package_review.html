@@ -402,10 +402,8 @@
                                 <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
                                 <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
                                 <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Region' %}</th>
-                                <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
-                                <th data-priority="10" class="align-middle rounded-0 border-0">{% translate 'Population priority' %}</th>
                                 <th data-priority="11" class="align-middle rounded-0 border-0">{% translate 'Status' %}</th>
-                                <th data-priority="12" class="align-middle rounded-0 border-0">{% translate 'Reason' %}</th>
+{#                                <th data-priority="12" class="align-middle rounded-0 border-0">{% translate 'Reason' %}</th>#}
                                 <th data-priority="13" class="align-middle border-top-right-corner border-bottom-0"></th>
                             </thead>
                         <tbody>
@@ -417,27 +415,27 @@
                             <td>{{ package_investment.investment.title }}</td>
                             <td>{{ package_investment.investment.administrative_level.type }}</td>
                             <td data-order="{{ package_investment.investment.estimated_cost }}" data-search="{{ package_investment.investment.estimated_cost }}">
-                                {{ investment.estimated_cost|intcomma }} FCFA
+                                {{ package_investment.investment.estimated_cost }} FCFA
                             </td>
                             <td>{{ package_investment.investment.administrative_level.name }}</td>
                             <td>{{ package_investment.investment.administrative_level.parent.parent.name }}</td>
                             <td>{{ package_investment.investment.administrative_level.parent.parent.parent.name }}</td>
                             <td>{{ package_investment.investment.administrative_level.parent.parent.parent.parent.name }}</td>
-                            <td>{{ package_investment.investment.ranking }}</td>
-                            <td>
-                                {% if package_investment.investment.endorsed_by_youth %}
-                                    J{% if package_investment.investment.endorsed_by_women or package_investment.investment.endorsed_by_agriculturist or package_investment.investment.endorsed_by_pastoralist %},{% endif %}
-                                {% endif %}
-                                {% if package_investment.investment.endorsed_by_women %}
-                                    F{% if package_investment.investment.endorsed_by_agriculturist or package_investment.investment.endorsed_by_pastoralist %},{% endif %}
-                                {% endif %}
-                                {% if package_investment.investment.endorsed_by_agriculturist %}
-                                    AG{% if package_investment.investment.endorsed_by_pastoralist %},{% endif %}
-                                {% endif %}
-                                {% if package_investment.investment.endorsed_by_pastoralist %}
-                                    ME
-                                {% endif %}
-                            </td>
+{#                            <td>{{ package_investment.investment.ranking }}</td>#}
+{#                            <td>#}
+{#                                {% if package_investment.investment.endorsed_by_youth %}#}
+{#                                    J{% if package_investment.investment.endorsed_by_women or package_investment.investment.endorsed_by_agriculturist or package_investment.investment.endorsed_by_pastoralist %},{% endif %}#}
+{#                                {% endif %}#}
+{#                                {% if package_investment.investment.endorsed_by_women %}#}
+{#                                    F{% if package_investment.investment.endorsed_by_agriculturist or package_investment.investment.endorsed_by_pastoralist %},{% endif %}#}
+{#                                {% endif %}#}
+{#                                {% if package_investment.investment.endorsed_by_agriculturist %}#}
+{#                                    AG{% if package_investment.investment.endorsed_by_pastoralist %},{% endif %}#}
+{#                                {% endif %}#}
+{#                                {% if package_investment.investment.endorsed_by_pastoralist %}#}
+{#                                    ME#}
+{#                                {% endif %}#}
+{#                            </td>#}
                             <td>
                                 {% if package_investment.status == package_investment.PENDING_APPROVAL %}
                                     {% translate 'Pending Approval' %}
@@ -447,11 +445,11 @@
                                     {% translate 'Rejected' %}
                                 {% endif %}
                             </td>
-                            <td>
-                                {% if package_investment.rejection_reason is not None %}
-                                    {{ package_investment.rejection_reason }}
-                                {% endif %}
-                            </td>
+{#                            <td>#}
+{#                                {% if package_investment.rejection_reason is not None %}#}
+{#                                    {{ package_investment.rejection_reason }}#}
+{#                                {% endif %}#}
+{#                            </td>#}
                             <td>
                                 {% if package_investment.status == package_investment.PENDING_APPROVAL %}
                                     <form action="" method="post" name="approve-package-item-form" id="approve-package-item-form-id-{{ package_investment.id }}">
