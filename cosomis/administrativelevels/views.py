@@ -12,8 +12,9 @@ from django.views.generic import DetailView, ListView, CreateView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import BaseFormView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from openpyxl.workbook import child
 
+from investments.domain.investment_criteria import InvestmentCriteria
+from investments.infrastructure.repositories.db_investment_repository import DbInvestmentRepository
 from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixin
 from .forms import AdministrativeLevelForm
 from cosomis.mixins import PageMixin
@@ -169,6 +170,9 @@ class AdministrativeLevelDetailView(
     template_name = "administrative_level/detail/index.html"
     active_level1 = "administrative_levels"
 
+    def __init__(self):
+        self.__investment_repository = DbInvestmentRepository()
+
     def post(self, request, *args, **kwargs):
         if 'cart-toggle' in request.POST:
             investment = Investment.objects.get(id=request.POST['cart-toggle'])
@@ -186,9 +190,7 @@ class AdministrativeLevelDetailView(
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
             if context["object"].is_village():
-                context["investments"] = Investment.objects.filter(
-                    administrative_level=self.object
-                )
+                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
                 context['geo_segment'] = context["object"].geo_segment
         admin_level = context.get("object")
 
@@ -317,6 +319,9 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
     template_name = "commune/commune_detail.html"
     active_level1 = "administrative_levels"
 
+    def __init__(self):
+        self.__investment_repository = DbInvestmentRepository()
+
     def post(self, request, *args, **kwargs):
         if 'cart-toggle' in request.POST:
             investment = Investment.objects.get(id=request.POST['cart-toggle'])
@@ -360,9 +365,7 @@ class CommuneDetailView(PageMixin, LoginRequiredMixin, DetailView):
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
             if context["object"].is_village():
-                context["investments"] = Investment.objects.filter(
-                    administrative_level=self.object
-                )
+                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
         admin_level = context.get("object")
 
         context["context_object_name"] = admin_level.type.lower()
