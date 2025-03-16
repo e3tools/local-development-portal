@@ -1,0 +1,82 @@
+{% load humanize static i18n %}
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="mask-icon" href="{% static 'images/safari-pinned-tab.svg' %}" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <title>{% translate 'Log in' %}</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"/>
+    <!-- Font Awesome Free 5.13.0 -->
+    <link rel="stylesheet" href="{% static 'AdminLTE/plugins/fontawesome-free/css/all.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'AdminLTE/plugins/fontawesome-free/css/v4-shims.min.css' %}"/>
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="{% static 'AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+    <link href="{% static 'css/fonts.css' %}" rel="stylesheet">
+</head>
+<style>
+    .structure_name {
+    font-size: 22px; /* Taille de police plus grande */
+    font-weight: 500;
+    color: #196A62;
+    margin-bottom: 0px; /* Espace en dessous */
+    line-height: 1.2; /* Pour espacer les lignes */
+    }
+
+</style>
+
+<div class="structure_name">
+    <small>{% translate 'Your email was successfully confirm!' %}</small><br>
+    <small><a href="{% url 'dashboard:dashboard' %}" class="btn btn-primary">{% translate 'Take me home.' %}</a></small>
+</div>
+<body class="hold-transition login-page">
+{%  if OTHER_LANGUAGES %}
+    <nav class="main-header navbar navbar-expand">
+        <ul class="navbar-nav ml-auto">
+            {% include 'layouts/language_dropdown.html' %}
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item white-shaded-nav-item">
+                <a class="nav-link" href="{% url 'usermanager:logout' %}" title="{% translate 'Logout' %}"
+                   role="button">
+                    <i class="fa fa-sign-out align-bottom"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+<div class="login-box">
+<!--     <div class="text-center"> -->
+<!--         <img src="{% static 'images/logos/rtg.jpg' %}" alt="PURS Logo" class="profile-user-img img-fluid img-circle mb-3" style="opacity: .8; width: 50%"> -->
+<!--     </div> -->
+    <!-- /.login-logo -->
+
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{% static 'AdminLTE/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'AdminLTE/dist/js/adminlte.js' %}"></script>
+<!-- Django Translation -->
+<script src="{% static 'js/setLanguajeDjangoTranslation.js' %}"></script>
+</body>
+</html>

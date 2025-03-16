@@ -20,8 +20,14 @@ class UpdateInvestmentForm(forms.ModelForm):
 
 class ProjectForm(forms.ModelForm):
 
-    start_date = forms.DateField(input_formats=["%d/%m/%Y"])
-    end_date = forms.DateField(input_formats=["%d/%m/%Y"])
+    start_date = forms.DateField(
+        widget=forms.DateInput(format="%d/%m/%Y", attrs={'class': 'form-control', 'placeholder': 'DD/MM/YYYY'}),
+        input_formats=["%d/%m/%Y"]
+    )
+    end_date = forms.DateField(
+        widget=forms.DateInput(format="%d/%m/%Y", attrs={'class': 'form-control', 'placeholder': 'DD/MM/YYYY'}),
+        input_formats=["%d/%m/%Y"]
+    )
 
     class Meta:
         model = Project

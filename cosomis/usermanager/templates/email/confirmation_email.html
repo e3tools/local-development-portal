@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to the Emergency Program to Strengthen Community Resilience and Security</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+
+            .email-container {
+                max-width: 600px;
+                margin: 20px auto;
+                background: #ffffff;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .header {
+                background-color: #0073e6;
+                color: white;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 20px;
+                color: #333;
+            }
+
+            .content h2 {
+                font-size: 20px;
+                color: #0073e6;
+            }
+
+            .content p {
+                line-height: 1.6;
+            }
+
+            .footer {
+                background-color: #f4f4f4;
+                text-align: center;
+                color: #999;
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            .button {
+                display: inline-block;
+                margin-top: 20px;
+                padding: 10px 20px;
+                background-color: #0073e6;
+                color: white;
+                text-decoration: none;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+
+            .button:hover {
+                background-color: #005bb5;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="header">
+                <h1>Bienvenue {{ user_name }}!</h1>
+            </div>
+            <div class="content">
+                <p>Chère {{ user_name }},</p>
+                <p>
+                    Félicitations! Votre inscription au <strong>Programme d’urgence pour renforcer la résilience et la
+                    sécurité</strong> des communautés a été examinée et approuvée par notre équipe.
+                </p>
+                <p>
+                    Pour finaliser le processus et activer votre compte, veuillez confirmer votre adresse e-mail en cliquant sur le bouton ci-dessous:
+                </p>
+                <p><a href="{{ confirmation_link }}" target="_blank">Confirmez votre email</a></p>
+                <p>
+                    Si le bouton ne fonctionne pas, copiez et collez le lien suivant dans votre navigateur: <br>
+                    <a href="{{ confirmation_link }}">{{ confirmation_link }}</a>
+                </p>
+                <p>Cette dernière étape garantit la sécurité de votre compte et vous donne un accès complet à nos ressources et outils.</p>
+                <p>Si vous avez des questions ou si vous n'avez pas postulé à ce programme, veuillez nous contacter à [support email]. Nous sommes là pour vous aider !</p>
+                <p>Merci de vous joindre à nous dans cette initiative essentielle visant à bâtir des communautés plus fortes et plus sûres.</p>
+            </div>
+            <div class="footer">
+                <p>&copy; {{ current_year }} COORDINATION GÉNÉRALE DU PURS. Tous droits réservés.</p>
+            </div>
+        </div>
+    </body>
+</html>

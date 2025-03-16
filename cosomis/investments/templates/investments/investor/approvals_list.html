@@ -63,7 +63,7 @@
                                     <th>{% translate 'Total amount' %}</th>
                                     <th>{% translate 'Organization' %}</th>
                                     <th>{% translate 'Status' %}</th>
-                                    <th>{% translate 'Notes' %}</th>
+                                    <th>{% translate 'Reject reason' %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -91,11 +91,7 @@
                                     </td>
                                     <td>
                                         {% if package.status != package.PENDING_APPROVAL and package.status != package.PENDING_SUBMISSION %}
-                                            <span>{% translate 'Review by' %}</span> <b>{{ package.review_by }}</b>
                                             {% if package.status == package.REJECTED %}
-                                                <br>
-                                                <br>
-                                                <span>{% translate 'Reason' %}:</span>
                                                 <b>
                                                     {% if package.rejection_reason is None %} {% translate 'No reason' %} {% else %} {{ package.rejection_reason }} {% endif %}
                                                 </b>

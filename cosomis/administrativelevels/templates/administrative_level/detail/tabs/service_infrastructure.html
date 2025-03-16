@@ -1,0 +1,31 @@
+{% load static i18n humanize custom_tags %}
+
+<div class="row">
+    {% for key, subdict in object.infrastructure.items %}
+    <div class="col-md-6 col-sm-12">
+        <table class="table datatable rounded-table">
+            <thead>
+            <tr>
+                <th class="align-middle" style="border-radius: 10px 10px 0 0;" colspan="2">{% translate key|humanize_snakecase %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item_name, value in subdict.items reversed %}
+                <tr>
+                    <td>{{ item_name|humanize_snakecase }}</td>
+                    <td>
+                        {% if value %}
+                            {% if value != True %}
+                                {{ value }}
+                            {% else %}
+                                ✓
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>

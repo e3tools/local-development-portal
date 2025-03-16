@@ -83,6 +83,7 @@ class Investment(BaseModel): # Investment module
     funded_by = models.ForeignKey(
         Project,
         on_delete=models.SET_NULL,
+        related_name="investments",
         null=True,
         blank=True,
     )
@@ -128,6 +129,7 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     funded_investments = models.ManyToManyField(Investment, through="PackageFundedInvestment", related_name="packages")
     draft_status = models.BooleanField(default=True)
     status = models.CharField(max_length=50, choices=STATUS, default=PENDING_SUBMISSION)
+    acknowledge_by_investor = models.BooleanField(default=False)
 
     review_by = models.ForeignKey(User, on_delete=models.SET_NULL,
                                   help_text=_("User who reviews the status of the Package. This user must be a moderator."),
@@ -139,6 +141,7 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
         return self.funded_investments.all().aggregate(
             estimated_final_cost=models.Sum("estimated_cost")
         )["estimated_final_cost"]
+
 
 class PackageFundedInvestment(BaseModel):
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
@@ -193,6 +196,7 @@ class PackageFundedInvestment(BaseModel):
 
         self.package.save()
 
+
 class Attachment(BaseModel):
     """
     parent info and tasks info
@@ -239,6 +243,7 @@ class Attachment(BaseModel):
                 name=object_name,
                 type=cls.PHOTO,
                 investment=investment,
+                adm=investment.administrative_level,
                 url=file_url
             )
 

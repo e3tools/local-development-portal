@@ -24,7 +24,11 @@ function loadGeoJsonMap(
                 let parsed = JSON.parse(input);
 
                 // Check if parsed is actually an array of arrays
-                return parsed.villages;
+                 if (Array.isArray(parsed)) {
+                    return parsed;
+                 }else{
+                    return [parsed];
+                 }
             } catch (error) {
                 console.error("Invalid input format:", error.message);
                 return null;
@@ -139,7 +143,7 @@ function loadGeoJsonMap(
         // .setLngLat(admin_level_coordinates)
         // .addTo(mymap)
 
-        admin_level_coordinates = (parseListOfLists(admin_level_coordinates));
+        admin_level_coordinates = parseListOfLists(admin_level_coordinates);
         admin_level_coordinates.forEach( coord => {
             const popup = new mapboxgl.Popup({ offset: 25 }).setText(coord.name);
             let marker = new mapboxgl.Marker()
