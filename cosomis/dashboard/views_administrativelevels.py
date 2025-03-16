@@ -113,8 +113,8 @@ class DashboardWaveListView(DashboardAdministrativeLevelMixin, AJAXRequestMixin,
             
             cantons = []
             for adl_wave in administrative_levels_waves:
-                if adl_wave.administrative_level and adl_wave.administrative_level.type == "Canton":
-                    cantons.append(adl_wave.administrative_level)
+                if adl_wave.administrative_level_id and adl_wave.administrative_level_id.type == "Canton":
+                    cantons.append(adl_wave.administrative_level_id)
 
             cantons_ids = []
             villages_ids = []
@@ -335,7 +335,7 @@ class DashboardSummaryAdministrativeLevelNumberListView(DashboardAdministrativeL
             for assign in assigns:
                 for column in columns:
                     if column != "Village":
-                        l = get_administrative_level_id_ascendant(assign.administrative_level.id, column)
+                        l = get_administrative_level_id_ascendant(assign.administrative_level_id.id, column)
                         dict_dict[column] += l
                     elif column == "Village" and not dict_dict.get(column):
                         dict_dict[column] = [_id[0] for _id in assigns.values_list('id')]
@@ -410,14 +410,14 @@ class DashboardSummaryAdministrativeLevelAllocationListView(DashboardAdministrat
             
         count = 0
         for line in lines:
-            _ids = ([line.administrative_level.id] + get_administrative_level_ids_descendants(line.administrative_level.id, None, []))
+            _ids = ([line.administrative_level_id.id] + get_administrative_level_ids_descendants(line.administrative_level_id.id, None, []))
             for component in components:
-                datas[_("Cantons")][count] = line.administrative_level.name
+                datas[_("Cantons")][count] = line.administrative_level_id.name
                 datas[_("Component")][count] = component.name
 
                 try:
                     amount__sum = AdministrativeLevelAllocation.objects.filter(
-                        administrative_level__id=line.administrative_level.id, project_id=project_id,
+                        administrative_level__id=line.administrative_level_id.id, project_id=project_id,
                         cvd=None,
                         component_id=component.id
                     ).aggregate(Sum('amount'))['amount__sum']

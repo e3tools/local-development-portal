@@ -93,6 +93,9 @@ class Investment(BaseModel): # Investment module
     def __str__(self):
         return f'{self.title}'
 
+    def is_not_funded(self):
+        return self.project_status == Investment.NOT_FUNDED
+
 
 class Package(BaseModel):  # investments module (orden de compra(cart de invesments(products)))
     PENDING_SUBMISSION = "PS"
@@ -243,7 +246,7 @@ class Attachment(BaseModel):
                 name=object_name,
                 type=cls.PHOTO,
                 investment=investment,
-                adm=investment.administrative_level,
+                adm=investment.administrative_level_id,
                 url=file_url
             )
 

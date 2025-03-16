@@ -12,9 +12,11 @@ from django.views.generic import DetailView, ListView, CreateView, FormView, Tem
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import BaseFormView
 
-from investments.domain.investment_criteria import InvestmentCriteria
+from investments.domain.criterias.investment_criteria import InvestmentCriteria
 from investments.infrastructure.repositories.db_investment_repository import DbInvestmentRepository
+from investments.infrastructure.repositories.db_package_repository import DbPackagesRepository
 from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixin
+from .domain.criterias.administrative_level_criteria import AdministrativeLevelCriteria
 from .forms import AdministrativeLevelForm
 from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
 from django.http import HttpResponse
@@ -26,7 +28,7 @@ from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, I
 from django.db.models.functions import Coalesce
 from django.templatetags.static import static
 
-from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project, Category, Sector
+from administrativelevels.models import AdministrativeLevel, Phase, Task, Project, Category, Sector
 from investments.models import Attachment, Investment, Package
 
 from static.config.datatable import get_datatable_config
@@ -36,6 +38,7 @@ from .forms import (
     ProjectForm, BulkUploadInvestmentsForm,
     UpdateInvestmentForm
 )
+from .infrastructure.repositories.db_administrative_level_repository import DbAdministrativeLevelRepository
 
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView):
@@ -51,25 +54,27 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin,
         {"url": "", "title": title},
     ]
 
+    def __init__(self):
+        super().__init__()
+        self.__administrative_level_repository = DbAdministrativeLevelRepository()
+
     def get_queryset(self):
         search = self.request.GET.get("search", None)
         page_number = self.request.GET.get("page", None)
         _type = self.request.GET.get("type", "Village")
         if search:
             if search == "All":
-                ads = AdministrativeLevel.objects.filter(type=_type)
+                ads = self.__administrative_level_repository.find_by_criteria(criteria=AdministrativeLevelCriteria(type=_type))
                 return Paginator(ads, ads.count()).get_page(page_number)
             search = search.upper()
             return Paginator(
-                AdministrativeLevel.objects.filter(type=_type, name__icontains=search),
+                self.__administrative_level_repository.find_by_criteria(criteria=AdministrativeLevelCriteria(type=_type, name=search)),
                 100,
             ).get_page(page_number)
         else:
             return Paginator(
-                AdministrativeLevel.objects.filter(type=_type), 100
+                self.__administrative_level_repository.find_by_criteria(criteria=AdministrativeLevelCriteria(type=_type)), 100
             ).get_page(page_number)
-
-        # return super().get_queryset()
 
     def get_context_data(self, **kwargs):
         ctx = super(AdministrativeLevelsListView, self).get_context_data(**kwargs)
@@ -133,17 +138,21 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredApproveRequiredM
         {"url": "", "title": title},
     ]
 
+    def __init__(self):
+        super().__init__()
+        self.__administrative_level_repository = DbAdministrativeLevelRepository()
+
     def get_queryset(self):
         search = self.request.GET.get("search", None)
         page_number = self.request.GET.get("page", None)
         _type = self.request.GET.get("type", "Village")
         if search:
             if search == "All":
-                ads = AdministrativeLevel.objects.filter(type=_type)
+                ads = self.__administrative_level_repository.find_by_criteria(criteria=AdministrativeLevelCriteria(type=_type)),
                 return Paginator(ads, ads.count()).get_page(page_number)
             search = search.upper()
             return Paginator(
-                AdministrativeLevel.objects.filter(type=_type, name__icontains=search),
+                self.__administrative_level_repository.find_by_criteria(criteria=AdministrativeLevelCriteria(type=_type, name=search)),
                 100,
             ).get_page(page_number)
         else:
@@ -188,7 +197,8 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
             if context["object"].is_village():
-                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
+                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(
+                    administrative_level_id=self.object))
                 context['geo_segment'] = context["object"].geo_segment
         admin_level = context.get("object")
 
@@ -229,7 +239,8 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             "first_image": images[0] if len(images) > 0 else None,
         }
 
-        context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
+        context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(
+            administrative_level_id=self.object))
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
         context['children_coordinates'] = self._get_villages_coordinates_from_administrative_level(self.object)
@@ -408,16 +419,13 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
     def __init__(self):
         super().__init__()
         self.__investment_repository = DbInvestmentRepository()
+        self.__package_repository = DbPackagesRepository()
 
     def post(self, request, *args, **kwargs):
         if 'cart-toggle' in request.POST:
-            investment = Investment.objects.get(id=request.POST['cart-toggle'])
-            if investment.project_status == Investment.NOT_FUNDED:
-                package = Package.objects.get_active_cart(user=self.request.user)
-                if package.funded_investments.filter(id=investment.id).exists():
-                    package.funded_investments.remove(investment)
-                else:
-                    package.funded_investments.add(investment)
+            investment = self.__investment_repository.find_by_criteria(InvestmentCriteria(id=request.POST['cart-toggle']))
+            if investment.is_not_funded():
+                self.__package_repository.update_package_funded_investments(user=self.request.user, investment=investment)
             return super().get(request, *args, **kwargs)
 
         obj = self.get_object()
@@ -452,7 +460,8 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
             if context["object"].is_village():
-                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
+                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(
+                    administrative_level_id=self.object))
         admin_level = context.get("object")
 
         context["context_object_name"] = admin_level.type.lower()
