@@ -56,8 +56,12 @@ class Investment(BaseModel): # Investment module
     sector = models.ForeignKey(
         Sector, on_delete=models.CASCADE, related_name="investments"
     )
+
     estimated_cost = models.PositiveBigIntegerField()
+    estimated_cost_by_investor = models.PositiveBigIntegerField(null=True, blank=True)
     real_cost = models.PositiveIntegerField(null=True, blank=True)
+
+
     start_date = models.DateField(null=True)
     duration = models.PositiveIntegerField(help_text=_("In days"))
     delays_consumed = models.PositiveIntegerField(help_text=_("In days"))
