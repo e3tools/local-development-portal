@@ -278,11 +278,11 @@ class Project(BaseModel):
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True, verbose_name=_("Start date"))
+    end_date = models.DateField(null=True, blank=True, verbose_name=_("End date"))
     total_amount = models.PositiveBigIntegerField(default=0)
-    sectors = models.ManyToManyField(Category)
-    implementation_partner = models.TextField(null=True, blank=True, help_text=_("e.g., WORLD BANK,UNFPA,WFP"))
+    sectors = models.ManyToManyField(Category, verbose_name=_("Sectors"))
+    implementation_partner = models.TextField(null=True, blank=True, help_text=_("e.g., WORLD BANK,UNFPA,WFP"), verbose_name=_("Implementation partner"))
     source_of_financing = models.CharField(_("Source of financing"), null=True, blank=True, max_length=255)
 
 

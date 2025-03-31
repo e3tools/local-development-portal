@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-10 11:59+0100\n"
+"POT-Creation-Date: 2025-03-31 13:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: administrativelevels/forms.py:25
+msgid "Start Date"
+msgstr "Date de début"
+
+#: administrativelevels/forms.py:29
+msgid "End Date"
+msgstr "Date de fin"
 
 #: administrativelevels/forms.py:36 administrativelevels/models.py:59
 #: administrativelevels/templates/commune/commune_detail.html:143
@@ -57,12 +65,18 @@ msgstr "Description"
 msgid "Organization"
 msgstr "Organisation"
 
-#: administrativelevels/forms.py:39
-msgid "Start Date"
+#: administrativelevels/forms.py:39 administrativelevels/models.py:281
+#: dashboard/views_administrativelevels.py:245
+#: dashboard/views_administrativelevels.py:249
+#: dashboard/views_administrativelevels.py:260
+msgid "Start date"
 msgstr "Date de début"
 
-#: administrativelevels/forms.py:40
-msgid "End Date"
+#: administrativelevels/forms.py:40 administrativelevels/models.py:282
+#: dashboard/views_administrativelevels.py:246
+#: dashboard/views_administrativelevels.py:250
+#: dashboard/views_administrativelevels.py:262
+msgid "End date"
 msgstr "Date de fin"
 
 #: administrativelevels/forms.py:41
@@ -395,9 +409,25 @@ msgstr ""
 msgid "Implementation agency"
 msgstr ""
 
+#: administrativelevels/models.py:284
+#: administrativelevels/templates/project/create/bulk_upload_investments.html:16
+#: dashboard/views_subprojects.py:139 dashboard/views_subprojects.py:156
+#: dashboard/views_subprojects.py:176 dashboard/views_subprojects.py:177
+#: dashboard/views_subprojects.py:178 dashboard/views_subprojects.py:185
+#: dashboard/views_subprojects.py:313 dashboard/views_subprojects.py:327
+#: dashboard/views_subprojects.py:353 dashboard/views_subprojects.py:357
+#: investments/templates/investments/cart.html:76
+#: investments/templates/investments/package.html:92
+msgid "Sectors"
+msgstr "Secteur"
+
 #: administrativelevels/models.py:285
 msgid "e.g., WORLD BANK,UNFPA,WFP"
 msgstr ""
+
+#: administrativelevels/models.py:285
+msgid "Implementation partner"
+msgstr "Partenaire de mise en œuvre"
 
 #: administrativelevels/templates/administrative_level/create.html:11
 #: administrativelevels/templates/administrativelevel_village_list.html:11
@@ -1624,19 +1654,6 @@ msgid "For additional reference, you can also download the"
 msgstr "Pour plus d'informations, vous pouvez également télécharger le"
 
 #: administrativelevels/templates/project/create/bulk_upload_investments.html:16
-#: dashboard/views_subprojects.py:139 dashboard/views_subprojects.py:156
-#: dashboard/views_subprojects.py:176 dashboard/views_subprojects.py:177
-#: dashboard/views_subprojects.py:178 dashboard/views_subprojects.py:185
-#: dashboard/views_subprojects.py:313 dashboard/views_subprojects.py:327
-#: dashboard/views_subprojects.py:353 dashboard/views_subprojects.py:357
-#: investments/templates/investments/cart.html:76
-#: investments/templates/investments/package.html:92
-#, fuzzy
-#| msgid "Sector"
-msgid "Sectors"
-msgstr "Secteur"
-
-#: administrativelevels/templates/project/create/bulk_upload_investments.html:16
 msgid "list and the"
 msgstr "et le"
 
@@ -1667,8 +1684,6 @@ msgid "Total Investments Amount"
 msgstr "Montant total des investissements"
 
 #: administrativelevels/templates/project/detail.html:68
-#, fuzzy
-#| msgid "Last Updated"
 msgid "Last update"
 msgstr "Dernière mise à jour"
 
@@ -2199,8 +2214,6 @@ msgid "Dashboard"
 msgstr "Tableau de bord"
 
 #: cosomis/templates/layouts/sidebar.html:63
-#, fuzzy
-#| msgid "Project coverage"
 msgid "Project create"
 msgstr "Couverture du projet"
 
@@ -2430,18 +2443,6 @@ msgstr "Nombre de sous-projets sélectionnés"
 #: dashboard/views_administrativelevels.py:166
 msgid "Number of infrastructures"
 msgstr "Nombre d'infrastuctures"
-
-#: dashboard/views_administrativelevels.py:245
-#: dashboard/views_administrativelevels.py:249
-#: dashboard/views_administrativelevels.py:260
-msgid "Start date"
-msgstr "Date de début"
-
-#: dashboard/views_administrativelevels.py:246
-#: dashboard/views_administrativelevels.py:250
-#: dashboard/views_administrativelevels.py:262
-msgid "End date"
-msgstr "Date de fin"
 
 #: dashboard/views_administrativelevels.py:309
 #: dashboard/views_administrativelevels.py:322
@@ -2893,10 +2894,8 @@ msgid "project"
 msgstr "Projet"
 
 #: investments/templates/investments/list.html:581
-#, fuzzy
-#| msgid "Total villages available"
 msgid "Total funds available"
-msgstr "Total des villages disponibles"
+msgstr "Fonds totaux disponibles"
 
 #: investments/templates/investments/list.html:596
 msgid "Your organization must have a project to submit investments"

@@ -22,11 +22,11 @@ class ProjectForm(forms.ModelForm):
 
     start_date = forms.DateField(
         widget=forms.DateInput(format="%d/%m/%Y", attrs={'class': 'form-control', 'placeholder': 'DD/MM/YYYY'}),
-        input_formats=["%d/%m/%Y"]
+        input_formats=["%d/%m/%Y"], label=_("Start Date"),
     )
     end_date = forms.DateField(
         widget=forms.DateInput(format="%d/%m/%Y", attrs={'class': 'form-control', 'placeholder': 'DD/MM/YYYY'}),
-        input_formats=["%d/%m/%Y"]
+        input_formats=["%d/%m/%Y"], label=_("End Date"),
     )
 
     class Meta:
@@ -36,8 +36,8 @@ class ProjectForm(forms.ModelForm):
             'name': _("Name"),
             'description': _("Description"),
             'organization': _("Organization"),
-            'start_date': _("Start Date"),
-            'end_date': _("End Date"),
+            'start_date': _("Start date"),
+            'end_date': _("End date"),
             'total_amount': _("Total Amount"),
             'sector': _("Sector"),
             'Source_of_financing': _("Source of financing"),
