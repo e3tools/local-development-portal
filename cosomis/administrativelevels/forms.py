@@ -15,7 +15,7 @@ class UpdateInvestmentForm(forms.ModelForm):
 
     class Meta:
         model = Investment
-        fields = ['physical_execution_rate', 'real_cost', 'project_status', 'latitude', 'longitude']
+        fields = ['physical_execution_rate', 'real_cost', 'estimated_cost', 'project_status', 'latitude', 'longitude']
 
 
 class ProjectForm(forms.ModelForm):
