@@ -690,9 +690,10 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             return super().get(request, *args, **kwargs)
 
         if 'investment' in request.POST:
-            investment = Investment.objects.filter(
-                packages__project=self.object,
-            ).get(id=request.POST['investment'])
+            print('----')
+            print(request.POST['investment'])
+            print('----')
+            investment = Investment.objects.get(id=request.POST['investment'])
             investment_form = self.investment_form_class(
                 instance=investment, data=request.POST, files=request.FILES
             )
