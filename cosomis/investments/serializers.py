@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.urls import reverse
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 from investments.models import Investment
 from django.utils.translation import gettext_lazy as _
@@ -14,6 +15,7 @@ class InvestmentSerializer(serializers.ModelSerializer):
     administrative_level__parent__parent__name = serializers.SerializerMethodField()
     administrative_level__parent__parent__parent__name = serializers.SerializerMethodField()
     population_priority = serializers.SerializerMethodField()
+    estimated_cost = serializers.SerializerMethodField()
 
 
     class Meta:
@@ -54,4 +56,9 @@ class InvestmentSerializer(serializers.ModelSerializer):
         if obj.endorsed_by_pastoralist:
             population_priority.append('ME')
         return ', '.join(population_priority)
+
+    def get_estimated_cost(self, obj):
+        if obj.estimated_cost < 1000000:
+            return _('Not available')
+        return intcomma(obj.estimated_cost)
 

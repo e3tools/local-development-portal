@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 13:55+0200\n"
+"POT-Creation-Date: 2025-04-10 15:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -221,11 +221,11 @@ msgstr "Commune"
 msgid "Canton"
 msgstr "Canton"
 
-#: administrativelevels/forms.py:205 investments/models.py:210
+#: administrativelevels/forms.py:205 investments/models.py:214
 msgid "Photo"
 msgstr ""
 
-#: administrativelevels/forms.py:206 investments/models.py:210
+#: administrativelevels/forms.py:206 investments/models.py:214
 #, fuzzy
 #| msgid "Procurement"
 msgid "Document"
@@ -358,16 +358,16 @@ msgstr "Unité géographique"
 #: administrativelevels/models.py:81 administrativelevels/models.py:186
 #: administrativelevels/models.py:188 administrativelevels/models.py:190
 #: administrativelevels/models.py:192
-#: administrativelevels/templates/project/detail.html:288
-#: investments/models.py:81
+#: administrativelevels/templates/project/detail.html:302
+#: investments/models.py:85
 msgid "Latitude"
 msgstr "Latitude"
 
 #: administrativelevels/models.py:82 administrativelevels/models.py:187
 #: administrativelevels/models.py:189 administrativelevels/models.py:191
 #: administrativelevels/models.py:193
-#: administrativelevels/templates/project/detail.html:296
-#: investments/models.py:82
+#: administrativelevels/templates/project/detail.html:310
+#: investments/models.py:86
 msgid "Longitude"
 msgstr "Longitude"
 
@@ -779,7 +779,7 @@ msgstr "Oui"
 #: administrativelevels/templates/components/administrative_level_planning_status.html:43
 #: administrativelevels/templates/components/administrative_level_planning_status.html:58
 #: administrativelevels/templates/components/administrative_level_planning_status.html:73
-#: administrativelevels/templates/shared/priorities_table.html:74
+#: administrativelevels/templates/shared/priorities_table.html:78
 #: investments/templates/investments/list.html:374
 #: investments/templates/investments/list.html:377
 #: investments/templates/investments/list.html:382 investments/views.py:379
@@ -1092,7 +1092,7 @@ msgstr "Montant requis par habitant"
 #: administrativelevels/templates/commune/tabs/priorities.html:151
 #: administrativelevels/templates/commune/tabs/priorities.html:225
 #: administrativelevels/templates/project/detail.html:126
-#: administrativelevels/templates/project/detail.html:191
+#: administrativelevels/templates/project/detail.html:199
 #: administrativelevels/templates/shared/priorities_table.html:15
 msgid "Actions"
 msgstr "Actions"
@@ -1194,8 +1194,8 @@ msgstr "Financement nécessaire"
 
 #: administrativelevels/templates/commune/tabs/priorities.html:149
 #: administrativelevels/templates/project/detail.html:125
-#: administrativelevels/templates/project/detail.html:187
-#: administrativelevels/templates/project/detail.html:190
+#: administrativelevels/templates/project/detail.html:195
+#: administrativelevels/templates/project/detail.html:198
 #: investments/templates/investments/investor/approvals_list.html:65
 #: investments/templates/investments/moderator/package_review.html:362
 #: investments/templates/investments/moderator/package_review.html:405
@@ -1205,13 +1205,13 @@ msgstr "Statut"
 
 #: administrativelevels/templates/commune/tabs/priorities.html:196
 #: administrativelevels/templates/commune/tabs/priorities.html:271
-#: administrativelevels/templates/shared/priorities_table.html:80
+#: administrativelevels/templates/shared/priorities_table.html:84
 msgid "Add to cart"
 msgstr "Ajouter au panier"
 
 #: administrativelevels/templates/commune/tabs/priorities.html:198
 #: administrativelevels/templates/commune/tabs/priorities.html:273
-#: administrativelevels/templates/shared/priorities_table.html:82
+#: administrativelevels/templates/shared/priorities_table.html:86
 #: investments/templates/investments/cart.html:219
 msgid "Remove from cart"
 msgstr "Retirer du panier"
@@ -1517,7 +1517,7 @@ msgstr "Unités géographiques"
 #: administrativelevels/templates/cvd_detail.html:138
 #: administrativelevels/templates/geographical_unit_detail.html:165
 #: administrativelevels/templates/geographical_unit_detail.html:195
-#: administrativelevels/templates/project/detail.html:205
+#: administrativelevels/templates/project/detail.html:213
 msgid "Detail"
 msgstr "Détail"
 
@@ -1671,7 +1671,7 @@ msgstr ""
 
 #: administrativelevels/templates/project/create/index.html:48
 #: administrativelevels/templates/project/list.html:10
-#: administrativelevels/views.py:796
+#: administrativelevels/views.py:794
 msgid "Create Project"
 msgstr "Créer un projet"
 
@@ -1706,7 +1706,7 @@ msgid "Upload more investments"
 msgstr "Télécharger plus d'investissements"
 
 #: administrativelevels/templates/project/detail.html:116
-#: administrativelevels/templates/project/detail.html:189
+#: administrativelevels/templates/project/detail.html:197
 #: investments/templates/investments/cart.html:180
 #: investments/templates/investments/list.html:499
 #: investments/templates/investments/list.html:650
@@ -1732,7 +1732,7 @@ msgid "Package Status"
 msgstr "Statut du colis"
 
 #: administrativelevels/templates/project/detail.html:123
-#: administrativelevels/templates/project/detail.html:272
+#: administrativelevels/templates/project/detail.html:280
 msgid "Physical execution rate"
 msgstr "Taux d'exécution physique"
 
@@ -1740,61 +1740,63 @@ msgstr "Taux d'exécution physique"
 msgid "Package status"
 msgstr "Statut du colis"
 
-#: administrativelevels/templates/project/detail.html:147
+#: administrativelevels/templates/project/detail.html:135
+#: administrativelevels/templates/shared/priorities_table.html:66
+#: investments/serializers.py:62
+msgid "Not available"
+msgstr "Pas disponible"
+
+#: administrativelevels/templates/project/detail.html:153
 msgid "Complete"
 msgstr "Achevé"
 
-#: administrativelevels/templates/project/detail.html:164
-#: administrativelevels/templates/project/detail.html:343
+#: administrativelevels/templates/project/detail.html:172
+#: administrativelevels/templates/project/detail.html:357
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: administrativelevels/templates/project/detail.html:172
-#, fuzzy
-#| msgid "Upload"
+#: administrativelevels/templates/project/detail.html:180
 msgid "Upload Image"
-msgstr "Télécharger"
+msgstr "Télécharger une image"
 
-#: administrativelevels/templates/project/detail.html:188
+#: administrativelevels/templates/project/detail.html:196
 msgid "Date"
 msgstr "Date"
 
-#: administrativelevels/templates/project/detail.html:233
-#: administrativelevels/templates/project/detail.html:304
+#: administrativelevels/templates/project/detail.html:241
+#: administrativelevels/templates/project/detail.html:318
 #: investments/templates/investments/cart.html:305
 msgid "Save"
 msgstr "Enregistrer"
 
-#: administrativelevels/templates/project/detail.html:252
-#: administrativelevels/templates/project/detail.html:317
+#: administrativelevels/templates/project/detail.html:260
+#: administrativelevels/templates/project/detail.html:331
 msgid "Investment"
 msgstr "Investissement"
 
-#: administrativelevels/templates/project/detail.html:260
-msgid "Project Status"
-msgstr "Statut du projet"
+#: administrativelevels/templates/project/detail.html:268
+msgid "Sub-project Status"
+msgstr "Statut du sous-projet"
 
-#: administrativelevels/templates/project/detail.html:274
-#, fuzzy
-#| msgid "Last Updated"
+#: administrativelevels/templates/project/detail.html:282
 msgid "Last updated"
 msgstr "Dernière mise à jour"
 
-#: administrativelevels/templates/project/detail.html:282
-msgid "Actual Cost"
-msgstr ""
+#: administrativelevels/templates/project/detail.html:290
+msgid "Estimated actual cost"
+msgstr "Coût total estimé"
 
-#: administrativelevels/templates/project/detail.html:332
-#, fuzzy
-#| msgid "Images"
+#: administrativelevels/templates/project/detail.html:296
+msgid "Actual Cost Spent"
+msgstr "Coût réel dépensé"
+
+#: administrativelevels/templates/project/detail.html:346
 msgid "Image"
-msgstr "Images"
+msgstr "Image"
 
-#: administrativelevels/templates/project/detail.html:337
-#, fuzzy
-#| msgid "Choose filters"
+#: administrativelevels/templates/project/detail.html:351
 msgid "Choose image"
-msgstr "Choisir les filtres"
+msgstr "Choisir une image"
 
 #: administrativelevels/templates/project/list.html:54
 msgid "Search a project"
@@ -1821,12 +1823,12 @@ msgstr "Total des fonds"
 msgid "Region Overview"
 msgstr "Vue d'ensemble du canton"
 
-#: administrativelevels/templates/shared/priorities_table.html:70
+#: administrativelevels/templates/shared/priorities_table.html:74
 #: investments/models.py:36
 msgid "Not Funded"
 msgstr "Non financé"
 
-#: administrativelevels/templates/shared/priorities_table.html:87
+#: administrativelevels/templates/shared/priorities_table.html:91
 #: investments/templates/investments/list.html:154
 #: investments/templates/investments/list.html:157
 #: investments/templates/investments/list.html:161
@@ -1935,25 +1937,25 @@ msgstr "Toutes les priorités"
 msgid "Projects"
 msgstr "Projets"
 
-#: administrativelevels/views.py:686 administrativelevels/views.py:701
+#: administrativelevels/views.py:686 administrativelevels/views.py:699
 #, fuzzy
 #| msgid "Investment Type"
 msgid "Investment updated."
 msgstr "Type d'investissement"
 
-#: administrativelevels/views.py:688 administrativelevels/views.py:703
+#: administrativelevels/views.py:688 administrativelevels/views.py:701
 #, fuzzy
 #| msgid "Remove from cart"
 msgid "Investment could not be updated."
 msgstr "Retirer du panier"
 
-#: administrativelevels/views.py:773
+#: administrativelevels/views.py:771
 #, fuzzy
 #| msgid "Project Status"
 msgid "Project updated."
 msgstr "Statut du projet"
 
-#: administrativelevels/views.py:867 cosomis/templates/layouts/sidebar.html:78
+#: administrativelevels/views.py:865 cosomis/templates/layouts/sidebar.html:78
 msgid "Gallery"
 msgstr "Galerie"
 
@@ -2025,7 +2027,7 @@ msgstr "Identifié"
 msgid "Not approved"
 msgstr "Non approuvé"
 
-#: cosomis/constants.py:38 investments/models.py:107 investments/models.py:154
+#: cosomis/constants.py:38 investments/models.py:111 investments/models.py:158
 #: investments/templates/investments/investor/approvals_list.html:16
 #: investments/templates/investments/investor/approvals_list.html:83
 #: investments/templates/investments/moderator/approvals_list.html:138
@@ -2608,24 +2610,24 @@ msgstr "En suspens"
 msgid "SubProject"
 msgstr "Sous-projet"
 
-#: investments/models.py:62 investments/models.py:63
+#: investments/models.py:66 investments/models.py:67
 msgid "In days"
 msgstr ""
 
-#: investments/models.py:64 investments/models.py:66
+#: investments/models.py:68 investments/models.py:70
 #, fuzzy
 #| msgid "Percent"
 msgid "Percentage"
 msgstr "Pourcentage"
 
-#: investments/models.py:105
+#: investments/models.py:109
 #: investments/templates/investments/investor/approvals_list.html:79
 #: investments/templates/investments/moderator/approvals_list.html:134
 #: investments/templates/investments/moderator/package_review.html:364
 msgid "Pending Submission"
 msgstr "En attente de soumission"
 
-#: investments/models.py:106 investments/models.py:153
+#: investments/models.py:110 investments/models.py:157
 #: investments/templates/investments/investor/approvals_list.html:81
 #: investments/templates/investments/moderator/approvals_list.html:136
 #: investments/templates/investments/moderator/package_review.html:366
@@ -2633,7 +2635,7 @@ msgstr "En attente de soumission"
 msgid "Pending Approval"
 msgstr "En attente d'approbation"
 
-#: investments/models.py:108 investments/models.py:155
+#: investments/models.py:112 investments/models.py:159
 #: investments/templates/investments/investor/approvals_list.html:20
 #: investments/templates/investments/investor/approvals_list.html:85
 #: investments/templates/investments/moderator/approvals_list.html:140
@@ -2642,7 +2644,7 @@ msgstr "En attente d'approbation"
 msgid "Rejected"
 msgstr "Rejeté"
 
-#: investments/models.py:109
+#: investments/models.py:113
 #: investments/templates/investments/investor/approvals_list.html:87
 #: investments/templates/investments/moderator/approvals_list.html:142
 #: investments/templates/investments/moderator/package_review.html:372
@@ -2651,19 +2653,19 @@ msgstr "Rejeté"
 msgid "Under Execution"
 msgstr "En construction"
 
-#: investments/models.py:110
+#: investments/models.py:114
 #, fuzzy
 #| msgid "Approved"
 msgid "Partially Approved"
 msgstr "Approuvé"
 
-#: investments/models.py:125
+#: investments/models.py:129
 msgid "Source of the funding, e.g., a particular organization or grant"
 msgstr ""
 "Source de financement, par exemple une organisation ou une subvention "
 "particulière"
 
-#: investments/models.py:135
+#: investments/models.py:139
 msgid ""
 "User who reviews the status of the Package. This user must be a moderator."
 msgstr ""
@@ -3279,6 +3281,9 @@ msgstr "Inscrivez-vous"
 #: usermanager/templates/register.html:84
 msgid "Already has an account? Sign in"
 msgstr "Vous avez déjà un compte ? Connectez-vous"
+
+#~ msgid "Project Status"
+#~ msgstr "Statut du projet"
 
 #, fuzzy
 #~| msgid "Close"

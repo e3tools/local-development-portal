@@ -62,7 +62,11 @@
             <td class="border-sides--light">
                 {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
             <td class="border-sides--light">{{ investment.beneficiaries }}</td>
+        {% if investment.estimated_cost < 1000000 %}
+            <td class="border-sides--light">{% translate "Not available" %}</td>
+        {% else %}
             <td class="border-sides--light">{{ investment.estimated_cost|intcomma }}</td>
+        {% endif %}
             <td class="border-sides--light">
                 {% if investment.funded_by %}
                     {{ investment.funded_by.name }}

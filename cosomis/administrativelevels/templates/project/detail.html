@@ -130,9 +130,15 @@
                                     {% for investment in investments.all %}
                                     <tr>
                                         <td>{{ investment.title }}</td>
+                                    {% if investment.estimated_cost < 1000000 %}
+                                        <td data-order="0" data-search="0">
+                                            {% translate 'Not available' %}
+                                        </td>
+                                        {% else %}
                                         <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
                                             {{ investment.estimated_cost|intcomma }}
                                         </td>
+                                    {% endif %}
                                         <td>{{ investment.administrative_level.name }}</td>
                                         <td>{{ investment.administrative_level.parent.name }}</td>
                                         <td>{{ investment.administrative_level.parent.parent.name }}</td>
