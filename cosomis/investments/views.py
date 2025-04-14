@@ -542,7 +542,7 @@ class InvestorApprovesListView(IsInvestorMixin, PageMixin, generic.ListView):
     ordering = ["-status", "-created_date"]
     allow_empty = True
     object_list = None
-    title = _("Welcome, Investor!")
+    title = _("Welcome, Moderator!")
 
     def post(self, request, *args, **kwargs):
         form = UserApprovalForm(data=request.POST)
