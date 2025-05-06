@@ -101,6 +101,7 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     REJECTED = "R"
     UNDER_EXECUTION = "E"
     PARTIALLY_APPROVED = "PA"
+    SELECTED_BY_GOVERNMENT = "SG"
     STATUS = (
         (PENDING_SUBMISSION, _("Pending Submission")),
         (PENDING_APPROVAL, _("Pending Approval")),
@@ -108,6 +109,7 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
         (REJECTED, _("Rejected")),
         (UNDER_EXECUTION, _("Under Execution")),
         (PARTIALLY_APPROVED, _("Partially Approved")),
+        (SELECTED_BY_GOVERNMENT, _("Selected by Government")),
     )
 
     objects = PackageQuerySet.as_manager()
