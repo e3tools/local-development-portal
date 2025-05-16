@@ -661,7 +661,18 @@
                             <td>
                                 <input class="project-table-check" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox">
                             </td>
+                            {% if investment.title == "Autre" %}
+                            <td>
+                                <a
+                                        href="" data-container="body" data-toggle="popover"
+                                        data-placement="top" data-trigger="hover"
+                                        data-content="{% if investment.description %}{{ investment.description }}{% else %}-{% endif %}">
+                                    {{ investment.title }}
+                                </a>
+                            </td>
+                            {% else %}
                             <td>{{ investment.title }}</td>
+                            {% endif %}
                             <td>{{ investment.administrative_level.type }}</td>
                             <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
                                 {{ investment.estimated_cost|intcomma }} FCFA
@@ -724,6 +735,11 @@
     urlObj.search = params.toString();
     table.ajax.url(urlObj.toString());
     table.ajax.reload();
+    table.on('draw', function () {
+        $( document ).find('[data-toggle="popover"]').popover('dispose').popover();
+        $('[data-toggle="popover"]').popover();
+    });
+
     function sum_subprojects() {
         let base_url = window.location.href.split('?')[0]
         let loader = $('.loader');

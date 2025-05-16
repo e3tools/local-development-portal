@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 class InvestmentSerializer(serializers.ModelSerializer):
 
     select_input = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
     administrative_level__type = serializers.SerializerMethodField()
     administrative_level__name = serializers.SerializerMethodField()
     administrative_level__parent__name = serializers.SerializerMethodField()
@@ -28,6 +29,18 @@ class InvestmentSerializer(serializers.ModelSerializer):
                 obj.id) + '" type="checkbox" checked>'
         return '<input class="project-table-check" id="checkbox-' + str(obj.id) + '" value="' + str(
             obj.id) + '" type="checkbox">'
+
+    def get_title(self, obj):
+        if obj.title == 'Autre':
+            description = obj.description if obj.description else '-'
+            return ('<a '
+                    'href="#" data-container="body" data-toggle="popover" '
+                    'data-placement="top" data-trigger="hover" '
+                    'data-content="{}">'
+                    '{}'
+                    '</a>').format(description, obj.title)
+        else:
+            return obj.title
 
     def get_administrative_level__type(self, obj):
         return obj.administrative_level.type
