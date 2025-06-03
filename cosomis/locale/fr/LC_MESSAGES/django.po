@@ -3058,6 +3058,10 @@ msgstr ""
 msgid "Welcome, Moderator!"
 msgstr "Bienvenue, Monsieur le Modérateur !"
 
+#: investments/views.py:632
+msgid "Welcome, Dear Partner!"
+msgstr "Bienvenue, Cher partenaire !"
+
 #: investments/views.py:706
 msgid "Investment Package Review"
 msgstr "Examen du dossier d'investissement"
