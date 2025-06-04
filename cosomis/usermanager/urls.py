@@ -17,7 +17,6 @@ urlpatterns = [
         redirect_authenticated_user=True), name='pass-code-login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('email-verification/<slug:confirm_email_token>', EmailVerificationView.as_view(), name='email-verification'),
-
     path('password-reset',
          auth_views.PasswordResetView.as_view(template_name='password_reset.html',
                                               email_template_name='email/password_reset.html',

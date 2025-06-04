@@ -3197,14 +3197,12 @@ msgid "Page not found"
 msgstr "Page non trouvée"
 
 #: usermanager/templates/email_confirmed_successfully.html:45
-#, fuzzy
-#| msgid "The Step was successfully removed."
 msgid "Your email was successfully confirm!"
-msgstr "L'étape a été supprimée avec succès."
+msgstr "Votre email a été confirmé avec succès !"
 
 #: usermanager/templates/email_confirmed_successfully.html:46
 msgid "Take me home."
-msgstr ""
+msgstr "Aller à la page d'accueil"
 
 #: usermanager/templates/login.html:63
 msgid "Log in to start your session"
