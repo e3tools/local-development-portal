@@ -9,6 +9,7 @@ from django.conf import settings
 def package_status_email_notification(package):
     context = {
         'user_name': package.user.first_name if package.user.first_name else package.user.username.split('@')[0],
+        'package_name': package.project.name,
         'package_submission_date': package.created_date.strftime("%m/%d/%Y, %H:%M:%S"),
         'package_tracking_url': reverse("administrativelevels:commune_detail", args=[package.id]),
         'current_year': datetime.now().year,
@@ -18,7 +19,7 @@ def package_status_email_notification(package):
         subject = '[%s] The status of your investments in %s project changed' % (package.project.name, package.PENDING_APPROVAL)
     elif package.status == package.APPROVED:
         template_name = 'email/package/approved.html'
-        subject = '[%s] The status of your investments in %s project changed' % (package.project.name, package.APPROVED)
+        subject = 'Mise à jour du statut de votre projet %s' % package.project.name
     elif package.status == package.REJECTED:
         template_name = 'email/package/rejected.html'
         subject = '[%s] The status of your investments in %s project changed' % (package.project.name, package.REJECTED)

@@ -544,18 +544,6 @@ class InvestorApprovesListView(IsInvestorMixin, PageMixin, generic.ListView):
     object_list = None
     title = _("Welcome, Moderator!")
 
-    def post(self, request, *args, **kwargs):
-        form = UserApprovalForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.add_message(
-                self.request,
-                messages.SUCCESS,
-                message=form.success_message,
-                extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS],
-            )
-        return self.get(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         self.package_list = self.get_package_queryset()
         self.user_list = self.get_user_queryset()
@@ -629,7 +617,7 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
     ordering = ["-status", "-created_date"]
     allow_empty = True
     object_list = None
-    title = _("Welcome, Moderator!")
+    title = _("Welcome, Dear Partner!")
 
     def post(self, request, *args, **kwargs):
         form = UserApprovalForm(data=request.POST)

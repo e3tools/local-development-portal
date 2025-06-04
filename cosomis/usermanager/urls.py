@@ -2,8 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, reverse_lazy
 from .views import SignupView, EmailVerificationView
 
-from usermanager.forms import EmailAuthenticationForm
-from usermanager.forms import PassCodeAuthenticationForm
+from usermanager.forms import EmailAuthenticationForm, PassCodeAuthenticationForm
 
 app_name = 'usermanager'
 urlpatterns = [

@@ -1922,10 +1922,8 @@ msgstr "Soutenu par le agriculteurs et éléveur"
 
 #: administrativelevels/views.py:583 dashboard/views_summary.py:67
 #: investments/views.py:163
-#, fuzzy
-#| msgid "Ethnic minorities"
 msgid "Endorsed by ethnic minorities"
-msgstr "Minorités ethniques"
+msgstr "Approuvé par les minorités ethniques"
 
 #: administrativelevels/views.py:588 investments/views.py:168
 #: investments/views.py:383
@@ -1947,22 +1945,16 @@ msgid "Projects"
 msgstr "Projets"
 
 #: administrativelevels/views.py:686 administrativelevels/views.py:702
-#, fuzzy
-#| msgid "Investment Type"
 msgid "Investment updated."
-msgstr "Type d'investissement"
+msgstr "Investissement mis à jour."
 
 #: administrativelevels/views.py:688 administrativelevels/views.py:704
-#, fuzzy
-#| msgid "Remove from cart"
 msgid "Investment could not be updated."
-msgstr "Retirer du panier"
+msgstr "L'investissement n'a pas pu être mis à jour."
 
 #: administrativelevels/views.py:774
-#, fuzzy
-#| msgid "Project Status"
 msgid "Project updated."
-msgstr "Statut du projet"
+msgstr "Projet mis à jour."
 
 #: administrativelevels/views.py:868 cosomis/templates/layouts/sidebar.html:78
 msgid "Gallery"
@@ -3057,6 +3049,10 @@ msgstr ""
 #: investments/views.py:545 investments/views.py:632
 msgid "Welcome, Moderator!"
 msgstr "Bienvenue, Monsieur le Modérateur !"
+
+#: investments/views.py:632
+msgid "Welcome, Dear Partner!"
+msgstr "Bienvenue, Cher partenaire !"
 
 #: investments/views.py:706
 msgid "Investment Package Review"
