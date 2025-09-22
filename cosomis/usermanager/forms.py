@@ -144,9 +144,9 @@ class UserCreationForm(forms.ModelForm):
         strip=False,
         help_text=_("Enter the same password as before, for verification."),
     )
-    username = forms.EmailField(
+    username = forms.CharField(
         label=_("Email"),
-        widget=forms.EmailInput(attrs={
+        widget=forms.TextInput(attrs={
             "autofocus": True, "placeholder": _("Email")
         }),
         help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),
