@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand, CommandError
 import time
+from dateutil import parser
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
-from investments.models import Investment
+from investments.models import Investment, Project
 from administrativelevels.models import AdministrativeLevel, Category, Sector
-
+from administrativelevels.libraries.functions import safe_parse_date
 
 class Command(BaseCommand):
     help = 'Description of your command'
@@ -25,21 +26,40 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Your command logic here
+
+        task_name_contain_meeting_date = "Présenter les activités de la journée" # To get the meeting date
+        village_priorities_task_name = "Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage"
+
         self.nsc = NoSQLClient()
         facilitator_dbs = self.nsc.list_all_databases('facilitator')
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
+                # Getting only priorities tasks validated
                 db = self.nsc.get_db(db_name).get_query_result({
                     "type": "task",
                     "phase_name": "PLANIFICATION",
-                    "name": "Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage"
+                    "validated": True, # Get only tasks validated
+                    "name": {
+                        "$in": [task_name_contain_meeting_date, village_priorities_task_name]
+                    }
                 })
-                for document in db:
-                    update_or_create_priorities_document(document)
+
+                ranking_priority = {
+                    "coso": 0,
+                    "fa-coso": 1,
+                    "purs": 2
+                }
+                priorities_document = sorted([document for document in db if document.get('name') == village_priorities_task_name], key=lambda x: ranking_priority.get(x.get("project_name", "").lower(), 99))
+                meeting_dates = {f"{document['administrative_level_id']}_{document['project_name']}": (document['form_response'][0]['dateDeLaReunion'] if document['form_response'] else None) for document in db if document.get('name') == task_name_contain_meeting_date}
+                
+                for document in priorities_document:
+                    update_or_create_priorities_document(document, meeting_dates.get(f"{document['administrative_level_id']}_{document['project_name']}"))
+                    
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))
 
 
-def update_or_create_priorities_document(priorities_document):
+
+def update_or_create_priorities_document(priorities_document, meeting_date):
     # Extract the administrative_level_id from the priorities document
     adm_id = priorities_document['administrative_level_id']
 
@@ -50,15 +70,33 @@ def update_or_create_priorities_document(priorities_document):
         if priorities_document.get('form_response') and 'sousComposante11' in priorities_document['form_response'][0]:
             for idx, priority in enumerate(
                     priorities_document['form_response'][0]['sousComposante11']['prioritesDuVillage']):
+                """
+                    Ex. priority
+                    priority = {
+                        "contributionClimatique": "Réduction de l'abattage anarchique des arbres ", 
+                        "coutEstime": 50000000, 
+                        "nombreEstimeDeBeneficiaires": 1800, 
+                        "priorite": "Autre", 
+                        "proposePar": "Hommes et Femmes", 
+                        "siAutreVeuillezDecrire": "Clôture de l'EPP Gando centre "
+                    }
+                """
+
+                start_date = None
                 try:
-                    exist = Investment.objects.filter(
+                    start_date = safe_parse_date(meeting_date)
+                except Exception as e:
+                    print(e, "Error [date] creating investment", meeting_date, administrative_level, priorities_document['project_name'])
+                    
+                try:
+                    investment = Investment.objects.filter(
                         title=priority["priorite"],
                         administrative_level=administrative_level,
-                        ranking=idx + 1,
+                        # ranking=idx + 1,
                         description=priority["siAutreVeuillezDecrire"]
-                    ).exists()
-                    if not exist:
-                        Investment.objects.create(
+                    ).first()
+                    if not investment:
+                        investment = Investment.objects.create(
                             ranking=idx + 1,
                             title=priority["priorite"],
                             description=priority["siAutreVeuillezDecrire"],
@@ -69,10 +107,17 @@ def update_or_create_priorities_document(priorities_document):
                             financial_implementation_rate=0,
                             physical_execution_rate=0,
                             administrative_level=administrative_level,
-                            start_date=priorities_document['form_response'][0]['dateDeLaReunion']
+                            start_date=start_date #priorities_document['form_response'][0]['dateDeLaReunion']
                             # beneficiaries= priority.get("nombreEstimeDeBeneficiaires"),
                         )
+                    else:
+                        investment.ranking = idx + 1
+                    
+                    project = Project.objects.filter(name=priorities_document['project_name']).first()
+                    if project:
+                        investment.came_from.add(project)
+
                 except Exception as e:
-                    print(e, "Error creating investment", priority["priorite"], administrative_level)
+                    print(e, "Error creating investment", priority["priorite"], administrative_level, priorities_document['project_name'])
     # Otherwise, create a new one
     time.sleep(1)
