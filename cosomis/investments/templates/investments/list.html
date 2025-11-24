@@ -673,7 +673,12 @@
                             {% else %}
                             <td>{{ investment.title }}</td>
                             {% endif %}
-                            <td>{{ investment.administrative_level.type }}</td>
+                            <td>
+                                {{ investment.administrative_level.type }} <br />
+                                {% with investment.get_projects_priority_came_from as priority_sources %}
+                                    {% if projects_sources %}({{ projects_sources }}){% endif %}
+                                {% endwith %}
+                            </td>
                             <td data-order="{{ investment.estimated_cost }}" data-search="{{ investment.estimated_cost }}">
                                 {{ investment.estimated_cost|intcomma }} FCFA
                             </td>
