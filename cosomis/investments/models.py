@@ -59,6 +59,13 @@ class Investment(BaseModel): # Investment module
     estimated_cost = models.PositiveBigIntegerField()
     real_cost = models.PositiveIntegerField(null=True, blank=True)
     start_date = models.DateField(null=True)
+    came_from = models.ManyToManyField(
+        Project,
+        related_name="projects_investments",
+        default=[],
+        blank=True,
+    )
+    
     duration = models.PositiveIntegerField(help_text=_("In days"))
     delays_consumed = models.PositiveIntegerField(help_text=_("In days"))
     physical_execution_rate = models.PositiveIntegerField(help_text=_("Percentage"))
@@ -90,6 +97,14 @@ class Investment(BaseModel): # Investment module
     no_sql_id = models.CharField(max_length=255)
     imported_project_id = models.CharField(max_length=255, null=True, blank=True)
 
+    def get_projects_priority_came_from(self, join_on_chain=True):
+        projects = self.came_from.all()
+        if join_on_chain:
+            return ", ".join([p.name for p in projects])
+        else:
+            return projects
+        
+        
     def __str__(self):
         return f'{self.title}'
 
