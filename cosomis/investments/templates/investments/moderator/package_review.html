@@ -413,7 +413,13 @@
                                 <input class="project-table-check" id="checkbox-{{ package_investment.investment.id }}" value="{{ package_investment.investment.id }}" type="checkbox" checked>
                             </td>
                             <td>{{ package_investment.investment.title }}</td>
-                            <td>{{ package_investment.investment.administrative_level.type }}</td>
+                            <td>
+                                {{ package_investment.investment.administrative_level.type }}
+                                <br />
+                                {% with package_investment.investment.get_projects_priority_came_from as priority_sources %}
+                                    {% if priority_sources %}({{ priority_sources }}){% endif %}
+                                {% endwith %}
+                            </td>
                             <td data-order="{{ package_investment.investment.estimated_cost }}" data-search="{{ package_investment.investment.estimated_cost }}">
                                 {{ package_investment.investment.estimated_cost }} FCFA
                             </td>

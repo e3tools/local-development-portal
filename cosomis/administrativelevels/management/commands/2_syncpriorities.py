@@ -111,11 +111,13 @@ def update_or_create_priorities_document(priorities_document, meeting_date):
                             # beneficiaries= priority.get("nombreEstimeDeBeneficiaires"),
                         )
                     else:
-                        investment.ranking = idx + 1
+                        investment.ranking = idx + 1 # Take the rank of the last recorded priority of the recent project
                     
                     project = Project.objects.filter(name=priorities_document['project_name']).first()
                     if project:
                         investment.came_from.add(project)
+
+                        investment.save()
 
                 except Exception as e:
                     print(e, "Error creating investment", priority["priorite"], administrative_level, priorities_document['project_name'])

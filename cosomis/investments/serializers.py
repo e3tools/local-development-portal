@@ -17,6 +17,7 @@ class InvestmentSerializer(serializers.ModelSerializer):
     administrative_level__parent__parent__parent__name = serializers.SerializerMethodField()
     population_priority = serializers.SerializerMethodField()
     estimated_cost = serializers.SerializerMethodField()
+    administrative_level__type_with_projects_priority_came_from = serializers.SerializerMethodField()
 
 
     class Meta:
@@ -75,3 +76,11 @@ class InvestmentSerializer(serializers.ModelSerializer):
             return _('Not available')
         return intcomma(obj.estimated_cost)
 
+    def get_projects_priority_came_from(self, obj):
+        return obj.get_projects_priority_came_from()
+    
+    def get_administrative_level__type_with_projects_priority_came_from(self, obj):
+        priority_sources = self.get_projects_priority_came_from(obj)
+        if priority_sources:
+            return f"{self.get_administrative_level__type(obj)} <br />({priority_sources})"
+        return self.get_administrative_level__type(obj)

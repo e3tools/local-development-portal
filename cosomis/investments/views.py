@@ -221,7 +221,7 @@ class IndexListView(
         context["datatable_config"]["columns"] = [
             {'data': 'select_input', 'name': 'select_input', 'searchable': 'false', 'orderable': 'false'},
             {'data': 'title'},
-            {'data': 'administrative_level__type'},
+            {'data': 'administrative_level__type_with_projects_priority_came_from'},
             {'data': 'estimated_cost'},
             {'data': 'administrative_level__name'},
             {'data': 'administrative_level__parent__name'},
