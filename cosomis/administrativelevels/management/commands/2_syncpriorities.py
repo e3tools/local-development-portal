@@ -83,25 +83,37 @@ def update_or_create_priorities_document(priorities_document, meeting_date):
                 """
 
                 start_date = None
+                title = priority["priorite"]
+                description = priority["siAutreVeuillezDecrire"]
+
                 try:
                     start_date = safe_parse_date(meeting_date)
                 except Exception as e:
                     print(e, "Error [date] creating investment", meeting_date, administrative_level, priorities_document['project_name'])
-                    
+                
+                try:
+                    sector = Sector.objects.get(name=title)
+                except Sector.MultipleObjectsReturned:
+                    sector = Sector.objects.filter(name=title).first()
+                except Exception as e:
+                    sector = Sector.objects.get(name="Autre")
+                    if title != "Autre":
+                            description = f"{title} ({description})" if description and str(description).strip() else title
+                
                 try:
                     investment = Investment.objects.filter(
-                        title=priority["priorite"],
+                        title=title,
                         administrative_level=administrative_level,
                         # ranking=idx + 1,
-                        description=priority["siAutreVeuillezDecrire"]
+                        description=description
                     ).first()
                     if not investment:
                         investment = Investment.objects.create(
                             ranking=idx + 1,
-                            title=priority["priorite"],
-                            description=priority["siAutreVeuillezDecrire"],
+                            title=title,
+                            description=description,
                             estimated_cost=priority.get("coutEstime"),
-                            sector=Sector.objects.get(name=priority["priorite"]),
+                            sector=sector,
                             delays_consumed=0,
                             duration=0,
                             financial_implementation_rate=0,
@@ -120,6 +132,6 @@ def update_or_create_priorities_document(priorities_document, meeting_date):
                         investment.save()
 
                 except Exception as e:
-                    print(e, "Error creating investment", priority["priorite"], administrative_level, priorities_document['project_name'])
+                    print(e, "Error creating investment", title, administrative_level, priorities_document['project_name'])
     # Otherwise, create a new one
     time.sleep(1)
