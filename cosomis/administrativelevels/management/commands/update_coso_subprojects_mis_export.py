@@ -2,6 +2,7 @@ import pandas as pd
 from django.core.management.base import BaseCommand, CommandError
 from administrativelevels.models import Project, AdministrativeLevel, Sector
 from investments.models import Investment
+from cosomis.constants import STRUCTURE_COMPLETED_STATUS
 from thefuzz import fuzz
 
 
@@ -48,7 +49,7 @@ class Command(BaseCommand):
                     project_status = "F"
                 elif row["status"] == "Arrêt":
                     project_status = "PA"
-                elif row["status"] == "Achevé" or row["status"] == "Réception provisoire" or row["status"] == "Réception technique":
+                elif row["status"] in STRUCTURE_COMPLETED_STATUS: #row["status"] == "Achevé" or row["status"] == "Réception provisoire" or row["status"] == "Réception technique":
                     project_status = "C"
 
                 investment.physical_execution_rate = physical_execution_rate
