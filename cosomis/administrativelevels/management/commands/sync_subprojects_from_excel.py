@@ -2,6 +2,7 @@ import pandas as pd
 from django.core.management.base import BaseCommand, CommandError
 from administrativelevels.models import Project, AdministrativeLevel, Sector
 from investments.models import Investment
+from cosomis.constants import STRUCTURE_COMPLETED_STATUS
 from thefuzz import fuzz
 
 
@@ -65,7 +66,11 @@ class Command(BaseCommand):
                     phsycical_execution_rate = pd.to_numeric(phsycical_execution_rate, errors='coerce')
                     if pd.isna(phsycical_execution_rate):
                         phsycical_execution_rate = 0
-                    best_match.physical_execution_rate = phsycical_execution_rate
+                    try:
+                        best_match.physical_execution_rate = int(float(phsycical_execution_rate))
+                    except:
+                        best_match.physical_execution_rate = 0
+
                     if row["status"] == "Identifié":
                         best_match.project_status = "F"
                     elif row["status"] == "En cours":
@@ -74,7 +79,7 @@ class Command(BaseCommand):
                         best_match.project_status = "F"
                     elif row["status"] == "Arrêt":
                         best_match.project_status = "PA"
-                    elif row["status"] == "Achevé" or row["status"] == "Réception provisoire":
+                    elif row["status"] in STRUCTURE_COMPLETED_STATUS: #elif row["status"] == "Achevé" or row["status"] == "Réception provisoire":
                         best_match.project_status = "C"
                     else:
                         best_match.project_status = "P"
@@ -122,8 +127,13 @@ class Command(BaseCommand):
                     project_status = "F"
                 elif row["status"] == "Arrêt":
                     project_status = "PA"
-                elif row["status"] == "Achevé" or row["status"] == "Réception provisoire":
+                elif row["status"] in STRUCTURE_COMPLETED_STATUS: #elif row["status"] == "Achevé" or row["status"] == "Réception provisoire":
                     project_status = "C"
+
+                try:
+                    physical_execution_rate = int(float(phsycical_execution_rate))
+                except:
+                    physical_execution_rate = 0
 
                 Investment.objects.create(
                     title=row["CDD Option"],
