@@ -63,3 +63,5 @@ vine==5.0.0
 wcwidth==0.2.6
 wrapt==1.15.0
 xhtml2pdf==0.2.16
+fuzzywuzzy==0.18.0
+python_levenshtein==0.27.3
