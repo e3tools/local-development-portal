@@ -30,7 +30,7 @@ class Command(BaseCommand):
         count = 0
         # Iterate over the dataframe and find the investments with ID in the Excel file
         for index, row in df.iterrows():
-            investment_id = 'COSO' + str(row["ID"])
+            investment_id = f'{project.name}.{row["ID"]}.{row["N"]}' # PROJECT_NAME.SUBPROJECT_KIT_NUMBER.NUMBER_INFRASTRUCTURE
             try:
                 investment = Investment.objects.get(imported_project_id=investment_id)
                 try:
@@ -53,7 +53,7 @@ class Command(BaseCommand):
                     project_status = "C"
 
                 investment.physical_execution_rate = physical_execution_rate
-                investment.status = project_status
+                investment.project_status = project_status
                 # longitude = row["Longitude (x)"],
                 # latitude = row["Latitude (y)"],
                 # if not pd.isna(longitude):

@@ -27,12 +27,21 @@ class Command(BaseCommand):
         # Your command logic here
         self.nsc = NoSQLClient()
         facilitator_dbs = self.nsc.list_all_databases('facilitator')
+
+        village_priorities_tasks_name = [
+            "Identification et établissement de la liste des besoins prioritaires pour la composante 1.1  par groupe", # COSO, FA-COSO
+            "Identification et établissement de la liste des besoins prioritaires pour la composante 1 (amélioration de l'accès des populations aux services sociaux de base)" # PURS
+        ]
+
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
                 db = self.nsc.get_db(db_name).get_query_result({
                     "type": "task",
                     "phase_name": "PLANIFICATION",
-                    "name": "Identification et établissement de la liste des besoins prioritaires pour la composante 1.1  par groupe"
+                    "name": {
+                        "$in": village_priorities_tasks_name
+                    }
+                    # "name": "Identification et établissement de la liste des besoins prioritaires pour la composante 1.1  par groupe"
                 })
                 for document in db:
                     update_or_create_priorities_document(document)
@@ -43,63 +52,65 @@ def update_or_create_priorities_document(priorities_document):
     # Extract the administrative_level_id from the priorities document
     adm_id = priorities_document['administrative_level_id']
 
-    administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
-    # TODO Complete Sector Allocation
-    # Extract priorities from the priorities document
-    if 'form_response' in priorities_document:
-        try:
-            if priorities_document.get('form_response') and 'agriculteursEtEleveurs' in priorities_document['form_response'][0]:
-                for idx, priority in enumerate(
-                        priorities_document['form_response'][0]['agriculteursEtEleveurs']['besoinsPrioritairesDuGroupe']):
-                        investment = Investment.objects.filter(
-                            administrative_level=administrative_level,
-                            title=priority['besoinSelectionne']
-                        )
-                        if investment:
-                            investment = investment.first()
-                            investment.endorsed_by_agriculturist = True
-                            investment.save()
-        except:
-            pass
-        try:
-            if priorities_document.get('form_response') and 'groupeDesFemmes' in priorities_document['form_response'][1]:
-                for idx, priority in enumerate(
-                        priorities_document['form_response'][1]['groupeDesFemmes']['besoinsPrioritairesDuGroupe']):
-                        investment = Investment.objects.filter(
-                            administrative_level=administrative_level,
-                            title=priority['besoinSelectionne']
-                        )
-                        if investment:
-                            investment = investment.first()
-                            investment.endorsed_by_women = True
-                            investment.save()
-        except:
-            pass
-        try:
-            if priorities_document.get('form_response') and 'groupeDesJeunes' in priorities_document['form_response'][2]:
-                for idx, priority in enumerate(
-                        priorities_document['form_response'][2]['groupeDesJeunes']['besoinsPrioritairesDuGroupe']):
-                        investment = Investment.objects.filter(
-                            administrative_level=administrative_level,
-                            title=priority['besoinSelectionne']
-                        )
-                        if investment:
-                            investment = investment.first()
-                            investment.endorsed_by_youth = True
-                            investment.save()
-        except:
-            pass
-        try:
-            if priorities_document.get('form_response') and 'groupeEthniqueMinoritaires' in priorities_document['form_response'][3]:
-                for idx, priority in enumerate(
-                        priorities_document['form_response'][3]['groupeEthniqueMinoritaires']['besoinsPrioritairesDuGroupe']):
-                        investment = Investment.objects.filter(
-                            administrative_level=administrative_level,
-                            title=priority['besoinSelectionne']
-                        )
-                        if investment:
-                            investment = investment.first()
-                            investment.endorsed_by_pastoralist = True
-                            investment.save()
-        except:
-            pass
+    administrative_levels = AdministrativeLevel.objects.filter(no_sql_db_id=adm_id)
+    if administrative_levels.exists():
+        administrative_level = administrative_levels.first()
+        # TODO Complete Sector Allocation
+        # Extract priorities from the priorities document
+        if 'form_response' in priorities_document:
+            try:
+                if priorities_document.get('form_response') and 'agriculteursEtEleveurs' in priorities_document['form_response'][0]:
+                    for idx, priority in enumerate(
+                            priorities_document['form_response'][0]['agriculteursEtEleveurs']['besoinsPrioritairesDuGroupe']):
+                            investment = Investment.objects.filter(
+                                administrative_level=administrative_level,
+                                title=priority['besoinSelectionne']
+                            )
+                            if investment:
+                                investment = investment.first()
+                                investment.endorsed_by_agriculturist = True
+                                investment.save()
+            except:
+                pass
+            try:
+                if priorities_document.get('form_response') and 'groupeDesFemmes' in priorities_document['form_response'][1]:
+                    for idx, priority in enumerate(
+                            priorities_document['form_response'][1]['groupeDesFemmes']['besoinsPrioritairesDuGroupe']):
+                            investment = Investment.objects.filter(
+                                administrative_level=administrative_level,
+                                title=priority['besoinSelectionne']
+                            )
+                            if investment:
+                                investment = investment.first()
+                                investment.endorsed_by_women = True
+                                investment.save()
+            except:
+                pass
+            try:
+                if priorities_document.get('form_response') and 'groupeDesJeunes' in priorities_document['form_response'][2]:
+                    for idx, priority in enumerate(
+                            priorities_document['form_response'][2]['groupeDesJeunes']['besoinsPrioritairesDuGroupe']):
+                            investment = Investment.objects.filter(
+                                administrative_level=administrative_level,
+                                title=priority['besoinSelectionne']
+                            )
+                            if investment:
+                                investment = investment.first()
+                                investment.endorsed_by_youth = True
+                                investment.save()
+            except:
+                pass
+            try:
+                if priorities_document.get('form_response') and 'groupeEthniqueMinoritaires' in priorities_document['form_response'][3]:
+                    for idx, priority in enumerate(
+                            priorities_document['form_response'][3]['groupeEthniqueMinoritaires']['besoinsPrioritairesDuGroupe']):
+                            investment = Investment.objects.filter(
+                                administrative_level=administrative_level,
+                                title=priority['besoinSelectionne']
+                            )
+                            if investment:
+                                investment = investment.first()
+                                investment.endorsed_by_pastoralist = True
+                                investment.save()
+            except:
+                pass

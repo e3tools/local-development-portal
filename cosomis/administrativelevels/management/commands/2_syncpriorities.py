@@ -130,8 +130,10 @@ def update_or_create_priorities_document(priorities_document, meeting_date):
                                 financial_implementation_rate=0,
                                 physical_execution_rate=0,
                                 administrative_level=administrative_level,
-                                start_date=start_date #priorities_document['form_response'][0]['dateDeLaReunion']
+                                start_date=start_date, #priorities_document['form_response'][0]['dateDeLaReunion']
                                 # beneficiaries= priority.get("nombreEstimeDeBeneficiaires"),
+                                climate_contribution = True if priority.get("contributionClimatique") else False,
+                                climate_contribution_text = priority.get("contributionClimatique"),
                             )
                         else:
                             investment.ranking = idx + 1 # Take the rank of the last recorded priority of the recent project

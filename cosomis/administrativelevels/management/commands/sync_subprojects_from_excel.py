@@ -3,8 +3,31 @@ from django.core.management.base import BaseCommand, CommandError
 from administrativelevels.models import Project, AdministrativeLevel, Sector
 from investments.models import Investment
 from cosomis.constants import STRUCTURE_COMPLETED_STATUS
-from thefuzz import fuzz
+# from thefuzz import fuzz
+from fuzzywuzzy import fuzz
+from administrativelevels.utils.functions import normalize_text
+import math
 
+
+def safe_float(value):
+    try:
+        if value in ["NaN", "nan", "", None]:
+            return 0
+        v = float(value)
+        if math.isnan(v):
+            return 0
+        return v
+    except:
+        return 0
+
+def safe_value(value):
+    try:
+        if not value or (value and str(value).lower() in ["nan", "", "none"]):
+            return None
+        return value
+    except:
+        return None
+    
 
 class Command(BaseCommand):
     help = 'Reads an Excel file and processes it with a given project ID.'
@@ -40,17 +63,34 @@ class Command(BaseCommand):
                 parent__parent__name=row["parent_parent_adm"],
             )
             if village.count() == 1:
-                # Iterate over the Investment objects and calculate the similarity
-                investments = Investment.objects.filter(administrative_level=village.first())
-                # Filter by similarity manually
-                matched_investments = [
-                    investment for investment in investments
-                    if fuzz.ratio(investment.title, row["CDD Option"]) >= similarity_threshold
-                ]
+                imported_project_id = f'{project.name}.{row["ID"]}.{row["N"]}' # PROJECT_NAME.SUBPROJECT_KIT_NUMBER.NUMBER_INFRASTRUCTURE
+                investments = Investment.objects.filter(
+                    administrative_level=village.first(),
+                    came_from__id=project_id,
+                    imported_project_id=imported_project_id
+                )
+                if investments.exists():
+                    matched_investments = list(investments)
+                else:
+                    # Iterate over the Investment objects and calculate the similarity
+                    investments = Investment.objects.filter(
+                        administrative_level=village.first(),
+                        came_from__id=project_id
+                    )
+                    # Filter by similarity manually
+                    matched_investments = [
+                        investment for investment in investments
+                        # if fuzz.ratio(investment.title, (row["CDD Option"] if safe_value(row["CDD Option"]) else row["TYPE D'OUVRAGE (INFRASTRUCTURE)"])) >= similarity_threshold and (
+                        #     (investment.funded_by and investment.funded_by_id==project_id) or not investment.funded_by
+                        # )
+                        if fuzz.token_set_ratio(normalize_text(investment.title), normalize_text(row["CDD Option"] if safe_value(row["CDD Option"]) else row["TYPE D'OUVRAGE (INFRASTRUCTURE)"])) >= similarity_threshold and (
+                            (investment.funded_by and investment.funded_by_id==project_id) or not investment.funded_by
+                        )
+                    ]
 
                 # Sort by similarity if you want the best match first
-                matched_investments.sort(key=lambda inv: fuzz.ratio(inv.title, row["CDD Option"]),
-                                         reverse=True)
+                matched_investments.sort(key=lambda inv: fuzz.token_set_ratio(normalize_text(inv.title), normalize_text(row["CDD Option"] if safe_value(row["CDD Option"]) else row["TYPE D'OUVRAGE (INFRASTRUCTURE)"])),
+                                        reverse=True)
                 if matched_investments:
                     best_match = matched_investments[0]  # The best match based on similarity
                     if best_match.funded_by:
@@ -60,14 +100,14 @@ class Command(BaseCommand):
                     best_match.funded_by = project
                     best_match.longitude = row["Longitude (x)"]
                     best_match.latitude = row["Latitude (y)"]
-                    best_match.imported_project_id = 'COSO' + str(row["ID"])
-                    phsycical_execution_rate = row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"]
-                    # check if phsycical_execution_rate is a number
-                    phsycical_execution_rate = pd.to_numeric(phsycical_execution_rate, errors='coerce')
-                    if pd.isna(phsycical_execution_rate):
-                        phsycical_execution_rate = 0
+                    best_match.imported_project_id = imported_project_id #'COSO' + str(row["ID"])
+                    physical_execution_rate = row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"]
+                    # check if physical_execution_rate is a number
+                    physical_execution_rate = pd.to_numeric(physical_execution_rate, errors='coerce')
+                    if pd.isna(physical_execution_rate):
+                        physical_execution_rate = 0
                     try:
-                        best_match.physical_execution_rate = int(float(phsycical_execution_rate))
+                        best_match.physical_execution_rate = int(float(physical_execution_rate))
                     except:
                         best_match.physical_execution_rate = 0
 
@@ -83,6 +123,14 @@ class Command(BaseCommand):
                         best_match.project_status = "C"
                     else:
                         best_match.project_status = "P"
+
+                    if project:
+                        best_match.came_from.add(project)
+                    
+                    cost = safe_float(row["COUT ESTIME DE L'OUVRAGE"])
+                    if cost:
+                        best_match.estimated_cost = cost
+
                     best_match.save()
                     count += 1
                     # Do something with the matched investment
@@ -94,65 +142,81 @@ class Command(BaseCommand):
                 print("Village not found:", row["village"], index)
         creating = 0
         existing_with_village = 0
+        similarity_threshold = 60
         for index, row in df.iterrows():
             village = AdministrativeLevel.objects.filter(
                 name=row["village"],
                 parent__name=row["parent_adm"],
                 parent__parent__name=row["parent_parent_adm"],
             )
-            exists = Investment.objects.filter(administrative_level=village.first(), funded_by=project)
-            if not exists:
-                creating += 1
-                sector = Sector.objects.all()
-                other_sector = Sector.objects.get(name="Autre")
-                similarity_threshold = 60
-                matched_sectors = [
-                    sec for sec in sector
-                    if fuzz.ratio(sec.name, row["TYPE D'OUVRAGE (INFRASTRUCTURE)"]) >= similarity_threshold
+            if village.exists():
+                imported_project_id = f'{project.name}.{row["ID"]}.{row["N"]}' # PROJECT_NAME.SUBPROJECT_KIT_NUMBER.NUMBER_INFRASTRUCTURE
+                investments = Investment.objects.filter(administrative_level=village.first(), funded_by=project)
+                matched_investments = [
+                    investment for investment in investments
+                    if fuzz.token_set_ratio(normalize_text(investment.title), normalize_text(row["CDD Option"] if safe_value(row["CDD Option"]) else row["TYPE D'OUVRAGE (INFRASTRUCTURE)"])) >= similarity_threshold and (
+                       investment.imported_project_id==imported_project_id or not investment.imported_project_id
+                    )
                 ]
-                try:
-                    cost = float(row["COUT ESTIME DE L'OUVRAGE"])
-                except:
-                    cost = 0
-                physical_execution_rate = row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"]
-                if pd.isna(phsycical_execution_rate):
-                    phsycical_execution_rate = 0
+                
+                if not investments or not matched_investments:
+                    creating += 1
+                    sector = Sector.objects.all()
+                    other_sector = Sector.objects.get(name="Autre")
+                    matched_sectors = [
+                        sec for sec in sector
+                        if fuzz.token_set_ratio(normalize_text(sec.name), normalize_text(row["TYPE D'OUVRAGE (INFRASTRUCTURE)"])) >= similarity_threshold
+                    ]
+                    # try:
+                    #     cost = float(row["COUT ESTIME DE L'OUVRAGE"])
+                    # except:
+                    #     cost = 0
+                    cost = safe_float(row["COUT ESTIME DE L'OUVRAGE"])
 
-                project_status = "P"
-                if row["status"] == "Identifié":
-                    project_status = "F"
-                elif row["status"] == "En cours":
+                    physical_execution_rate = row["NIVEAU ACTUEL DE REALISATION PHYSIQUE DE L'OUVRAGE"]
+                    if pd.isna(physical_execution_rate):
+                        physical_execution_rate = 0
+
                     project_status = "P"
-                elif pd.isna(row["status"]):
-                    project_status = "F"
-                elif row["status"] == "Arrêt":
-                    project_status = "PA"
-                elif row["status"] in STRUCTURE_COMPLETED_STATUS: #elif row["status"] == "Achevé" or row["status"] == "Réception provisoire":
-                    project_status = "C"
+                    if row["status"] == "Identifié":
+                        project_status = "F"
+                    elif row["status"] == "En cours":
+                        project_status = "P"
+                    elif pd.isna(row["status"]):
+                        project_status = "F"
+                    elif row["status"] == "Arrêt":
+                        project_status = "PA"
+                    elif row["status"] in STRUCTURE_COMPLETED_STATUS: #elif row["status"] == "Achevé" or row["status"] == "Réception provisoire":
+                        project_status = "C"
 
-                try:
-                    physical_execution_rate = int(float(phsycical_execution_rate))
-                except:
-                    physical_execution_rate = 0
+                    try:
+                        physical_execution_rate = int(float(physical_execution_rate))
+                    except:
+                        physical_execution_rate = 0
 
-                Investment.objects.create(
-                    title=row["CDD Option"],
-                    administrative_level=village.first(),
-                    funded_by=project,
-                    longitude=row["Longitude (x)"],
-                    latitude=row["Latitude (y)"],
-                    project_status=project_status,
-                    sector=matched_sectors[0] if matched_sectors else other_sector,
-                    estimated_cost=cost,
-                    duration=0,
-                    delays_consumed=0,
-                    physical_execution_rate=physical_execution_rate,
-                    financial_implementation_rate=0,
-                    imported_project_id='COSO' + str(row["ID"])
-                )
-            else:
-                existing_with_village += 1
-                print(exists.first().funded_by)
+                    investment_created = Investment.objects.create(
+                        title=(row["CDD Option"] if safe_value(row["CDD Option"]) else row["TYPE D'OUVRAGE (INFRASTRUCTURE)"]),
+                        administrative_level=village.first(),
+                        funded_by=project,
+                        longitude=row["Longitude (x)"],
+                        latitude=row["Latitude (y)"],
+                        project_status=project_status,
+                        sector=matched_sectors[0] if matched_sectors else other_sector,
+                        estimated_cost=cost,
+                        duration=0,
+                        delays_consumed=0,
+                        physical_execution_rate=physical_execution_rate,
+                        financial_implementation_rate=0,
+                        imported_project_id=imported_project_id
+                    )
+
+                    if project:
+                        investment_created.came_from.add(project)
+                        investment_created.save()
+
+                else:
+                    existing_with_village += 1
+                    print(investments.first().funded_by)
 
             # Example: Just print the row, you should replace this with your actual processing logic
             #print(row["TYPE D'OUVRAGE (INFRASTRUCTURE)"])
