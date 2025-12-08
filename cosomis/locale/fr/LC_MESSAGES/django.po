@@ -985,6 +985,10 @@ msgstr "Priorités par Secteur"
 msgid "Summary of the canton's sub-projects"
 msgstr "Résumé des sous-projets du canton"
 
+#: administrativelevels/templates/canton_detail.html:160
+msgid "Summary of the canton's infrastructures"
+msgstr "Résumé des infrastructures du canton"
+
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:301
 #: administrativelevels/templates/components/administrative_level_overview.html:4
 msgid "Total population"
@@ -1101,6 +1105,10 @@ msgstr "Actions"
 #: administrativelevels/templates/commune/commune_detail.html:184
 msgid "You have no Sub-projects"
 msgstr "Vous n'avez pas de sous-projets"
+
+#: administrativelevels/templates/commune/commune_detail.html:184
+msgid "You have no infrastructures"
+msgstr "Vous n'avez pas d'infrastructures"
 
 #: administrativelevels/templates/commune/commune_detail.html:189
 #: administrativelevels/templates/shared/priorities_table.html:8
@@ -2302,11 +2310,19 @@ msgstr "Allocation"
 msgid "Number of sub-projects by administrative level and sector"
 msgstr "Nombre de sous-projets par niveau administratif et par secteur"
 
+#: dashboard/views_subprojects.py:199
+msgid "Number of infrastructures by administrative level and sector"
+msgstr "Nombre d'infrastructures par niveau administratif et par secteur"
+
 #: dashboard/templates/dashboard_subprojects.html:42
 #: dashboard/templates/dashboard_subprojects.html:68
 #: dashboard/views_subprojects.py:369
 msgid "Amount of sub-projects by administrative level and sector"
 msgstr "Montant de sous-projets par niveau administratif et par secteur"
+
+#: dashboard/views_subprojects.py:369
+msgid "Amount of infrastructures by administrative level and sector"
+msgstr "Montant d'infrastructures par niveau administratif et par secteur"
 
 #: dashboard/templates/dashboard_subprojects.html:43
 #: dashboard/views_subprojects.py:477
@@ -2329,6 +2345,10 @@ msgstr "Sousprojets par étape en cours"
 msgid "Number of sub-projects by administrative level, sector and step"
 msgstr "Montant de sous-projets par niveau administratif, secteur et étape"
 
+#: dashboard/templates/dashboard_subprojects.html:83
+msgid "Number of infrastructures by administrative level, sector and step"
+msgstr "Montant d'infrastructures par niveau administratif, secteur et étape"
+
 #: dashboard/templates/dashboard_summary.html:137
 msgid "Sub-Project Status"
 msgstr "Statut du sous-projet"
@@ -2345,9 +2365,17 @@ msgstr "Total priorités sous-projets communautaires"
 msgid "Total Selected Sub-Projects"
 msgstr "Total sous-projets communautaires sélectionnés"
 
+#: dashboard/templates/dashboard_summary.html:173
+msgid "Total Selected Infrastructures"
+msgstr "Total infrastructures communautaires sélectionnées"
+
 #: dashboard/templates/dashboard_summary.html:184
 msgid "Completed Sub-Projects"
 msgstr "Sous-projets communautaires achevés"
+
+#: dashboard/templates/dashboard_summary.html:184
+msgid "Completed Infrastructures"
+msgstr "Infrastructures communautaires achevées"
 
 #: dashboard/templates/dashboard_summary.html:194
 msgid "Total Amount Funded / Total Amount Unfunded"
@@ -2364,6 +2392,10 @@ msgstr "Priorités non encore identifié dans ce village"
 #: dashboard/templates/dashboard_summary.html:228
 msgid "Number of sub-projects by minority group"
 msgstr "Nombre de sous-projets par groupe minoritaire"
+
+#: dashboard/templates/dashboard_summary.html:228
+msgid "Number of infrastructures by minority group"
+msgstr "Nombre d'infrastructures par groupe minoritaire"
 
 #: dashboard/templates/dashboard_summary.html:232
 msgid "agriculturist"
@@ -2385,17 +2417,33 @@ msgstr "Minorités ethniques"
 msgid "No sub-projects for farmers yet"
 msgstr "Pas encore de sous projet pour les Agriculteurs"
 
+#: dashboard/templates/dashboard_summary.html:248
+msgid "No infrastructures for farmers yet"
+msgstr "Pas encore d'infrastructures pour les Agriculteurs"
+
 #: dashboard/templates/dashboard_summary.html:261
 msgid "No sub-projects for womens yet"
 msgstr "Pas encore de sous projet pour les agriculteurs"
+
+#: dashboard/templates/dashboard_summary.html:261
+msgid "No infrastructures for womens yet"
+msgstr "Pas encore d'infrastructures pour les agriculteurs"
 
 #: dashboard/templates/dashboard_summary.html:274
 msgid "No sub-projects for youth yet"
 msgstr "Pas encore de sous projets pour les jeunes"
 
+#: dashboard/templates/dashboard_summary.html:274
+msgid "No infrastructures for youth yet"
+msgstr "Pas encore d'infrastructures pour les jeunes"
+
 #: dashboard/templates/dashboard_summary.html:305
 msgid "Location of sub-projects by sector"
 msgstr "Localisation des sous projets par secteur"
+
+#: dashboard/templates/dashboard_summary.html:305
+msgid "Location of infrastructures by sector"
+msgstr "Localisation des infrastructures par secteur"
 
 #: dashboard/templates/dashboard_summary.html:421
 msgid "Type of subproject"
@@ -2702,6 +2750,10 @@ msgstr "Financement total sélectionné"
 msgid "# Sub-projects"
 msgstr "# Sous-projets"
 
+#: investments/templates/investments/package.html:50
+msgid "# Infrastructures"
+msgstr "# Infrastructures"
+
 #: investments/templates/investments/cart.html:54
 #: investments/templates/investments/cart.html:128
 #: investments/templates/investments/package.html:60
@@ -2925,6 +2977,10 @@ msgstr "Total des villages disponibles"
 msgid "Total sub-projects available"
 msgstr "Total priorités sous-projets communautaires"
 
+#: investments/templates/investments/list.html:612
+msgid "Total infrastructures available"
+msgstr "Total priorités infrastructures communautaires"
+
 #: investments/templates/investments/list.html:617
 msgid "Total funding required"
 msgstr "Financement total requis"
@@ -2936,6 +2992,10 @@ msgstr "# Villages sélectionnés"
 #: investments/templates/investments/list.html:629
 msgid "# Sub-projects selected"
 msgstr "# Sous-projets sélectionnés"
+
+#: investments/templates/investments/list.html:629
+msgid "# Infrastructures selected"
+msgstr "# Infrastructures sélectionnées"
 
 #: investments/templates/investments/list.html:643
 #: investments/templates/investments/moderator/package_review.html:393
@@ -3597,6 +3657,11 @@ msgstr "Vous avez déjà un compte ? Connectez-vous"
 #~| msgid "# Sub-projects"
 #~ msgid "# Sous-projets:"
 #~ msgstr "# Sous-projets"
+
+#, fuzzy
+#~| msgid "# Infrastructures"
+#~ msgid "# Infrastructures:"
+#~ msgstr "# Infrastructures"
 
 #~ msgid "The project does not have enough funds"
 #~ msgstr "Le projet ne dispose pas de suffisamment de fonds"
