@@ -28,5 +28,7 @@ urlpatterns = [
     path('ajax/', include([
         path('adm-levels', FillAdmLevelsSelectFilters.as_view()),
         path('sectors', FillSectorsSelectFilters.as_view()),
-    ] + router.urls))
+    ] + router.urls)),
+
+    path('export/', include('investments.export.urls')),
 ]
