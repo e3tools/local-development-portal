@@ -244,7 +244,7 @@
                                                 {% if subproject.endorsed_by_agriculturist %}✓{% endif %}</td>
                                             <td class="border-sides--light">{{ subproject.beneficiaries }}</td>
                                             <td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
-                                            <td class="border-sides--light">{{ subproject.responsible_structure }}</td>
+                                            <td class="border-sides--light">{{ subproject.funded_by.name }}</td>
                                             <td class="border-sides--light">{% if subproject.climate_contribution %}{{ subproject.climate_contribution_text }}{% else %}
                                                 {% translate "No" %}{% endif %}</td>
                                             <td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
