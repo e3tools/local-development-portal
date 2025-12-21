@@ -4,4 +4,5 @@ from typing import Optional
 
 @dataclass(frozen=True)
 class InvestmentCriteria:
-    administrative_level: Optional[int] = None
+    id: Optional[str] = None
+    administrative_level_id: Optional[int] = None
