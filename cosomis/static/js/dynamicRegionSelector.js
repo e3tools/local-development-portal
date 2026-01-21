@@ -50,9 +50,6 @@ function loadNextLevelRegions(current_level, url, placeholder) {
                         allowClear: true,
                         placeholder: placeholder,
                     });
-                    $(child).next().find('b[role="presentation"]').hide();
-                    $(child).next().find('.select2-selection__arrow').append(
-                        '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
 
                     let options = '<option value></option>';
                     $.each(data, function (index, value) {

@@ -60,10 +60,6 @@
 
     <script type="text/javascript">
         function set_datas(element, data){
-            $(element).next().find('b[role="presentation"]').hide();
-            $(element).next().find('.select2-selection__arrow').append(
-                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
-
             let options = '';
             $.each(data, function (index, value) {
                 let option = '<option value="' + value.id + '">';

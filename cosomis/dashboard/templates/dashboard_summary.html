@@ -31,14 +31,16 @@
         <div class="row filter-group">
             <div class="col-9">
                 <div class="card card-Administrative rounded-0">
-                    <div aria-labelledby="headingAdministrativeLevel" class="collapse show" id="collapseAdministrativeLevel">
+                    <div aria-labelledby="headingAdministrativeLevel" class="collapse show"
+                    	id="collapseAdministrativeLevel">
                         <form action="" method="GET" id="adm-filter-form">
                             {% csrf_token %}
                             <div class="card-body">
                                 <div class="horizontal-form">
                                     <div class="form-group">
                                         <label for="organization-select-id">{% translate 'Sector' %}</label>
-                                        <select class="form-control" name="sector-filter" id="sector-select-id" style="width: 100%;">
+                                        <select class="form-control" name="sector-filter" id="sector-select-id"
+                                        	style="width: 100%;">
                                             <option selected value="">{% translate 'Sector' %}</option>
                                             {% for sector in sectors %}
                                                 <option value="{{ sector.id }}">{{ sector.name }}</option>
@@ -47,13 +49,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="organization-select-id">{% translate 'Type' %}</label>
-                                        <select
-                                            class="form-control"
-                                            name="type-filter"
-                                            id="type-select-id"
-                                            style="width: 100%;"
-
-                                        >
+                                        <select class="form-control" name="type-filter" id="type-select-id"
+                                            style="width: 100%;">
                                             <option selected value="">{% translate 'Type' %}</option>
                                             {% for type in sector_types %}
                                                 <option value="{{ type.0 }}">{{ type.1 }}</option>
@@ -62,7 +59,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="organization-select-id">{% translate 'Organization' %}</label>
-                                        <select class="form-control" name="organization-filter" id="organization-select-id" style="width: 100%;">
+                                        <select class="form-control" name="organization-filter"
+                                        	id="organization-select-id" style="width: 100%;">
                                             <option selected value="">{% translate 'Organization' %}</option>
                                             {% for organization in organizations %}
                                                 <option value="{{ organization.id }}">{{ organization.name }}</option>
@@ -71,7 +69,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="region-select-id">{% translate 'Region' %}</label>
-                                        <select class="form-control" name="region-filter" empty-option="{% translate 'Region' %}" style="width: 100%;" id="region-select-id">
+                                        <select class="form-control" name="region-filter"
+                                        	empty-option="{% translate 'Region' %}" style="width: 100%;" id="region-select-id">
                                             <option selected value="">{% translate 'Region' %}</option>
                                             {% for region in regions %}
                                                 <option value="{{ region.id }}" {% if query_strings_raw|get_item:'region-filter' == region.id %}selected{% endif %}>{{ region.name }}</option>
@@ -82,7 +81,8 @@
                                 <div class="horizontal-form">
                                     <div class="form-group">
                                         <label for="prefecture-select-id">{% translate 'Prefecture' %}</label>
-                                        <select class="form-control" name="prefecture-filter" id="prefecture-select-id" empty-option="{% translate 'Prefecture' %}" style="width: 100%;" {% if not 'region-filter' in query_strings_raw %}disabled{% endif %}>
+                                        <select class="form-control" name="prefecture-filter" id="prefecture-select-id"
+                                        	empty-option="{% translate 'Prefecture' %}" style="width: 100%;" {% if not 'region-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{% translate 'Prefecture' %}</option>
                                             {% for prefecture in prefectures %}
                                                 <option value="{{ prefecture.id }}" {% if query_strings_raw|get_item:'prefecture-filter' == prefecture.id %}selected{% endif %}>{{ prefecture.name }}</option>
@@ -91,7 +91,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="commune-select-id">{% translate 'Commune' %}</label>
-                                        <select class="form-control" name="commune-filter" id="commune-select-id" empty-option="{% translate 'Commune' %}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
+                                        <select class="form-control" name="commune-filter" id="commune-select-id"
+                                        	empty-option="{% translate 'Commune' %}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{% translate 'Commune' %}</option>
                                             {% for commune in communes %}
                                                 <option value="{{ commune.id }}" {% if query_strings_raw|get_item:'commune-filter' == commune.id %}selected{% endif %}>{{ commune.name }}</option>
@@ -100,7 +101,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="canton-select-id">{% translate 'Canton' %}</label>
-                                        <select class="form-control" name="canton-filter" id="canton-select-id" empty-option="{% translate 'Canton' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                        <select class="form-control" name="canton-filter" id="canton-select-id"
+                                        	empty-option="{% translate 'Canton' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{% translate 'Canton' %}</option>
                                             {% for canton in cantons %}
                                                 <option value="{{ canton.id }}" {% if query_strings_raw|get_item:'canton-filter' == canton.id %}selected{% endif %}>{{ canton.name }}</option>
@@ -109,7 +111,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="village-select-id">{% translate 'Village' %}</label>
-                                        <select class="form-control" name="village-filter" id="village-select-id" empty-option="{% translate 'Village' %}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
+                                        <select class="form-control" name="village-filter" id="village-select-id"
+                                        	empty-option="{% translate 'Village' %}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{% translate 'Village' %}</option>
                                             {% for village in villages %}
                                                 <option value="{{ village.id }}" {% if query_strings_raw|get_item:'village-filter' == village.id %}selected{% endif %}>{{ village.name }}</option>
@@ -119,7 +122,8 @@
                                 </div>
                                 <div class="horizontal-form">
                                     <div class="form-group">
-                                        <input type="button" class="btn btn-link adm-submit-reset mt-4" value="{% translate 'Reset' %}" id="adm-reset-hidden-id" style="margin-bottom: 3px;"/>
+                                        <input type="button" class="btn btn-link adm-submit-reset mt-4"
+                                        	value="{% translate 'Reset' %}" id="adm-reset-hidden-id" style="margin-bottom: 3px;"/>
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +139,8 @@
                             <div class="horizontal-form">
                                 <div class="form-group">
                                     <label for="project-status-select-id">{% translate 'Sub-Project Status' %}</label>
-                                    <select class="form-control" name="project-status-filter" id="project-status-select-id" style="width: 100%;">
+                                    <select class="form-control" name="project-status-filter"
+                                    	id="project-status-select-id" style="width: 100%;">
                                         <option selected value="">{% translate 'All Statuses' %}</option>
                                         {% for status in project_statuses %}
                                             <option value="{{ status.0 }}" {% if query_strings_raw|get_item:'project-status-filter' == status.0 %}selected{% endif %}>{{ status.1 }}</option>
@@ -191,7 +196,9 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 mb-3">
-                                    <h5 class="card-title mt-3" style="font-size: 15px;">{% translate 'Total Amount Funded / Total Amount Unfunded' %}(FCFA)</h5>
+                                    <h5 class="card-title mt-3" style="font-size: 15px;">
+                                    	{% translate 'Total Amount Funded / Total Amount Unfunded' %}(FCFA)
+                                    </h5>
                                 </div>
                                 <div class="col-12 mt-3">
                                     <canvas id="fundedPrioritiesChart" class="bar"></canvas>
@@ -210,7 +217,9 @@
                                 <h6 class="card-title py-0">{% translate 'Number of priorities by sector' %} </h6>
                             </div>
                             <div id="noDataMessage" class="col-12 mt-3 mb-5" style="display: none; font-size:30px; ">
-                                <p class="text-center mt-5" style="font-size:20px; ">{% translate 'Priorities not yet identified in this village' %}</p>
+                                <p class="text-center mt-5" style="font-size:20px; ">
+                                	{% translate 'Priorities not yet identified in this village' %}
+                                </p>
                             </div>
                             <div class="col-6 mt-5">
                                 <ul id="prioritiesLegend" class="legend"></ul>
@@ -225,27 +234,48 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 mb-3">
-                                <h6 class="card-title py-0">{% translate 'Number of sub-projects by minority group' %}</h6>
+                                <h6 class="card-title py-0">
+                                	{% translate 'Number of sub-projects by minority group' %}
+                                </h6>
                             </div>
                             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                                <li class="nav-item ml-4 mr-2" role="presentation">
-                                    <button class="nav-link active own-bg-green-color" id="pills-agriculturist-tab" data-toggle="pill" data-target="#pills-agriculturist" type="button" role="tab" aria-controls="pills-agriculturist" aria-selected="true">{% translate 'agriculturist' %}</button>
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link active bg-primary" id="pills-agriculturist-tab"
+                                    	data-toggle="pill" data-target="#pills-agriculturist" type="button" role="tab"
+                                    	aria-controls="pills-agriculturist" aria-selected="true">
+                                    	{% translate 'agriculturist' %}
+                                    </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link own-bg-green-color" id="pills-women-tab" data-toggle="pill" data-target="#pills-women" type="button" role="tab" aria-controls="pills-women" aria-selected="false">{% translate 'women' %}</button>
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link bg-primary" id="pills-women-tab" data-toggle="pill"
+                                    	data-target="#pills-women" type="button" role="tab" aria-controls="pills-women"
+                                    	aria-selected="false">
+                                    	{% translate 'women' %}
+                                    </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link own-bg-green-color mx-2" id="pills-youth-tab" data-toggle="pill" data-target="#pills-youth" type="button" role="tab" aria-controls="pills-youth" aria-selected="false">{% translate 'youth' %}</button>
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link bg-primary" id="pills-youth-tab"
+                                    	data-toggle="pill" data-target="#pills-youth" type="button" role="tab"
+                                    	aria-controls="pills-youth" aria-selected="false">
+                                    	{% translate 'youth' %}
+                                    </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link own-bg-green-color" id="pills-ethnic-minorities-tab" data-toggle="pill" data-target="#pills-ethnic-minorities" type="button" role="tab" aria-controls="pills-ethnic-minorities" aria-selected="false">{% translate 'ethnic minorities' %}</button>
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link bg-primary" id="pills-ethnic-minorities-tab"
+                                    	data-toggle="pill" data-target="#pills-ethnic-minorities" type="button" role="tab"
+                                    	aria-controls="pills-ethnic-minorities" aria-selected="false">
+                                    	{% translate 'ethnic minorities' %}
+                                    </button>
                                 </li>
                             </ul>
                             <div class="tab-content" id="pills-tabContent">
-                                <div class="tab-pane fade show active ml-2" id="pills-agriculturist" role="tabpanel" aria-labelledby="pills-agriculturist-tab">
+                                <div class="tab-pane fade show active ml-2" id="pills-agriculturist" role="tabpanel"
+                                	aria-labelledby="pills-agriculturist-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageAgriculturist" class="text-center" style="display: none; font-size: 20px;">{% translate 'No sub-projects for farmers yet' %}</p>
+                                            <p id="noDataMessageAgriculturist" class="text-center" style="display: none; font-size: 20px;">
+                                            	{% translate 'No sub-projects for farmers yet' %}
+                                            </p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="agriculturistLegend" class="legend"></ul>
@@ -255,10 +285,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade ml-2" id="pills-women" role="tabpanel" aria-labelledby="pills-women-tab">
+                                <div class="tab-pane fade ml-2" id="pills-women" role="tabpanel"
+                                	aria-labelledby="pills-women-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageWomen" class="text-center" style="display: none; font-size: 20px;">{% translate 'No sub-projects for womens yet' %}</p>
+                                            <p id="noDataMessageWomen" class="text-center" style="display: none; font-size: 20px;">
+                                            	{% translate 'No sub-projects for womens yet' %}
+                                            </p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="womenLegend" class="legend"></ul>
@@ -268,10 +301,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade ml-2" id="pills-youth" role="tabpanel" aria-labelledby="pills-youth-tab">
+                                <div class="tab-pane fade ml-2" id="pills-youth" role="tabpanel" 
+                                	aria-labelledby="pills-youth-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageYouth" class="text-center" style="display: none; font-size: 20px;">{% translate 'No sub-projects for youth yet' %}</p>
+                                            <p id="noDataMessageYouth" class="text-center" style="display: none; font-size: 20px;">
+                                            	{% translate 'No sub-projects for youth yet' %}
+                                            </p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="youthLegend" class="legend"></ul>
@@ -281,10 +317,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade ml-2" id="pills-ethnic-minorities" role="tabpanel" aria-labelledby="pills-ethnic-minorities-tab">
+                                <div class="tab-pane fade ml-2" id="pills-ethnic-minorities" role="tabpanel"
+                                	aria-labelledby="pills-ethnic-minorities-tab">
                                     <div class="row">
                                         <div class="col-12 mt-3">
-                                            <p id="noDataMessageEthnicMinorities" class="text-center" style="display: none; font-size: 20px;">Pas encore de sous projet pour les Minorités ethniques</p>
+                                            <p id="noDataMessageEthnicMinorities" class="text-center" style="display: none; font-size: 20px;">
+                                            	Pas encore de sous projet pour les Minorités ethniques
+                                            </p>
                                         </div>
                                         <div class="col-6 mt-5">
                                             <ul id="ethnicMinoritiesLegend" class="legend"></ul>
@@ -396,15 +435,15 @@
 
                         })
 
-                        carousel_html = '<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">' +
-                          '<div class="carousel-inner">' +
+                        carousel_html = '<div id="carouselExampleControls" class="carousel slide" ' +
+                         'data-ride="carousel"><div class="carousel-inner">' +
                             carousel_images_html +
-                            '<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">' +
-                                '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
+                            '<a class="carousel-control-prev" href="#carouselExampleControls" role="button" ' +
+                             'data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
                                 '<span class="sr-only">Previous</span>' +
                               '</a>' +
-                              '<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">' +
-                                '<span class="carousel-control-next-icon" aria-hidden="true"></span>' +
+                              '<a class="carousel-control-next" href="#carouselExampleControls" role="button" ' +
+                               'data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span>' +
                                 '<span class="sr-only">Next</span>' +
                               '</a>' +
                           '</div>' +
@@ -412,14 +451,17 @@
                     }
 
                     const popover_html = '<h3 class="popover-header">'+
-                                '<a href="{% url 'administrativelevels:village_detail' 0 %}"'.replace(0, subproject.administrative_level__id) +
+                                '<a href="{% url 'administrativelevels:village_detail' 0 %}"'.replace(
+                                    0, subproject.administrative_level__id) +
                                     'target="_blank">' +
                                 subproject.administrative_level__name +
                                 '</a>' +
                             '</h3>' +
                             '<div class="popover-body">' +
-                               '<h6> <strong> {% translate 'Type of subproject' %}</strong> : ' + subproject.sector__name + '</h6>' +
-                               '<h6> <strong> {% translate 'Physical rate' %}</strong> : ' + subproject.physical_execution_rate + '</h6>' +
+                               '<h6> <strong> {% translate 'Type of subproject' %}</strong> : ' +
+                               subproject.sector__name + '</h6>' +
+                               '<h6> <strong> {% translate 'Physical rate' %}</strong> : ' +
+                               subproject.physical_execution_rate + '</h6>' +
                                 carousel_html +
                             '</div>'
                     const offset = calculateOffset(index);
@@ -627,8 +669,10 @@
                         this.totalInvestmentsElement.text(data.total_investments);
                         this.totalSubprojectsElement.text(data.total_subprojects + '/' + data.total_investments);
                         //this.totalFundedPrioritiesElement.text(data.total_funded_priorities + '/' + data.total_unfunded_priorities);
-                        this.totalFundedPrioritiesElement.text(data.total_amount_funding + '/' + data.total_amount_unfunding);
-                        this.totalCompletedInfrastructureElement.text(data.total_completed_infrastructure + '/' + data.total_subprojects);
+                        this.totalFundedPrioritiesElement.text(
+                            data.total_amount_funding + '/' + data.total_amount_unfunding);
+                        this.totalCompletedInfrastructureElement.text(
+                            data.total_completed_infrastructure + '/' + data.total_subprojects);
                         this.updatePrioritiesChart(data.sector_priorities);
                         this.updateMinorityCharts(data.subprojects_by_sector_and_group);
                         this.updateFundedPriorityCharts(

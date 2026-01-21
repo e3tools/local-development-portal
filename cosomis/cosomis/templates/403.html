@@ -27,6 +27,7 @@
     <!-- icheck bootstrap -->
     <link rel="stylesheet" href="{% static 'AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}" />
     <!-- Theme style -->
+	<link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
     <link href="{% static 'css/fonts.css' %}" rel="stylesheet">
 </head>
@@ -53,7 +54,7 @@
             {% include 'layouts/language_dropdown.html' %}
         </ul>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item white-shaded-nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'usermanager:logout' %}" title="{% translate 'Logout' %}"
                    role="button">
                     <i class="fa fa-sign-out align-bottom"></i>
