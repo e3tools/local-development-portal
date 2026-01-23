@@ -20,7 +20,7 @@
         </div>
         <div class="col-md-4 col-12 mt-4 mt-md-0">
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
                 </div>
                 <div class="card-body p-2">
@@ -66,7 +66,7 @@
                 </div>
             </div>
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
                 </div>
                 <div class="card-body p-2">
@@ -115,7 +115,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body table-responsive">
+                <div class="card-body">
                     <div class="col-12">
                         <ul class="nav nav-tabs">
                             <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
@@ -140,16 +140,14 @@
                                                             href="#climate">{% translate "Climate" %}</a></li>
                         </ul>
 
-                        <div class="tab-content">
+                        <div class="tab-content mt-3">
                             <div id="priorities" class="tab-pane active">
-                                <div class="card">
-                                    <div class="card-body">
-                                        {% include 'shared/priorities_table.html' %}
-                                    </div>
-                                </div>
+								<div class="table-responsive">
+									{% include 'shared/priorities_table.html' %}
+								</div>
                             </div>
                             <div id="village_population" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <h5>{% translate "In construction" %}</h5>
                                 {% comment %}<div class="row">
                                 <div class="col-12"></div>
                             </div>
@@ -207,13 +205,13 @@
                                 </div>
                             </div>
                             <div id="financial_informations" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <h5>{% translate "In construction" %}</h5>
                             </div>
                             <div id="grm" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <h5>{% translate "In construction" %}</h5>
                             </div>
                             <div id="diagnostics" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <h5>{% translate "In construction" %}</h5>
                             </div>
                             <div id="climate" class="tab-pane fade position-relative">
                                 {% include 'administrative_level/detail/tabs/climate.html' %}

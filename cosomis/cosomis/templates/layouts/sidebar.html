@@ -23,7 +23,7 @@
                 <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.username }}</a>
                 {% endif %}
                 <p class="email">{{ user.email | truncatechars:22 }}</p>
-                <p class="">{{ user|get_group_high }}</p>
+                <p class="text-wrap">{{ user|get_group_high }}</p>
             </div>
         </div>
 

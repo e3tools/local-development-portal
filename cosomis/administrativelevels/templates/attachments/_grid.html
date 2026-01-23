@@ -9,12 +9,14 @@
         {% if attachment.url|not_local and not attachment.url|is_pdf%}
             <article>
                 <div class="card mr-3">
+					<div class="card-header">
+						<h3 class="card-title">
+							<a href="{% url 'administrativelevels:village_detail' attachment.adm.id %}">
+								{{ attachment.adm.type }}: {{ attachment.adm.name }}
+							</a>
+						</h3>
+					</div>
                     <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{% url 'administrativelevels:village_detail' attachment.adm.id %}">
-                                {{ attachment.adm.type }}: {{ attachment.adm.name }}
-                            </a>
-                        </h5>
                         {% if attachment.task %}
                         <p class="card-text">
                             <b>{% translate 'Task' %}</b>: {{ attachment.task.name }}

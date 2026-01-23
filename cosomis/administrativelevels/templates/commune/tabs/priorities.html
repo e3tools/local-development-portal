@@ -137,9 +137,9 @@
     <div class="tab-pane fade show active" id="priorities-investments-type-tab" role="tabpanel"
          aria-labelledby="priorities-investments-type-tab">
         {% if investments.count == 0 %}
-            <h3>{% translate 'You have no priorities' %}</h3>
+            <h5>{% translate 'You have no priorities' %}</h5>
         {% else %}
-            <table class="table datatable rounded-table" style="width: 100%">
+            <table class="table datatabletable-bordered" style="width: 100%">
                 <thead>
                 <tr>
                     <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Investment Type' %}</th>
@@ -209,9 +209,9 @@
     </div>
     <div class="tab-pane fade" id="priorities-villages-tab" role="tabpanel" aria-labelledby="priorities-villages-tab">
         {% if investments.count == 0 %}
-            <h3>{% translate 'You have no priorities' %}</h3>
+            <h5>{% translate 'You have no priorities' %}</h5>
         {% else %}
-            <table class="table datatable rounded-table" style="width: 100%">
+            <table class="table datatabletable-bordered" style="width: 100%">
                 <thead>
                 <tr>
                     <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Village Name' %}</th>

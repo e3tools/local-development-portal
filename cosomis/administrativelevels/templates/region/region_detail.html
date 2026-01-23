@@ -17,7 +17,7 @@
         </div>
         <div class="col-md-4 col-12 mt-4 mt-md-0">
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate "Region Overview" %}</h5>
                 </div>
                 <div class="card-body p-2">
@@ -68,7 +68,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body table-responsive">
+                <div class="card-body">
                     <div class="col-12">
                         <ul class="nav nav-tabs">
                             <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
@@ -79,13 +79,9 @@
 
                         <div class="tab-content">
                             <div id="priorities" class="tab-pane active">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="card-body">
-                                            {% include 'shared/priorities_table.html' %}
-                                        </div>
-                                    </div>
-                                </div>
+								<div class="table-responsive">
+									{% include 'shared/priorities_table.html' %}
+								</div>
                             </div>
                             <div id="climate" class="tab-pane fade position-relative">
                                 {% include 'climate/tabs/mapbox.html' %}

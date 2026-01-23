@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-06 16:17+0200\n"
+"POT-Creation-Date: 2026-01-22 18:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: administrativelevels/forms.py:25
+#: administrativelevels/forms.py:25 investments/export/views.py:32
 msgid "Start Date"
 msgstr "Date de début"
 
@@ -53,13 +53,14 @@ msgstr "Nom"
 #: administrativelevels/templates/priorities/obstacles.html:65
 #: administrativelevels/templates/priorities/priorities.html:75
 #: administrativelevels/templates/priorities/priorities.html:159
+#: investments/export/views.py:25
 msgid "Description"
 msgstr "Description"
 
 #: administrativelevels/forms.py:38
 #: administrativelevels/templates/project/detail.html:27
+#: dashboard/templates/dashboard_summary.html:61
 #: dashboard/templates/dashboard_summary.html:64
-#: dashboard/templates/dashboard_summary.html:66
 #: investments/templates/investments/investor/approvals_list.html:64
 #: investments/templates/investments/profile.html:57 usermanager/forms.py:155
 msgid "Organization"
@@ -90,8 +91,8 @@ msgstr "Total des fonds"
 #: administrativelevels/templates/commune/tabs/priorities.html:44
 #: administrativelevels/templates/commune/tabs/priorities.html:146
 #: administrativelevels/templates/commune/tabs/priorities.html:219
-#: dashboard/templates/dashboard_summary.html:40
-#: dashboard/templates/dashboard_summary.html:42
+#: dashboard/templates/dashboard_summary.html:41
+#: dashboard/templates/dashboard_summary.html:44 investments/export/views.py:27
 #: investments/templates/investments/list.html:70
 #: investments/templates/investments/list.html:71
 #: investments/templates/investments/list.html:72
@@ -107,18 +108,16 @@ msgid "Source of financing"
 msgstr "Source de financement"
 
 #: administrativelevels/forms.py:44
-#, fuzzy
-#| msgid "Collaborator"
 msgid "Collaborators"
 msgstr "Collaborateurs"
 
 #: administrativelevels/forms.py:177
-msgid "Toutes les régions"
-msgstr ""
+msgid "All regions"
+msgstr "Toutes les régions"
 
 #: administrativelevels/forms.py:178 administrativelevels/models.py:46
 #: administrativelevels/models.py:198
-#: administrativelevels/templates/administrative_level/list.html:235
+#: administrativelevels/templates/administrative_level/list.html:240
 #: administrativelevels/templates/attachments/attachments.html:232
 #: administrativelevels/templates/components/download.html:31
 #: administrativelevels/templates/cvds_list.html:67
@@ -126,9 +125,9 @@ msgstr ""
 #: administrativelevels/templates/project/detail.html:120
 #: dashboard/templates/dashboard_administrativelevels.html:319
 #: dashboard/templates/dashboard_subprojects.html:355
+#: dashboard/templates/dashboard_summary.html:71
 #: dashboard/templates/dashboard_summary.html:73
 #: dashboard/templates/dashboard_summary.html:74
-#: dashboard/templates/dashboard_summary.html:75
 #: dashboard/views_subprojects.py:415 dashboard/views_subprojects.py:433
 #: dashboard/views_subprojects.py:435 dashboard/views_subprojects.py:461
 #: investments/templates/investments/cart.html:184
@@ -146,7 +145,7 @@ msgid "Region"
 msgstr "Région"
 
 #: administrativelevels/forms.py:183 administrativelevels/models.py:45
-#: administrativelevels/templates/administrative_level/list.html:240
+#: administrativelevels/templates/administrative_level/list.html:245
 #: administrativelevels/templates/attachments/attachments.html:249
 #: administrativelevels/templates/components/download.html:32
 #: administrativelevels/templates/cvds_list.html:66
@@ -154,7 +153,7 @@ msgstr "Région"
 #: administrativelevels/templates/project/detail.html:119
 #: dashboard/templates/dashboard_administrativelevels.html:323
 #: dashboard/templates/dashboard_subprojects.html:359
-#: dashboard/templates/dashboard_summary.html:84
+#: dashboard/templates/dashboard_summary.html:83
 #: dashboard/templates/dashboard_summary.html:85
 #: dashboard/templates/dashboard_summary.html:86
 #: investments/templates/investments/cart.html:183
@@ -173,7 +172,7 @@ msgid "Prefecture"
 msgstr "Préfecture"
 
 #: administrativelevels/forms.py:188 administrativelevels/models.py:44
-#: administrativelevels/templates/administrative_level/list.html:246
+#: administrativelevels/templates/administrative_level/list.html:251
 #: administrativelevels/templates/attachments/attachments.html:259
 #: administrativelevels/templates/components/download.html:33
 #: administrativelevels/templates/cvds_list.html:65
@@ -182,8 +181,8 @@ msgstr "Préfecture"
 #: dashboard/templates/dashboard_administrativelevels.html:327
 #: dashboard/templates/dashboard_subprojects.html:363
 #: dashboard/templates/dashboard_summary.html:93
-#: dashboard/templates/dashboard_summary.html:94
 #: dashboard/templates/dashboard_summary.html:95
+#: dashboard/templates/dashboard_summary.html:96
 #: investments/templates/investments/cart.html:182
 #: investments/templates/investments/list.html:223
 #: investments/templates/investments/list.html:224
@@ -200,7 +199,7 @@ msgid "Commune"
 msgstr "Commune"
 
 #: administrativelevels/forms.py:193 administrativelevels/models.py:43
-#: administrativelevels/templates/administrative_level/list.html:252
+#: administrativelevels/templates/administrative_level/list.html:257
 #: administrativelevels/templates/attachments/attachments.html:269
 #: administrativelevels/templates/commune/commune_detail.html:144
 #: administrativelevels/templates/components/download.html:34
@@ -208,9 +207,9 @@ msgstr "Commune"
 #: administrativelevels/templates/geographical_unit_list.html:58
 #: dashboard/templates/dashboard_administrativelevels.html:331
 #: dashboard/templates/dashboard_subprojects.html:367
-#: dashboard/templates/dashboard_summary.html:102
 #: dashboard/templates/dashboard_summary.html:103
-#: dashboard/templates/dashboard_summary.html:104
+#: dashboard/templates/dashboard_summary.html:105
+#: dashboard/templates/dashboard_summary.html:106
 #: dashboard/views_subprojects.py:438
 #: investments/templates/investments/list.html:282
 #: investments/templates/investments/list.html:283
@@ -222,15 +221,13 @@ msgstr "Commune"
 msgid "Canton"
 msgstr "Canton"
 
-#: administrativelevels/forms.py:205 investments/models.py:212
+#: administrativelevels/forms.py:205 investments/models.py:227
 msgid "Photo"
-msgstr ""
+msgstr "Photo"
 
-#: administrativelevels/forms.py:206 investments/models.py:212
-#, fuzzy
-#| msgid "Procurement"
+#: administrativelevels/forms.py:206 investments/models.py:227
 msgid "Document"
-msgstr "Approvisionnement"
+msgstr "Document"
 
 #: administrativelevels/forms.py:207
 msgid "Both"
@@ -239,8 +236,8 @@ msgstr "Les deux"
 #: administrativelevels/forms.py:209 administrativelevels/models.py:51
 #: administrativelevels/templates/commune/tabs/priorities.html:42
 #: administrativelevels/templates/commune/tabs/priorities.html:46
-#: dashboard/templates/dashboard_summary.html:49
-#: dashboard/templates/dashboard_summary.html:57
+#: dashboard/templates/dashboard_summary.html:51
+#: dashboard/templates/dashboard_summary.html:54
 #: dashboard/views_subprojects.py:140 dashboard/views_subprojects.py:158
 #: dashboard/views_subprojects.py:160 dashboard/views_subprojects.py:179
 #: dashboard/views_subprojects.py:180 dashboard/views_subprojects.py:181
@@ -283,37 +280,35 @@ msgstr "Niveau administrative"
 
 #: administrativelevels/models.py:18
 msgid "Lime Green"
-msgstr ""
+msgstr "Vert Citron"
 
 #: administrativelevels/models.py:19
 msgid "Dark Green"
-msgstr ""
+msgstr "Vert Foncé"
 
 #: administrativelevels/models.py:20
 msgid "Orange"
-msgstr ""
+msgstr "Orange"
 
 #: administrativelevels/models.py:21
-#, fuzzy
-#| msgid "Renewed"
 msgid "Red"
-msgstr "Renouvellé"
+msgstr "Rouge"
 
 #: administrativelevels/models.py:29
 msgid "Early"
-msgstr ""
+msgstr "Tôt"
 
 #: administrativelevels/models.py:30
 msgid "Normal"
-msgstr ""
+msgstr "Normale"
 
 #: administrativelevels/models.py:31
 msgid "Late"
-msgstr ""
+msgstr "En retard"
 
 #: administrativelevels/models.py:32
 msgid "Blocked"
-msgstr ""
+msgstr "Bloqué"
 
 #: administrativelevels/models.py:42
 #: administrativelevels/templates/attachments/attachments.html:281
@@ -322,9 +317,9 @@ msgstr ""
 #: administrativelevels/templates/project/detail.html:117
 #: dashboard/templates/dashboard_administrativelevels.html:335
 #: dashboard/templates/dashboard_subprojects.html:371
-#: dashboard/templates/dashboard_summary.html:111
-#: dashboard/templates/dashboard_summary.html:112
 #: dashboard/templates/dashboard_summary.html:113
+#: dashboard/templates/dashboard_summary.html:115
+#: dashboard/templates/dashboard_summary.html:116
 #: investments/templates/investments/cart.html:181
 #: investments/templates/investments/list.html:242
 #: investments/templates/investments/list.html:243
@@ -360,7 +355,7 @@ msgstr "Unité géographique"
 #: administrativelevels/models.py:188 administrativelevels/models.py:190
 #: administrativelevels/models.py:192
 #: administrativelevels/templates/project/detail.html:302
-#: investments/models.py:81
+#: investments/export/views.py:38 investments/models.py:88
 msgid "Latitude"
 msgstr "Latitude"
 
@@ -368,19 +363,17 @@ msgstr "Latitude"
 #: administrativelevels/models.py:189 administrativelevels/models.py:191
 #: administrativelevels/models.py:193
 #: administrativelevels/templates/project/detail.html:310
-#: investments/models.py:82
+#: investments/export/views.py:38 investments/models.py:89
 msgid "Longitude"
 msgstr "Longitude"
 
 #: administrativelevels/models.py:83
 msgid "Geo segment"
-msgstr ""
+msgstr "Segment géographique"
 
 #: administrativelevels/models.py:84
-#, fuzzy
-#| msgid "Allocation"
 msgid "Code location"
-msgstr "Emplacement des codes"
+msgstr "Emplacement des code"
 
 #: administrativelevels/models.py:156
 msgid "Attributed number in canton"
@@ -392,11 +385,11 @@ msgstr "Code unique"
 
 #: administrativelevels/models.py:195
 msgid "Cluster ID"
-msgstr ""
+msgstr "ID du cluster"
 
 #: administrativelevels/models.py:196
 msgid "Country code"
-msgstr ""
+msgstr "Code du pays"
 
 #: administrativelevels/models.py:197
 msgid "LC gencat 20"
@@ -404,11 +397,11 @@ msgstr ""
 
 #: administrativelevels/models.py:203
 msgid "Grid ID"
-msgstr ""
+msgstr "ID de grille"
 
 #: administrativelevels/models.py:277
 msgid "Implementation agency"
-msgstr ""
+msgstr "Agence de mise en œuvre"
 
 #: administrativelevels/models.py:284
 #: administrativelevels/templates/project/create/bulk_upload_investments.html:16
@@ -424,7 +417,7 @@ msgstr "Secteur"
 
 #: administrativelevels/models.py:285
 msgid "e.g., WORLD BANK,UNFPA,WFP"
-msgstr ""
+msgstr "Par exemple, WORLD BANK,UNFPA,WFP"
 
 #: administrativelevels/models.py:285
 msgid "Implementation partner"
@@ -639,15 +632,11 @@ msgstr "En construction"
 
 #: administrativelevels/templates/administrative_level/detail/tabs/climate.html:11
 #: administrativelevels/templates/climate/tabs/mapbox.html:11
-#, python-format
-msgid ""
-"\n"
-"        Climate Overview for %(village_name)s\n"
-"    "
-msgstr ""
+msgid "Climate Overview for"
+msgstr "Aperçu climatique pour"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:16
-#: administrativelevels/templates/climate/tabs/mapbox.html:16
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:14
+#: administrativelevels/templates/climate/tabs/mapbox.html:14
 #, python-format
 msgid ""
 "\n"
@@ -665,43 +654,61 @@ msgid ""
 "format.\n"
 "                                    "
 msgstr ""
+"\n"
+"                                        Cette section décrit les "
+"%(village_kilometers)s km<sup>2</sup>\n"
+"                                        centrés sur "
+"%(village_latitude)s / %(village_longitude)s,\n"
+"                                        incluant %(village_name)s. Vous "
+"pouvez consulter d'autres données dans d'autres zones à l'aide de\n"
+"                                        l'outil\n"
+"                                        <u>Outil de Vulnérabilité du Cluster "
+"Climatique</u> et télécharger un résumé des\n"
+"                                        %(village_name)s\n"
+"                                        au format <u>PDF</u> ou "
+"<u>MS-Word</u>.\n"
+"                                    "
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:29
-#: administrativelevels/templates/climate/tabs/mapbox.html:29
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:27
+#: administrativelevels/templates/climate/tabs/mapbox.html:27
 msgid "Ecosystem Classifications"
-msgstr ""
+msgstr "Classification des écosystèmes"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:34
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:32
 msgid "Geo segment information"
-msgstr ""
+msgstr "Informations sur les segments géographiques"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:83
-#: administrativelevels/templates/climate/tabs/mapbox.html:33
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:81
+#: administrativelevels/templates/climate/tabs/mapbox.html:31
 msgid "Key environmental indicators"
-msgstr ""
+msgstr "Indicateurs environnementaux clés"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:87
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:114
-#: administrativelevels/templates/climate/tabs/mapbox.html:37
-#: administrativelevels/templates/climate/tabs/mapbox.html:64
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:85
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:112
+#: administrativelevels/templates/climate/tabs/mapbox.html:35
+#: administrativelevels/templates/climate/tabs/mapbox.html:62
 msgid ""
 "This area is experiencing population growth at a rate [x5] higher than the "
 "regional average"
 msgstr ""
+"Cette zone connaît une croissance démographique à un rythme [x5] supérieur à "
+"la moyenne régionale"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:91
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:118
-#: administrativelevels/templates/climate/tabs/mapbox.html:41
-#: administrativelevels/templates/climate/tabs/mapbox.html:68
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:89
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:116
+#: administrativelevels/templates/climate/tabs/mapbox.html:39
+#: administrativelevels/templates/climate/tabs/mapbox.html:66
 msgid ""
 "year over year rainfall patterns vary widely and have the potential to "
 "disrupt agricultural and pastoral activities"
 msgstr ""
+"les régimes pluviométriques d'une année à l'autre varient considérablement "
+"et peuvent perturber les activités agricoles et pastorales."
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:95
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:122
-#: administrativelevels/templates/climate/tabs/mapbox.html:45
-#: administrativelevels/templates/climate/tabs/mapbox.html:72
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:93
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:120
+#: administrativelevels/templates/climate/tabs/mapbox.html:43
+#: administrativelevels/templates/climate/tabs/mapbox.html:70
 msgid ""
 "\n"
 "                    the typical distance a person needs to go to access "
@@ -710,14 +717,20 @@ msgid ""
 "sup>\n"
 "                "
 msgstr ""
+"\n"
+"                    La distance typique qu'une personne doit parcourir pour accéder "
+"à l'eau est de village_water_km km<sup>2</sup>, la\n"
+"                    distance moyenne régionale est de regional_water_km km<sup>2</"
+"sup>\n"
+"                "
+
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:100
+#: administrativelevels/templates/climate/tabs/mapbox.html:50
+msgid "Nearby ecosystems"
+msgstr "Écosystèmes voisins"
 
 #: administrativelevels/templates/administrative_level/detail/tabs/climate.html:102
 #: administrativelevels/templates/climate/tabs/mapbox.html:52
-msgid "Nearby ecosystems"
-msgstr ""
-
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:104
-#: administrativelevels/templates/climate/tabs/mapbox.html:54
 msgid ""
 "\n"
 "                    The broader area, [4x] km<sup>2</sup>, contains the "
@@ -725,40 +738,47 @@ msgid ""
 "                    Grassland, Barren, Forrest\n"
 "                "
 msgstr ""
+"\n"
+"                    La zone plus vaste, [4x] km<sup>2</sup>, comprend les "
+"écosystèmes suivants: mosaïque de terres cultivées, terres cultivées,\n"
+"                    prairies, terres arides, forêts\n"
+"                "
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:111
-#: administrativelevels/templates/climate/tabs/mapbox.html:61
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:109
+#: administrativelevels/templates/climate/tabs/mapbox.html:59
 msgid "Nearby environmental indicators"
-msgstr ""
+msgstr "Indicateurs environnementaux à proximité"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:129
-#: administrativelevels/templates/climate/tabs/mapbox.html:79
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:127
+#: administrativelevels/templates/climate/tabs/mapbox.html:77
 msgid ""
 "there have been [x] number of violent evcents from 2000 - 2020, the regional "
 "average for this time period is [y]"
 msgstr ""
+"Il y a eu [x] événements violents entre 2000 et 2020, la moyenne régionale pour "
+"cette période est de [y]"
+
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:131
+#: administrativelevels/templates/climate/tabs/mapbox.html:81
+msgid "Local implications"
+msgstr "Implications locales"
 
 #: administrativelevels/templates/administrative_level/detail/tabs/climate.html:133
 #: administrativelevels/templates/climate/tabs/mapbox.html:83
-#, fuzzy
-#| msgid "Total population"
-msgid "Local implications"
-msgstr "Population totale"
-
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:135
-#: administrativelevels/templates/climate/tabs/mapbox.html:85
 msgid ""
 "Communities addressing similar environments indicators, have taken or "
 "consider taking the following measures:"
 msgstr ""
+"Les collectivités confrontées à des indicateurs environnementaux similaires "
+"ont pris ou envisagent de prendre les mesures suivantes:"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:142
-#: administrativelevels/templates/climate/tabs/mapbox.html:92
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:140
+#: administrativelevels/templates/climate/tabs/mapbox.html:90
 msgid "Current climate related investments"
-msgstr ""
+msgstr "Investissements actuels liés au climat"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:146
-#: administrativelevels/templates/climate/tabs/mapbox.html:96
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:144
+#: administrativelevels/templates/climate/tabs/mapbox.html:94
 #: administrativelevels/templates/commune/tabs/priorities.html:88
 #: administrativelevels/templates/commune/tabs/priorities.html:91
 #: administrativelevels/templates/commune/tabs/priorities.html:96
@@ -767,12 +787,12 @@ msgstr ""
 #: administrativelevels/templates/components/administrative_level_planning_status.html:71
 #: investments/templates/investments/list.html:373
 #: investments/templates/investments/list.html:376
-#: investments/templates/investments/list.html:381 investments/views.py:379
+#: investments/templates/investments/list.html:381 investments/views.py:377
 msgid "Yes"
 msgstr "Oui"
 
-#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:147
-#: administrativelevels/templates/climate/tabs/mapbox.html:97
+#: administrativelevels/templates/administrative_level/detail/tabs/climate.html:145
+#: administrativelevels/templates/climate/tabs/mapbox.html:95
 #: administrativelevels/templates/commune/commune_detail.html:249
 #: administrativelevels/templates/commune/tabs/priorities.html:89
 #: administrativelevels/templates/commune/tabs/priorities.html:92
@@ -783,7 +803,7 @@ msgstr "Oui"
 #: administrativelevels/templates/shared/priorities_table.html:78
 #: investments/templates/investments/list.html:374
 #: investments/templates/investments/list.html:377
-#: investments/templates/investments/list.html:382 investments/views.py:379
+#: investments/templates/investments/list.html:382 investments/views.py:377
 msgid "No"
 msgstr "Non"
 
@@ -807,26 +827,26 @@ msgstr "Téléchargez tout"
 
 #: administrativelevels/templates/administrative_level/infrastructure.html:21
 msgid "Has It"
-msgstr ""
+msgstr "L'a-t-il"
 
 #: administrativelevels/templates/administrative_level/infrastructure.html:22
 msgid "Don't has it"
-msgstr ""
+msgstr "N'a pas"
 
-#: administrativelevels/templates/administrative_level/list.html:19
+#: administrativelevels/templates/administrative_level/list.html:21
 msgid "Search a level"
 msgstr "Rechercher un niveau"
 
-#: administrativelevels/templates/administrative_level/list.html:36
+#: administrativelevels/templates/administrative_level/list.html:41
 #: administrativelevels/templates/project/list.html:31
 msgid "Check"
 msgstr "Voir"
 
-#: administrativelevels/templates/administrative_level/list.html:56
+#: administrativelevels/templates/administrative_level/list.html:61
 msgid "Choice the village in canton"
 msgstr "Choisir le village dans le canton"
 
-#: administrativelevels/templates/administrative_level/list.html:66
+#: administrativelevels/templates/administrative_level/list.html:71
 msgid "See village"
 msgstr "Voir le village"
 
@@ -940,8 +960,6 @@ msgid "Apply"
 msgstr "Appliquer"
 
 #: administrativelevels/templates/canton/canton_detail.html:22
-#, fuzzy
-#| msgid "Canton overview"
 msgid "Canton Overview"
 msgstr "Vue d'ensemble du canton"
 
@@ -985,10 +1003,6 @@ msgstr "Priorités par Secteur"
 msgid "Summary of the canton's sub-projects"
 msgstr "Résumé des sous-projets du canton"
 
-#: administrativelevels/templates/canton_detail.html:160
-msgid "Summary of the canton's infrastructures"
-msgstr "Résumé des infrastructures du canton"
-
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:301
 #: administrativelevels/templates/components/administrative_level_overview.html:4
 msgid "Total population"
@@ -1029,6 +1043,7 @@ msgid "Ethnic minorities"
 msgstr "Minorités ethniques"
 
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:441
+#: investments/export/views.py:25
 msgid "Title"
 msgstr "Intitulé"
 
@@ -1063,8 +1078,6 @@ msgid "Subprojects by Sector"
 msgstr "Sous-projets par Secteur"
 
 #: administrativelevels/templates/canton_detail.html:141
-#, fuzzy, python-format
-#| msgid "Subprojects as % of Total Financing"
 msgid "Subprojects as %% of Total Financing"
 msgstr "Sous-projets en % du Financement Total"
 
@@ -1082,11 +1095,11 @@ msgstr "Capital Investi"
 
 #: administrativelevels/templates/commune/commune_detail.html:147
 msgid "Required Capital"
-msgstr ""
+msgstr "Capital Requis"
 
 #: administrativelevels/templates/commune/commune_detail.html:148
 msgid "Per Capita Invested"
-msgstr "Capital requis"
+msgstr "Investissement par Habitant"
 
 #: administrativelevels/templates/commune/commune_detail.html:149
 msgid "Per Capita Required"
@@ -1106,12 +1119,9 @@ msgstr "Actions"
 msgid "You have no Sub-projects"
 msgstr "Vous n'avez pas de sous-projets"
 
-#: administrativelevels/templates/commune/commune_detail.html:184
-msgid "You have no infrastructures"
-msgstr "Vous n'avez pas d'infrastructures"
-
 #: administrativelevels/templates/commune/commune_detail.html:189
 #: administrativelevels/templates/shared/priorities_table.html:8
+#: investments/export/views.py:25
 msgid "Ranking"
 msgstr "Classement"
 
@@ -1177,7 +1187,7 @@ msgid "Endorsed by"
 msgstr "Soutenu par"
 
 #: administrativelevels/templates/commune/tabs/priorities.html:127
-#: dashboard/templates/dashboard_summary.html:122
+#: dashboard/templates/dashboard_summary.html:126
 #: investments/templates/investments/list.html:173
 #: investments/templates/investments/list.html:305
 #: investments/templates/investments/list.html:460
@@ -1221,7 +1231,7 @@ msgstr "Ajouter au panier"
 #: administrativelevels/templates/commune/tabs/priorities.html:198
 #: administrativelevels/templates/commune/tabs/priorities.html:273
 #: administrativelevels/templates/shared/priorities_table.html:86
-#: investments/templates/investments/cart.html:219
+#: investments/templates/investments/cart.html:225
 msgid "Remove from cart"
 msgstr "Retirer du panier"
 
@@ -1279,12 +1289,12 @@ msgstr "Type de fichier"
 #: administrativelevels/templates/components/upload.html:39
 #: administrativelevels/templates/upload.html:53
 #: cdd_funnel/templates/village_list.html:85
-#: investments/templates/investments/cart.html:248
-#: investments/templates/investments/cart.html:273
-#: investments/templates/investments/cart.html:324
+#: investments/templates/investments/cart.html:254
+#: investments/templates/investments/cart.html:279
+#: investments/templates/investments/cart.html:330
 #: investments/templates/investments/investor/approvals_list.html:129
 #: investments/templates/investments/moderator/approvals_list.html:182
-#: investments/templates/investments/moderator/package_review.html:497
+#: investments/templates/investments/moderator/package_review.html:503
 msgid "Close"
 msgstr "Fermer"
 
@@ -1557,10 +1567,8 @@ msgid "of"
 msgstr "de"
 
 #: administrativelevels/templates/prefecture/prefecture_detail.html:21
-#, fuzzy
-#| msgid "Prefecture"
 msgid "Prefecture Overview"
-msgstr "Préfecture"
+msgstr "Aperçu de la Préfecture"
 
 #: administrativelevels/templates/priorities/goals.html:14
 #: administrativelevels/templates/priorities/layouts/base_priorities.html:39
@@ -1653,8 +1661,6 @@ msgid "downloading"
 msgstr "téléchargement"
 
 #: administrativelevels/templates/project/create/bulk_upload_investments.html:14
-#, fuzzy
-#| msgid "the XLSX template file."
 msgid "the XLSX template file."
 msgstr "le fichier modèle XLSX."
 
@@ -1676,10 +1682,10 @@ msgstr "Pour des instructions supplémentaires, veuillez télécharger le manuel
 
 #: administrativelevels/templates/project/create/bulk_upload_investments.html:19
 msgid "here"
-msgstr ""
+msgstr "ici"
 
 #: administrativelevels/templates/project/create/index.html:48
-#: administrativelevels/templates/project/list.html:10
+#: administrativelevels/templates/project/list.html:9
 #: administrativelevels/views.py:797
 msgid "Create Project"
 msgstr "Créer un projet"
@@ -1709,10 +1715,8 @@ msgid "Settings"
 msgstr "Configuration"
 
 #: administrativelevels/templates/project/detail.html:95
-#, fuzzy
-#| msgid "Total investments"
 msgid "Upload more investments"
-msgstr "Télécharger plus d'investissements"
+msgstr "Déposez plus d'investissements"
 
 #: administrativelevels/templates/project/detail.html:116
 #: administrativelevels/templates/project/detail.html:197
@@ -1735,10 +1739,8 @@ msgid "Village priority"
 msgstr "Priorité du village"
 
 #: administrativelevels/templates/project/detail.html:122
-#, fuzzy
-#| msgid "Package status"
 msgid "Package Status"
-msgstr "Statut du colis"
+msgstr "État du Colis"
 
 #: administrativelevels/templates/project/detail.html:123
 #: administrativelevels/templates/project/detail.html:280
@@ -1751,7 +1753,7 @@ msgstr "Statut du colis"
 
 #: administrativelevels/templates/project/detail.html:135
 #: administrativelevels/templates/shared/priorities_table.html:66
-#: investments/serializers.py:62
+#: investments/serializers.py:76
 msgid "Not available"
 msgstr "Pas disponible"
 
@@ -1765,8 +1767,6 @@ msgid "Update"
 msgstr "Mettre à jour"
 
 #: administrativelevels/templates/project/detail.html:180
-#, fuzzy
-#| msgid "Upload"
 msgid "Upload Image"
 msgstr "Télécharger une image"
 
@@ -1776,7 +1776,7 @@ msgstr "Date"
 
 #: administrativelevels/templates/project/detail.html:241
 #: administrativelevels/templates/project/detail.html:318
-#: investments/templates/investments/cart.html:305
+#: investments/templates/investments/cart.html:311
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -1790,8 +1790,6 @@ msgid "Sub-project Status"
 msgstr "Statut du sous-projet"
 
 #: administrativelevels/templates/project/detail.html:282
-#, fuzzy
-#| msgid "Last Updated"
 msgid "Last updated"
 msgstr "Dernière mise à jour"
 
@@ -1804,35 +1802,31 @@ msgid "Actual Cost Spent"
 msgstr "Coût réel dépensé"
 
 #: administrativelevels/templates/project/detail.html:346
-#, fuzzy
-#| msgid "Images"
 msgid "Image"
 msgstr "Image"
 
 #: administrativelevels/templates/project/detail.html:351
-#, fuzzy
-#| msgid "Choose filters"
 msgid "Choose image"
 msgstr "Choisir une image"
 
-#: administrativelevels/templates/project/list.html:54
+#: administrativelevels/templates/project/list.html:55
 msgid "Search a project"
 msgstr "Rechercher un projet"
 
-#: administrativelevels/templates/project/list.html:67
+#: administrativelevels/templates/project/list.html:70
 #: investments/templates/investments/cart.html:64
-#: investments/templates/investments/cart.html:294
-#: investments/templates/investments/cart.html:296
+#: investments/templates/investments/cart.html:300
+#: investments/templates/investments/cart.html:302
 #: investments/templates/investments/list.html:565
 #: investments/templates/investments/package.html:70
 msgid "Project"
 msgstr "Projet"
 
-#: administrativelevels/templates/project/list.html:68
+#: administrativelevels/templates/project/list.html:71
 msgid "Number of Investments"
 msgstr "Nombre d'investissements"
 
-#: administrativelevels/templates/project/list.html:69
+#: administrativelevels/templates/project/list.html:72
 msgid "Total Funds"
 msgstr "Total des fonds"
 
@@ -1914,37 +1908,37 @@ msgid "Create Administrative level"
 msgstr "Créer niveau administratif"
 
 #: administrativelevels/views.py:578 dashboard/views_summary.py:64
-#: investments/views.py:158 investments/views.py:823
+#: investments/views.py:154 investments/views.py:809
 msgid "Endorsed by youth"
 msgstr "Soutenu par les jeunes"
 
 #: administrativelevels/views.py:579 dashboard/views_summary.py:65
-#: investments/views.py:159 investments/views.py:824
+#: investments/views.py:155 investments/views.py:810
 msgid "Endorsed by women"
 msgstr "Soutenu pas le femmes"
 
 #: administrativelevels/views.py:580 dashboard/views_summary.py:66
-#: investments/views.py:160 investments/views.py:825
+#: investments/views.py:156 investments/views.py:811
 msgid "Endorsed by agriculturist"
 msgstr "Soutenu par le agriculteurs et éléveur"
 
 #: administrativelevels/views.py:583 dashboard/views_summary.py:67
-#: investments/views.py:163
+#: investments/views.py:159
 msgid "Endorsed by ethnic minorities"
 msgstr "Approuvé par les minorités ethniques"
 
-#: administrativelevels/views.py:588 investments/views.py:168
-#: investments/views.py:383
+#: administrativelevels/views.py:588 investments/views.py:164
+#: investments/views.py:381
 msgid "Priority 1"
 msgstr "Priorité 1"
 
-#: administrativelevels/views.py:589 investments/views.py:169
-#: investments/views.py:385
+#: administrativelevels/views.py:589 investments/views.py:165
+#: investments/views.py:383
 msgid "Priorities 1 and 2"
 msgstr "Priorité 1 et 2"
 
-#: administrativelevels/views.py:590 investments/views.py:170
-#: investments/views.py:387
+#: administrativelevels/views.py:590 investments/views.py:166
+#: investments/views.py:385
 msgid "All priorities"
 msgstr "Toutes les priorités"
 
@@ -2036,12 +2030,12 @@ msgstr "Identifié"
 msgid "Not approved"
 msgstr "Non approuvé"
 
-#: cosomis/constants.py:38 investments/models.py:108 investments/models.py:156
+#: cosomis/constants.py:38 investments/models.py:123 investments/models.py:171
 #: investments/templates/investments/investor/approvals_list.html:16
 #: investments/templates/investments/investor/approvals_list.html:83
 #: investments/templates/investments/moderator/approvals_list.html:138
 #: investments/templates/investments/moderator/package_review.html:368
-#: investments/templates/investments/moderator/package_review.html:443
+#: investments/templates/investments/moderator/package_review.html:449
 msgid "Approved"
 msgstr "Approuvé"
 
@@ -2095,39 +2089,39 @@ msgstr ""
 "Veuillez cocher cette câche et cliquez sur le bouton de confirmation pour la "
 "validation."
 
-#: cosomis/settings.py:162
+#: cosomis/settings.py:163
 msgid "English"
 msgstr "Anglais"
 
-#: cosomis/settings.py:163
+#: cosomis/settings.py:164
 msgid "French"
 msgstr "Français"
 
 #: cosomis/templates/403.html:17
 #: usermanager/templates/email_confirmed_successfully.html:17
-#: usermanager/templates/login.html:17 usermanager/templates/login.html:74
+#: usermanager/templates/login.html:17 usermanager/templates/login.html:60
 #: usermanager/templates/password_reset.html:17
-#: usermanager/templates/password_reset.html:100
+#: usermanager/templates/password_reset.html:86
 #: usermanager/templates/password_reset_complete.html:17
-#: usermanager/templates/password_reset_complete.html:83
+#: usermanager/templates/password_reset_complete.html:69
 #: usermanager/templates/password_reset_confirm.html:17
-#: usermanager/templates/password_reset_confirm.html:101
+#: usermanager/templates/password_reset_confirm.html:87
 #: usermanager/templates/password_reset_done.html:17
-#: usermanager/templates/password_reset_done.html:86
+#: usermanager/templates/password_reset_done.html:72
 #: usermanager/templates/register.html:17
 msgid "Log in"
 msgstr "Connexion"
 
-#: cosomis/templates/403.html:46
+#: cosomis/templates/403.html:37
 msgid "Your user is still under validation"
 msgstr "Votre utilisateur est toujours en cours de validation"
 
-#: cosomis/templates/403.html:47
+#: cosomis/templates/403.html:38
 msgid "or you do not have permission to see this page."
 msgstr "ou vous n'avez pas la permission de voir cette page."
 
-#: cosomis/templates/403.html:57 cosomis/templates/layouts/navbar.html:146
-#: usermanager/templates/email_confirmed_successfully.html:56
+#: cosomis/templates/403.html:48 cosomis/templates/layouts/navbar.html:116
+#: usermanager/templates/email_confirmed_successfully.html:47
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -2170,19 +2164,6 @@ msgstr ""
 "Nous suivons ces erreurs automatiquement, mais si le problème persiste, "
 "n'hésitez pas à nous contacter. En attendant, essayez de rafraîchir la page."
 
-#: cosomis/templates/common/under_construction.html:7
-#: cosomis/templates/common/under_construction_col.html:5
-msgid "Oops!"
-msgstr "Oops!"
-
-#: cosomis/templates/common/under_construction.html:9
-msgid "This section is under construction"
-msgstr "Cette section est en construction"
-
-#: cosomis/templates/common/under_construction_col.html:6
-msgid "Under construction"
-msgstr "En construction"
-
 #: cosomis/templates/layouts/base_error.html:14
 msgid "Error"
 msgstr "Erreur"
@@ -2199,7 +2180,7 @@ msgstr "Tous les droits sont réservés"
 msgid "Version"
 msgstr "Version"
 
-#: cosomis/templates/layouts/head.html:87
+#: cosomis/templates/layouts/head.html:88
 msgid "Close this tab?"
 msgstr "Fermer cet onglet ?"
 
@@ -2207,8 +2188,9 @@ msgstr "Fermer cet onglet ?"
 msgid "Project Cycle"
 msgstr "Cycle du projet"
 
-#: cosomis/templates/layouts/navbar.html:65
-#: cosomis/templates/layouts/navbar.html:67
+#: cosomis/templates/layouts/navbar.html:56
+#: cosomis/templates/layouts/navbar.html:58
+#: usermanager/templates/email/confirmation_email.html:73
 msgid "Welcome"
 msgstr "Bienvenu(e)"
 
@@ -2310,19 +2292,11 @@ msgstr "Allocation"
 msgid "Number of sub-projects by administrative level and sector"
 msgstr "Nombre de sous-projets par niveau administratif et par secteur"
 
-#: dashboard/views_subprojects.py:199
-msgid "Number of infrastructures by administrative level and sector"
-msgstr "Nombre d'infrastructures par niveau administratif et par secteur"
-
 #: dashboard/templates/dashboard_subprojects.html:42
 #: dashboard/templates/dashboard_subprojects.html:68
 #: dashboard/views_subprojects.py:369
 msgid "Amount of sub-projects by administrative level and sector"
 msgstr "Montant de sous-projets par niveau administratif et par secteur"
-
-#: dashboard/views_subprojects.py:369
-msgid "Amount of infrastructures by administrative level and sector"
-msgstr "Montant d'infrastructures par niveau administratif et par secteur"
 
 #: dashboard/templates/dashboard_subprojects.html:43
 #: dashboard/views_subprojects.py:477
@@ -2345,111 +2319,79 @@ msgstr "Sousprojets par étape en cours"
 msgid "Number of sub-projects by administrative level, sector and step"
 msgstr "Montant de sous-projets par niveau administratif, secteur et étape"
 
-#: dashboard/templates/dashboard_subprojects.html:83
-msgid "Number of infrastructures by administrative level, sector and step"
-msgstr "Montant d'infrastructures par niveau administratif, secteur et étape"
-
-#: dashboard/templates/dashboard_summary.html:137
+#: dashboard/templates/dashboard_summary.html:141
 msgid "Sub-Project Status"
 msgstr "Statut du sous-projet"
 
-#: dashboard/templates/dashboard_summary.html:139
+#: dashboard/templates/dashboard_summary.html:144
 msgid "All Statuses"
 msgstr "Tous les statuts"
 
-#: dashboard/templates/dashboard_summary.html:161
+#: dashboard/templates/dashboard_summary.html:166
 msgid "Total Sub-Project Priorities"
 msgstr "Total priorités sous-projets communautaires"
 
-#: dashboard/templates/dashboard_summary.html:173
+#: dashboard/templates/dashboard_summary.html:178
 msgid "Total Selected Sub-Projects"
 msgstr "Total sous-projets communautaires sélectionnés"
 
-#: dashboard/templates/dashboard_summary.html:173
-msgid "Total Selected Infrastructures"
-msgstr "Total infrastructures communautaires sélectionnées"
-
-#: dashboard/templates/dashboard_summary.html:184
+#: dashboard/templates/dashboard_summary.html:189
 msgid "Completed Sub-Projects"
 msgstr "Sous-projets communautaires achevés"
 
-#: dashboard/templates/dashboard_summary.html:184
-msgid "Completed Infrastructures"
-msgstr "Infrastructures communautaires achevées"
-
-#: dashboard/templates/dashboard_summary.html:194
+#: dashboard/templates/dashboard_summary.html:200
 msgid "Total Amount Funded / Total Amount Unfunded"
 msgstr "Montant total Financé / Montant total non Financé"
 
-#: dashboard/templates/dashboard_summary.html:210
+#: dashboard/templates/dashboard_summary.html:217
 msgid "Number of priorities by sector"
 msgstr "Nombre de priorités par secteur"
 
-#: dashboard/templates/dashboard_summary.html:213
+#: dashboard/templates/dashboard_summary.html:221
 msgid "Priorities not yet identified in this village"
 msgstr "Priorités non encore identifié dans ce village"
 
-#: dashboard/templates/dashboard_summary.html:228
+#: dashboard/templates/dashboard_summary.html:238
 msgid "Number of sub-projects by minority group"
 msgstr "Nombre de sous-projets par groupe minoritaire"
 
-#: dashboard/templates/dashboard_summary.html:228
-msgid "Number of infrastructures by minority group"
-msgstr "Nombre d'infrastructures par groupe minoritaire"
-
-#: dashboard/templates/dashboard_summary.html:232
+#: dashboard/templates/dashboard_summary.html:246
 msgid "agriculturist"
 msgstr "Agriculteurs"
 
-#: dashboard/templates/dashboard_summary.html:235
+#: dashboard/templates/dashboard_summary.html:253
 msgid "women"
 msgstr "Femmes"
 
-#: dashboard/templates/dashboard_summary.html:238
+#: dashboard/templates/dashboard_summary.html:260
 msgid "youth"
 msgstr "Jeunes"
 
-#: dashboard/templates/dashboard_summary.html:241
+#: dashboard/templates/dashboard_summary.html:267
 msgid "ethnic minorities"
 msgstr "Minorités ethniques"
 
-#: dashboard/templates/dashboard_summary.html:248
+#: dashboard/templates/dashboard_summary.html:277
 msgid "No sub-projects for farmers yet"
 msgstr "Pas encore de sous projet pour les Agriculteurs"
 
-#: dashboard/templates/dashboard_summary.html:248
-msgid "No infrastructures for farmers yet"
-msgstr "Pas encore d'infrastructures pour les Agriculteurs"
-
-#: dashboard/templates/dashboard_summary.html:261
+#: dashboard/templates/dashboard_summary.html:293
 msgid "No sub-projects for womens yet"
 msgstr "Pas encore de sous projet pour les agriculteurs"
 
-#: dashboard/templates/dashboard_summary.html:261
-msgid "No infrastructures for womens yet"
-msgstr "Pas encore d'infrastructures pour les agriculteurs"
-
-#: dashboard/templates/dashboard_summary.html:274
+#: dashboard/templates/dashboard_summary.html:309
 msgid "No sub-projects for youth yet"
 msgstr "Pas encore de sous projets pour les jeunes"
 
-#: dashboard/templates/dashboard_summary.html:274
-msgid "No infrastructures for youth yet"
-msgstr "Pas encore d'infrastructures pour les jeunes"
-
-#: dashboard/templates/dashboard_summary.html:305
+#: dashboard/templates/dashboard_summary.html:344
 msgid "Location of sub-projects by sector"
 msgstr "Localisation des sous projets par secteur"
 
-#: dashboard/templates/dashboard_summary.html:305
-msgid "Location of infrastructures by sector"
-msgstr "Localisation des infrastructures par secteur"
-
-#: dashboard/templates/dashboard_summary.html:421
+#: dashboard/templates/dashboard_summary.html:461
 msgid "Type of subproject"
 msgstr "Type de sous-project"
 
-#: dashboard/templates/dashboard_summary.html:422
+#: dashboard/templates/dashboard_summary.html:463
 msgid "Physical rate"
 msgstr "Niveau Physique"
 
@@ -2498,7 +2440,7 @@ msgstr "Nombre d'infrastuctures"
 #: dashboard/views_administrativelevels.py:148
 #, python-format
 msgid "%(len_cantons)s cantons in the %(region_name)s region"
-msgstr ""
+msgstr "%(len_cantons)s cantons dans la région %(region_name)s"
 
 #: dashboard/views_administrativelevels.py:245
 #: dashboard/views_administrativelevels.py:246
@@ -2507,23 +2449,14 @@ msgstr ""
 #: dashboard/views_administrativelevels.py:260
 #: dashboard/views_administrativelevels.py:262
 msgid "Part"
-msgstr ""
-
-#: dashboard/views_administrativelevels.py:309
-#: dashboard/views_administrativelevels.py:322
-#: dashboard/views_administrativelevels.py:353
-#: dashboard/views_administrativelevels.py:354
-msgid "X"
-msgstr "X"
+msgstr "Partie"
 
 #: dashboard/views_administrativelevels.py:392
 #: dashboard/views_administrativelevels.py:415
 #: dashboard/views_administrativelevels.py:468
 #: dashboard/views_administrativelevels.py:500
-#, fuzzy
-#| msgid "Canton"
 msgid "Cantons"
-msgstr "Canton"
+msgstr "Cantons"
 
 #: dashboard/views_administrativelevels.py:395
 #: dashboard/views_administrativelevels.py:437
@@ -2639,10 +2572,94 @@ msgid "Number"
 msgstr "Nombre"
 
 #: dashboard/views_subprojects.py:578
-#, fuzzy
-#| msgid "Step"
 msgid "Step°"
-msgstr "Etape"
+msgstr "Etape°"
+
+#: investments/export/views.py:25
+msgid "Responsible Structure"
+msgstr "Structure Responsable"
+
+#: investments/export/views.py:27
+msgid "ADL Parent"
+msgstr "ADL Parent"
+
+#: investments/export/views.py:27
+msgid "Administrative Level"
+msgstr "Niveau Administrative"
+
+#: investments/export/views.py:27
+msgid "Came From (Projects)"
+msgstr "Provenance (Projets)"
+
+#: investments/export/views.py:29
+msgid "Estimated Cost"
+msgstr "Coût Estimé"
+
+#: investments/export/views.py:29
+msgid "Real Cost"
+msgstr "Coût réel"
+
+#: investments/export/views.py:29
+msgid "Financial Implementation Rate (%)"
+msgstr "Taux de mise en œuvre financière (%)"
+
+#: investments/export/views.py:30
+msgid "Investment Status"
+msgstr "Statut d'investissement"
+
+#: investments/export/views.py:30
+msgid "Project Status"
+msgstr "Statut du projet"
+
+#: investments/export/views.py:32
+msgid "Duration (Days)"
+msgstr "Durée (jours)"
+
+#: investments/export/views.py:32
+msgid "Delays Consumed (Days)"
+msgstr "Délais consommés (jours)"
+
+#: investments/export/views.py:33
+msgid "Physical Execution Rate (%)"
+msgstr "Taux d'exécution physique (%)"
+
+#: investments/export/views.py:35
+msgid "Endorsed by Youth"
+msgstr "Soutenu par les jeunes"
+
+#: investments/export/views.py:35
+msgid "Endorsed by Women"
+msgstr "Soutenu pas le femmes"
+
+#: investments/export/views.py:35
+msgid "Endorsed by Agriculturist"
+msgstr "Approuvé par un Agriculteur"
+
+#: investments/export/views.py:36
+msgid "Endorsed by Pastoralist"
+msgstr "Approuvé par Pastoralist"
+
+#: investments/export/views.py:36
+#: investments/templates/investments/list.html:369
+#: investments/templates/investments/list.html:370
+msgid "Climate Contribution"
+msgstr "Contribution Climatique"
+
+#: investments/export/views.py:36
+msgid "Climate Contribution Text"
+msgstr "Texte de Contribution au Climat"
+
+#: investments/export/views.py:38
+msgid "Funded By"
+msgstr "Financé Par"
+
+#: investments/export/views.py:38
+msgid "NoSQL ID"
+msgstr "NoSQL ID"
+
+#: investments/export/views.py:39
+msgid "Imported Project ID"
+msgstr "ID du Projet Importé"
 
 #: investments/forms.py:59
 #: investments/templates/investments/investor/approvals_list.html:66
@@ -2654,6 +2671,9 @@ msgid ""
 "You are about to send this submission for revision. The submitter will see "
 "flagged investments. Please leave comments to help with re-submission."
 msgstr ""
+"Vous êtes sur le point d'envoyer cette demande pour révision. L'auteur de la "
+"demande verra les investissements signalés. Veuillez laisser des "
+"commentaires pour faciliter la nouvelle soumission."
 
 #: investments/models.py:37
 msgid "Funded"
@@ -2668,72 +2688,68 @@ msgid "Paused"
 msgstr "En suspens"
 
 #: investments/models.py:47
-#, fuzzy
-#| msgid "Subproject"
 msgid "SubProject"
 msgstr "Sous-projet"
 
-#: investments/models.py:62 investments/models.py:63
+#: investments/models.py:69 investments/models.py:70
 msgid "In days"
-msgstr ""
+msgstr "En quelques jours"
 
-#: investments/models.py:64 investments/models.py:66
-#, fuzzy
-#| msgid "Percent"
+#: investments/models.py:71 investments/models.py:73
 msgid "Percentage"
 msgstr "Pourcentage"
 
-#: investments/models.py:106
+#: investments/models.py:121
 #: investments/templates/investments/investor/approvals_list.html:79
 #: investments/templates/investments/moderator/approvals_list.html:134
 #: investments/templates/investments/moderator/package_review.html:364
 msgid "Pending Submission"
 msgstr "En attente de soumission"
 
-#: investments/models.py:107 investments/models.py:155
+#: investments/models.py:122 investments/models.py:170
 #: investments/templates/investments/investor/approvals_list.html:81
 #: investments/templates/investments/moderator/approvals_list.html:136
 #: investments/templates/investments/moderator/package_review.html:366
-#: investments/templates/investments/moderator/package_review.html:441
+#: investments/templates/investments/moderator/package_review.html:447
 msgid "Pending Approval"
 msgstr "En attente d'approbation"
 
-#: investments/models.py:109 investments/models.py:157
+#: investments/models.py:124 investments/models.py:172
 #: investments/templates/investments/investor/approvals_list.html:20
 #: investments/templates/investments/investor/approvals_list.html:85
 #: investments/templates/investments/moderator/approvals_list.html:140
 #: investments/templates/investments/moderator/package_review.html:370
-#: investments/templates/investments/moderator/package_review.html:445
+#: investments/templates/investments/moderator/package_review.html:451
 msgid "Rejected"
 msgstr "Rejeté"
 
-#: investments/models.py:110
+#: investments/models.py:125
 #: investments/templates/investments/investor/approvals_list.html:87
 #: investments/templates/investments/moderator/approvals_list.html:142
 #: investments/templates/investments/moderator/package_review.html:372
 msgid "Under Execution"
 msgstr "En construction"
 
-#: investments/models.py:111
-#, fuzzy
-#| msgid "Approved"
+#: investments/models.py:126
 msgid "Partially Approved"
-msgstr "Approuvé"
+msgstr "Approbation Partielle"
 
-#: investments/models.py:112
+#: investments/models.py:127
 msgid "Selected by Government"
 msgstr "Sélectionné par le gouvernement"
 
-#: investments/models.py:127
+#: investments/models.py:142
 msgid "Source of the funding, e.g., a particular organization or grant"
 msgstr ""
 "Source de financement, par exemple une organisation ou une subvention "
 "particulière"
 
-#: investments/models.py:137
+#: investments/models.py:152
 msgid ""
 "User who reviews the status of the Package. This user must be a moderator."
 msgstr ""
+"Utilisateur chargé de consulter l'état du colis. Cet utilisateur doit être "
+"un modérateur."
 
 #: investments/templates/investments/cart.html:34
 #: investments/templates/investments/cart.html:108
@@ -2750,10 +2766,6 @@ msgstr "Financement total sélectionné"
 msgid "# Sub-projects"
 msgstr "# Sous-projets"
 
-#: investments/templates/investments/package.html:50
-msgid "# Infrastructures"
-msgstr "# Infrastructures"
-
 #: investments/templates/investments/cart.html:54
 #: investments/templates/investments/cart.html:128
 #: investments/templates/investments/package.html:60
@@ -2769,7 +2781,7 @@ msgstr "Catégories"
 #: investments/templates/investments/cart.html:104
 #: investments/templates/investments/package.html:120
 msgid "Summary"
-msgstr ""
+msgstr "Résumé"
 
 #: investments/templates/investments/cart.html:118
 #: investments/templates/investments/package.html:134
@@ -2777,7 +2789,7 @@ msgid "# Subprojects"
 msgstr "# Sous-projets"
 
 #: investments/templates/investments/cart.html:140
-#: investments/templates/investments/cart.html:325
+#: investments/templates/investments/cart.html:331
 msgid "Submit For Approval"
 msgstr "Soumettre à l'approbation"
 
@@ -2787,7 +2799,7 @@ msgid "Investments in your package"
 msgstr "Investissements dans votre paquet"
 
 #: investments/templates/investments/cart.html:168
-#: investments/templates/investments/cart.html:249
+#: investments/templates/investments/cart.html:255
 msgid "Clear Package"
 msgstr "Paquet clair"
 
@@ -2807,37 +2819,31 @@ msgstr "Type de sous-projet"
 msgid "Population priority"
 msgstr "Priorité de la population"
 
-#: investments/templates/investments/cart.html:240
+#: investments/templates/investments/cart.html:246
 msgid "Are you sure do you want to clear the package?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir déballer le colis?"
 
-#: investments/templates/investments/cart.html:262
-#, fuzzy
-#| msgid "Are you sure do you want to remove the package?"
+#: investments/templates/investments/cart.html:268
 msgid "Are you sure do you want to remove : "
-msgstr "Voulez-vous vraimment effectuer la suppression de : "
+msgstr "Êtes-vous sûr de vouloir supprimer : "
 
-#: investments/templates/investments/cart.html:264
-#, fuzzy
-#| msgid "Your package"
-msgid " from the package ?"
-msgstr "de votre paquet ?"
+#: investments/templates/investments/cart.html:270
+msgid " from the package?"
+msgstr "du paquet?"
 
-#: investments/templates/investments/cart.html:274
-#, fuzzy
-#| msgid "Investments"
+#: investments/templates/investments/cart.html:280
 msgid "Remove investment"
-msgstr "Supprimer l'investissement"
+msgstr "Retirer l'investissement"
 
-#: investments/templates/investments/cart.html:287
+#: investments/templates/investments/cart.html:293
 msgid "Select project"
 msgstr "Rechercher un niveau"
 
-#: investments/templates/investments/cart.html:290
+#: investments/templates/investments/cart.html:296
 msgid "You need to select a project related to this investments."
 msgstr "Vous devez sélectionner un projet lié à ces investissements."
 
-#: investments/templates/investments/cart.html:317
+#: investments/templates/investments/cart.html:323
 msgid "Are you sure do you want to submit the package?"
 msgstr "Êtes-vous sûr de vouloir soumettre le package?"
 
@@ -2850,10 +2856,8 @@ msgid "Pending for submission"
 msgstr "En attente de soumission"
 
 #: investments/templates/investments/investor/approvals_list.html:32
-#, fuzzy
-#| msgid "Under construction"
 msgid "Under execution"
-msgstr "En construction"
+msgstr "En cours d'exécution"
 
 #: investments/templates/investments/investor/approvals_list.html:49
 msgid "Investment packages requests"
@@ -2878,13 +2882,11 @@ msgstr "Total des fonds"
 #: investments/templates/investments/investor/approvals_list.html:89
 #: investments/templates/investments/moderator/approvals_list.html:144
 msgid "Partially Approve"
-msgstr ""
+msgstr "Approbation partielle"
 
 #: investments/templates/investments/investor/approvals_list.html:96
-#, fuzzy
-#| msgid "No result found"
 msgid "No reason"
-msgstr "Aucun résultat trouvé"
+msgstr "Aucune raison"
 
 #: investments/templates/investments/list.html:57
 #: investments/templates/investments/moderator/package_review.html:34
@@ -2917,15 +2919,8 @@ msgid "min"
 msgstr "min"
 
 #: investments/templates/investments/list.html:353
-#, fuzzy
-#| msgid "Man"
 msgid "max"
 msgstr "max"
-
-#: investments/templates/investments/list.html:369
-#: investments/templates/investments/list.html:370
-msgid "Climate Contribution"
-msgstr "Contribution climatique"
 
 #: investments/templates/investments/list.html:389
 #: investments/templates/investments/list.html:390
@@ -2977,10 +2972,6 @@ msgstr "Total des villages disponibles"
 msgid "Total sub-projects available"
 msgstr "Total priorités sous-projets communautaires"
 
-#: investments/templates/investments/list.html:612
-msgid "Total infrastructures available"
-msgstr "Total priorités infrastructures communautaires"
-
 #: investments/templates/investments/list.html:617
 msgid "Total funding required"
 msgstr "Financement total requis"
@@ -2993,10 +2984,6 @@ msgstr "# Villages sélectionnés"
 msgid "# Sub-projects selected"
 msgstr "# Sous-projets sélectionnés"
 
-#: investments/templates/investments/list.html:629
-msgid "# Infrastructures selected"
-msgstr "# Infrastructures sélectionnées"
-
 #: investments/templates/investments/list.html:643
 #: investments/templates/investments/moderator/package_review.html:393
 msgid "You have no investments"
@@ -3004,7 +2991,7 @@ msgstr "Vous n'avez pas d'investissements"
 
 #: investments/templates/investments/list.html:649
 msgid "Source"
-msgstr ""
+msgstr "Source"
 
 #: investments/templates/investments/moderator/approvals_list.html:53
 msgid "User approval requests"
@@ -3012,20 +2999,20 @@ msgstr "Demandes d’approbations de comptes utilisateurs"
 
 #: investments/templates/investments/moderator/approvals_list.html:83
 #: investments/templates/investments/moderator/package_review.html:382
-#: investments/templates/investments/moderator/package_review.html:460
+#: investments/templates/investments/moderator/package_review.html:466
 msgid "Approve"
 msgstr "Approuver"
 
 #: investments/templates/investments/moderator/approvals_list.html:84
 #: investments/templates/investments/moderator/package_review.html:384
-#: investments/templates/investments/moderator/package_review.html:462
-#: investments/templates/investments/moderator/package_review.html:498
+#: investments/templates/investments/moderator/package_review.html:468
+#: investments/templates/investments/moderator/package_review.html:504
 msgid "Reject"
 msgstr "Rejeter"
 
 #: investments/templates/investments/moderator/approvals_list.html:85
 msgid "Spam"
-msgstr ""
+msgstr "Courrier indésirable"
 
 #: investments/templates/investments/moderator/approvals_list.html:102
 msgid "Submission approval requests"
@@ -3040,14 +3027,12 @@ msgid "# Villages:"
 msgstr "# Villages:"
 
 #: investments/templates/investments/moderator/package_review.html:374
-#, fuzzy
-#| msgid "Pending Approval"
 msgid "Partially Approval"
-msgstr "En attente d'approbation"
+msgstr "Approbation Partielle"
 
-#: investments/templates/investments/moderator/package_review.html:485
+#: investments/templates/investments/moderator/package_review.html:491
 msgid "Request resubmission of package"
-msgstr ""
+msgstr "Demande de nouvelle soumission du colis"
 
 #: investments/templates/investments/profile.html:41
 #: investments/templates/investments/profile.html:69
@@ -3063,8 +3048,6 @@ msgid "Total target communities"
 msgstr "Total des communautés cibles"
 
 #: investments/templates/investments/profile.html:64
-#, fuzzy
-#| msgid "About Organization"
 msgid "About organization"
 msgstr "À propos de l'organisation"
 
@@ -3072,53 +3055,48 @@ msgstr "À propos de l'organisation"
 msgid "Total investments amount"
 msgstr "Montant total des investissements"
 
-#: investments/views.py:41
-#, fuzzy
-#| msgid "Load file"
+#: investments/views.py:36
 msgid "profile"
-msgstr "Charger Fichier"
+msgstr "profil"
 
-#: investments/views.py:73
-#, fuzzy
+#: investments/views.py:69
 msgid "Investments"
 msgstr "Investissements"
 
-#: investments/views.py:444
+#: investments/views.py:442
 msgid "Your package"
 msgstr "Votre paquet"
 
-#: investments/views.py:463
-#, fuzzy
-#| msgid "Remove from cart"
+#: investments/views.py:461
 msgid "Investment removed from cart."
 msgstr "Investissement retiré du panier."
 
-#: investments/views.py:475
+#: investments/views.py:473
 msgid "Not enough funds"
 msgstr "Pas assez de fonds"
 
-#: investments/views.py:479
+#: investments/views.py:477
 msgid "Package submitted."
 msgstr "Paquet soumis."
 
-#: investments/views.py:499
+#: investments/views.py:497
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
-msgstr ""
+msgstr "Aucun %(verbose_name)s ne correspond à la requête."
 
-#: investments/views.py:545 investments/views.py:632
+#: investments/views.py:543
 msgid "Welcome, Moderator!"
 msgstr "Bienvenue, Monsieur le Modérateur !"
 
-#: investments/views.py:632
+#: investments/views.py:618
 msgid "Welcome, Dear Partner!"
 msgstr "Bienvenue, Cher partenaire !"
 
-#: investments/views.py:706
+#: investments/views.py:692
 msgid "Investment Package Review"
 msgstr "Examen du dossier d'investissement"
 
-#: investments/views.py:826
+#: investments/views.py:812
 msgid "Endorsed by pastoralist"
 msgstr "Soutenu par les minorités ethniques"
 
@@ -3128,7 +3106,7 @@ msgstr "Afficher _MENU_ enregistrements"
 
 #: static/config/datatable.py:12
 msgid "Loading data..."
-msgstr ""
+msgstr "Chargement des données..."
 
 #: static/config/datatable.py:13
 msgid "No result found"
@@ -3190,7 +3168,7 @@ msgstr "Aucun mot de passe défini."
 
 #: usermanager/forms.py:32
 msgid "Invalid password format or unknown hashing algorithm."
-msgstr ""
+msgstr "Format de mot de passe invalide ou algorithme de hachage inconnu."
 
 #: usermanager/forms.py:75 usermanager/forms.py:102 usermanager/forms.py:148
 #: usermanager/forms.py:150 usermanager/forms.py:170 usermanager/forms.py:171
@@ -3208,6 +3186,8 @@ msgid ""
 "Please enter a correct %(email)s and password. Note that password field may "
 "be case-sensitive."
 msgstr ""
+"Veuillez saisir une %(email)s et un mot de passe corrects. Notez que le "
+"champ du mot de passe peut être sensible à la casse."
 
 #: usermanager/forms.py:89
 msgid "This account is inactive."
@@ -3239,9 +3219,9 @@ msgid ""
 "Raw passwords are not stored, so there is no way to see this user’s "
 "password, but you can change the password using <a href=\"{}\">this form</a>."
 msgstr ""
-"Les mots de passe bruts ne sont pas stockés, il n’est donc pas possible de "
-"voir ceux de cet utilisateur.mot de passe, mais vous pouvez changer le mot "
-"de passe en utilisant <a href=>ce formulaire."
+"Les mots de passe bruts ne sont pas stockés, il n'y a donc aucun moyen de voir "
+"le mot de passe de cet utilisateur, mais vous pouvez le modifier en utilisant "
+"<a href=\"{}\">ce formulaire</a>."
 
 #: usermanager/models.py:89
 msgid "email address"
@@ -3256,415 +3236,112 @@ msgstr "Adresse e-mail"
 msgid "Page not found"
 msgstr "Page non trouvée"
 
-#: usermanager/templates/email_confirmed_successfully.html:45
+#: usermanager/templates/email/confirmation_email.html:6
+msgid "Registration confirmation - PURS"
+msgstr "Confirmation d'inscription - PURS"
+
+#: usermanager/templates/email_confirmed_successfully.html:36
 msgid "Your email was successfully confirm!"
 msgstr "Votre email a été confirmé avec succès !"
 
-#: usermanager/templates/email_confirmed_successfully.html:46
+#: usermanager/templates/email_confirmed_successfully.html:37
 msgid "Take me home."
 msgstr "Aller à la page d'accueil"
 
-#: usermanager/templates/login.html:63
+#: usermanager/templates/login.html:43
+#: usermanager/templates/password_reset.html:43
+#: usermanager/templates/password_reset_complete.html:43
+#: usermanager/templates/password_reset_confirm.html:43
+#: usermanager/templates/password_reset_done.html:43
+#: usermanager/templates/register.html:43
+msgid "Emergency program to strengthen community resilience and security"
+msgstr ""
+"Programme d'urgence de renforcement de la résilience et de la sécurité des "
+"communautés"
+
+#: usermanager/templates/login.html:49
 msgid "Log in to start your session"
 msgstr "Connectez-vous pour démarrer votre session"
 
-#: usermanager/templates/login.html:81
+#: usermanager/templates/login.html:67
 msgid "I forgot my password"
 msgstr "J’ai oublié mon mot de passe"
 
-#: usermanager/templates/login.html:84
-#: usermanager/templates/password_reset.html:103
-#: usermanager/templates/password_reset_complete.html:86
-#: usermanager/templates/password_reset_confirm.html:104
-#: usermanager/templates/password_reset_done.html:89
-#: usermanager/templates/register.html:63
+#: usermanager/templates/login.html:70
+#: usermanager/templates/password_reset.html:89
+#: usermanager/templates/password_reset_complete.html:72
+#: usermanager/templates/password_reset_confirm.html:90
+#: usermanager/templates/password_reset_done.html:75
+#: usermanager/templates/register.html:49
 msgid "Sign up as a partner"
 msgstr "Inscrivez-vous en tant que partenaire"
 
-#: usermanager/templates/password_reset.html:63
+#: usermanager/templates/password_reset.html:49
 msgid ""
 "Forgotten your password? Enter your email address below, and we’ll email "
 "instructions for setting a new one."
 msgstr ""
+"Vous avez oublié votre mot de passe? Saisissez votre adresse courriel ci-"
+"dessous et nous vous enverrons par courriel les instructions pour en définir "
+"un nouveau."
 
-#: usermanager/templates/password_reset.html:69
-#: usermanager/templates/password_reset_complete.html:69
-#: usermanager/templates/password_reset_confirm.html:69
-#: usermanager/templates/password_reset_done.html:72
+#: usermanager/templates/password_reset.html:55
+#: usermanager/templates/password_reset_complete.html:55
+#: usermanager/templates/password_reset_confirm.html:55
+#: usermanager/templates/password_reset_done.html:58
 msgid "Please correct the error below."
-msgstr ""
+msgstr "Veuillez corriger l'erreur ci-dessous."
 
-#: usermanager/templates/password_reset.html:70
-#: usermanager/templates/password_reset_complete.html:70
-#: usermanager/templates/password_reset_confirm.html:70
-#: usermanager/templates/password_reset_done.html:73
+#: usermanager/templates/password_reset.html:56
+#: usermanager/templates/password_reset_complete.html:56
+#: usermanager/templates/password_reset_confirm.html:56
+#: usermanager/templates/password_reset_done.html:59
 msgid "Please correct the errors below."
-msgstr ""
+msgstr "Veuillez corriger les erreurs ci-dessous."
 
-#: usermanager/templates/password_reset.html:93
-#, fuzzy
-#| msgid "password"
+#: usermanager/templates/password_reset.html:79
 msgid "Reset my password"
-msgstr "Mot de passe"
+msgstr "Réinitialiser mon mot de passe"
 
-#: usermanager/templates/password_reset_complete.html:63
+#: usermanager/templates/password_reset_complete.html:49
 msgid "Your password has been set. You may go ahead and log in now."
 msgstr ""
+"Votre mot de passe a été défini. Vous pouvez vous connecter dès maintenant."
 
-#: usermanager/templates/password_reset_confirm.html:63
+#: usermanager/templates/password_reset_confirm.html:49
 msgid ""
 "Please enter your new password twice so we can verify you typed it in "
 "correctly."
 msgstr ""
+"Veuillez saisir votre nouveau mot de passe deux fois afin que nous puissions "
+"vérifier que vous l'avez correctement saisi."
 
-#: usermanager/templates/password_reset_confirm.html:94
-#, fuzzy
-#| msgid "password"
+#: usermanager/templates/password_reset_confirm.html:80
 msgid "Change my password"
-msgstr "Mot de passe"
+msgstr "Changer mon mot de passe"
 
-#: usermanager/templates/password_reset_done.html:63
+#: usermanager/templates/password_reset_done.html:49
 msgid ""
 "We’ve emailed you instructions for setting your password, if an account "
 "exists with the email you entered. You should receive them shortly."
 msgstr ""
+"Nous vous avons envoyé par courriel les instructions pour définir votre mot "
+"de passe, si un compte existe avec l'adresse courriel que vous avez indiquée. "
+"Vous devriez les recevoir sous peu."
 
-#: usermanager/templates/password_reset_done.html:66
+#: usermanager/templates/password_reset_done.html:52
 msgid ""
 "If you don’t receive an email, please make sure you’ve entered the address "
 "you registered with, and check your spam folder."
 msgstr ""
+"Si vous ne recevez pas d'e-mail, veuillez vérifier que vous avez bien saisi "
+"l'adresse avec laquelle vous vous êtes inscrit et consultez votre dossier de "
+"courriers indésirables."
 
-#: usermanager/templates/register.html:77
+#: usermanager/templates/register.html:63
 msgid "Sign up"
 msgstr "Inscrivez-vous"
 
-#: usermanager/templates/register.html:84
+#: usermanager/templates/register.html:70
 msgid "Already has an account? Sign in"
 msgstr "Vous avez déjà un compte ? Connectez-vous"
-
-#~ msgid "Project Status"
-#~ msgstr "Statut du projet"
-
-#, fuzzy
-#~| msgid "Close"
-#~ msgid "close"
-#~ msgstr "Fermer"
-
-#, fuzzy
-#~| msgid "Action"
-#~ msgid "Options"
-#~ msgstr "Action"
-
-#, fuzzy
-#~| msgid "Comments"
-#~ msgid "Commands"
-#~ msgstr "Commentaires"
-
-#, fuzzy
-#~| msgid "Management"
-#~ msgid "Missing argument"
-#~ msgstr "Gestion"
-
-#, fuzzy
-#~| msgid "Password confirmation"
-#~ msgid "Repeat for confirmation"
-#~ msgstr "Confirmation du mot de passe"
-
-#, fuzzy
-#~| msgid "Director"
-#~ msgid "directory"
-#~ msgstr "Directeur(trice)"
-
-#, fuzzy
-#~| msgid "File Type"
-#~ msgid "path"
-#~ msgstr "Type de fichier"
-
-#, fuzzy
-#~| msgid "Sites"
-#~ msgid "Site Maps"
-#~ msgstr "Sites"
-
-#, fuzzy
-#~| msgid "Organization"
-#~ msgid "Syndication"
-#~ msgstr "Organisation"
-
-#, fuzzy
-#~| msgid "Account number"
-#~ msgid "Enter a valid value."
-#~ msgstr "N° de Compte"
-
-#, fuzzy
-#~| msgid "Account number"
-#~ msgid "Enter a valid integer."
-#~ msgstr "N° de Compte"
-
-#, fuzzy
-#~| msgid "Account number"
-#~ msgid "Enter a number."
-#~ msgstr "N° de Compte"
-
-#, fuzzy
-#~| msgid "The description is required"
-#~ msgid "This field cannot be null."
-#~ msgstr "La description est obligatoire"
-
-#, fuzzy
-#~| msgid "Account number"
-#~ msgid "Decimal number"
-#~ msgstr "N° de Compte"
-
-#, fuzzy
-#~| msgid "Education"
-#~ msgid "Duration"
-#~ msgstr "Education"
-
-#, fuzzy
-#~| msgid "File Type"
-#~ msgid "File path"
-#~ msgstr "Type de fichier"
-
-#, fuzzy
-#~| msgid "Timeline"
-#~ msgid "Time"
-#~ msgstr "Chronologie"
-
-#, fuzzy
-#~| msgid "File Type"
-#~ msgid "File"
-#~ msgstr "Type de fichier"
-
-#, fuzzy
-#~| msgid "The description is required"
-#~ msgid "This field is required."
-#~ msgstr "La description est obligatoire"
-
-#, fuzzy
-#~| msgid "Account number"
-#~ msgid "Enter a whole number."
-#~ msgstr "N° de Compte"
-
-#, fuzzy
-#~| msgid "Account number"
-#~ msgid "Enter a valid time."
-#~ msgstr "N° de Compte"
-
-#, fuzzy
-#~| msgid "Package submitted."
-#~ msgid "No file was submitted."
-#~ msgstr "Paquet soumis."
-
-#~ msgid "Order"
-#~ msgstr "Commande"
-
-#~ msgid "Delete"
-#~ msgstr "Effacer"
-
-#, fuzzy
-#~| msgid "Current Task"
-#~ msgid "Currently"
-#~ msgstr "Tâche"
-
-#, fuzzy
-#~| msgid "Change status"
-#~ msgid "Change"
-#~ msgstr "Changement de statut"
-
-#, fuzzy
-#~| msgid "Month"
-#~ msgid "Mon"
-#~ msgstr "Mois"
-
-#, fuzzy
-#~| msgid "Renewed"
-#~ msgid "Wed"
-#~ msgstr "Renouvellé"
-
-#, fuzzy
-#~| msgid "Status"
-#~ msgid "Sat"
-#~ msgstr "Statut"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgid "March"
-#~ msgstr "Chercher"
-
-#, fuzzy
-#~| msgid "Man"
-#~ msgid "May"
-#~ msgstr "Homme"
-
-#, fuzzy
-#~| msgid "Number"
-#~ msgid "November"
-#~ msgstr "Nombre"
-
-#, fuzzy
-#~| msgid "Number"
-#~ msgid "December"
-#~ msgstr "Nombre"
-
-#, fuzzy
-#~| msgid "Man"
-#~ msgid "jan"
-#~ msgstr "Homme"
-
-#, fuzzy
-#~| msgid "Man"
-#~ msgid "jun"
-#~ msgstr "Homme"
-
-#, fuzzy
-#~| msgid "step"
-#~ msgid "sep"
-#~ msgstr "étape"
-
-#, fuzzy
-#~| msgid "Lot"
-#~ msgid "oct"
-#~ msgstr "Lot"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgctxt "abbrev. month"
-#~ msgid "March"
-#~ msgstr "Chercher"
-
-#, fuzzy
-#~| msgid "Man"
-#~ msgctxt "abbrev. month"
-#~ msgid "May"
-#~ msgstr "Homme"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgctxt "alt. month"
-#~ msgid "March"
-#~ msgstr "Chercher"
-
-#, fuzzy
-#~| msgid "Man"
-#~ msgctxt "alt. month"
-#~ msgid "May"
-#~ msgstr "Homme"
-
-#, fuzzy
-#~| msgid "Number"
-#~ msgctxt "alt. month"
-#~ msgid "November"
-#~ msgstr "Nombre"
-
-#, fuzzy
-#~| msgid "Number"
-#~ msgctxt "alt. month"
-#~ msgid "December"
-#~ msgstr "Nombre"
-
-#, fuzzy, python-format
-#~| msgid "Month"
-#~ msgid "%(num)d month"
-#~ msgid_plural "%(num)d months"
-#~ msgstr[0] "Mois"
-#~ msgstr[1] "Mois"
-
-#, fuzzy
-#~| msgid "Community"
-#~ msgid "Django Documentation"
-#~ msgstr "Communauté"
-
-#, fuzzy
-#~| msgid "Community"
-#~ msgid "Django Community"
-#~ msgstr "Communauté"
-
-#, fuzzy
-#~| msgid "No result found"
-#~ msgid "No response body"
-#~ msgstr "Aucun résultat trouvé"
-
-#, fuzzy
-#~| msgid ""
-#~| "Please upload an XLSX file containing all the investments you wish to "
-#~| "linkto the newly created project. You can find an example in"
-#~ msgid ""
-#~ "Please upload a CSV file containing all the investments you want to "
-#~ "attach to the newly created project. You can find an example by"
-#~ msgstr ""
-#~ "Veuillez télécharger un fichier XLSX contenant tous les investissements "
-#~ "que vous souhaitez rattacher au projet nouvellement créé. Vous pouvez "
-#~ "trouver un exemple dans "
-
-#, fuzzy
-#~| msgid "Total Investments"
-#~ msgid "Total Funded / Unfunded Investments"
-#~ msgstr "Total des investissements"
-
-#~ msgid "list, the"
-#~ msgstr "la liste des"
-
-#~ msgid "Update progress"
-#~ msgstr "Mettre à jour la progression"
-
-#~ msgid "Submit Package"
-#~ msgstr "Soumettre"
-
-#~ msgid "Ethnic Minorities"
-#~ msgstr "Minorités ethniques"
-
-#, fuzzy
-#~| msgid "Canton overview"
-#~ msgid "Commune Overview"
-#~ msgstr "Vue d'ensemble du canton"
-
-#~ msgid "Village Development Plan Date"
-#~ msgstr "Date du plan de développement du village"
-
-#~ msgid "Communities Priorities"
-#~ msgstr "Priorités éligibles"
-
-#, fuzzy
-#~| msgid "Procurement"
-#~ msgid "No attachment"
-#~ msgstr "Aucun document"
-
-#~ msgid "Village population"
-#~ msgstr "Population du Village"
-
-#, fuzzy
-#~| msgid "Total"
-#~ msgid "Total cart"
-#~ msgstr "Total Panier"
-
-#, fuzzy
-#~| msgid "Just this village"
-#~ msgid "Priorité du village"
-#~ msgstr "Juste ce village"
-
-#, fuzzy
-#~| msgid "Total population"
-#~ msgid "Priorité de la population"
-#~ msgstr "Population totale"
-
-#, fuzzy
-#~| msgid "Results"
-#~ msgid "Résultats"
-#~ msgstr "Résultats"
-
-#, fuzzy
-#~| msgid "# Sub-projects"
-#~ msgid "# Sous-projets:"
-#~ msgstr "# Sous-projets"
-
-#, fuzzy
-#~| msgid "# Infrastructures"
-#~ msgid "# Infrastructures:"
-#~ msgstr "# Infrastructures"
-
-#~ msgid "The project does not have enough funds"
-#~ msgstr "Le projet ne dispose pas de suffisamment de fonds"
-
-#~ msgid "This investment is already funded by the project"
-#~ msgstr "Cet investissement est déjà financé par le projet"

@@ -432,7 +432,6 @@ class PackageDetailView(IsInvestorMixin, PageMixin, generic.DetailView):
 
         context['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
         context['projects'] = self.request.user.organization.projects.all()
-        # TODO: Should user cases without organization be handled?
 
         return context
 
@@ -530,7 +529,6 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
 
         context['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
         context['projects'] = self.request.user.organization.projects.all()
-        #TODO: Should user cases without organization be handled?
 
         return super(CartView, self).get_context_data(**context)
 
