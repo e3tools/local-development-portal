@@ -136,6 +136,7 @@ def update_or_create_priorities_document(priorities_document, meeting_date):
                                 climate_contribution_text = priority.get("contributionClimatique"),
                             )
                         else:
+                            investment.estimated_cost = priority.get("coutEstime")
                             investment.ranking = idx + 1 # Take the rank of the last recorded priority of the recent project
                         
                         project = Project.objects.filter(name=priorities_document['project_name']).first()
