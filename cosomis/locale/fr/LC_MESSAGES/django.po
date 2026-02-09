@@ -3668,3 +3668,12 @@ msgstr "Vous avez déjà un compte ? Connectez-vous"
 
 #~ msgid "This investment is already funded by the project"
 #~ msgstr "Cet investissement est déjà financé par le projet"
+
+#~ msgid "Community Process"
+#~ msgstr "Processus communautaire"
+
+#~ msgid "Infrastructure in Progress"
+#~ msgstr "Infrastructures en cours"
+
+#~ msgid "Completed Infrastructure"
+#~ msgstr "Infrastructure achevée"
