@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import AccessMixin
 from django.http import Http404, JsonResponse
 
+from utils.mixpanel.utils import track_user_activity
+
 
 class PageMixin(object):
     title = None
@@ -17,6 +19,14 @@ class PageMixin(object):
         ctx.setdefault('breadcrumb', self.breadcrumb)
         ctx.setdefault('form_mixin', self.form_mixin)
         return ctx
+
+    
+    def dispatch(self, request, *args, **kwargs):
+        
+        track_user_activity(request, self.__class__.__name__)
+        
+        return super().dispatch(request, *args, **kwargs)
+    
 
 
 class ModalFormMixin(object):
