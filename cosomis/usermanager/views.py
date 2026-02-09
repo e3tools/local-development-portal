@@ -9,6 +9,8 @@ from .forms import UserCreationForm
 from django.shortcuts import redirect
 from django.contrib import messages
 
+from utils.mixpanel.utils import track_user_activity
+
 User = get_user_model()
 
 
@@ -20,6 +22,7 @@ class SignupView(RedirectURLMixin, generic.CreateView):
     def form_valid(self, form):
         self.object = form.save()
         auth_login(self.request, self.object)
+        track_user_activity(self.request, "UserLoggedOut")
         return HttpResponseRedirect(self.get_success_url())
 
     def get_default_redirect_url(self):
@@ -53,6 +56,9 @@ class EmailVerificationView(TemplateView):
             user.save()
 
             messages.success(request, "Votre adresse e-mail a été confirmée avec succès.")
+
+            track_user_activity(self.request, "UserConfirmedEmail")
+
         except User.DoesNotExist:
             messages.error(request, "Le lien de vérification est invalide ou a expiré.")
             return redirect(settings.LOGIN_REDIRECT_URL)

@@ -22,7 +22,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
 from django.core.paginator import Paginator
-from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, IntegerField
+from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, IntegerField, Value
 from django.db.models.functions import Coalesce
 from django.templatetags.static import static
 
@@ -36,7 +36,7 @@ from .forms import (
     ProjectForm, BulkUploadInvestmentsForm,
     UpdateInvestmentForm
 )
-
+from utils.mixpanel.utils import track_user_activity
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView):
     """Display administrative level list"""
@@ -178,8 +178,10 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
                 package = Package.objects.get_active_cart(user=self.request.user)
                 if package.funded_investments.filter(id=investment.id).exists():
                     package.funded_investments.remove(investment)
+                    track_user_activity(request, 'RemoveInvestmentInPackage')
                 else:
                     package.funded_investments.add(investment)
+                    track_user_activity(request, 'AddInvestmentInPackage')
             return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -219,10 +221,31 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             "facilitator": "",
         }
 
-        images = Attachment.objects.filter(
+        images_number = 5
+        completed = Attachment.objects.filter(
             Q (adm=admin_level) |
-            Q (task__activity__phase__village=admin_level)
-        ).exclude(url__icontains='.pdf').all()[:5]
+            Q (task__activity__phase__village=admin_level),
+            process_moment=Attachment.COMPLETED_INFRASTRUCTURE
+        ).exclude(url__icontains='.pdf')[:2]
+        in_progress = []
+        if not completed:
+            in_progress = Attachment.objects.filter(
+                Q (adm=admin_level) |
+                Q (task__activity__phase__village=admin_level),
+                process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS
+            ).exclude(url__icontains='.pdf')[:1]
+
+        community = Attachment.objects.filter(
+            Q (adm=admin_level) |
+            Q (task__activity__phase__village=admin_level),
+            process_moment=Attachment.COMMUNITY_PROCESS
+        ).exclude(url__icontains='.pdf')[:(images_number - len(completed) - len(in_progress))]
+
+        images = list(completed) + list(in_progress) + list(community)
+        # images = Attachment.objects.filter(
+        #     Q (adm=admin_level) |
+        #     Q (task__activity__phase__village=admin_level)
+        # ).exclude(url__icontains='.pdf').all()[:5]
         context["images_data"] = {
             "images": images,
             "exists_at_least_image": len(images) != 0,
@@ -416,8 +439,10 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
                 package = Package.objects.get_active_cart(user=self.request.user)
                 if package.funded_investments.filter(id=investment.id).exists():
                     package.funded_investments.remove(investment)
+                    track_user_activity(request, 'RemoveInvestmentInPackage')
                 else:
                     package.funded_investments.add(investment)
+                    track_user_activity(request, 'AddInvestmentInPackage')
             return super().get(request, *args, **kwargs)
 
         obj = self.get_object()
@@ -684,6 +709,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             succeeded, new_attachment = Attachment.investment_upload(investment=investment, image=request.FILES.get('image_input'))
             if succeeded:
                 messages.add_message(request, messages.SUCCESS, _("Investment updated."))
+                track_user_activity(request, 'UploadInvestmentFile')
             else:
                 messages.add_message(request, messages.ERROR, _("Investment could not be updated."))
                 raise Exception(new_attachment)
@@ -700,6 +726,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             if investment_form.is_valid():
                 investment_form.save()
                 messages.add_message(request, messages.SUCCESS, _("Investment updated."))
+                track_user_activity(request, 'InvestmentUpdated')
             else:
                 messages.add_message(request, messages.ERROR, _("Investment could not be updated."))
             return super().get(request, *args, **kwargs)
@@ -938,7 +965,15 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
     def __build_db_filter(self) -> Paginator:
         query: QuerySet = self.get_queryset()
 
-        query = query.order_by("created_date")
+        query = query.order_by("created_date").annotate(
+            process_order=Case(
+                When(process_moment=Attachment.COMPLETED_INFRASTRUCTURE, then=Value(1)),
+                When(process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS, then=Value(2)),
+                When(process_moment=Attachment.COMMUNITY_PROCESS, then=Value(3)),
+                default=Value(4),
+                output_field=IntegerField(),
+            )
+        ).order_by("process_order")
         paginator = Paginator(query, 36)
 
         return paginator

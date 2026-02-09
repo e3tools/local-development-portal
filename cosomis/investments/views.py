@@ -21,6 +21,7 @@ from static.config.datatable import get_datatable_config
 
 from .models import Investment, Package, PackageFundedInvestment
 from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
+from utils.mixpanel.utils import track_user_activity
 
 
 class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
@@ -460,12 +461,14 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
             if "remove-from-cart" in request.POST:
                 investment = Investment.objects.get(pk=request.POST["remove-from-cart"])
                 package.funded_investments.remove(investment)
+                track_user_activity(request, 'RemoveInvestmentInPackage')
                 messages.add_message(request, messages.SUCCESS, _("Investment removed from cart."))
                 return redirect(reverse('investments:cart'))
             elif "clear-package-input" in request.POST:
                 obj.funded_investments.clear()
                 obj.project = None
                 obj.save()
+                track_user_activity(request, 'RemoveAllInvestmentsInPackage')
             else:
                 project = package.project
                 total_investment = 0
@@ -477,6 +480,7 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
                 obj.status = Package.PENDING_APPROVAL
                 obj.save()
                 messages.add_message(request, messages.SUCCESS, _("Package submitted."))
+                track_user_activity(request, 'PackageSubmitted')
             return redirect(reverse('investments:home_investments'))
 
     def get_object(self, queryset=None):
@@ -629,6 +633,7 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
                 message=form.success_message,
                 extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS],
             )
+            track_user_activity(request, form.success_message.title().replace(" ", ""))
         return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -704,8 +709,10 @@ class ModeratorPackageReviewView(
             package_item = PackageFundedInvestment.objects.filter(id=self.request.POST['package-item']).first()
             if request.POST['action'] == 'approve':
                 package_item.approve()
+                track_user_activity(request, "PackageApproved")
             elif request.POST['action'] == 'reject':
                 package_item.reject()
+                track_user_activity(request, "PackageRejected")
 
         url = reverse(
             "investments:package_review", kwargs={"package": self.get_object().id}
@@ -935,4 +942,5 @@ class ModeratorPackageReviewView(
             message="Package approved successfully.",
             extra_tags=messages.DEFAULT_TAGS[messages.SUCCESS],
         )
+        track_user_activity(self.request, "PackageApproved")
         return reverse("investments:notifications")
