@@ -57,6 +57,7 @@ CREATED_APPS = [
     'investments',
     'dashboard',
     'cdd_funnel',
+    'utils',
 ]
 
 THIRD_PARTY_APPS = [
@@ -116,12 +117,7 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 
 EXTERNAL_DATABASE_NAME = 'cddp'
 
-if not DEBUG:
-    DATABASES = {
-        'default': env.db(),
-        # EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
-    }
-else:
+if env('env') == 'dev':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -130,6 +126,12 @@ else:
             'NAME': os.path.join(BASE_DIR, 'database1.db'),
         }
     }
+else:
+    DATABASES = {
+        'default': env.db(),
+        # EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
+    }
+    
 
 MAX_RESPONSE_DAYS = 3
 
@@ -243,3 +245,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# MIXPANEL
+MIXPANEL_TOKEN = env('MIXPANEL_TOKEN')
+MIXPANEL_API_SECRET = env('MIXPANEL_API_SECRET')
+
+
+# MIS API
+MIS_API_KEY = env('MIS_API_KEY')
+MIS_URL = env('MIS_URL')
