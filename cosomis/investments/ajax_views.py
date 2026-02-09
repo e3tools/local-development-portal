@@ -1,7 +1,7 @@
 import math
 from xml.sax.handler import property_interning_dict
 
-from django.db.models import Count, Q, Subquery, F, Sum
+from django.db.models import Count, Q, Subquery, F, Sum, Case, When, Value, IntegerField
 from django.http import JsonResponse
 from django.views import View
 
@@ -369,7 +369,18 @@ class StatisticsView(View):
         ]
 
         for subproject in filtered_subprojects:
-            attachments = list(Attachment.objects.filter(investment__id=subproject['id']).values_list('url', flat=True)[:3])
+            attachments = list(
+                Attachment.objects.filter(investment__id=subproject['id']).exclude(url__icontains='.pdf').annotate(
+                    process_order=Case(
+                        When(process_moment=Attachment.COMPLETED_INFRASTRUCTURE, then=Value(1)),
+                        When(process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS, then=Value(2)),
+                        When(process_moment=Attachment.COMMUNITY_PROCESS, then=Value(3)),
+                        default=Value(4),
+                        output_field=IntegerField(),
+                    )
+                ).order_by("process_order").values_list('url', flat=True)[:3]
+            )
+            # attachments = list(Attachment.objects.filter(investment__id=subproject['id']).values_list('url', flat=True)[:3])
             if attachments:
                 subproject['attachments'] = attachments
 
