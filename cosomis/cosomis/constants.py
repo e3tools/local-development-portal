@@ -53,6 +53,7 @@ SUB_PROJECT_STATUS_COLOR_TRANSLATE = {
 STRUCTURE_NOT_START_STATUS = ['Identifié']
 STRUCTURE_IN_PROGRESS_STATUS = ['En cours']
 STRUCTURE_COMPLETED_STATUS = ["Achevé", "Réception technique", "Réception provisoire", "Réception définitive"]
+STRUCTURE_COMPLETED_ONLY_STATUS = ["Achevé"]
 STRUCTURE_PROVISIONAL_ACCEPTANCE_STATUS = ["Réception provisoire", "Réception définitive"]
 STRUCTURE_FINAL_ACCEPTANCE_STATUS = ["Réception définitive"]
 
