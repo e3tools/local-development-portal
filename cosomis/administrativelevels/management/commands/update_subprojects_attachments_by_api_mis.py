@@ -2,7 +2,7 @@ from fileinput import filename
 from django.core.management.base import BaseCommand, CommandError
 from administrativelevels.models import Project, AdministrativeLevel, Sector
 from investments.models import Investment, Attachment
-from cosomis.constants import STRUCTURE_COMPLETED_STATUS, STRUCTURE_IN_PROGRESS_STATUS, IMAGE_EXTENSIONS
+from cosomis.constants import STRUCTURE_COMPLETED_STATUS, STRUCTURE_IN_PROGRESS_STATUS, IMAGE_EXTENSIONS, STRUCTURE_COMPLETED_ONLY_STATUS
 from django.conf import settings
 import requests
 
@@ -34,7 +34,8 @@ class Command(BaseCommand):
         url = f"{url_default}" if url_default else f"{MIS_URL}/api/subprojects/get-subprojects-simple-by-user/?page_size=1000"
 
         payload = {
-            "token": MIS_API_KEY
+            "token": MIS_API_KEY,
+            "infrastructures_status": STRUCTURE_COMPLETED_ONLY_STATUS
         }
 
         headers = {
