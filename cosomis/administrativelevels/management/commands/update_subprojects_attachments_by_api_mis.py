@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
         payload = {
             "token": MIS_API_KEY,
-            "infrastructures_status": STRUCTURE_COMPLETED_ONLY_STATUS
+            # "infrastructures_status": STRUCTURE_COMPLETED_ONLY_STATUS
         }
 
         headers = {
