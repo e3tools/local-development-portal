@@ -153,8 +153,8 @@
                                     <tbody>
                                     {% for village in villages %}
                                         <tr>
-                                            <td><a href="{% url 'administrativelevels:detail' village.id %}">{{ village.name }}</a></td>
-                                            <td><a href="{% url 'administrativelevels:detail' village.parent.id %}">{{ village.parent.name }}</a></td>
+                                            <td><a href="{% url 'administrativelevels:detail' village.id %}" target="_blank">{{ village.name }}</a></td>
+                                            <td><a href="{% url 'administrativelevels:detail' village.parent.id %}" target="_blank">{{ village.parent.name }}</a></td>
                                             <td>{{ village.total_population|intcomma }}</td>
                                             <td>{{ village.total_founded|intcomma }}</td>
                                             <td>{{ village.total_estimated_cost|intcomma }}</td>

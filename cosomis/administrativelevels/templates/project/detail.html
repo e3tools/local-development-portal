@@ -139,7 +139,11 @@
                                             {{ investment.estimated_cost|intcomma }}
                                         </td>
                                     {% endif %}
-                                        <td>{{ investment.administrative_level.name }}</td>
+                                        <td>
+                                            <a href="{% url 'administrativelevels:village_detail' investment.administrative_level.id %}" target="_blank">
+                                            {{ investment.administrative_level.name }}
+                                            </a>
+                                        </td>
                                         <td>{{ investment.administrative_level.parent.name }}</td>
                                         <td>{{ investment.administrative_level.parent.parent.name }}</td>
                                         <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>

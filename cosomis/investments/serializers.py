@@ -48,7 +48,7 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     def get_administrative_level__name(self, obj):
         url = reverse('administrativelevels:village_detail', args=[obj.administrative_level.id])
-        return '<a href="{}">{}</a>'.format(url, obj.administrative_level.name)
+        return '<a href="{}" target="_blank">{}</a>'.format(url, obj.administrative_level.name)
 
     def get_administrative_level__parent__name(self, obj):
         return obj.administrative_level.parent.name

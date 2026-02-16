@@ -250,7 +250,7 @@
                 <tbody>
                 {% for investment in investments %}
                     <tr>
-                        <td><a href="{% url 'administrativelevels:detail' investment.administrative_level.id %}">{{ investment.administrative_level.name }}</a></td>
+                        <td><a href="{% url 'administrativelevels:detail' investment.administrative_level.id %}" target="_blank">{{ investment.administrative_level.name }}</a></td>
                         <td>{{ investment.title }}</td>
                         <td>{{ investment.sector }}</td>
                         <td>
