@@ -5,6 +5,7 @@ from investments.models import Investment, Attachment
 from cosomis.constants import STRUCTURE_COMPLETED_STATUS, STRUCTURE_IN_PROGRESS_STATUS, IMAGE_EXTENSIONS, STRUCTURE_COMPLETED_ONLY_STATUS
 from django.conf import settings
 import requests
+from django.utils import timezone
 
 
 class Command(BaseCommand):
@@ -12,7 +13,7 @@ class Command(BaseCommand):
 
     def is_image(self, url: str) -> bool:
         url = url.split("?")[0]  # Remove query parameters
-        return url.lower().endswith(tuple(IMAGE_EXTENSIONS))
+        return url.lower().endswith(tuple(IMAGE_EXTENSIONS)) or '.kobotoolbox' in url.lower()
 
     def add_arguments(self, parser):
         parser.add_argument('project_id', type=int, help='The ID of the project.')
@@ -21,6 +22,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         project_id = kwargs['project_id']
         url_default = kwargs.get('url_default', None)
+        now = timezone.now()
 
         try:
             project = Project.objects.get(pk=project_id)
@@ -102,6 +104,11 @@ class Command(BaseCommand):
 
                 investment.project_status = project_status
 
+                #Latitude, Longitude
+                if subproject["latitude"] and subproject["longitude"] and (investment.latitude != subproject["latitude"] or investment.longitude != subproject["longitude"]):
+                    investment.latitude = subproject["latitude"] 
+                    investment.longitude = subproject["longitude"]
+
                 investments_bucket_update.append(investment)
                 
                 for file in subproject.get("files", []):
@@ -139,7 +146,8 @@ class Command(BaseCommand):
                         urls.append(url)
 
         if investments_bucket_update:
-            Investment.objects.bulk_update(investments_bucket_update, ['physical_execution_rate', 'project_status'])
+            Investment.objects.bulk_update(investments_bucket_update, ['physical_execution_rate', 'project_status', 'latitude', 'longitude'])
+            Investment.objects.filter(id__in=[inv.id for inv in investments_bucket_update]).update(updated_date=now)
         if attachments_bucket_create:
             Attachment.objects.bulk_create(attachments_bucket_create)
         if attachments_bucket_update:
