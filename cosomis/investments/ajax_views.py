@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from administrativelevels.models import AdministrativeLevel, Sector, Project, GeoSegment
 from .models import Investment, PackageFundedInvestment, Attachment
 from .serializers import InvestmentSerializer
+from cosomis.constants import IMAGE_EXTENSIONS
 
 
 class FillAdmLevelsSelectFilters(generics.GenericAPIView):
@@ -367,13 +368,17 @@ class StatisticsView(View):
             subproject for subproject in subprojects_with_coordinates
             if not (math.isnan(subproject['latitude']) or math.isnan(subproject['longitude']))
         ]
+        
+        images_extensions_query = Q()
+        for ext in IMAGE_EXTENSIONS:
+            images_extensions_query |= Q(url__icontains=ext)
 
         for subproject in filtered_subprojects:
             attachments = list(
                 Attachment.objects.filter(
                     investment__id=subproject['id'],
                     process_moment=Attachment.COMPLETED_INFRASTRUCTURE
-                ).exclude(url__icontains='.pdf')
+                ).filter(images_extensions_query)
                 # .annotate(
                 #     process_order=Case(
                 #         When(process_moment=Attachment.COMPLETED_INFRASTRUCTURE, then=Value(1)),

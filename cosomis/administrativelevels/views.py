@@ -30,7 +30,7 @@ from administrativelevels.models import AdministrativeLevel, Phase, Activity, Ta
 from investments.models import Attachment, Investment, Package
 
 from static.config.datatable import get_datatable_config
-
+from cosomis.constants import IMAGE_EXTENSIONS
 from .forms import (
     AttachmentFilterForm, VillageSearchForm,
     ProjectForm, BulkUploadInvestmentsForm,
@@ -187,6 +187,10 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
     def get_context_data(self, **kwargs):
         context = super(AdministrativeLevelDetailView, self).get_context_data(**kwargs)
 
+        images_extensions_query = Q()
+        for ext in IMAGE_EXTENSIONS:
+            images_extensions_query |= Q(url__icontains=ext)
+
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
             if context["object"].is_village():
@@ -226,20 +230,20 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             Q (adm=admin_level) |
             Q (task__activity__phase__village=admin_level),
             process_moment=Attachment.COMPLETED_INFRASTRUCTURE
-        ).exclude(url__icontains='.pdf')[:2]
+        ).filter(images_extensions_query)[:2]
         in_progress = []
         if not completed:
             in_progress = Attachment.objects.filter(
                 Q (adm=admin_level) |
                 Q (task__activity__phase__village=admin_level),
                 process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS
-            ).exclude(url__icontains='.pdf')[:1]
+            ).filter(images_extensions_query)[:1]
 
         community = Attachment.objects.filter(
             Q (adm=admin_level) |
             Q (task__activity__phase__village=admin_level),
             process_moment=Attachment.COMMUNITY_PROCESS
-        ).exclude(url__icontains='.pdf')[:(images_number - len(completed) - len(in_progress))]
+        ).filter(images_extensions_query)[:(images_number - len(completed) - len(in_progress))]
 
         images = list(completed) + list(in_progress) + list(community)
         # images = Attachment.objects.filter(
@@ -474,6 +478,10 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
     def get_context_data(self, **kwargs):
         context = super(CommuneDetailView, self).get_context_data(**kwargs)
 
+        images_extensions_query = Q()
+        for ext in IMAGE_EXTENSIONS:
+            images_extensions_query |= Q(url__icontains=ext)
+
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
             if context["object"].is_village():
@@ -485,7 +493,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         images = Attachment.objects.filter(
             Q (adm=admin_level) |
             Q (task__activity__phase__village=admin_level)
-        ).exclude(url__icontains='.pdf').all()[:5]
+        ).filter(images_extensions_query)[:5] #.exclude(url__icontains='.pdf').all()[:5]
         context["images_data"] = {
             "images": images,
             "exists_at_least_image": len(images) != 0,

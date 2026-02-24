@@ -73,7 +73,7 @@ IMAGE_EXTENSIONS = [
     ".psd",
     ".ai",
     ".eps",
-    ".pdf",
+    # ".pdf",
 
     # Formats photo / RAW (appareils photo)
     ".raw",
@@ -99,5 +99,8 @@ IMAGE_EXTENSIONS = [
 
     # Autres
     ".heic", ".heif",  # Apple / iOS
-    ".avif"
+    ".avif",
+
+    # Kobo Collect files
+    '.kobotoolbox'
 ]
