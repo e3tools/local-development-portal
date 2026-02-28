@@ -189,6 +189,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
 
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
+            context["breadcrumb"] = self._get_breadcrumb(context["object"])
             if context["object"].is_village():
                 context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
                 context['geo_segment'] = context["object"].geo_segment
@@ -261,6 +262,20 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
         context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
 
         return context
+
+    def _get_breadcrumb(self, administrative_level):
+
+        def _get_parent(obj):
+            return obj.parent
+
+        resp = list()
+        parent = administrative_level
+
+        while parent is not None:
+            resp.append(parent)
+            parent = _get_parent(parent)
+        resp.reverse()
+        return resp
 
     def _get_planning_cycle(self):
         phases = list()
@@ -360,9 +375,6 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
                             total_ids = [child.id]
                 else:
                     final_total_ids += [child.id]
-                    print('###')
-                    print("Village without infrastructure: ", child.id)
-                    print('###')
 
             if base_resp is not None:
                 for key, value in base_resp.items():
@@ -716,9 +728,6 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             return super().get(request, *args, **kwargs)
 
         if 'investment' in request.POST:
-            print('----')
-            print(request.POST['investment'])
-            print('----')
             investment = Investment.objects.get(id=request.POST['investment'])
             investment_form = self.investment_form_class(
                 instance=investment, data=request.POST, files=request.FILES

@@ -34,6 +34,20 @@
                         {% endif %}
                     {% endblock %}
 
+                    {% if breadcrumb %}
+                        <div class="col-12">
+                            <ol class="breadcrumb">
+                                {% for bc_item in breadcrumb %}
+                                    {% if not forloop.last %}
+                                        <li class="breadcrumb-item"><a href="{% url 'administrativelevels:detail' bc_item.id %}">{{ bc_item.name }}</a></li>
+                                    {% else %}
+                                        <li class="breadcrumb-item active">{{ bc_item.name }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    {% endif %}
+
                 </div>
                 <!-- /.row -->
             </div>
