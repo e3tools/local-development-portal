@@ -97,6 +97,9 @@ class Investment(BaseModel): # Investment module
     no_sql_id = models.CharField(max_length=255)
     imported_project_id = models.CharField(max_length=255, null=True, blank=True)
 
+    abandoned_in_the_meantime = models.BooleanField(default=False)
+    abandonment_history = models.JSONField(null=True, blank=True)
+
     def get_projects_priority_came_from(self, join_on_chain=True):
         projects = self.came_from.all()
         if join_on_chain:
