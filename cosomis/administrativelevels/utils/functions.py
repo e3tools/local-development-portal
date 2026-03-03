@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import math
 
 def normalize_text(text):
     """
@@ -24,8 +25,8 @@ def normalize_text(text):
         text = text.replace(action, " ")
 
     # 3. Normalisation des acronymes et variations
-    text = text.replace(" AEP", " EAU DE BOISSON")
-    text = text.replace(" AGRI", " MARAICHERE")
+    text = text.replace(" EAU DE BOISSON", " AEP")
+    text = text.replace(" MARAICHERE", " AGRI")
     text = text.replace(" EP", " EPP")
     text = text.replace(" PRIMAIRE", " EPP")
     text = text.replace(" CMS", " CENTRE MÉDICO-SOCIAL")
@@ -61,3 +62,24 @@ def extract_priority_description(text):
     # Enlève les parenthèses et ce qu'elles contiennent (le coût)
     text = re.sub(r'\s*\([^)]+\)', '', str(text)).strip()
     return text
+
+
+def safe_value(value):
+    try:
+        if not value or (value and str(value).lower() in ["nan", "", "none"]):
+            return None
+        return value
+    except:
+        return None
+    
+
+def safe_float(value):
+    try:
+        if value in ["NaN", "nan", "", None]:
+            return 0
+        v = float(value)
+        if math.isnan(v):
+            return 0
+        return v
+    except:
+        return 0

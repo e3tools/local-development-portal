@@ -5,28 +5,9 @@ from investments.models import Investment
 from cosomis.constants import STRUCTURE_COMPLETED_STATUS
 # from thefuzz import fuzz
 from fuzzywuzzy import fuzz
-from administrativelevels.utils.functions import normalize_text
-import math
+from administrativelevels.utils.functions import normalize_text, safe_value, safe_float
 
 
-def safe_float(value):
-    try:
-        if value in ["NaN", "nan", "", None]:
-            return 0
-        v = float(value)
-        if math.isnan(v):
-            return 0
-        return v
-    except:
-        return 0
-
-def safe_value(value):
-    try:
-        if not value or (value and str(value).lower() in ["nan", "", "none"]):
-            return None
-        return value
-    except:
-        return None
     
 
 class Command(BaseCommand):
@@ -161,10 +142,10 @@ class Command(BaseCommand):
                 
                 if not investments or not matched_investments:
                     creating += 1
-                    sector = Sector.objects.all()
+                    sectors = Sector.objects.all()
                     other_sector = Sector.objects.get(name="Autre")
                     matched_sectors = [
-                        sec for sec in sector
+                        sec for sec in sectors
                         if fuzz.token_set_ratio(normalize_text(sec.name), normalize_text(row["TYPE D'OUVRAGE (INFRASTRUCTURE)"])) >= similarity_threshold
                     ]
                     # try:

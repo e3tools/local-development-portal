@@ -37,6 +37,7 @@ class Command(BaseCommand):
 
         payload = {
             "token": MIS_API_KEY,
+            'project_name': project.name,
             # "infrastructures_status": STRUCTURE_COMPLETED_ONLY_STATUS
         }
 
@@ -89,6 +90,8 @@ class Command(BaseCommand):
                 physical_execution_rate = subproject.get("current_level_of_physical_realization_of_the_work_percent", 0)
                 if physical_execution_rate:
                     investment.physical_execution_rate = float(physical_execution_rate)
+                else:
+                    investment.physical_execution_rate = 0
                 
                 project_status = "P"
                 if subproject["current_status_of_the_site"] == "Identifié":
