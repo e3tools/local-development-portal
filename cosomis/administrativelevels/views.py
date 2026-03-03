@@ -230,7 +230,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             Q (adm=admin_level) |
             Q (task__activity__phase__village=admin_level),
             process_moment=Attachment.COMPLETED_INFRASTRUCTURE
-        ).filter(images_extensions_query)[:2]
+        ).filter(images_extensions_query)[:3]
         in_progress = []
         if not completed:
             in_progress = Attachment.objects.filter(
