@@ -326,7 +326,14 @@
         function initializeMap() {
             mapboxgl.accessToken = '{{ access_token }}';
             if (!mapboxgl.supported()) {
-                alert('Your browser does not support Mapbox GL');
+                const mapContainer = document.getElementById('map');
+                mapContainer.innerHTML = `
+                    <div style="padding:20px; color:red;">
+                        Mapbox GL not supported.<br>
+                        WebGL available : ${!!window.WebGLRenderingContext}<br>
+                        WebGL context: ${document.createElement('canvas').getContext('webgl') ? 'OK' : 'FAILURE'}
+                    </div>`;
+                return null;
             }
             const map = new mapboxgl.Map({
                 container: 'map',

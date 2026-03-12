@@ -117,21 +117,31 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 
 EXTERNAL_DATABASE_NAME = 'cddp'
 
-if env('env') == 'dev':
+ENVIRONMENT = env('env')
+
+if ENVIRONMENT == 'dev':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            #'NAME': '/Users/asucr/Downloads/database1.db',  # This is where you put the name of the db file.
-            # If one doesn't exist, it will be created at migration time.
             'NAME': os.path.join(BASE_DIR, 'database1.db'),
         }
     }
+
+elif ENVIRONMENT == 'bj':
+    FALLBACK_SQLITE_DB_FILE = os.path.join(BASE_DIR, 'database1.db')
+
+    DATABASES = {
+        'default': env.db_url(
+            'DATABASE_URL',
+            default=f'sqlite:///{FALLBACK_SQLITE_DB_FILE}'
+        ),
+    }
+
 else:
     DATABASES = {
         'default': env.db(),
         # EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
     }
-    
 
 MAX_RESPONSE_DAYS = 3
 
