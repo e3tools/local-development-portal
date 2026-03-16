@@ -594,8 +594,8 @@ msgstr "Priorités"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:127
 #: administrativelevels/templates/canton_detail.html:199
-msgid "Infrastructure and Services"
-msgstr "L'infrastructure et Services"
+msgid "Markets and AGR"
+msgstr "Marchés et AGR"
 
 #: administrativelevels/templates/administrative_level/detail/index.html:133
 #: ⁨administrativelevels/templates/canton_detail copy.html⁩:176

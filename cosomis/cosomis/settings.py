@@ -117,7 +117,7 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 
 EXTERNAL_DATABASE_NAME = 'cddp'
 
-if env('env') == 'dev':
+if env('ENV') == 'dev':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

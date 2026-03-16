@@ -82,6 +82,7 @@
                                                     {% endif %}
                                                 {% endfor %}
                                             </select>
+                                            <small id="categoryHelp" class="form-text text-muted">This refers to the project's main category.</small>
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -101,6 +102,7 @@
                                                     {% endif %}
                                                 {% endfor %}
                                             </select>
+                                            <small id="typeHelp" class="form-text text-muted">This refers to the project's sub-category.</small>
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -129,7 +131,6 @@
                                         <div class="form-group">
                                             <label for="Priorities-select-id">{% translate 'Priorities' %}</label>
                                             <select class="form-control" name="priorities-filter" id="Priorities-select-id" empty-option="{% translate 'Priorities' %}" style="width: 100%;">
-                                                <option value=''>{% translate "Priorities" %}</option>
                                                 {% for priority in priorities %}
                                                     {% if 'priorities-filter' in query_strings_raw %}
                                                         {% if query_strings_raw|get_item:'priorities-filter' == priority.id %}

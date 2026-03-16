@@ -166,9 +166,9 @@ class IndexListView(
         ]
 
         kwargs["priorities"] = [
+            {"id": 3, "name": _("All priorities")},
             {"id": 1, "name": _("Priority 1")},
-            {"id": 2, "name": _("Priorities 1 and 2")},
-            {"id": 3, "name": _("All priorities")}
+            {"id": 2, "name": _("Priorities 1 and 2")}
         ]
 
         kwargs["land_types"] = ['Grassland', 'Cropland', 'Savanna', 'Cropland Mosaic', 'Urban/Built-Up Land', 'Water']
