@@ -3677,3 +3677,182 @@ msgstr "Vous avez déjà un compte ? Connectez-vous"
 
 #~ msgid "Completed Infrastructure"
 #~ msgstr "Infrastructure achevée"
+
+#~ msgid "This code is only valid for 15 minitues"
+#~ msgstr "Ce code n'est valable que pendant 15 minutes."
+
+#: .\dashboard
+msgid "Password change confirmation code"
+msgstr "Code de confirmation de changement de mot de passe"
+
+#: .\dashboard
+msgid "This code is only valid for %(deadline)s"
+msgstr "Ce code est valable que pendant %(deadline)s"
+
+#: .\dashboard
+msgid "We are encountering a few errors when sending you e-mails."
+msgstr "Nous rencontrons quelques erreurs pour vous envoyer des mails."
+
+#: .\dashboard
+msgid "Confirmation code sent by e-mail"
+msgstr "Code de confirmation envoyé par mail"
+
+#: .\dashboard
+msgid "A confirmation code has been e-mailed to your e-mail address"
+msgstr "Un code de confirmation a été envoyé par mail sur votre adresse mail"
+
+#: .\dashboard
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+#: .\dashboard
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: .\dashboard
+msgid "Confirm new password"
+msgstr "Confirmer le nouveau mot de passe"
+
+#: .\dashboard
+msgid "Enter your new password."
+msgstr "Entrez votre nouveau mot de passe."
+
+#: .\dashboard
+msgid "It must contain at least 8 characters, including at least one letter and one number."
+msgstr "Il doit contenir au moins 8 caractères, dont au moins une lettre et un chiffre."
+
+#: .\dashboard
+msgid "Only numbers and letters are accepted."
+msgstr "Seuls les chiffres et les lettres sont acceptés."
+
+#: .\dashboard
+msgid "The password must contain at least 8 characters."
+msgstr "Le mot de passe doit contenir au moins 8 caractères."
+
+#: .\dashboard
+msgid "The password must contain at least one letter."
+msgstr "Le mot de passe doit contenir au moins une lettre."
+
+#: .\dashboard
+msgid "The password must contain at least one digit."
+msgstr "Le mot de passe doit contenir au moins un chiffre."
+
+#: .\dashboard
+msgid "The password must contain only letters and numbers."
+msgstr "Le mot de passe ne doit contenir que des lettres et des chiffres."
+
+#: .\dashboard
+msgid "The password must be the same as the previous one."
+msgstr "Le mot de passe doit être le même que le précédent."
+
+#: .\dashboard
+msgid "The confirmation password must be the same as the new password."
+msgstr "Le mot de passe de confirmation doit être le même que le nouveau mot de passe."
+
+#: .\dashboard
+msgid "Code invalide"
+msgstr "Code invalide"
+
+#: .\dashboard
+msgid "Note: This process will reset your passwords for the CDD, GRM, and/or MIS platforms if you have an account on any of these platforms."
+msgstr "Remarque : Ce processus réinitialisera vos mots de passe pour les plateformes DCC, MGP et/ou SIG, si vous possédez un compte sur l'une de ces plateformes."
+
+#: .\dashboard
+msgid "Note: If you have accounts on the CDD, GRM and/or MIS platforms, their passwords will also be changed."
+msgstr "Remarque : Si vous possédez des comptes sur les plateformes DCC, MGP et/ou SIG, leurs mots de passe seront également modifiés."
+
+#: .\dashboard
+msgid "Code expired"
+msgstr "Code expiré"
+
+#: .\dashboard
+msgid "Code already used"
+msgstr "Code déjà utilisé"
+
+#: .\dashboard
+msgid "This field is mandatory"
+msgstr "Ce champs est obligatoire"
+
+#: .\dashboard
+msgid "Current password does not match."
+msgstr "Le mot de passe actuel ne correspond pas."
+
+#: .\dashboard
+msgid "The password has been successfully changed."
+msgstr "Le mot de passe a été changé avec succès."
+
+#: .\dashboard
+msgid "Full Name"
+msgstr "Nom complet"
+
+#: .\dashboard
+msgid "Password reset"
+msgstr "Réinitialisation du mot de passe"
+
+#: .\dashboard
+msgid "Password forgotten"
+msgstr "Mot de passe oublié"
+
+#: .\dashboard
+msgid "Password forgotten?"
+msgstr "Mot de passe oublié ?"
+
+#: .\dashboard
+msgid "To ensure the security of your account, we are obliged to send an e-mail containing a validation code to your e-mail address."
+msgstr "Pour assurer la sécurité du compte, nous sommes dans l'obligation d'envoyer un mail contenant un code de validation sur votre adresse mail."
+
+#: .\dashboard
+msgid "Please enter your e-mail address in the following field"
+msgstr "Mentionnez votre adresse mail dans le champs suivant"
+
+#: .\dashboard
+msgid "I remember my password"
+msgstr "Je me rappelle de mon mot de passe"
+
+#: .\dashboard
+msgid "E-mail address"
+msgstr "Adresse mail"
+
+#: .\dashboard
+msgid "Password reset confirmation code"
+msgstr "Code de confirmation de réinitialisation de mot de passe"
+
+#: .\dashboard
+msgid "Fill in the following fields and save them to reset your password"
+msgstr "Remplissez les champs suivants et sauvegardez les pour  réinitialiser votre mot de passe"
+
+#: .\dashboard
+msgid "The e-mail address is required"
+msgstr "L'adresse mail est requise"
+
+#: .\dashboard
+msgid "The password address is required"
+msgstr "L'adresse du mot de passe est requise"
+
+#: .\dashboard
+msgid "The password has been successfully reset."
+msgstr "Le mot de passe a été réinitialisé avec succès."
+
+#: .\dashboard
+msgid "Go to the login page"
+msgstr "Allez à la page de connexion"
+
+#: .\dashboard
+msgid "Your password has been reset. You can now log in with your new password."
+msgstr "Votre mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe."
+
+#: .\dashboard
+msgid "An e-mail is being sent to your e-mail address."
+msgstr "Un mail est en cours d'envoi sur votre adresse mail."
+
+#: .\dashboard
+msgid "Mail sent successfully"
+msgstr "Le Mail a été envoyé avec succès"
+
+#: .\dashboard
+msgid "Return"
+msgstr "Retourner"
+
+#: .\dashboard
+msgid "This e-mail address does not exist in our database. If you have any questions, please contact the administration."
+msgstr "Cette adresse e-mail n'existe pas dans notre base de données. Pour toute question, veuillez contacter l'administration."
