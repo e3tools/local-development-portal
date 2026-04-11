@@ -49,16 +49,21 @@
 
                             <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap modify-password" 
                                 style="cursor:pointer;">
+                                <span class="text-secondary">{% translate "Change password" %}</span>
+                                <div class="overlay" id="spin-modify-password" style="display: none;">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
                                 <h6 class="mb-0">
                                     <svg xmlns="#" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock mr-2 icon-inline">
                                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                     </svg>
                                 </h6>
-                                <span class="text-secondary">{% translate "Change password" %}</span>
-                                <div class="overlay" id="spin-modify-password" style="display: none;">
-                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                                </div>
+                            </li>
+
+                            
+                            <li class="list-group-item">
+                                <b><a href="{% url "usermanager:token" %}">{% translate 'Token' %}</a></b>
                             </li>
 
 
@@ -262,7 +267,6 @@
 </div>
 
 
-
 {% endblock %}
 
 {% block javascript %}
@@ -400,11 +404,12 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
                 success: function (response) {
-
                     $('#spin-modify-password').hide();
-
-                    $('#id_modal_modify_password').modal('show');
-                
+                    if(response.msg_text == "error"){
+                        showPopupMessage(response.msg);
+                    }else{
+                        $('#id_modal_modify_password').modal('show');
+                    }
 
                 },
                 error: function (data) {

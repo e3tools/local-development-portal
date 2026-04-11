@@ -59,10 +59,18 @@ class RestSendChangePasswordCode(APIView):
                 deadline=f"{minutes_to_add} minitues"
             )
 
-        messages.add_message(self.request, messages.ERROR, msg, extra_tags='error')
+            if msg == 'error':
+                messages.add_message(self.request, messages.ERROR, _("An error occurred while sending the email. Try again later."), extra_tags='error')
+            else:
+                messages.add_message(self.request, messages.SUCCESS, _("Mail sent successfully"), extra_tags='success')
+       
+        context = {
+            'msg': render(self.request, 'common/messages.html').content.decode("utf-8"),
+            'msg_text': msg
+        }
 
         return Response(
-            render(self.request, 'common/messages.html').content.decode("utf-8"), status.HTTP_200_OK
+            context, status.HTTP_200_OK
         )
     
 
@@ -98,8 +106,7 @@ class RestChangePassword(APIView):
                 elif password_new != password_new_confirm:
                     msg = _("The password must be the same as the previous one.")
                 else:
-                    # data['email'] = email
-                    print(email)
+                    
                     user = User.objects.filter(email=email, is_active=True).first()
                     
                     if not user or not check_password(current_password, user.password):
@@ -108,6 +115,7 @@ class RestChangePassword(APIView):
                         password_new_hashed = make_password(password_new)
 
                         user.password = password_new_hashed
+                        user.password_changed_once = True
                         user.save()
 
                         msg = _('The password has been successfully changed.')
