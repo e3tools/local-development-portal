@@ -42,6 +42,32 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Style for table links - Make canton and other links clickable and visible */
+        table.table tbody tr td a {
+            color: #3498db !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+            display: inline !important;
+        }
+
+        table.table tbody tr td a:hover {
+            color: #2980b9 !important;
+            text-decoration: underline !important;
+        }
+
+        /* Override any default link colors */
+        .table a,
+        .table a:link,
+        .table a:visited {
+            color: #3498db !important;
+        }
+
+        .table a:hover,
+        .table a:focus {
+            color: #2980b9 !important;
+            text-decoration: underline !important;
+        }
     </style>
 {% endblock %}
 
@@ -656,7 +682,7 @@
                                 <th data-priority="10" class="align-middle border-top-right-corner border-bottom-0">{% translate 'Population priority' %}</th>
                             </thead>
                         <tbody>
-                        {% for investment in object_list %}
+                        {% for investments in object_list %}
                         <tr>
                             <td>
                                 <input class="project-table-check" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox">
@@ -688,12 +714,24 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="{% url 'administrativelevels:detail' investment.administrative_level.parent.id %}" target="_blank">
-                                    {{ investment.administrative_level.parent.name }}
+                                {% if investment.administrative_level.parent %}
+                                    <a href="{% url 'administrativelevels:canton_detail' investment.administrative_level.parent.id %}" target="_blank">
+                                        {{ investment.administrative_level.parent.name }}
+                                    </a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'administrativelevels:commune_detail' investment.administrative_level.parent.parent.id %}" target="_blank">
+                                    {{ investment.administrative_level.parent.parent.name }}
                                 </a>
                             </td>
-                            <td>{{ investment.administrative_level.parent.parent.name }}</td>
-                            <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
+                            <td>
+                                <a href="{% url 'administrativelevels:detail' investment.administrative_level.parent.parent.parent.id %}" target="_blank">
+                                    {{ investment.administrative_level.parent.parent.parent.name }}
+                                </a>
+                            </td>
                             <td>{{ investment.ranking }}</td>
                             <td>
                                 {% if investment.endorsed_by_youth %}

@@ -490,14 +490,75 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
 
         context["context_object_name"] = admin_level.type.lower()
 
-        images = Attachment.objects.filter(
-            Q (adm=admin_level) |
-            Q (task__activity__phase__village=admin_level)
-        ).filter(images_extensions_query)[:5] #.exclude(url__icontains='.pdf').all()[:5]
+        # Get images with priority on process_moment (like village_detail)
+        # For Commune, include images from child cantons and grandchild villages
+        child_cantons = AdministrativeLevel.objects.filter(
+            parent=admin_level,
+            type=AdministrativeLevel.CANTON
+        )
+        descendant_villages = AdministrativeLevel.objects.filter(
+            parent__in=child_cantons,
+            type=AdministrativeLevel.VILLAGE
+        )
+        all_descendants = AdministrativeLevel.objects.filter(
+            Q(id=admin_level.id) |
+            Q(id__in=child_cantons) |
+            Q(id__in=descendant_villages)
+        )
+
+        images_number = 5
+        completed = Attachment.objects.filter(
+            Q(adm__in=all_descendants) |
+            Q(task__activity__phase__village__in=all_descendants),
+            process_moment=Attachment.COMPLETED_INFRASTRUCTURE
+        ).filter(images_extensions_query)[:3]
+        
+        in_progress = []
+        if not completed:
+            in_progress = Attachment.objects.filter(
+                Q(adm__in=all_descendants) |
+                Q(task__activity__phase__village__in=all_descendants),
+                process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS
+            ).filter(images_extensions_query)[:1]
+
+        community = Attachment.objects.filter(
+            Q(adm__in=all_descendants) |
+            Q(task__activity__phase__village__in=all_descendants),
+            process_moment=Attachment.COMMUNITY_PROCESS
+        ).filter(images_extensions_query)[:(images_number - len(completed) - len(in_progress))]
+
+        images = list(completed) + list(in_progress) + list(community)
+        
         context["images_data"] = {
             "images": images,
             "exists_at_least_image": len(images) != 0,
             "first_image": images[0] if len(images) > 0 else None,
+        }
+
+        # Aggregate population data from descendant villages
+        population_aggregation = descendant_villages.aggregate(
+            agg_total_population=Coalesce(Sum('total_population'), 0),
+            agg_population_men=Coalesce(Sum('population_men'), 0),
+            agg_population_women=Coalesce(Sum('population_women'), 0),
+            agg_population_young=Coalesce(Sum('population_young'), 0),
+            agg_population_elder=Coalesce(Sum('population_elder'), 0),
+            agg_population_handicap=Coalesce(Sum('population_handicap'), 0),
+            agg_population_agriculturist=Coalesce(Sum('population_agriculturist'), 0),
+            agg_population_pastoralist=Coalesce(Sum('population_pastoralist'), 0),
+            agg_population_minorities=Coalesce(Sum('population_minorities'), 0),
+        )
+        context["population"] = {
+            "total": population_aggregation['agg_total_population'],
+            "men": population_aggregation['agg_population_men'],
+            "women": population_aggregation['agg_population_women'],
+            "young": population_aggregation['agg_population_young'],
+            "elder": population_aggregation['agg_population_elder'],
+            "handicap": population_aggregation['agg_population_handicap'],
+            "agriculturist": population_aggregation['agg_population_agriculturist'],
+            "pastoralist": population_aggregation['agg_population_pastoralist'],
+            "minorities": population_aggregation['agg_population_minorities'],
+            "village_count": descendant_villages.count(),
+            "canton_count": child_cantons.count(),
         }
 
         context["villages"] = AdministrativeLevel.objects.filter(
@@ -529,6 +590,29 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
                 parent__parent=admin_level
             ).values_list('id')
         )).exclude(project_status=Investment.NOT_FUNDED,)
+
+        # Add planning status information
+        tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
+        current_task = admin_level.get_current_task()
+        current_activity = current_task.activity if current_task else None
+        current_phase = current_activity.phase if current_activity else None
+
+        task_number = tasks_qs.count()
+        tasks_done = tasks_qs.filter(status=Task.COMPLETED).count()
+        context["planning_status"] = {
+            "current_phase": current_phase,
+            "current_activity": current_activity,
+            "current_task": current_task,
+            "completed": round(float(tasks_done) * 100 / float(task_number), 2) if task_number != 0 else '-',
+            "priorities_identified": context["object"].identified_priority,
+            "village_development_plan_date": "",
+            "facilitator": "",
+        }
+
+        # Add development plan
+        phases = self._get_planning_cycle()
+        context["development_plan"] = self._get_development_plan(phases)
+
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
         self.object.latitude = 10.693749945416448
         self.object.longitude = 0.330183201548857
@@ -649,25 +733,325 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
                 **{self.request.GET["subpopulation-filter"]: True}
             )
 
-        if "climate-contribution-filter" in self.request.GET and self.request.GET[
-            "climate-contribution-filter"
+        if "priorities-filter" in self.request.GET and self.request.GET[
+            "priorities-filter"
+        ] not in ["", None]:
+            priorities = [1]
+            if self.request.GET["priorities-filter"] in ["2", "3"]:
+                priorities = [1, 2]
+            if self.request.GET["priorities-filter"] == "3":
+                queryset = queryset
+            else:
+                queryset = queryset.filter(ranking__in=priorities)
+
+        return queryset
+
+
+class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
+
+    model = AdministrativeLevel
+    template_name = "canton/canton_detail.html"
+    active_level1 = "administrative_levels"
+
+    def __init__(self):
+        super().__init__()
+        self.__investment_repository = DbInvestmentRepository()
+
+    def post(self, request, *args, **kwargs):
+        if 'cart-toggle' in request.POST:
+            investment = Investment.objects.get(id=request.POST['cart-toggle'])
+            if investment.project_status == Investment.NOT_FUNDED:
+                package = Package.objects.get_active_cart(user=self.request.user)
+                if package.funded_investments.filter(id=investment.id).exists():
+                    package.funded_investments.remove(investment)
+                    track_user_activity(request, 'RemoveInvestmentInPackage')
+                else:
+                    package.funded_investments.add(investment)
+                    track_user_activity(request, 'AddInvestmentInPackage')
+            return super().get(request, *args, **kwargs)
+
+        obj = self.get_object()
+        url = reverse("administrativelevels:canton_detail", args=[obj.id])
+        final_querystring = request.GET.copy()
+
+        for key, value in request.GET.items():
+            if (
+                key in request.POST
+                and value != request.POST[key]
+                and request.POST[key] != ""
+            ):
+                final_querystring.pop(key)
+
+        post_dict = request.POST.copy()
+        post_dict.update(final_querystring)
+        post_dict.pop("csrfmiddlewaretoken")
+        if "reset-hidden" in post_dict and post_dict["reset-hidden"] == "true":
+            return redirect(url)
+
+        for key, value in request.POST.items():
+            if value == "":
+                post_dict.pop(key)
+        final_querystring.update(post_dict)
+        if final_querystring:
+            url = "{}?{}".format(url, urlencode(final_querystring))
+        return redirect(url)
+
+    def get_context_data(self, **kwargs):
+        context = super(CantonDetailView, self).get_context_data(**kwargs)
+
+        images_extensions_query = Q()
+        for ext in IMAGE_EXTENSIONS:
+            images_extensions_query |= Q(url__icontains=ext)
+
+        if "object" in context:
+            context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
+            if context["object"].is_village():
+                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
+        admin_level = context.get("object")
+
+        context["context_object_name"] = admin_level.type.lower()
+
+        # Get images with priority on process_moment (like village_detail)
+        # For Canton, also include images from child villages
+        child_villages = AdministrativeLevel.objects.filter(
+            parent=admin_level,
+            type=AdministrativeLevel.VILLAGE
+        )
+
+        images_number = 5
+        completed = Attachment.objects.filter(
+            Q(adm=admin_level) |
+            Q(adm__in=child_villages) |
+            Q(task__activity__phase__village=admin_level) |
+            Q(task__activity__phase__village__in=child_villages),
+            process_moment=Attachment.COMPLETED_INFRASTRUCTURE
+        ).filter(images_extensions_query)[:3]
+        
+        in_progress = []
+        if not completed:
+            in_progress = Attachment.objects.filter(
+                Q(adm=admin_level) |
+                Q(adm__in=child_villages) |
+                Q(task__activity__phase__village=admin_level) |
+                Q(task__activity__phase__village__in=child_villages),
+                process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS
+            ).filter(images_extensions_query)[:1]
+
+        community = Attachment.objects.filter(
+            Q(adm=admin_level) |
+            Q(adm__in=child_villages) |
+            Q(task__activity__phase__village=admin_level) |
+            Q(task__activity__phase__village__in=child_villages),
+            process_moment=Attachment.COMMUNITY_PROCESS
+        ).filter(images_extensions_query)[:(images_number - len(completed) - len(in_progress))]
+
+        images = list(completed) + list(in_progress) + list(community)
+        
+        context["images_data"] = {
+            "images": images,
+            "exists_at_least_image": len(images) != 0,
+            "first_image": images[0] if len(images) > 0 else None,
+        }
+        # Get villages for this canton (filtered by type='Canton')
+        context["villages"] = AdministrativeLevel.objects.filter(
+                parent=admin_level,
+                type=AdministrativeLevel.VILLAGE
+            ).annotate(
+            total_estimated_cost=Coalesce(
+                Sum('investments__estimated_cost'), 0
+            ),
+            total_founded=Coalesce(
+                Sum(
+                    Case(
+                        When(investments__project_status=Investment.FUNDED, then=F('investments__estimated_cost')),
+                        default=0,
+                        output_field=IntegerField(),
+                    )
+                ), 0
+            )
+        )
+
+        # Aggregate population data from child villages
+        pop_aggregate = child_villages.aggregate(
+            total_population=Coalesce(Sum('total_population'), 0),
+            population_men=Coalesce(Sum('population_men'), 0),
+            population_women=Coalesce(Sum('population_women'), 0),
+            population_young=Coalesce(Sum('population_young'), 0),
+            population_elder=Coalesce(Sum('population_elder'), 0),
+            population_handicap=Coalesce(Sum('population_handicap'), 0),
+            population_agriculturist=Coalesce(Sum('population_agriculturist'), 0),
+            population_pastoralist=Coalesce(Sum('population_pastoralist'), 0),
+            population_minorities=Coalesce(Sum('population_minorities'), 0),
+        )
+        context["canton_population"] = pop_aggregate
+
+        context["investments"] = self._get_queryset(Investment.objects.filter(
+            project_status=Investment.NOT_FUNDED,
+            administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
+                parent=admin_level,
+                type=AdministrativeLevel.VILLAGE
+            ).values_list('id')
+        )))
+
+        context["subprojects"] = Investment.objects.filter(
+            administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
+                parent=admin_level,
+                type=AdministrativeLevel.VILLAGE
+            ).values_list('id')
+        )).exclude(project_status=Investment.NOT_FUNDED,)
+        context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+        self.object.latitude = 10.693749945416448
+        self.object.longitude = 0.330183201548857
+
+        # Add planning status information
+        tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
+        current_task = admin_level.get_current_task()
+        current_activity = current_task.activity if current_task else None
+        current_phase = current_activity.phase if current_activity else None
+
+        task_number = tasks_qs.count()
+        tasks_done = tasks_qs.filter(status=Task.COMPLETED).count()
+        context["planning_status"] = {
+            "current_phase": current_phase,
+            "current_activity": current_activity,
+            "current_task": current_task,
+            "completed": round(float(tasks_done) * 100 / float(task_number), 2) if task_number != 0 else '-',
+            "priorities_identified": context["object"].identified_priority,
+            "village_development_plan_date": "",
+            "facilitator": "",
+        }
+
+        # Add development plan
+        phases = self._get_planning_cycle()
+        context["development_plan"] = self._get_development_plan(phases)
+
+        context.update(self._get_priorities_filters())
+
+        return context
+
+    def _get_planning_cycle(self):
+        phases = list()
+        admin_level = self.object
+        for phase in admin_level.phases.all():
+            phase_node = {
+                "id": phase.id,
+                "name": phase.name,
+                "order": phase.order,
+                "activities": list(),
+            }
+            activities_status = None
+            for activity in phase.activities.all():
+                activity_node = {
+                    "id": activity.id,
+                    "name": activity.name,
+                    "order": activity.order,
+                    "tasks": list(),
+                }
+                tasks_status = None
+                for task in activity.tasks.all():
+                    task_node = {
+                        "id": task.id,
+                        "name": task.name,
+                        "order": task.order,
+                        "status": task.status,
+                    }
+                    activity_node["tasks"].append(task_node)
+                    if tasks_status is None:
+                        tasks_status = task.status
+                    if task.status != Task.ERROR:
+                        if tasks_status == Task.COMPLETED and task.status == Task.IN_PROGRESS:
+                            tasks_status = Task.IN_PROGRESS
+                    else:
+                        tasks_status = Task.ERROR
+                activity_node["status"] = tasks_status
+                phase_node["activities"].append(activity_node)
+                if activities_status is None:
+                    activities_status = tasks_status
+                if activity_node["status"] != Task.ERROR:
+                    if activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
+                        activities_status = Task.IN_PROGRESS
+                else:
+                    activities_status = Task.ERROR
+            phase_node["status"] = activities_status
+            phases.append(phase_node)
+        return phases
+
+    def _get_development_plan(self, phases):
+        phase = next((phase for phase in phases if phase['order'] == 3), None)
+        if phase is not None:
+            activity = next((activity for activity in phase['activities'] if activity['order'] == 2), None)
+            if activity is not None:
+                task = next((task for task in activity['tasks'] if task['order'] == 1), None)
+                if task is not None:
+                    task_obj = Task.objects.get(id=task['id'])
+                    return task_obj.attachments.filter(
+                        Q(type__icontains='pdf') |
+                        Q(type__icontains='Document')
+                    ).first()
+        return None
+
+    def _get_priorities_filters(self):
+        context = dict()
+
+        context["categories"] = Category.objects.all()
+        if "category-filter" in self.request.GET:
+            context["sectors"] = Sector.objects.filter(
+                category=self.request.GET["category-filter"]
+            )
+
+        context["subpopulations"] = [
+            {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
+            {"id": "endorsed_by_women", "name": _("Endorsed by women")},
+            {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
+            {
+                "id": "endorsed_by_pastoralist",
+                "name": _("Endorsed by ethnic minorities"),
+            },
+        ]
+
+        context["priorities"] = [
+            {"id": 1, "name": _("Priority 1")},
+            {"id": 2, "name": _("Priorities 1 and 2")},
+            {"id": 3, "name": _("All priorities")}
+        ]
+
+        package = Package.objects.get_active_cart(
+            user=self.request.user
+        )
+        context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
+        return context
+
+    def _get_queryset(self, queryset):
+
+        if "sector-filter" in self.request.GET and self.request.GET[
+            "sector-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
+        if "category-filter" in self.request.GET and self.request.GET[
+            "category-filter"
         ] not in ["", None]:
             queryset = queryset.filter(
-                climate_contribution=self.request.GET["climate-contribution-filter"]
+                sector__category__id=self.request.GET["category-filter"]
+            )
+
+        if "subpopulation-filter" in self.request.GET and self.request.GET[
+            "subpopulation-filter"
+        ] not in ["", None]:
+            queryset = queryset.filter(
+                **{self.request.GET["subpopulation-filter"]: True}
             )
 
         if "priorities-filter" in self.request.GET and self.request.GET[
             "priorities-filter"
         ] not in ["", None]:
             priorities = [1]
-            if self.request.GET["priorities-filter"] == '2':
-                priorities.append(2)
-            elif self.request.GET["priorities-filter"] == '3':
-                priorities.append(2)
-                priorities.append(3)
-            queryset = queryset.filter(
-                ranking__in=priorities
-            )
+            if self.request.GET["priorities-filter"] in ["2", "3"]:
+                priorities = [1, 2]
+            if self.request.GET["priorities-filter"] == "3":
+                queryset = queryset
+            else:
+                queryset = queryset.filter(ranking__in=priorities)
+
 
         return queryset
 

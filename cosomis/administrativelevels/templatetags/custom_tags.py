@@ -1,14 +1,59 @@
 from django import template
 from django.utils.translation import gettext_lazy
+from django.utils.safestring import mark_safe
+from django.urls import reverse
 import json
 
-from administrativelevels.models import Project
+from administrativelevels.models import Project, AdministrativeLevel
 from itertools import zip_longest
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
 from investments.models import Investment, Package
 from cosomis.utils import structure_the_words as utils_structure_the_words
 
 register = template.Library()
+
+
+@register.simple_tag
+def adm_breadcrumb(adm_level):
+    """
+    Generate a breadcrumb hierarchy for an administrative level.
+    Example output: REGION > PREFECTURE > COMMUNE > CANTON > VILLAGE
+    Each parent is a clickable link to its detail page.
+    """
+    # Map type to URL name
+    url_map = {
+        AdministrativeLevel.VILLAGE: 'administrativelevels:village_detail',
+        AdministrativeLevel.CANTON: 'administrativelevels:canton_detail',
+        AdministrativeLevel.COMMUNE: 'administrativelevels:commune_detail',
+        AdministrativeLevel.PREFECTURE: 'administrativelevels:prefecture_detail',
+        AdministrativeLevel.REGION: 'administrativelevels:region_detail',
+    }
+
+    # Build the chain from current to root
+    chain = []
+    current = adm_level
+    while current is not None:
+        chain.append(current)
+        current = current.parent
+
+    # Reverse so root is first
+    chain.reverse()
+
+    parts = []
+    for i, item in enumerate(chain):
+        is_last = (i == len(chain) - 1)
+        url_name = url_map.get(item.type)
+        if is_last:
+            # Current level: bold, no link
+            parts.append(f'<span class="font-weight-bold">{item.name}</span>')
+        elif url_name:
+            url = reverse(url_name, args=[item.id])
+            parts.append(f'<a href="{url}" style="color: #3498db;">{item.name}</a>')
+        else:
+            parts.append(f'<span>{item.name}</span>')
+
+    separator = ' <i class="fas fa-chevron-right" style="font-size: 10px; color: #999; margin: 0 5px;"></i> '
+    return mark_safe(separator.join(parts))
 
 
 @register.filter(name="humanize_snakecase")
