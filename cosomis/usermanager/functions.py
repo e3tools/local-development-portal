@@ -23,20 +23,20 @@ def send_email(
         to = [settings.RECIPIENT_EMAIL_DEFAULT]
         cc = [settings.RECIPIENT_EMAIL_DEFAULT]
     
-    # try:
-    plaintext = get_template(template_path_without_extension+'.txt')
-    htmly     = get_template(template_path_without_extension+'.html')
-    print(datas)
-    text_content = plaintext.render(datas)
-    html_content = htmly.render(datas)
-    msg = EmailMultiAlternatives(subject, text_content, to=to, cc=cc)
-    msg.attach_alternative(html_content, "text/html")
-    msg.content_subtype = 'html'
-    result = msg.send()
-    print("success")
-    return "success"
-    # except Exception as e:
-    #     return "error"
+    try:
+        plaintext = get_template(template_path_without_extension+'.txt')
+        htmly     = get_template(template_path_without_extension+'.html')
+        
+        text_content = plaintext.render(datas)
+        html_content = htmly.render(datas)
+        msg = EmailMultiAlternatives(subject, text_content, to=to, cc=cc)
+        msg.attach_alternative(html_content, "text/html")
+        msg.content_subtype = 'html'
+        result = msg.send()
+        
+        return "success"
+    except Exception as e:
+        return "error"
     
 
 def generate_random_code(longueur=6):
@@ -79,7 +79,7 @@ def validate_password(password):
     return True
 
 
-def user_manager_email_notification(user, mail_type, motif, deadline):
+def user_manager_email_notification(user, mail_type, motif, deadline, user_position=None):
     locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
     data = {
         'user_name': user['first_name'] if user.get('first_name') else (user['name'].split(' ')[0] if user.get('name') else (user['email'].split('@')[0] if user.get('email') else user['username'].split('@')[0])),
@@ -105,26 +105,37 @@ def user_manager_email_notification(user, mail_type, motif, deadline):
 
         data['motif'] = _('Code : %(code)s')
         data['motif'] = data['motif'] % {'code': motif}
+    elif mail_type == "user_created_notification":
+        template_name = 'email/user_created_notification'
+        title = _('Account automatically created on PDL')
+        subject = _(f"[PDL : {datetime.now().strftime('%Y-%m-%d')}]") + " " + title
+
+        user_name = str(data['user_name'])
+        data['user_name'] = _('Mr/Ms %(user_position)s  %(user_name)s')
+        data['user_name'] = data['user_name'] % {'user_position': user_position if user_position else '', 'user_name': user_name}
+
+        data['email'] = _('Email : %(email)s')
+        data['email'] = data['email'] % {'email': user['email']}
+
+        data['motif'] = _('Password : %(motif)s')
+        data['motif'] = data['motif'] % {'motif': motif}
+
     else:
         return
     
     data['subject'] = subject
     data['title'] = title
     
-    # try:
-    msg = send_email(
-        subject,
-        template_name,
-        data,
-        [user['email']], 
-        [user['email']]
-    )
-    if msg == 'error':
-        return _("An error occurred while sending the email")
-    else:
-        return _("Mail sent successfully")
-    # except Exception as exc:
-    #     return _("An error occurred while sending the email")
+    try:
+        return send_email(
+            subject,
+            template_name,
+            data,
+            [user['email']], 
+            [user['email']]
+        )
+    except Exception as exc:
+        return "error"
         
 
 
