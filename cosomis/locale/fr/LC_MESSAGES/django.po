@@ -3856,3 +3856,15 @@ msgstr "Retourner"
 #: .\dashboard
 msgid "This e-mail address does not exist in our database. If you have any questions, please contact the administration."
 msgstr "Cette adresse e-mail n'existe pas dans notre base de données. Pour toute question, veuillez contacter l'administration."
+
+#: .\dashboard
+msgid "Account automatically created"
+msgstr "Compte automatiquement créé"
+
+#: .\dashboard
+msgid "Account automatically created on PDL"
+msgstr "Compte créé automatiquement sur PDL"
+
+#: .\dashboard
+msgid "Veuillez aller changer votre mot de passe dans la session Utilisateur."
+msgstr "Veuillez aller changer votre mot de passe dans la session Utilisateur."
