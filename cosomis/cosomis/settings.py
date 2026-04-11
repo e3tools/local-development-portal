@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 from pathlib import Path
 import os
 import django.conf.locale
+from datetime import timedelta
 import environ
 from django.conf import global_settings
 from django.utils.translation import gettext_lazy as _
@@ -66,6 +67,9 @@ THIRD_PARTY_APPS = [
     'django_celery_results',
     'drf_spectacular',
     'rest_framework',
+    'corsheaders',
+    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
 
     # https://django-htmx.readthedocs.io/en/latest/installation.html
     'django_htmx',
@@ -77,6 +81,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware', #tries to determine user's language using URL language prefix
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -178,8 +183,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-#FRONTEND_URL_ROOT = 'https://portail.purs.gouv.tg'
-FRONTEND_URL_ROOT = 'http://127.0.0.1:8000/'
+FRONTEND_URL_ROOT = env('FRONTEND_URL_ROOT')
 
 
 LOGIN_URL = '/'
@@ -222,10 +226,14 @@ AWS_ACCESS_KEY_ID = env('S3_ACCESS')
 AWS_SECRET_ACCESS_KEY = env('S3_SECRET')
 
 
-#REST API
+#REST API & TOKEN
 REST_FRAMEWORK = {
     # https://github.com/tfranzel/drf-spectacular
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -236,6 +244,16 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 ans (365 jours × 10)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),  # 10 ans aussi si besoin
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': False,
+}
+AUTHORIZED_USERS_FOR_USER_REGISTRATION_VIA_API=env('AUTHORIZED_USERS_FOR_USER_REGISTRATION_VIA_API')
+
 
 
 # Default primary key field type

@@ -22,7 +22,7 @@ class SignupView(RedirectURLMixin, generic.CreateView):
     def form_valid(self, form):
         self.object = form.save()
         auth_login(self.request, self.object)
-        track_user_activity(self.request, "UserLoggedOut")
+        track_user_activity(self.request, "UserRegistered")
         return HttpResponseRedirect(self.get_success_url())
 
     def get_default_redirect_url(self):

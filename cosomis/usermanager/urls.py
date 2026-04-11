@@ -1,9 +1,11 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path, reverse_lazy
+from django.conf.urls import include
 from .views import SignupView, EmailVerificationView
 
 from usermanager.forms import EmailAuthenticationForm, PassCodeAuthenticationForm
 from usermanager import views_change_password
+from usermanager.tokens import jwt_views
 
 app_name = 'usermanager'
 urlpatterns = [
@@ -38,5 +40,8 @@ urlpatterns = [
     
     path('user-manager-email-notification/', views_change_password.RestSendChangePasswordCode.as_view(), name='user_manager_email_notification'),
     path('change-password/', views_change_password.RestChangePassword.as_view(), name='change_password'),
+
+    path('user/manager/token/', auth_views.TemplateView.as_view(template_name='token.html'), name='token'),
+    path('user/manager/generate-token/', jwt_views.generate_token_view, name='generate_token'),
     
 ]
