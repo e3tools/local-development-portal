@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="{% static 'AdminLTE/plugins/fontawesome-free/css/all.min.css' %}" />
     <!-- icheck bootstrap -->
     <link rel="stylesheet" href="{% static 'AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}" />
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{% static 'AdminLTE/plugins/select2/css/select2.min.css' %}"/>
     <!-- Theme style -->
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
     <link href="{% static 'css/fonts.css' %}" rel="stylesheet">
@@ -97,5 +99,19 @@
 <script src="{% static 'AdminLTE/dist/js/adminlte.js' %}"></script>
 <!-- Django Translation -->
 <script src="{% static 'js/setLanguajeDjangoTranslation.js' %}"></script>
+<!-- Select2 -->
+<script src="{% static 'AdminLTE/plugins/select2/js/select2.full.min.js' %}"></script>
+<script type="text/javascript">
+        $("#id_organization").select2({
+            placeholder: "{% translate 'Organization' %}",
+            allowClear: true
+        });
+
+        $('b[role="presentation"]').hide();
+        $('.select2-selection__arrow').append(
+            '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
+
+    </script>
+
 </body>
 </html>
