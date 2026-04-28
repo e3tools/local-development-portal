@@ -11,6 +11,7 @@ from django.utils import translation
 from django.views.generic import DetailView, ListView, CreateView, FormView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import BaseFormView
+from django.conf import settings
 
 from investments.domain.investment_criteria import InvestmentCriteria
 from investments.infrastructure.repositories.db_investment_repository import DbInvestmentRepository
@@ -37,6 +38,7 @@ from .forms import (
     UpdateInvestmentForm
 )
 from utils.mixpanel.utils import track_user_activity
+from cosomis.utils_functions import get_api_datas
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView):
     """Display administrative level list"""
@@ -194,7 +196,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
             if context["object"].is_village():
-                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
+                # context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
                 context['geo_segment'] = context["object"].geo_segment
         admin_level = context.get("object")
 
@@ -256,13 +258,39 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             "first_image": images[0] if len(images) > 0 else None,
         }
 
-        context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
+        context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object)).annotate(
+            status_order=Case(
+                When(project_status=Investment.NOT_FUNDED, then=0),
+                When(project_status=Investment.PAUSED, then=1),
+                When(project_status=Investment.FUNDED, then=2),
+                When(project_status=Investment.IN_PROGRESS, then=3),
+                When(project_status=Investment.COMPLETED, then=4),
+                output_field=IntegerField(),
+            )
+        ).order_by('status_order', 'ranking')
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
         context['children_coordinates'] = self._get_villages_coordinates_from_administrative_level(self.object)
 
         package = Package.objects.get_active_cart(user=self.request.user)
         context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
+
+        # GRM Call
+        complaints = []
+        try:
+            GRM_SECRET_KEY_GENRATE = settings.GRM_SECRET_KEY_GENRATE
+            GRM_URL = settings.GRM_URL
+            payload = {
+                "token": GRM_SECRET_KEY_GENRATE,
+                "region": str(self.object.id),
+                "region_name": str(self.object.name)
+            }
+            complaints, links_error = get_api_datas(f"{GRM_URL}/api/issue/get-issues/", payload)
+        except Exception as e:
+            print(f"Error fetching data from GRM API: {str(e)}")
+
+        context["complaints"] = complaints
+        # End GRM Call
 
         return context
 
