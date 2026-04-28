@@ -434,7 +434,7 @@ class PackageDetailView(IsInvestorMixin, PageMixin, generic.DetailView):
         context["categories"] = dict.fromkeys(categories)
 
         context['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
-        context['projects'] = self.request.user.organization.projects.all()
+        context['projects'] = self.request.user.organization.projects.all() if self.request.user.organization else []
 
         return context
 
@@ -534,7 +534,7 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
         context["categories"] = dict.fromkeys(categories)
 
         context['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
-        context['projects'] = self.request.user.organization.projects.all()
+        context['projects'] = self.request.user.organization.projects.all() if self.request.user.organization else []
 
         return super(CartView, self).get_context_data(**context)
 
