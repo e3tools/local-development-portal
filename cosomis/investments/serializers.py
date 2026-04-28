@@ -34,6 +34,9 @@ class InvestmentSerializer(serializers.ModelSerializer):
     def get_title(self, obj):
         if obj.title == 'Autre':
             description = obj.description if obj.description else '-'
+            if description != '-':
+                return f"{obj.title} [{description}]"
+
             return ('<a '
                     'href="#" data-container="body" data-toggle="popover" '
                     'data-placement="top" data-trigger="hover" '

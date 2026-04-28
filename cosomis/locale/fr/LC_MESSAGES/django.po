@@ -2361,6 +2361,10 @@ msgstr "Tous les statuts"
 msgid "Total Sub-Project Priorities"
 msgstr "Total priorités sous-projets communautaires"
 
+#: dashboard/templates/dashboard_summary.html:161
+msgid "Total Priorities"
+msgstr "Total priorités communautaires"
+
 #: dashboard/templates/dashboard_summary.html:173
 msgid "Total Selected Sub-Projects"
 msgstr "Total sous-projets communautaires sélectionnés"
