@@ -2,6 +2,7 @@ from django import template
 from django.utils.translation import gettext_lazy
 from django.utils.safestring import mark_safe
 from django.urls import reverse
+from datetime import datetime
 import json
 
 from administrativelevels.models import Project, AdministrativeLevel
@@ -499,3 +500,9 @@ def display_update_investment_button(investment):
 @register.filter(name="attachments_urls_list")
 def attachments_urls_list(investment):
     return ",".join([attachment.url for attachment in investment.attachments.all()])
+
+
+@register.filter(expects_localtime=True)
+def string_to_date(date_time, date_format="%Y-%m-%dT%H:%M:%S.%fZ"):
+    if date_time:
+        return datetime.strptime(date_time, date_format)

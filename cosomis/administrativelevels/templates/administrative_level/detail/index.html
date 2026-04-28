@@ -221,7 +221,11 @@
                                 <h3>{% translate "In construction" %}</h3>
                             </div>
                             <div id="grm" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% include 'shared/grm_table.html' %}
+                                    </div>
+                                </div>
                             </div>
                             <div id="diagnostics" class="tab-pane fade">
                                 <h3>{% translate "In construction" %}</h3>
