@@ -27,19 +27,10 @@
     <!-- icheck bootstrap -->
     <link rel="stylesheet" href="{% static 'AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}" />
     <!-- Theme style -->
+	<link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
     <link href="{% static 'css/fonts.css' %}" rel="stylesheet">
 </head>
-<style>
-    .structure_name {
-    font-size: 22px; /* Taille de police plus grande */
-    font-weight: 500;
-    color: #196A62;
-    margin-bottom: 0px; /* Espace en dessous */
-    line-height: 1.2; /* Pour espacer les lignes */
-    }
-
-</style>
 
 <div class="structure_name">
     <strong>403</strong><br>
@@ -53,7 +44,7 @@
             {% include 'layouts/language_dropdown.html' %}
         </ul>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item white-shaded-nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'usermanager:logout' %}" title="{% translate 'Logout' %}"
                    role="button">
                     <i class="fa fa-sign-out align-bottom"></i>

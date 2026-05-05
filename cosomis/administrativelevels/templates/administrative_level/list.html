@@ -5,21 +5,20 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <div class="col-md-12">
-                        <div class="" style="display: inline-block;"></div>
-                    </div>
-                </div>
-
                 <div class="card-body">
                     <div class="col-3 pull-right" style="display: inline-block;">
                         <form method="get" class="d-flex">
 
-                            <input type="hidden" name="type" value="{{ type }}">
-                            <input class="form-control" name="search" placeholder="{% translate 'Search a level' %}...">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            </div>
+                            <div class="input-group input-group-sm">
+                            	<input type="hidden" name="type" value="{{ type }}">
+                            	<input class="form-control" name="search"
+                            	placeholder="{% translate 'Search a level' %}...">
+								<span class="input-group-append">
+									<button type="button" class="btn btn-default btn-flat">
+										<i class="fas fa-search"></i>
+									</button>
+								</span>
+							</div>
 
                         </form>
                     </div>
@@ -253,10 +252,6 @@
         allowClear: true,
         width: 'inherit'
     });
-
-    $('b[role="presentation"]').hide();
-    $('.select2-selection__arrow').append(
-        '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
 
 </script>
 {% endblock select2 %}

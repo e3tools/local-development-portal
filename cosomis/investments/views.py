@@ -1,32 +1,28 @@
 from datetime import datetime, timedelta
+from urllib.parse import urlencode
 
+from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
 from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.views import generic
-from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.http import Http404, HttpResponseRedirect
-from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.db.models import Subquery, Sum, Count
-from urllib.parse import urlencode
-from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from django.views import generic
 
-from usermanager.models import User
-from administrativelevels.models import AdministrativeLevel, Category, Sector, Project, GeoSegment
-
-from usermanager.permissions import IsInvestorMixin, IsModeratorMixin
-
+from administrativelevels.models import AdministrativeLevel, Category, Sector, Project
 from static.config.datatable import get_datatable_config
-
-from .models import Investment, Package, PackageFundedInvestment
+from usermanager.models import User
+from usermanager.permissions import IsInvestorMixin, IsModeratorMixin
 from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
+from .models import Investment, Package, PackageFundedInvestment
 from utils.mixpanel.utils import track_user_activity
+
 
 
 class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
     template_name = "investments/profile.html"
-
 
     def get_object(self, queryset=None):
         """
@@ -56,9 +52,10 @@ class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
         user_investments_qs = Investment.objects.filter(packages__user=self.request.user)
         context['user_investments'] = user_investments_qs.count()
         context['user_investments_commited_funds'] = user_investments_qs.aggregate(
-                Sum("estimated_cost")
-            )["estimated_cost__sum"]
-        context['user_investments_target_communities'] = user_investments_qs.values('administrative_level').distinct().count()
+            Sum("estimated_cost")
+        )["estimated_cost__sum"]
+        context['user_investments_target_communities'] = user_investments_qs.values(
+            'administrative_level').distinct().count()
         return context
 
 
@@ -85,9 +82,9 @@ class IndexListView(
 
         for key, value in request.GET.items():
             if (
-                key in request.POST
-                and value != request.POST[key]
-                and request.POST[key] != ""
+                    key in request.POST
+                    and value != request.POST[key]
+                    and request.POST[key] != ""
             ):
                 final_querystring.pop(key)
 
@@ -176,7 +173,8 @@ class IndexListView(
         kwargs["query_strings"] = self.get_query_strings_context()
         kwargs["query_strings_raw"] = self.request.GET.copy()
 
-        kwargs["selected_investments_data_querystring"] = '&'.join([key + '=' + value for key, value in kwargs["query_strings_raw"].items()])
+        kwargs["selected_investments_data_querystring"] = '&'.join(
+            [key + '=' + value for key, value in kwargs["query_strings_raw"].items()])
 
         if self.request.user.organization is not None:
             kwargs["projects"] = self.request.user.organization.projects.all()
@@ -218,7 +216,8 @@ class IndexListView(
         context["datatable_config"]["server-side"] = "true"
         context["datatable_config"]["processing"] = "true"
         context["datatable_config"]["searching"] = "false"
-        context["datatable_config"]["ajax"] = self.request.scheme + '://' + self.request.get_host() + self.request.path + "ajax/datatable?format=datatables"
+        context["datatable_config"][
+            "ajax"] = self.request.scheme + '://' + self.request.get_host() + self.request.path + "ajax/datatable?format=datatables"
         context["datatable_config"]["columns"] = [
             {'data': 'select_input', 'name': 'select_input', 'searchable': 'false', 'orderable': 'false'},
             {'data': 'title'},
@@ -233,7 +232,7 @@ class IndexListView(
 
         ]
         context["datatable_config"]["order"] = [3, 'asc']
-        if len(kwargs["query_strings_raw"]) > 0 :
+        if len(kwargs["query_strings_raw"]) > 0:
             context["datatable_config"]["ajax"] += "&" + kwargs["selected_investments_data_querystring"]
         context.update(kwargs)
 
@@ -721,9 +720,9 @@ class ModeratorPackageReviewView(
 
         for key, value in request.GET.items():
             if (
-                key in request.POST
-                and value != request.POST[key]
-                and request.POST[key] != ""
+                    key in request.POST
+                    and value != request.POST[key]
+                    and request.POST[key] != ""
             ):
                 final_querystring.pop(key)
 

@@ -31,7 +31,7 @@
         </div>
         <div class="col-md-4 col-12 mt-4 mt-md-0">
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
                 </div>
                 <div class="card-body p-2">
@@ -127,7 +127,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body table-responsive">
+                <div class="card-body">
                     <div class="col-12">
                         <ul class="nav nav-tabs">
                             <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
@@ -145,45 +145,47 @@
                         </ul>
 
                         <div class="tab-content">
-                            <div id="priorities" class="tab-pane active pt-3">
-                                {% include 'commune/tabs/priorities.html' %}
+                            <div id="priorities" class="tab-pane active">
+								{% include 'commune/tabs/priorities.html' %}
                             </div>
-                            <div id="villages" class="tab-pane fade pt-3">
-                                <table class="table rounded-table">
-                                    <thead>
-                                        <tr>
-                                            <th class="align-middle border-top-left-corner">{% translate 'Name' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Canton' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Population' %}</th>
-                                            <th class="align-middle border-bottom-0 rounded-0">{% translate 'Invested Capital' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Required Capital' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Invested' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Required' %}</th>
-                                            <th class="align-middle border-top-right-corner border-bottom-0">{% translate 'Actions' %}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for village in villages %}
-                                        <tr>
-                                            <td><a href="{% url 'administrativelevels:detail' village.id %}">{{ village.name }}</a></td>
-                                            <td><a href="{% url 'administrativelevels:detail' village.parent.id %}">{{ village.parent.name }}</a></td>
-                                            <td>{{ village.total_population|intcomma }}</td>
-                                            <td>{{ village.total_founded|intcomma }}</td>
-                                            <td>{{ village.total_estimated_cost|intcomma }}</td>
-                                            <td>
-                                                {% widthratio village.total_founded village.total_population 1 as investment_percapita %}
-                                                {{ investment_percapita|intcomma }}
-                                            </td>
-                                            <td class="border-sides--light">
-                                                {% widthratio village.total_estimated_cost village.total_population 1 as investment_percapita_required %}
-                                                {{ investment_percapita_required|intcomma }}
-                                            </td>
-                                            <td><i class="nav-icon fa fa-bars" data-toggle="modal"
-                                                   data-target="#exampleModal"></i></td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                            <div id="villages" class="tab-pane fade">
+								<div class="table-responsive">
+									<table class="table rounded-table">
+										<thead>
+											<tr>
+												<th class="align-middle border-top-left-corner">{% translate 'Name' %}</th>
+												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Canton' %}</th>
+												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Population' %}</th>
+												<th class="align-middle border-bottom-0 rounded-0">{% translate 'Invested Capital' %}</th>
+												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Required Capital' %}</th>
+												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Invested' %}</th>
+												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Required' %}</th>
+												<th class="align-middle border-top-right-corner border-bottom-0">{% translate 'Actions' %}</th>
+											</tr>
+										</thead>
+										<tbody>
+										{% for village in villages %}
+											<tr>
+												<td><a href="{% url 'administrativelevels:detail' village.id %}">{{ village.name }}</a></td>
+												<td><a href="{% url 'administrativelevels:detail' village.parent.id %}">{{ village.parent.name }}</a></td>
+												<td>{{ village.total_population|intcomma }}</td>
+												<td>{{ village.total_founded|intcomma }}</td>
+												<td>{{ village.total_estimated_cost|intcomma }}</td>
+												<td>
+													{% widthratio village.total_founded village.total_population 1 as investment_percapita %}
+													{{ investment_percapita|intcomma }}
+												</td>
+												<td class="border-sides--light">
+													{% widthratio village.total_estimated_cost village.total_population 1 as investment_percapita_required %}
+													{{ investment_percapita_required|intcomma }}
+												</td>
+												<td><i class="nav-icon fa fa-bars" data-toggle="modal"
+													   data-target="#exampleModal"></i></td>
+											</tr>
+										{% endfor %}
+										</tbody>
+									</table>
+								</div>
                             </div>
                             <div id="diagnostics" class="tab-pane fade">
                                 <h3>{% translate "In construction" %}</h3>
@@ -191,7 +193,7 @@
                             <div id="climate" class="tab-pane fade position-relative">
                                 {% include 'climate/tabs/mapbox.html' %}
                             </div>
-                            <div id="subprojects" class="tab-pane fade pt-3">
+                            <div id="subprojects" class="tab-pane fade">
                                 {% if subprojects.count == 0 %}
                                     <h3>{% translate 'You have no Sub-projects' %}</h3>
                                 {% else %}

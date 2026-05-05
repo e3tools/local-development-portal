@@ -1,18 +1,8 @@
-.card-header {
-    color: #3498db;
-    border: 0;
-}
-
 .nav-tabs .nav-item {
     width: 14.285% !important;
     @media (max-width: 795px) {
         width: auto !important;
     }
-}
-
-.nav-tabs .nav-item a {
-    font-size: 12px !important;
-
 }
 
 .nav-tabs .btn {

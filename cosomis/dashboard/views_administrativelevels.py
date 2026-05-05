@@ -306,7 +306,7 @@ class DashboardSummaryAdministrativeLevelNumberListView(DashboardAdministrativeL
 
     def summary_administrative_level_children(self, ald_filter_ids, administrative_level_type, project_id=1):
         datas = {
-            _("X"): {},
+            "X": {},
         }
         
         lines = AdministrativeLevel.objects.filter(
@@ -319,7 +319,7 @@ class DashboardSummaryAdministrativeLevelNumberListView(DashboardAdministrativeL
             
         count = 0
         for line in lines:
-            datas[_("X")][count] = line.name
+            datas["X"][count] = line.name
             assigns = AssignAdministrativeLevelToFacilitator.objects.filter(
                 Q(administrative_level__id=line.id, administrative_level__type=line.type) | 
                 Q(administrative_level__parent__id=line.id, administrative_level__parent__type=line.type) | 
@@ -350,8 +350,8 @@ class DashboardSummaryAdministrativeLevelNumberListView(DashboardAdministrativeL
             count += 1
 
         # All sum
-        datas[_("X")][count] = _("Total")
-        columns_skip = [_("X")]
+        datas["X"][count] = _("Total")
+        columns_skip = ["X"]
         for k_data in datas.keys():
             _sum = 0
             if k_data not in columns_skip:

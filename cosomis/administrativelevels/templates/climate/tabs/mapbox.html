@@ -8,9 +8,7 @@
 </style>
 {% endblock %}
 <h4 class="mt-1">
-    {% blocktrans with village.name as village_name %}
-        Climate Overview for {{ village_name }}
-    {% endblocktrans %}
+	{% translate "Climate Overview for" %} {{ village.name }}
 </h4>
 <span class="font-italic gray">
                                     {% blocktrans with village.name as village_name and village.latitude as village_latitude and village.longitude as village_longitude and village.kilometers as village_kilometers %}

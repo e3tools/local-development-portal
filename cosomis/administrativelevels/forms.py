@@ -174,7 +174,7 @@ class VillageSearchForm(forms.Form):
     region = forms.ModelChoiceField(
         queryset=AdministrativeLevel.objects.filter(type="Region"),
         required=False,
-        empty_label=_("Toutes les régions"),
+        empty_label=_("All regions"),
         label=_("Region"),
     )
     prefecture = forms.ModelChoiceField(

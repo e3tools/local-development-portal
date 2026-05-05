@@ -31,7 +31,7 @@
         </div>
         <div class="col-md-4 col-12 mt-4 mt-md-0">
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
                     <small class="text-muted">
                         {% translate "Aggregated from" %} {{ population.village_count }} {% translate "villages" %}
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
                 </div>
                 <div class="card-body p-2">
@@ -148,12 +148,12 @@
                             </li>
                         </ul>
 
-                        <div class="tab-content">
+                        <div class="tab-content mt-3">
                             <div id="priorities" class="tab-pane active pt-3">
                                 {% include 'commune/tabs/priorities.html' %}
                             </div>
                             <div id="villages" class="tab-pane fade pt-3">
-                                <table class="table rounded-table">
+                                <table class="tabletable-bordered">
                                     <thead>
                                         <tr>
                                             <th class="align-middle border-top-left-corner">{% translate 'Name' %}</th>
@@ -190,16 +190,16 @@
                                 </table>
                             </div>
                             <div id="diagnostics" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <h5>{% translate "In construction" %}</h5>
                             </div>
                             <div id="climate" class="tab-pane fade position-relative">
                                 {% include 'climate/tabs/mapbox.html' %}
                             </div>
                             <div id="subprojects" class="tab-pane fade pt-3">
                                 {% if subprojects.count == 0 %}
-                                    <h3>{% translate 'You have no Sub-projects' %}</h3>
+                                    <h5>{% translate 'You have no Sub-projects' %}</h5>
                                 {% else %}
-                                <table class="table rounded-table">
+                                <table class="tabletable-bordered">
                                     <thead>
                                     <tr>
                                         <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
