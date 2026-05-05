@@ -1,7 +1,7 @@
 import math
 from xml.sax.handler import property_interning_dict
 
-from django.db.models import Count, Q, Subquery, F, Sum
+from django.db.models import Count, Q, Subquery, F, Sum, Case, When, Value, IntegerField
 from django.http import JsonResponse
 from django.views import View
 
@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from administrativelevels.models import AdministrativeLevel, Sector, Project, GeoSegment
 from .models import Investment, PackageFundedInvestment, Attachment
 from .serializers import InvestmentSerializer
+from cosomis.constants import IMAGE_EXTENSIONS
 
 
 class FillAdmLevelsSelectFilters(generics.GenericAPIView):
@@ -367,9 +368,29 @@ class StatisticsView(View):
             subproject for subproject in subprojects_with_coordinates
             if not (math.isnan(subproject['latitude']) or math.isnan(subproject['longitude']))
         ]
+        
+        images_extensions_query = Q()
+        for ext in IMAGE_EXTENSIONS:
+            images_extensions_query |= Q(url__icontains=ext)
 
         for subproject in filtered_subprojects:
-            attachments = list(Attachment.objects.filter(investment__id=subproject['id']).values_list('url', flat=True)[:3])
+            attachments = list(
+                Attachment.objects.filter(
+                    investment__id=subproject['id'],
+                    process_moment=Attachment.COMPLETED_INFRASTRUCTURE
+                ).filter(images_extensions_query)
+                # .annotate(
+                #     process_order=Case(
+                #         When(process_moment=Attachment.COMPLETED_INFRASTRUCTURE, then=Value(1)),
+                #         When(process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS, then=Value(2)),
+                #         When(process_moment=Attachment.COMMUNITY_PROCESS, then=Value(3)),
+                #         default=Value(4),
+                #         output_field=IntegerField(),
+                #     )
+                # ).order_by("process_order")
+                .values_list('url', flat=True)[:3]
+            )
+            # attachments = list(Attachment.objects.filter(investment__id=subproject['id']).values_list('url', flat=True)[:3])
             if attachments:
                 subproject['attachments'] = attachments
 

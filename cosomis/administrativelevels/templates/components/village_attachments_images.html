@@ -8,9 +8,11 @@
 
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
+                {% with first_found=False %}
                 {% for attachment in datas.attachments %}{% if attachment.attachment and "image" in attachment.type %}
-                <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}" {% if attachment.attachment.uri == datas.attachment_image_principal.attachment.uri %}class="active"{% endif %} ></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" {% if attachment.attachment.uri == datas.attachment_image_principal.attachment.uri %}class="active"{% endif %} ></li>
                 {% endif %}{% endfor %}
+                {% endwith %}
             </ol>
             <div class="carousel-inner">
                 

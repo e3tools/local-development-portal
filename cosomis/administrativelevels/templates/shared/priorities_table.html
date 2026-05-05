@@ -40,7 +40,13 @@
     <tbody>
     {% for investment in investments %}
         <tr>
-            <td>{{ investment.ranking }}</td>
+            <td>
+                {% if investment.ranking %}
+                    {{ investment.ranking }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
             {% if investment.title == "Autre" %}
             <td class="border-sides--light">
                 <a 

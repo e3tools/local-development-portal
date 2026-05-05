@@ -1,6 +1,17 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n humanize bootstrap4 custom_tags %}
 
+{% block custom_title %}
+    <div class="col-sm-12">
+        <div class="m-0 main-title" style="color: #707070 !important;"><h2>{{ title | safe }}</h2></div>
+        <nav aria-label="breadcrumb" class="mt-1">
+            <div style="font-size: 14px;">
+                {% adm_breadcrumb object %}
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
 {% block extracss %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
@@ -109,13 +120,13 @@
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
                 {% for image in images_data.images %}
-                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"
-            {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"
+            {% if forloop.first %}class="active"{% endif %} ></li>
                 {% endfor %}
             </ol>
             <div class="carousel-inner">
                 {% for image in images_data.images %}
-                    <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
                         <a href="{% url 'administrativelevels:village_attachments' object.id %}">
                             <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
                             style="height: 500px !important;"

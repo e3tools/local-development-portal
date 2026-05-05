@@ -1,6 +1,17 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n humanize bootstrap4 custom_tags %}
 
+{% block custom_title %}
+    <div class="col-sm-12">
+        <div class="m-0 main-title" style="color: #707070 !important;"><h2>{{ title | safe }}</h2></div>
+        <nav aria-label="breadcrumb" class="mt-1">
+            <div style="font-size: 14px;">
+                {% adm_breadcrumb object %}
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
 {% block extracss %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
@@ -22,44 +33,49 @@
             <div class="card col-12">
                 <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
+                    <small class="text-muted">
+                        {% translate "Aggregated from" %} {{ population.village_count }} {% translate "villages" %}
+                        ({{ population.canton_count }} {% translate "cantons" %})
+                    </small>
                 </div>
                 <div class="card-body p-2">
                     <table class="table">
                         <tbody>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.total_population }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.total|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_men }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.men|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_women }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.women|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_young }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.young|intcomma }}</td>
+                        </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_elder }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.elder|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_handicap }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.handicap|intcomma }}</td>
                         </tr>
                         <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agruculture" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_agriculturist }}</td>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agriculture" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.agriculturist|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_pastoralist }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.pastoralist|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_minorities }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.minorities|intcomma }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -311,13 +327,13 @@
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
                 {% for image in images_data.images %}
-                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"
-            {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"
+            {% if forloop.first %}class="active"{% endif %} ></li>
                 {% endfor %}
             </ol>
             <div class="carousel-inner">
                 {% for image in images_data.images %}
-                    <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
                         <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
                             <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
                             style="height: 500px !important;"

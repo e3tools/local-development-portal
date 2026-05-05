@@ -1,12 +1,14 @@
 from django.core.management.base import BaseCommand, CommandError
 import time
 from dateutil import parser
+from fuzzywuzzy import fuzz
 from no_sql_client import NoSQLClient
 from cloudant.result import Result
 from cloudant.document import Document
 from investments.models import Investment, Project
 from administrativelevels.models import AdministrativeLevel, Category, Sector
 from administrativelevels.libraries.functions import safe_parse_date
+from administrativelevels.utils.functions import normalize_text, safe_value
 
 class Command(BaseCommand):
     help = 'Description of your command'
@@ -55,6 +57,8 @@ class Command(BaseCommand):
                 priorities_document = sorted([document for document in db if document.get('name') in village_priorities_tasks_name], key=lambda x: ranking_priority.get(x.get("project_name", "").lower(), 99))
                 meeting_dates = {f"{document['administrative_level_id']}_{document['project_name']}": (document['form_response'][0]['dateDeLaReunion'] if document['form_response'] else None) for document in db if document.get('name') == task_name_contain_meeting_date}
                 
+                print(db_name, len(priorities_document))
+                
                 for document in priorities_document:
                     update_or_create_priorities_document(document, meeting_dates.get(f"{document['administrative_level_id']}_{document['project_name']}"))
                     
@@ -65,6 +69,7 @@ class Command(BaseCommand):
 def update_or_create_priorities_document(priorities_document, meeting_date):
     # Extract the administrative_level_id from the priorities document
     adm_id = priorities_document['administrative_level_id']
+    similarity_threshold = 60
 
     administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
     # TODO Complete Sector Allocation
@@ -112,12 +117,42 @@ def update_or_create_priorities_document(priorities_document, meeting_date):
                                 description = f"{title} ({description})" if description and str(description).strip() else title
                     
                     try:
-                        investment = Investment.objects.filter(
-                            title=title,
-                            administrative_level=administrative_level,
-                            # ranking=idx + 1,
-                            description=description
-                        ).first()
+                        if title == "Autre":
+                            investment = Investment.objects.filter(
+                                title=title,
+                                administrative_level=administrative_level,
+                                # ranking=idx + 1,
+                                description=description
+                            ).first()
+                        else:
+                            investment = Investment.objects.filter(
+                                title=title,
+                                administrative_level=administrative_level,
+                                # ranking=idx + 1,
+                            ).first()
+
+                        # Handling cases where the infrastructure is already registered without its priority from couchdb CDD | Gestion des cas où l'infrastructure déjà enregistrée sans sa priorité provenant de couchdb CDD
+                        if not investment and title != "Autre":
+                            adl_investments = Investment.objects.filter(
+                                administrative_level=administrative_level,
+                                imported_project_id__isnull=False
+                            )
+                            matched_adl_investments = [
+                                adl_investment for adl_investment in adl_investments
+                                if fuzz.token_set_ratio(normalize_text(adl_investment.title), normalize_text(title)) >= similarity_threshold
+                            ]
+                            matched_adl_investments.sort(key=lambda inv: fuzz.token_set_ratio(normalize_text(inv.title), normalize_text(title)), reverse=True)
+
+                            if matched_adl_investments:
+                                investment = matched_adl_investments[0]
+                                investment.title = title
+                                investment.description = description
+                                investment.sector = sector
+                                if start_date:
+                                    investment.start_date = start_date
+                                investment.climate_contribution = True if priority.get("contributionClimatique") else False
+                                investment.climate_contribution_text = priority.get("contributionClimatique")
+
                         if not investment:
                             investment = Investment.objects.create(
                                 ranking=idx + 1,
@@ -136,6 +171,7 @@ def update_or_create_priorities_document(priorities_document, meeting_date):
                                 climate_contribution_text = priority.get("contributionClimatique"),
                             )
                         else:
+                            investment.estimated_cost = priority.get("coutEstime")
                             investment.ranking = idx + 1 # Take the rank of the last recorded priority of the recent project
                         
                         project = Project.objects.filter(name=priorities_document['project_name']).first()

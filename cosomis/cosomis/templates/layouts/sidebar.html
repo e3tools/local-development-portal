@@ -18,9 +18,9 @@
             </a>
             <div class="info">
                 {% if user.last_name != "" or user.first_name != "" %}
-                <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.first_name }} {{ user.last_name }}</a>
-                {% else %}
-                <a href="{% url 'investments:profile' %}" class="d-block name">{{ user.username }}</a>
+					<a href="{% url 'investments:profile' %}" class="d-block name">
+						{{ user.first_name }} {{ user.last_name }}
+					</a>
                 {% endif %}
                 <p class="email">{{ user.email | truncatechars:22 }}</p>
                 <p class="text-wrap">{{ user|get_group_high }}</p>

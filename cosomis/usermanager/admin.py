@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib import admin
 from .forms import UserCreationForm, UserChangeForm
 
-from .models import UserPassCode, Organization, User
+from .models import UserPassCode, Organization, User, UserToken
 
 
 class UserCustomAdmin(UserAdmin):
@@ -73,3 +73,4 @@ class UserPassCodeAdmin(admin.ModelAdmin):
 admin.site.register(UserPassCode, UserPassCodeAdmin)
 admin.site.register(Organization)
 admin.site.register(User, UserCustomAdmin)
+admin.site.register(UserToken)

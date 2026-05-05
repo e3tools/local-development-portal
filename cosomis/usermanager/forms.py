@@ -146,7 +146,7 @@ class UserCreationForm(forms.ModelForm):
     )
     username = forms.CharField(
         label=_("Email"),
-        widget=forms.TextInput(attrs={
+        widget=forms.EmailInput(attrs={
             "autofocus": True, "placeholder": _("Email")
         }),
         help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),

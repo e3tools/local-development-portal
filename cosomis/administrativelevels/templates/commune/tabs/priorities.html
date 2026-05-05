@@ -178,7 +178,7 @@
                     <tr>
                         <td>{% translate investment.get_investment_status_display %}</td>
                         <td>{{ investment.sector }}</td>
-                        <td>{% if investment.project_status == investment.NOT_FUNDED %}✓{% else %}-{% endif %}</td>
+                        <td>{% if investment.project_status == investment.NOT_FUNDED %}{{ investment.estimated_cost }}{% else %}-{% endif %}</td>
                         <td>
                             {% if investment.endorsed_by_youth %}✓{% endif %}</td>
                         <td>

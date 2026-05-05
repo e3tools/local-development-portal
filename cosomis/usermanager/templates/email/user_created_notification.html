@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .email-container {
+            max-width: 750px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color:rgb(12, 160, 34);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .content {
+            padding: 20px;
+            color: #333;
+        }
+
+        .content h2 {
+            font-size: 19px;
+            color: rgb(12, 160, 34);
+        }
+
+        .content p {
+            line-height: 1.6;
+        }
+
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            color: #999;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: rgb(12, 160, 34);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: rgb(19, 95, 30);
+        }
+    </style>
+</head>
+<body>
+
+<div class="email-container">
+    <div class="header">
+        <h1>{{ title }}!</h1>
+    </div>
+    <div class="content">
+        <p>Bonjour {{ user_name }},</p>
+
+        <p>Suite aux différentes présentations du Portail de Développement Local que nous avons effectuées avec vous, nous vous avons créé un compte vous permettant d’accéder aux différentes fonctionnalités de cette plateforme pour toute fin utile.</p>
+        <p>
+            Veuillez trouver ci-dessous les informations relatives à votre compte :
+        </p>
+
+         <p style="font-weight: bold;">
+            <span style="font-weight: bold; font-size: 19px;">{{ email }}</span>
+        </p>
+         <p style="font-weight: bold;">
+            <span style="font-weight: bold; font-size: 19px;">{{ motif }}</span>
+        </p>
+
+        <p>
+            Nous vous prions de bien vouloir vous connecter à votre compte en utilisant les informations ci-dessus et de changer votre mot de passe dès que possible pour garantir la sécurité de votre compte. Si vous avez des questions ou besoin d'assistance, n'hésitez pas à nous contacter.
+        </p>
+
+        <br />
+        <p></p>
+        <p style="font-weight: bold;">
+            <span style="font-weight: bold; font-size: 19px;">Procedure de changement de mot de passe</span>
+        </p>
+        <p>
+            1. Connectez-vous à votre compte en utilisant les informations fournies ci-dessus sur le portail (<a href="https://portail.purs.gouv.tg/">https://portail.purs.gouv.tg/</a>).<br />
+            2. Une fois connecté, accédez à la section "Utilisateur".<br />
+            3. Cliquez sur l'option "Modifier le mot de passe" (patientez quelques secondes pour qu'on vous envoie un code de confirmation par mail sur votre adresse email, et qu'une fenetre s'ouvre).<br />
+            4. Sur la fenetre qui s'ouvre, entrez le code de confirmation envoyé par mail, ensuite, entrez votre mot de passe actuel, puis choisissez un nouveau mot de passe sécurisé et confirmez-le.<br />
+            5. Enregistrez les modifications et assurez-vous de vous souvenir de votre nouveau mot de passe pour vos futures connexions.
+        </p>
+
+        <br />
+        <p></p>
+        <p></p>
+        <p>
+            <b>PDL</b>: <a href="https://portail.purs.gouv.tg/">https://portail.purs.gouv.tg/</a><br />
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; {{ current_year }} COORDINATION GÉNÉRALE DU PURS. Tous droits réservés.</p>
+    </div>
+    
+</div>
+</body>
+</html>

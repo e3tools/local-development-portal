@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 
 <!-- jQuery -->
 <script src="{% static 'AdminLTE/plugins/jquery/jquery.min.js' %}"></script>
@@ -64,4 +64,12 @@
         }) // forEach
     }); 
     // DOMContentLoaded  end
+</script>
+
+
+<script src="{% static 'js/notifications.js' %}"></script>
+<script type="text/javascript">
+    {% if user.is_authenticated and user.password_changed_once == False %}
+        pushNotify("{% translate 'Veuillez aller changer votre mot de passe dans la session Utilisateur.' %}", "error");
+    {% endif %}
 </script>

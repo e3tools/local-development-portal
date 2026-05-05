@@ -53,5 +53,54 @@ SUB_PROJECT_STATUS_COLOR_TRANSLATE = {
 STRUCTURE_NOT_START_STATUS = ['Identifié']
 STRUCTURE_IN_PROGRESS_STATUS = ['En cours']
 STRUCTURE_COMPLETED_STATUS = ["Achevé", "Réception technique", "Réception provisoire", "Réception définitive"]
+STRUCTURE_COMPLETED_ONLY_STATUS = ["Achevé"]
 STRUCTURE_PROVISIONAL_ACCEPTANCE_STATUS = ["Réception provisoire", "Réception définitive"]
 STRUCTURE_FINAL_ACCEPTANCE_STATUS = ["Réception définitive"]
+
+IMAGE_EXTENSIONS = [
+    # Formats courants
+    ".jpg", ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".tif", ".tiff",
+    ".webp",
+
+    # Formats vectoriels
+    ".svg", ".svgz",
+
+    # Formats professionnels / impression
+    ".psd",
+    ".ai",
+    ".eps",
+    # ".pdf",
+
+    # Formats photo / RAW (appareils photo)
+    ".raw",
+    ".arw",   # Sony
+    ".cr2", ".cr3",  # Canon
+    ".nef",  # Nikon
+    ".orf",  # Olympus
+    ".rw2",  # Panasonic
+    ".dng",  # Adobe / universel
+    ".sr2",
+
+    # Formats anciens ou spécialisés
+    ".ico",
+    ".cur",
+    ".pcx",
+    ".tga",
+    ".dds",
+    ".exr",
+    ".hdr",
+    ".jp2", ".j2k",
+    ".pbm", ".pgm", ".ppm",
+    ".xbm", ".xpm",
+
+    # Autres
+    ".heic", ".heif",  # Apple / iOS
+    ".avif",
+
+    # Kobo Collect files
+    '.kobotoolbox'
+]

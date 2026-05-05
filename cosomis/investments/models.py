@@ -97,6 +97,9 @@ class Investment(BaseModel): # Investment module
     no_sql_id = models.CharField(max_length=255)
     imported_project_id = models.CharField(max_length=255, null=True, blank=True)
 
+    abandoned_in_the_meantime = models.BooleanField(default=False)
+    abandonment_history = models.JSONField(null=True, blank=True)
+
     def get_projects_priority_came_from(self, join_on_chain=True):
         projects = self.came_from.all()
         if join_on_chain:
@@ -226,6 +229,16 @@ class Attachment(BaseModel):
     DOCUMENT = "Document"
     TYPE_CHOICES = ((PHOTO, _("Photo")), (DOCUMENT, _("Document")))
 
+    COMMUNITY_PROCESS = "Community Process" 
+    INFRASTRUCTURE_IN_PROGRESS = "Infrastructure in Progress"
+    COMPLETED_INFRASTRUCTURE = "Completed Infrastructure"
+
+    PROCESS_MOMENTS = (
+        (COMMUNITY_PROCESS, _("Community Process")),
+        (INFRASTRUCTURE_IN_PROGRESS, _("Infrastructure in Progress")),
+        (COMPLETED_INFRASTRUCTURE, _("Completed Infrastructure")),
+    )
+
     adm = models.ForeignKey(
         AdministrativeLevel, on_delete=models.CASCADE, related_name="attachments", null=True, blank=True
     )
@@ -239,9 +252,13 @@ class Attachment(BaseModel):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='attachments', null=True, blank=True)
     url = models.URLField(max_length=300)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=DOCUMENT)
+    process_moment = models.CharField(max_length=50, choices=PROCESS_MOMENTS, default=COMMUNITY_PROCESS)
 
     name = models.CharField(max_length=255, null=True, blank=True)
     order = models.PositiveSmallIntegerField(default=0)
+    description = models.TextField(null=True, blank=True)
+    
+    source = models.CharField(max_length=30, null=True, blank=True)
 
     @classmethod
     def investment_upload(cls, investment, image, object_name=None):
