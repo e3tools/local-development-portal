@@ -97,7 +97,7 @@ AUTH_USER_MODEL = 'usermanager.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['cosomis/templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'cosomis', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

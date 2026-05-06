@@ -39,6 +39,8 @@ from .forms import (
 )
 from utils.mixpanel.utils import track_user_activity
 from cosomis.utils_functions import get_api_datas
+from .services.canton_summary_service import CantonSummaryService
+
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView):
     """Display administrative level list"""
@@ -825,134 +827,58 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
         return redirect(url)
 
     def get_context_data(self, **kwargs):
-        context = super(CantonDetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        canton = self.object
 
-        images_extensions_query = Q()
-        for ext in IMAGE_EXTENSIONS:
-            images_extensions_query |= Q(url__icontains=ext)
+        context["title"] = f"{_(canton.type)} {canton.name}"
+        context["context_object_name"] = canton.type.lower()
 
-        if "object" in context:
-            context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
-            if context["object"].is_village():
-                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
-        admin_level = context.get("object")
+        # --- Delegate aggregation to the service layer ---
+        summary_service = CantonSummaryService(canton)
 
-        context["context_object_name"] = admin_level.type.lower()
-
-        # Get images with priority on process_moment (like village_detail)
-        # For Canton, also include images from child villages
-        child_villages = AdministrativeLevel.objects.filter(
-            parent=admin_level,
-            type=AdministrativeLevel.VILLAGE
-        )
-
-        images_number = 5
-        completed = Attachment.objects.filter(
-            Q(adm=admin_level) |
-            Q(adm__in=child_villages) |
-            Q(task__activity__phase__village=admin_level) |
-            Q(task__activity__phase__village__in=child_villages),
-            process_moment=Attachment.COMPLETED_INFRASTRUCTURE
-        ).filter(images_extensions_query)[:3]
-        
-        in_progress = []
-        if not completed:
-            in_progress = Attachment.objects.filter(
-                Q(adm=admin_level) |
-                Q(adm__in=child_villages) |
-                Q(task__activity__phase__village=admin_level) |
-                Q(task__activity__phase__village__in=child_villages),
-                process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS
-            ).filter(images_extensions_query)[:1]
-
-        community = Attachment.objects.filter(
-            Q(adm=admin_level) |
-            Q(adm__in=child_villages) |
-            Q(task__activity__phase__village=admin_level) |
-            Q(task__activity__phase__village__in=child_villages),
-            process_moment=Attachment.COMMUNITY_PROCESS
-        ).filter(images_extensions_query)[:(images_number - len(completed) - len(in_progress))]
-
-        images = list(completed) + list(in_progress) + list(community)
-        
+        images = summary_service.get_carousel_images()
         context["images_data"] = {
             "images": images,
-            "exists_at_least_image": len(images) != 0,
-            "first_image": images[0] if len(images) > 0 else None,
+            "exists_at_least_image": bool(images),
+            "first_image": images[0] if images else None,
         }
-        # Get villages for this canton (filtered by type='Canton')
+
+        # Always use aggregated population
+        context["canton_population"] = summary_service.get_population_aggregates()
+
+        # New: Villages Summary card
+        context["villages_summary"] = summary_service.get_villages_summary()
+
+        # Keep existing villages queryset for the Villages tab
         context["villages"] = AdministrativeLevel.objects.filter(
-                parent=admin_level,
-                type=AdministrativeLevel.VILLAGE
-            ).annotate(
-            total_estimated_cost=Coalesce(
-                Sum('investments__estimated_cost'), 0
-            ),
+            parent=canton,
+            type=AdministrativeLevel.VILLAGE
+        ).annotate(
+            total_estimated_cost=Coalesce(Sum('investments__estimated_cost'), 0),
             total_founded=Coalesce(
-                Sum(
-                    Case(
-                        When(investments__project_status=Investment.FUNDED, then=F('investments__estimated_cost')),
-                        default=0,
-                        output_field=IntegerField(),
-                    )
-                ), 0
+                Sum(Case(
+                    When(investments__project_status=Investment.FUNDED,
+                         then=F('investments__estimated_cost')),
+                    default=0,
+                    output_field=IntegerField(),
+                )), 0
             )
         )
 
-        # Aggregate population data from child villages
-        pop_aggregate = child_villages.aggregate(
-            total_population=Coalesce(Sum('total_population'), 0),
-            population_men=Coalesce(Sum('population_men'), 0),
-            population_women=Coalesce(Sum('population_women'), 0),
-            population_young=Coalesce(Sum('population_young'), 0),
-            population_elder=Coalesce(Sum('population_elder'), 0),
-            population_handicap=Coalesce(Sum('population_handicap'), 0),
-            population_agriculturist=Coalesce(Sum('population_agriculturist'), 0),
-            population_pastoralist=Coalesce(Sum('population_pastoralist'), 0),
-            population_minorities=Coalesce(Sum('population_minorities'), 0),
+        context["investments"] = self._get_queryset(
+            Investment.objects.filter(
+                project_status=Investment.NOT_FUNDED,
+                administrative_level__parent=canton,
+                administrative_level__type=AdministrativeLevel.VILLAGE,
+            )
         )
-        context["canton_population"] = pop_aggregate
-
-        context["investments"] = self._get_queryset(Investment.objects.filter(
-            project_status=Investment.NOT_FUNDED,
-            administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
-                parent=admin_level,
-                type=AdministrativeLevel.VILLAGE
-            ).values_list('id')
-        )))
 
         context["subprojects"] = Investment.objects.filter(
-            administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
-                parent=admin_level,
-                type=AdministrativeLevel.VILLAGE
-            ).values_list('id')
-        )).exclude(project_status=Investment.NOT_FUNDED,)
+            administrative_level__parent=canton,
+            administrative_level__type=AdministrativeLevel.VILLAGE,
+        ).exclude(project_status=Investment.NOT_FUNDED)
+
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
-        self.object.latitude = 10.693749945416448
-        self.object.longitude = 0.330183201548857
-
-        # Add planning status information
-        tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
-        current_task = admin_level.get_current_task()
-        current_activity = current_task.activity if current_task else None
-        current_phase = current_activity.phase if current_activity else None
-
-        task_number = tasks_qs.count()
-        tasks_done = tasks_qs.filter(status=Task.COMPLETED).count()
-        context["planning_status"] = {
-            "current_phase": current_phase,
-            "current_activity": current_activity,
-            "current_task": current_task,
-            "completed": round(float(tasks_done) * 100 / float(task_number), 2) if task_number != 0 else '-',
-            "priorities_identified": context["object"].identified_priority,
-            "village_development_plan_date": "",
-            "facilitator": "",
-        }
-
-        # Add development plan
-        phases = self._get_planning_cycle()
-        context["development_plan"] = self._get_development_plan(phases)
-
         context.update(self._get_priorities_filters())
 
         return context
