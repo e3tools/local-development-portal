@@ -668,18 +668,18 @@
                     {% if investments.count == 0 %}
                         {% translate 'You have no investments' %}
                     {% else %}
-                        <table class="tabletable-bordered table-striped" style="width: 100%;">
+                        <table class="table table-bordered table-striped" style="width: 100%;">
                             <thead>
-                                <th data-priority="1" class="align-middle border-top-left-corner"><input class="" id="checkbox-select-all" type="checkbox"></th>
-                                <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
-                                <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Source' %}</th>
-                                <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
-                                <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
-                                <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Canton' %}</th>
-                                <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
-                                <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
-                                <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
-                                <th data-priority="10" class="align-middle border-top-right-corner border-bottom-0">{% translate 'Population priority' %}</th>
+                                <th data-priority="1" class="align-middle"><input class="" id="checkbox-select-all" type="checkbox"></th>
+                                <th data-priority="2" class="align-middle">{% translate 'Name' %}</th>
+                                <th data-priority="3" class="align-middle">{% translate 'Source' %}</th>
+                                <th data-priority="4" class="align-middle">{% translate 'Estimate cost' %}</th>
+                                <th data-priority="5" class="align-middle">{% translate 'Village' %}</th>
+                                <th data-priority="6" class="align-middle">{% translate 'Canton' %}</th>
+                                <th data-priority="7" class="align-middle">{% translate 'Commune' %}</th>
+                                <th data-priority="8" class="align-middle">{% translate 'Prefecture' %}</th>
+                                <th data-priority="9" class="align-middle">{% translate 'Village priority' %}</th>
+                                <th data-priority="10" class="align-middle">{% translate 'Population priority' %}</th>
                             </thead>
                         <tbody>
                         {% for investments in object_list %}

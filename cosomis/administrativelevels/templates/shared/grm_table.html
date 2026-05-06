@@ -2,26 +2,28 @@
 {% if complaints|length == 0 %}
     <h3>{% translate 'You have no complaints' %}</h3>
 {% else %}
-    <table class="table datatable rounded-table">
-    <thead>
-    <tr>
-        <th class="align-middle border-top-left-corner" >{% translate 'Code' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" >{% translate 'Description' %}</th>
-        <th class="align-middle border-bottom-0 rounded-0" >{%  translate 'Category' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" >{%  translate 'Date of complaint' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" >{% translate 'Report date' %}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for complaint in complaints %}
-        <tr>
-            <td>{{ complaint.tracking_code }} | {{ complaint.internal_code }}</td>
-            <td>{{ complaint.description }}</td>
-            <td>{{ complaint.category.name }}</td>
-            <td>{{ complaint.issue_date|string_to_date|date:'d/m/Y' }}</td>
-            <td>{{ complaint.created_date|string_to_date|date:'d/m/Y' }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <div class="table-responsive">
+		<table class="table table-bordered">
+			<thead>
+			<tr>
+				<th class="align-middle">{% translate 'Code' %}</th>
+				<th class="align-middle" >{% translate 'Description' %}</th>
+				<th class="align-middle" >{%  translate 'Category' %}</th>
+				<th class="align-middle" >{%  translate 'Date of complaint' %}</th>
+				<th class="align-middle" >{% translate 'Report date' %}</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for complaint in complaints %}
+				<tr>
+					<td>{{ complaint.tracking_code }} | {{ complaint.internal_code }}</td>
+					<td>{{ complaint.description }}</td>
+					<td>{{ complaint.category.name }}</td>
+					<td>{{ complaint.issue_date|string_to_date|date:'d/m/Y' }}</td>
+					<td>{{ complaint.created_date|string_to_date|date:'d/m/Y' }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endif %}

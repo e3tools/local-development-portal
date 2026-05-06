@@ -139,147 +139,148 @@
         {% if investments.count == 0 %}
             <h3>{% translate 'You have no priorities' %}</h3>
         {% else %}
-            <table class="table datatable rounded-table" style="width: 100%">
-                <thead>
-                <tr>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Investment Type' %}</th>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sector' %}</th>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Funding Needed' %}</th>
-                    <th class="align-middle border-bottom-0 rounded-0" colspan="4">{% translate 'Priorities' %}</th>
-                    <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Status' %}</th>
-                    <th class="align-middle border-top-right-corner border-bottom-0"
-                        rowspan="2">{% translate 'Actions' %}</th>
-                </tr>
-                <tr>
-                    <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                        title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top"
-                    >
-                        <span>J</span>
-                    </th>
-                    <th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                        title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top"
-                    >
-                        <span>F</span>
-                    </th>
-                    <th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                        title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip" data-placement="top"
-                    >
-                        <span>ME</span>
-                    </th>
-                    <th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                        title="{% translate 'Agriculturist' %}" data-toggle="tooltip" data-placement="top"
-                    >
-                        <span>AE</span>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for investment in investments %}
-                    <tr>
-                        <td>{% translate investment.get_investment_status_display %}</td>
-                        <td>{{ investment.sector }}</td>
-                        <td>{% if investment.project_status == investment.NOT_FUNDED %}{{ investment.estimated_cost }}{% else %}-{% endif %}</td>
-                        <td>
-                            {% if investment.endorsed_by_youth %}✓{% endif %}</td>
-                        <td>
-                            {% if investment.endorsed_by_women %}✓{% endif %}</td>
-                        <td>
-                            {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
-                        <td>
-                            {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
-                        <td>{% translate investment.get_project_status_display %}</td>
-                        <td>
-                            {% if investment.project_status == investment.NOT_FUNDED %}
-                            <form method="post">
-                                {% csrf_token %}
-                                {% if investment.id not in cart_items_id %}
-                                <input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
-                                {% else %}
-                                <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
-                                {% endif %}
-                                <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
-                            </form>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+			<div class="table-responsive">
+				<table class="table table-bordered" style="width: 100%">
+					<thead>
+					<tr>
+						<th class="align-middle" rowspan="2">{% translate 'Investment Type' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Funding Needed' %}</th>
+						<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Status' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
+					</tr>
+					<tr>
+						<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top"
+						>
+							<span>J</span>
+						</th>
+						<th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top"
+						>
+							<span>F</span>
+						</th>
+						<th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip" data-placement="top"
+						>
+							<span>ME</span>
+						</th>
+						<th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Agriculturist' %}" data-toggle="tooltip" data-placement="top"
+						>
+							<span>AE</span>
+						</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for investment in investments %}
+						<tr>
+							<td>{% translate investment.get_investment_status_display %}</td>
+							<td>{{ investment.sector }}</td>
+							<td>{% if investment.project_status == investment.NOT_FUNDED %}{{ investment.estimated_cost }}{% else %}-{% endif %}</td>
+							<td>
+								{% if investment.endorsed_by_youth %}✓{% endif %}</td>
+							<td>
+								{% if investment.endorsed_by_women %}✓{% endif %}</td>
+							<td>
+								{% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
+							<td>
+								{% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
+							<td>{% translate investment.get_project_status_display %}</td>
+							<td>
+								{% if investment.project_status == investment.NOT_FUNDED %}
+								<form method="post">
+									{% csrf_token %}
+									{% if investment.id not in cart_items_id %}
+									<input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
+									{% else %}
+									<input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
+									{% endif %}
+									<input type="hidden" name="cart-toggle" value="{{ investment.id }}">
+								</form>
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
         {% endif %}
     </div>
     <div class="tab-pane fade" id="priorities-villages-tab" role="tabpanel" aria-labelledby="priorities-villages-tab">
         {% if investments.count == 0 %}
             <h3>{% translate 'You have no priorities' %}</h3>
         {% else %}
-            <table class="table datatable rounded-table" style="width: 100%">
-                <thead>
-                <tr>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Village Name' %}</th>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sub-Project' %}</th>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sector' %}</th>
-                    <th class="align-middle border-bottom-0 rounded-0" colspan="4">{% translate 'Priorities' %}</th>
-                    <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Village Priority' %}</th>
-                    <th class="align-middle rounded-0 border-bottom-0"
-                        rowspan="2">{% translate 'Funding Needed' %}</th>
-                    <th class="align-middle border-top-right-corner border-bottom-0"
-                        rowspan="2">{% translate 'Actions' %}</th>
-                </tr>
-                <tr>
-                    <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                        title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top"
-                    >
-                        <span>J</span>
-                    </th>
-                    <th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                        title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top"
-                    >
-                        <span>F</span>
-                    </th>
-                    <th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                        title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip" data-placement="top"
-                    >
-                        <span>ME</span>
-                    </th>
-                    <th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                        title="{% translate 'Agriculturist' %}" data-toggle="tooltip" data-placement="top"
-                    >
-                        <span>AE</span>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for investment in investments %}
-                    <tr>
-                        <td><a href="{% url 'administrativelevels:detail' investment.administrative_level.id %}">{{ investment.administrative_level.name }}</a></td>
-                        <td>{{ investment.title }}</td>
-                        <td>{{ investment.sector }}</td>
-                        <td>
-                            {% if investment.endorsed_by_youth %}✓{% endif %}</td>
-                        <td>
-                            {% if investment.endorsed_by_women %}✓{% endif %}</td>
-                        <td>
-                            {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
-                        <td>
-                            {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
-                        <td>{{ investment.ranking }}</td>
-                        <td>{{ investment.estimated_cost|intcomma }}</td>
-                        <td>
-                            {% if investment.project_status == investment.NOT_FUNDED %}
-                            <form method="post">
-                                {% csrf_token %}
-                                {% if investment.id not in cart_items_id %}
-                                <input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
-                                {% else %}
-                                <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
-                                {% endif %}
-                                <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
-                            </form>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+				<table class="table table-bordered" style="width: 100%">
+					<thead>
+					<tr>
+						<th class="align-middle" rowspan="2">{% translate 'Village Name' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Sub-Project' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
+						<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Village Priority' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Funding Needed' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
+					</tr>
+					<tr>
+						<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top"
+						>
+							<span>J</span>
+						</th>
+						<th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top"
+						>
+							<span>F</span>
+						</th>
+						<th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip" data-placement="top"
+						>
+							<span>ME</span>
+						</th>
+						<th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Agriculturist' %}" data-toggle="tooltip" data-placement="top"
+						>
+							<span>AE</span>
+						</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for investment in investments %}
+						<tr>
+							<td><a href="{% url 'administrativelevels:detail' investment.administrative_level.id %}">{{ investment.administrative_level.name }}</a></td>
+							<td>{{ investment.title }}</td>
+							<td>{{ investment.sector }}</td>
+							<td>
+								{% if investment.endorsed_by_youth %}✓{% endif %}</td>
+							<td>
+								{% if investment.endorsed_by_women %}✓{% endif %}</td>
+							<td>
+								{% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
+							<td>
+								{% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
+							<td>{{ investment.ranking }}</td>
+							<td>{{ investment.estimated_cost|intcomma }}</td>
+							<td>
+								{% if investment.project_status == investment.NOT_FUNDED %}
+								<form method="post">
+									{% csrf_token %}
+									{% if investment.id not in cart_items_id %}
+									<input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
+									{% else %}
+									<input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
+									{% endif %}
+									<input type="hidden" name="cart-toggle" value="{{ investment.id }}">
+								</form>
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
         {% endif %}
     </div>
 </div>

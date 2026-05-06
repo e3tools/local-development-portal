@@ -153,17 +153,17 @@
                                 {% include 'commune/tabs/priorities.html' %}
                             </div>
                             <div id="villages" class="tab-pane fade pt-3">
-                                <table class="tabletable-bordered">
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th class="align-middle border-top-left-corner">{% translate 'Name' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Canton' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Population' %}</th>
-                                            <th class="align-middle border-bottom-0 rounded-0">{% translate 'Invested Capital' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Required Capital' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Invested' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Required' %}</th>
-                                            <th class="align-middle border-top-right-corner border-bottom-0">{% translate 'Actions' %}</th>
+                                            <th class="align-middle">{% translate 'Name' %}</th>
+                                            <th class="align-middle">{% translate 'Canton' %}</th>
+                                            <th class="align-middle">{% translate 'Population' %}</th>
+                                            <th class="align-middle">{% translate 'Invested Capital' %}</th>
+                                            <th class="align-middle">{% translate 'Required Capital' %}</th>
+                                            <th class="align-middle">{% translate 'Per Capita Invested' %}</th>
+                                            <th class="align-middle">{% translate 'Per Capita Required' %}</th>
+                                            <th class="align-middle">{% translate 'Actions' %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -199,17 +199,17 @@
                                 {% if subprojects.count == 0 %}
                                     <h5>{% translate 'You have no Sub-projects' %}</h5>
                                 {% else %}
-                                <table class="tabletable-bordered">
+                                <table class="table table-bordered">
                                     <thead>
                                     <tr>
-                                        <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Sub-project priorities' %}</th>
-                                        <th class="align-middle border-bottom-0 rounded-0" colspan="4">{%  translate 'Priorities' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{%  translate 'Beneficiaries' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Estimated cost' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Funded by' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Climate contribution' %}</th>
-                                        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">{% translate 'Actions' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+                                        <th class="align-middle" colspan="4">{%  translate 'Priorities' %}</th>
+                                        <th class="align-middle" rowspan="2">{%  translate 'Beneficiaries' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Climate contribution' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
                                     </tr>
                                     <tr>
                                         <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"

@@ -1,5 +1,5 @@
 {% load static i18n humanize custom_tags %}
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+<ul class="nav nav-pills my-3" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="button-priorities-investments-type-tab" data-toggle="pill"
                 data-target="#priorities-investments-type-tab" type="button" role="tab"
@@ -139,16 +139,15 @@
         {% if investments.count == 0 %}
             <h5>{% translate 'You have no priorities' %}</h5>
         {% else %}
-            <table class="table datatabletable-bordered" style="width: 100%">
+            <table class="table datatable table-bordered" style="width: 100%">
                 <thead>
                 <tr>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Investment Type' %}</th>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sector' %}</th>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Funding Needed' %}</th>
-                    <th class="align-middle border-bottom-0 rounded-0" colspan="4">{% translate 'Priorities' %}</th>
-                    <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Status' %}</th>
-                    <th class="align-middle border-top-right-corner border-bottom-0"
-                        rowspan="2">{% translate 'Actions' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Investment Type' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Funding Needed' %}</th>
+                    <th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Status' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
                 </tr>
                 <tr>
                     <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
@@ -211,18 +210,16 @@
         {% if investments.count == 0 %}
             <h5>{% translate 'You have no priorities' %}</h5>
         {% else %}
-            <table class="table datatabletable-bordered" style="width: 100%">
+            <table class="table datatable table-bordered" style="width: 100%">
                 <thead>
                 <tr>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Village Name' %}</th>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sub-Project' %}</th>
-                    <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Sector' %}</th>
-                    <th class="align-middle border-bottom-0 rounded-0" colspan="4">{% translate 'Priorities' %}</th>
-                    <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Village Priority' %}</th>
-                    <th class="align-middle rounded-0 border-bottom-0"
-                        rowspan="2">{% translate 'Funding Needed' %}</th>
-                    <th class="align-middle border-top-right-corner border-bottom-0"
-                        rowspan="2">{% translate 'Actions' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Village Name' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Sub-Project' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
+                    <th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Village Priority' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Funding Needed' %}</th>
+                    <th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
                 </tr>
                 <tr>
                     <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"

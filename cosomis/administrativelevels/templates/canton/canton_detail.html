@@ -150,17 +150,17 @@
                             </div>
                             <div id="villages" class="tab-pane fade">
 								<div class="table-responsive">
-									<table class="table rounded-table">
+									<table class="table table-bordered">
 										<thead>
 											<tr>
-												<th class="align-middle border-top-left-corner">{% translate 'Name' %}</th>
-												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Canton' %}</th>
-												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Population' %}</th>
-												<th class="align-middle border-bottom-0 rounded-0">{% translate 'Invested Capital' %}</th>
-												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Required Capital' %}</th>
-												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Invested' %}</th>
-												<th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Required' %}</th>
-												<th class="align-middle border-top-right-corner border-bottom-0">{% translate 'Actions' %}</th>
+												<th class="align-middle">{% translate 'Name' %}</th>
+												<th class="align-middle">{% translate 'Canton' %}</th>
+												<th class="align-middle">{% translate 'Population' %}</th>
+												<th class="align-middle">{% translate 'Invested Capital' %}</th>
+												<th class="align-middle">{% translate 'Required Capital' %}</th>
+												<th class="align-middle">{% translate 'Per Capita Invested' %}</th>
+												<th class="align-middle">{% translate 'Per Capita Required' %}</th>
+												<th class="align-middle">{% translate 'Actions' %}</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -197,75 +197,77 @@
                                 {% if subprojects.count == 0 %}
                                     <h3>{% translate 'You have no Sub-projects' %}</h3>
                                 {% else %}
-                                <table class="table rounded-table">
-                                    <thead>
-                                    <tr>
-                                        <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Sub-project priorities' %}</th>
-                                        <th class="align-middle border-bottom-0 rounded-0" colspan="4">{%  translate 'Priorities' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{%  translate 'Beneficiaries' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Estimated cost' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Funded by' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Climate contribution' %}</th>
-                                        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">{% translate 'Actions' %}</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                                            title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top"
-                                        >
-                                            <span>J</span>
-                                        </th>
-                                        <th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                                            title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top"
-                                        >
-                                            <span>F</span>
-                                        </th>
-                                        <th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                                            title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip" data-placement="top"
-                                        >
-                                            <span>ME</span>
-                                        </th>
-                                        <th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
-                                            title="{% translate 'Agriculturist' %}" data-toggle="tooltip" data-placement="top"
-                                        >
-                                            <span>AE</span>
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for subproject in subprojects %}
-                                        <tr>
-                                            <td>{{ subproject.ranking }}</td>
-                                            {% if subproject.title == "Autre" %}
-                                            <td class="border-sides--light">
-                                                <a
-                                                        href="" data-container="body" data-toggle="popover"
-                                                        data-placement="top" data-trigger="hover"
-                                                        data-content="{% if subproject.description %}{{ subproject.description }}{% else %}-{% endif %}">
-                                                    {{ subproject.title }}
-                                                </a>
-                                            </td>
-                                            {% else %}
-                                            <td class="border-sides--light">{{ subproject.title }}</td>
-                                            {% endif %}
-                                            <td class="border-sides--light">
-                                                {% if subproject.endorsed_by_youth %}✓{% endif %}</td>
-                                            <td class="border-sides--light">
-                                                {% if subproject.endorsed_by_women %}✓{% endif %}</td>
-                                            <td class="border-sides--light">
-                                                {% if subproject.endorsed_by_pastoralist %}✓{% endif %}</td>
-                                            <td class="border-sides--light">
-                                                {% if subproject.endorsed_by_agriculturist %}✓{% endif %}</td>
-                                            <td class="border-sides--light">{{ subproject.beneficiaries }}</td>
-                                            <td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
-                                            <td class="border-sides--light">{{ subproject.funded_by.name }}</td>
-                                            <td class="border-sides--light">{% if subproject.climate_contribution %}{{ subproject.climate_contribution_text }}{% else %}
-                                                {% translate "No" %}{% endif %}</td>
-                                            <td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+								<div class="table-responsive">
+									<table class="table table-bordered">
+										<thead>
+										<tr>
+											<th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
+											<th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+											<th class="align-middle" colspan="4">{%  translate 'Priorities' %}</th>
+											<th class="align-middle" rowspan="2">{%  translate 'Beneficiaries' %}</th>
+											<th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
+											<th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
+											<th class="align-middle" rowspan="2">{% translate 'Climate contribution' %}</th>
+											<th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
+										</tr>
+										<tr>
+											<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
+												title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top"
+											>
+												<span>J</span>
+											</th>
+											<th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
+												title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top"
+											>
+												<span>F</span>
+											</th>
+											<th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
+												title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip" data-placement="top"
+											>
+												<span>ME</span>
+											</th>
+											<th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
+												title="{% translate 'Agriculturist' %}" data-toggle="tooltip" data-placement="top"
+											>
+												<span>AE</span>
+											</th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for subproject in subprojects %}
+											<tr>
+												<td>{{ subproject.ranking }}</td>
+												{% if subproject.title == "Autre" %}
+												<td class="border-sides--light">
+													<a
+															href="" data-container="body" data-toggle="popover"
+															data-placement="top" data-trigger="hover"
+															data-content="{% if subproject.description %}{{ subproject.description }}{% else %}-{% endif %}">
+														{{ subproject.title }}
+													</a>
+												</td>
+												{% else %}
+												<td class="border-sides--light">{{ subproject.title }}</td>
+												{% endif %}
+												<td class="border-sides--light">
+													{% if subproject.endorsed_by_youth %}✓{% endif %}</td>
+												<td class="border-sides--light">
+													{% if subproject.endorsed_by_women %}✓{% endif %}</td>
+												<td class="border-sides--light">
+													{% if subproject.endorsed_by_pastoralist %}✓{% endif %}</td>
+												<td class="border-sides--light">
+													{% if subproject.endorsed_by_agriculturist %}✓{% endif %}</td>
+												<td class="border-sides--light">{{ subproject.beneficiaries }}</td>
+												<td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
+												<td class="border-sides--light">{{ subproject.funded_by.name }}</td>
+												<td class="border-sides--light">{% if subproject.climate_contribution %}{{ subproject.climate_contribution_text }}{% else %}
+													{% translate "No" %}{% endif %}</td>
+												<td><i class="nav-icon fa fa-bars" data-toggle="modal" data-target="#exampleModal"></i></td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
                             {% endif %}
                             </div>
                         </div>
