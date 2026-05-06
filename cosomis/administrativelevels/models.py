@@ -414,15 +414,15 @@ class Task(BaseModel):
             return dict()
 
 
-def update_or_create_amd_couch(sender, instance, **kwargs):
-    print("test", instance.id, kwargs['created'])
-    client = CddClient()
-    if kwargs['created']:
-        couch_object_id = client.create_administrative_level(instance)
-        to_update = AdministrativeLevel.objects.filter(id=instance.id)
-        to_update.update(no_sql_db_id=couch_object_id)
-    else:
-        client.update_administrative_level(instance)
+# def update_or_create_amd_couch(sender, instance, **kwargs):
+#     print("test", instance.id, kwargs['created'])
+#     client = CddClient()
+#     if kwargs['created']:
+#         couch_object_id = client.create_administrative_level(instance)
+#         to_update = AdministrativeLevel.objects.filter(id=instance.id)
+#         to_update.update(no_sql_db_id=couch_object_id)
+#     else:
+#         client.update_administrative_level(instance)
 
 # def delete_amd_couch(sender, instance, **kwargs):
 #     client = CddClient()
