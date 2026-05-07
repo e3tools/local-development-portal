@@ -1,0 +1,110 @@
+{% load i18n %}
+
+{# ── Summary counters ── #}
+<div class="row mt-3 mb-3">
+	<div class="col-6 col-md-3 mb-2">
+		<div class="info-box bg-light shadow-sm" style="min-height: 80px;">
+			<span class="info-box-icon bg-success"><i class="fas fa-check-circle"></i></span>
+			<div class="info-box-content">
+				<span class="info-box-number text-success"
+					  style="font-size: 1.5rem;">{{ planning_summary.completed_villages }}</span>
+				<span class="info-box-text"
+					  style="font-size: .72rem; text-transform: uppercase;">{% trans "Completed" %}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-2">
+		<div class="info-box bg-light shadow-sm" style="min-height: 80px;">
+			<span class="info-box-icon bg-warning"><i class="fas fa-spinner"></i></span>
+			<div class="info-box-content">
+				<span class="info-box-number text-warning"
+					  style="font-size: 1.5rem;">{{ planning_summary.in_progress_villages }}</span>
+				<span class="info-box-text"
+					  style="font-size: .72rem; text-transform: uppercase;">{% trans "In Progress" %}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-2">
+		<div class="info-box bg-light shadow-sm" style="min-height: 80px;">
+			<span class="info-box-icon bg-secondary"><i class="fas fa-hourglass-start"></i></span>
+			<div class="info-box-content">
+				<span class="info-box-number text-secondary"
+					  style="font-size: 1.5rem;">{{ planning_summary.not_started_villages }}</span>
+				<span class="info-box-text"
+					  style="font-size: .72rem; text-transform: uppercase;">{% trans "Not Started" %}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3 mb-2">
+		<div class="info-box bg-light shadow-sm" style="min-height: 80px;">
+			<span class="info-box-icon bg-primary"><i class="fas fa-chart-pie"></i></span>
+			<div class="info-box-content">
+				<span class="info-box-number text-primary"
+					  style="font-size: 1.5rem;">{{ planning_summary.overall_completion_pct }}%</span>
+				<span class="info-box-text"
+					  style="font-size: .72rem; text-transform: uppercase;">{% trans "Overall" %}</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+{# ── Village phase breakdown table ── #}
+<div class="table-responsive">
+	<table class="table table-bordered table-hover mb-0">
+		<thead>
+		<tr>
+			<th style="min-width:150px;">{% trans "Village" %}</th>
+			<th style="min-width:130px;">{% trans "Progress" %}</th>
+			{% for i in "1234" %}
+				<th class="text-center" style="min-width:105px;">{% trans "Phase" %} {{ i }}</th>
+			{% endfor %}
+		</tr>
+		</thead>
+		<tbody>
+		{% for row in planning_summary.villages %}
+			<tr>
+				<td>
+					<a href="{% url 'administrativelevels:detail' row.village_id %}"
+					   class="pc-village-link">{{ row.village_name }}</a>
+				</td>
+				<td>
+					<div class="progress" style="height: 14px; border-radius: 7px;"
+						 title="{{ row.completed_phases }}/4 {% trans 'completed' %}">
+						{% if row.completed_pct > 0 %}
+							<div class="progress-bar bg-success" role="progressbar"
+								 style="width:{{ row.completed_pct|floatformat:0 }}%;"></div>
+						{% endif %}
+						{% if row.in_progress_pct > 0 %}
+							<div class="progress-bar bg-warning" role="progressbar"
+								 style="width:{{ row.in_progress_pct|floatformat:0 }}%;"></div>
+						{% endif %}
+						{% if row.not_started_pct > 0 %}
+							<div class="progress-bar bg-secondary" role="progressbar"
+								 style="width:{{ row.not_started_pct|floatformat:0 }}%;"></div>
+						{% endif %}
+					</div>
+					<small style="font-size:.7rem;">{{ row.completed_phases }}/4</small>
+				</td>
+				{% for phase in row.phases %}
+					<td>
+						<div class="d-flex align-items-center"
+							 style="gap: .35rem; font-size: .8rem; white-space: nowrap;">
+							<span style="display: inline-block; width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0, 0, 0, .08); background:{{ phase.dot_color }};"
+								  title="{{ phase.name }}: {{ phase.status }}"></span>
+							<span class="text-truncate" style="max-width:70px;"
+								  title="{{ phase.name }}">{{ phase.name }}</span>
+						</div>
+					</td>
+				{% endfor %}
+			</tr>
+		{% empty %}
+			<tr>
+				<td colspan="6" class="text-center py-4">
+					<i class="fas fa-inbox fa-2x d-block mb-2 text-secondary"></i>
+					{% trans "No villages found for this canton." %}
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>

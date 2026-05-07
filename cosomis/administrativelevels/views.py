@@ -1,45 +1,47 @@
+import json
 import os
 import re
-import json
 import zipfile
-import requests
 from io import BytesIO
 from urllib.parse import urlencode
+
+import requests
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, IntegerField, Value, Prefetch
+from django.db.models.functions import Coalesce
+from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import translation
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView, CreateView, FormView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import BaseFormView
-from django.conf import settings
 
+from administrativelevels.forms import (
+    AdministrativeLevelForm,
+    AttachmentFilterForm,
+    BulkUploadInvestmentsForm,
+    ProjectForm,
+    UpdateInvestmentForm,
+    VillageSearchForm,
+)
+from administrativelevels.models import AdministrativeLevel, Phase, Task, Project, Category, Sector, Activity
+from administrativelevels.services.canton_planning_service import CantonPlanningService
+from administrativelevels.services.canton_summary_service import CantonSummaryService
+from cosomis.constants import IMAGE_EXTENSIONS
+from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
+from cosomis.utils_functions import get_api_datas
 from investments.domain.investment_criteria import InvestmentCriteria
 from investments.infrastructure.repositories.db_investment_repository import DbInvestmentRepository
-from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixin
-from .forms import AdministrativeLevelForm
-from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
-from django.http import HttpResponse
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.utils.translation import gettext_lazy as _
-from django.core.paginator import Paginator
-from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, IntegerField, Value
-from django.db.models.functions import Coalesce
-from django.templatetags.static import static
-
-from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Project, Category, Sector
 from investments.models import Attachment, Investment, Package
-
 from static.config.datatable import get_datatable_config
-from cosomis.constants import IMAGE_EXTENSIONS
-from .forms import (
-    AttachmentFilterForm, VillageSearchForm,
-    ProjectForm, BulkUploadInvestmentsForm,
-    UpdateInvestmentForm
-)
+from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixin
 from utils.mixpanel.utils import track_user_activity
-from cosomis.utils_functions import get_api_datas
-from .services.canton_summary_service import CantonSummaryService
 
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView):
@@ -202,12 +204,13 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
                 context['geo_segment'] = context["object"].geo_segment
         admin_level = context.get("object")
 
-
         context["context_object_name"] = admin_level.type.lower()
 
         if admin_level.children.all():
-            context['children_services_infrastructures'], context['children_services_infrastructures_total_ids'] = self.__get_upper_services_infrastructure(admin_level)
-            context['children_services_infrastructures_total_ids'] = list(set(context['children_services_infrastructures_total_ids']))
+            context['children_services_infrastructures'], context[
+                'children_services_infrastructures_total_ids'] = self.__get_upper_services_infrastructure(admin_level)
+            context['children_services_infrastructures_total_ids'] = list(
+                set(context['children_services_infrastructures_total_ids']))
 
         context['phases'] = self._get_planning_cycle()
         context['development_plan'] = self._get_development_plan(context['phases'])
@@ -231,21 +234,21 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
 
         images_number = 5
         completed = Attachment.objects.filter(
-            Q (adm=admin_level) |
-            Q (task__activity__phase__village=admin_level),
+            Q(adm=admin_level) |
+            Q(task__activity__phase__village=admin_level),
             process_moment=Attachment.COMPLETED_INFRASTRUCTURE
         ).filter(images_extensions_query)[:3]
         in_progress = []
         if not completed:
             in_progress = Attachment.objects.filter(
-                Q (adm=admin_level) |
-                Q (task__activity__phase__village=admin_level),
+                Q(adm=admin_level) |
+                Q(task__activity__phase__village=admin_level),
                 process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS
             ).filter(images_extensions_query)[:1]
 
         community = Attachment.objects.filter(
-            Q (adm=admin_level) |
-            Q (task__activity__phase__village=admin_level),
+            Q(adm=admin_level) |
+            Q(task__activity__phase__village=admin_level),
             process_moment=Attachment.COMMUNITY_PROCESS
         ).filter(images_extensions_query)[:(images_number - len(completed) - len(in_progress))]
 
@@ -260,7 +263,8 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             "first_image": images[0] if len(images) > 0 else None,
         }
 
-        context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object)).annotate(
+        context["investments"] = self.__investment_repository.find_by_criteria(
+            InvestmentCriteria(administrative_level=self.object)).annotate(
             status_order=Case(
                 When(project_status=Investment.NOT_FUNDED, then=0),
                 When(project_status=Investment.PAUSED, then=1),
@@ -401,7 +405,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             if base_resp is not None:
                 for key, value in base_resp.items():
                     if key in final_resp:
-                        for i, v  in base_resp[key].items():
+                        for i, v in base_resp[key].items():
                             if i in final_resp[key]:
                                 final_resp[key][i]['ids_true'] += base_resp[key][i]['ids_true']
                             else:
@@ -419,13 +423,14 @@ class AdministrativeLevelInfrastructureDistributionDetailView(
 ):
     template_name = 'administrative_level/infrastructure.html'
     category = None
-    
+
     def get_context_data(self, **kwargs):
         obj = AdministrativeLevel.objects.get(id=self.kwargs['pk'])
         context = super().get_context_data(**kwargs)
         context['title'] = "{} {}".format(obj.type, obj.name)
         context['villages_that_has_it'], villages = self.__get_villages_services_infrastructure(obj)
-        context['villages_that_dont_has_it'] = [village for village in villages if village not in context['villages_that_has_it']]
+        context['villages_that_dont_has_it'] = [village for village in villages if
+                                                village not in context['villages_that_has_it']]
         context['infrastructure'] = self.kwargs['infrastructure']
         context['category'] = self.category
         return context
@@ -457,7 +462,6 @@ class AdministrativeLevelInfrastructureDistributionDetailView(
 
 
 class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
-
     model = AdministrativeLevel
     template_name = "commune/commune_detail.html"
     active_level1 = "administrative_levels"
@@ -485,9 +489,9 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
 
         for key, value in request.GET.items():
             if (
-                key in request.POST
-                and value != request.POST[key]
-                and request.POST[key] != ""
+                    key in request.POST
+                    and value != request.POST[key]
+                    and request.POST[key] != ""
             ):
                 final_querystring.pop(key)
 
@@ -515,7 +519,8 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         if "object" in context:
             context["title"] = "%s %s" % (_(context['object'].type), context['object'].name)
             if context["object"].is_village():
-                context["investments"] = self.__investment_repository.find_by_criteria(InvestmentCriteria(administrative_level=self.object))
+                context["investments"] = self.__investment_repository.find_by_criteria(
+                    InvestmentCriteria(administrative_level=self.object))
         admin_level = context.get("object")
 
         context["context_object_name"] = admin_level.type.lower()
@@ -542,7 +547,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
             Q(task__activity__phase__village__in=all_descendants),
             process_moment=Attachment.COMPLETED_INFRASTRUCTURE
         ).filter(images_extensions_query)[:3]
-        
+
         in_progress = []
         if not completed:
             in_progress = Attachment.objects.filter(
@@ -558,7 +563,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         ).filter(images_extensions_query)[:(images_number - len(completed) - len(in_progress))]
 
         images = list(completed) + list(in_progress) + list(community)
-        
+
         context["images_data"] = {
             "images": images,
             "exists_at_least_image": len(images) != 0,
@@ -592,8 +597,8 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         }
 
         context["villages"] = AdministrativeLevel.objects.filter(
-                parent__parent=admin_level
-            ).annotate(
+            parent__parent=admin_level
+        ).annotate(
             total_estimated_cost=Coalesce(
                 Sum('investments__estimated_cost'), 0
             ),
@@ -613,13 +618,13 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
             administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
                 parent__parent=admin_level
             ).values_list('id')
-        )))
+                                              )))
 
         context["subprojects"] = Investment.objects.filter(
             administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
                 parent__parent=admin_level
             ).values_list('id')
-        )).exclude(project_status=Investment.NOT_FUNDED,)
+                                              )).exclude(project_status=Investment.NOT_FUNDED, )
 
         # Add planning status information
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
@@ -654,7 +659,23 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
     def _get_planning_cycle(self):
         phases = list()
         admin_level = self.object
-        for phase in admin_level.phases.all():
+        
+        # Optimize phases query with selective fields and prefetch
+        phases_qs = admin_level.phases.all().only(
+            "id", "name", "order"
+        ).prefetch_related(
+            Prefetch(
+                "activities",
+                queryset=Activity.objects.all().only("id", "name", "order", "phase_id").prefetch_related(
+                    Prefetch(
+                        "tasks",
+                        queryset=Task.objects.all().only("id", "name", "order", "status", "activity_id")
+                    )
+                )
+            )
+        )
+
+        for phase in phases_qs:
             phase_node = {
                 "id": phase.id,
                 "name": phase.name,
@@ -678,22 +699,27 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
                         "status": task.status,
                     }
                     activity_node["tasks"].append(task_node)
+                    
+                    t_status = task.status
                     if tasks_status is None:
-                        tasks_status = task.status
-                    if task.status != Task.ERROR:
-                        if tasks_status == Task.COMPLETED and task.status == Task.IN_PROGRESS:
-                            tasks_status = Task.IN_PROGRESS
-                    else:
+                        tasks_status = t_status
+                    
+                    if t_status == Task.ERROR:
                         tasks_status = Task.ERROR
+                    elif tasks_status == Task.COMPLETED and t_status == Task.IN_PROGRESS:
+                        tasks_status = Task.IN_PROGRESS
+                
                 activity_node["status"] = tasks_status
                 phase_node["activities"].append(activity_node)
+                
                 if activities_status is None:
                     activities_status = tasks_status
-                if activity_node["status"] != Task.ERROR:
-                    if activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
-                        activities_status = Task.IN_PROGRESS
-                else:
+                
+                if activity_node["status"] == Task.ERROR:
                     activities_status = Task.ERROR
+                elif activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
+                    activities_status = Task.IN_PROGRESS
+            
             phase_node["status"] = activities_status
             phases.append(phase_node)
         return phases
@@ -778,7 +804,6 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
 
 
 class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
-
     model = AdministrativeLevel
     template_name = "canton/canton_detail.html"
     active_level1 = "administrative_levels"
@@ -806,9 +831,9 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
 
         for key, value in request.GET.items():
             if (
-                key in request.POST
-                and value != request.POST[key]
-                and request.POST[key] != ""
+                    key in request.POST
+                    and value != request.POST[key]
+                    and request.POST[key] != ""
             ):
                 final_querystring.pop(key)
 
@@ -870,13 +895,13 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
                 project_status=Investment.NOT_FUNDED,
                 administrative_level__parent=canton,
                 administrative_level__type=AdministrativeLevel.VILLAGE,
-            )
+            ).only("id", "ranking", "title", "description", "endorsed_by_youth", "endorsed_by_women", "endorsed_by_pastoralist", "endorsed_by_agriculturist", "estimated_cost", "project_status", "sector", "administrative_level")
         )
 
         context["subprojects"] = Investment.objects.filter(
             administrative_level__parent=canton,
             administrative_level__type=AdministrativeLevel.VILLAGE,
-        ).exclude(project_status=Investment.NOT_FUNDED)
+        ).exclude(project_status=Investment.NOT_FUNDED).only("id", "ranking", "title", "description", "endorsed_by_youth", "endorsed_by_women", "endorsed_by_pastoralist", "endorsed_by_agriculturist", "estimated_cost", "project_status", "funded_by", "climate_contribution", "climate_contribution_text", "administrative_level")
 
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
         context.update(self._get_priorities_filters())
@@ -886,7 +911,23 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
     def _get_planning_cycle(self):
         phases = list()
         admin_level = self.object
-        for phase in admin_level.phases.all():
+        
+        # Optimize phases query with selective fields and prefetch
+        phases_qs = admin_level.phases.all().only(
+            "id", "name", "order"
+        ).prefetch_related(
+            Prefetch(
+                "activities",
+                queryset=Activity.objects.all().only("id", "name", "order", "phase_id").prefetch_related(
+                    Prefetch(
+                        "tasks",
+                        queryset=Task.objects.all().only("id", "name", "order", "status", "activity_id")
+                    )
+                )
+            )
+        )
+
+        for phase in phases_qs:
             phase_node = {
                 "id": phase.id,
                 "name": phase.name,
@@ -910,22 +951,27 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
                         "status": task.status,
                     }
                     activity_node["tasks"].append(task_node)
+                    
+                    t_status = task.status
                     if tasks_status is None:
-                        tasks_status = task.status
-                    if task.status != Task.ERROR:
-                        if tasks_status == Task.COMPLETED and task.status == Task.IN_PROGRESS:
-                            tasks_status = Task.IN_PROGRESS
-                    else:
+                        tasks_status = t_status
+                    
+                    if t_status == Task.ERROR:
                         tasks_status = Task.ERROR
+                    elif tasks_status == Task.COMPLETED and t_status == Task.IN_PROGRESS:
+                        tasks_status = Task.IN_PROGRESS
+                
                 activity_node["status"] = tasks_status
                 phase_node["activities"].append(activity_node)
+                
                 if activities_status is None:
                     activities_status = tasks_status
-                if activity_node["status"] != Task.ERROR:
-                    if activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
-                        activities_status = Task.IN_PROGRESS
-                else:
+                
+                if activity_node["status"] == Task.ERROR:
                     activities_status = Task.ERROR
+                elif activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
+                    activities_status = Task.IN_PROGRESS
+            
             phase_node["status"] = activities_status
             phases.append(phase_node)
         return phases
@@ -1006,8 +1052,19 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
             else:
                 queryset = queryset.filter(ranking__in=priorities)
 
-
         return queryset
+
+
+class CantonPlanningSummaryView(LoginRequiredApproveRequiredMixin, DetailView):
+    model = AdministrativeLevel
+    template_name = "canton/tabs/planning_cycle.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        canton = self.get_object()
+        planning_service = CantonPlanningService(canton)
+        context["planning_summary"] = planning_service.get_summary()
+        return context
 
 
 class ProjectListView(PageMixin, IsInvestorMixin, ListView):
@@ -1019,16 +1076,19 @@ class ProjectListView(PageMixin, IsInvestorMixin, ListView):
         {"url": "", "title": title},
     ]
 
-    def get_context_data(self,*args, object_list=None, **kwargs):
+    def get_context_data(self, *args, object_list=None, **kwargs):
         queryset = object_list if object_list is not None else self.object_list
 
         context = super().get_context_data(object_list=queryset, **kwargs)
 
         object_name = self.get_context_object_name(queryset)
         if object_name in context:
-            context[object_name] = context[object_name].annotate(investments_count=Count('packages__funded_investments'))
-            context[object_name] = context[object_name].annotate(investments_total=Sum('packages__funded_investments__estimated_cost'))
-            context['total_mount_invested'] = context[object_name].aggregate(Sum('investments_total'))['investments_total__sum'] or 0
+            context[object_name] = context[object_name].annotate(
+                investments_count=Count('packages__funded_investments'))
+            context[object_name] = context[object_name].annotate(
+                investments_total=Sum('packages__funded_investments__estimated_cost'))
+            context['total_mount_invested'] = context[object_name].aggregate(Sum('investments_total'))[
+                                                  'investments_total__sum'] or 0
 
         return context
 
@@ -1052,7 +1112,8 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             investment = Investment.objects.filter(
                 funded_by__id=self.object.id,
             ).exclude(project_status=Investment.NOT_FUNDED).get(id=request.POST['investment'])
-            succeeded, new_attachment = Attachment.investment_upload(investment=investment, image=request.FILES.get('image_input'))
+            succeeded, new_attachment = Attachment.investment_upload(investment=investment,
+                                                                     image=request.FILES.get('image_input'))
             if succeeded:
                 messages.add_message(request, messages.SUCCESS, _("Investment updated."))
                 track_user_activity(request, 'UploadInvestmentFile')
@@ -1175,7 +1236,7 @@ class ProjectCreateView(PageMixin, IsInvestorMixin, CreateView):
         return kwargs
 
     def get_success_url(self):
-        #return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
+        # return reverse('administrativelevels:project-upload-investments', kwargs={'pk': self.object.pk})
         return reverse('administrativelevels:projects')
 
 
@@ -1243,10 +1304,10 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
     model = Attachment
 
     filter_hierarchy = [
-        'task',
-        'activity',
-        'phase'
-    ] + [adm_type[0].lower() for adm_type in AdministrativeLevel.TYPE]
+                           'task',
+                           'activity',
+                           'phase'
+                       ] + [adm_type[0].lower() for adm_type in AdministrativeLevel.TYPE]
 
     def post(self, request, *args, **kwargs):
         url = reverse("administrativelevels:attachments")
@@ -1254,9 +1315,9 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
 
         for key, value in request.GET.items():
             if (
-                key in request.POST
-                and value != request.POST[key]
-                and request.POST[key] != ""
+                    key in request.POST
+                    and value != request.POST[key]
+                    and request.POST[key] != ""
             ):
                 final_querystring.pop(key)
 
@@ -1293,7 +1354,7 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
 
         form = AttachmentFilterForm()
 
-        paginator= self.__build_db_filter()
+        paginator = self.__build_db_filter()
 
         context["no_results"] = paginator.count == 0
         context["current_language"] = translation.get_language()
@@ -1352,7 +1413,8 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
                 if hasattr(adm_lvl, "parent") and adm_lvl.parent is not None and len(self.filter_hierarchy) > index + 1:
                     resp[next_filter_level] = adm_lvl.parent.id
 
-            if len(self.filter_hierarchy) > index + 1 and 'village' in self.request.GET and self.request.GET['village'] is not None:
+            if len(self.filter_hierarchy) > index + 1 and 'village' in self.request.GET and self.request.GET[
+                'village'] is not None:
                 return _build_filter_hierarchy(index + 1, resp[next_filter_level])
             return resp
 
