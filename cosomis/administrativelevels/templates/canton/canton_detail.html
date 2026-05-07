@@ -2,7 +2,7 @@
 
 {% block custom_title %}
 	<div class="col-sm-12">
-		<div class="m-0 main-title" style="color: #707070 !important;"><h2>{{ title | safe }}</h2></div>
+		<div class="m-0 main-title text-secondary"><h2>{{ title | safe }}</h2></div>
 		<nav aria-label="breadcrumb" class="mt-1">
 			<div style="font-size: 14px;">
 				{% adm_breadcrumb object %}
@@ -33,8 +33,8 @@
 						{% for image in images_data.images %}
 							<div class="carousel-item {% if forloop.first %}active{% endif %}">
 								<a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
-									<img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
-										 style="height: 500px !important;" alt="{{ image.name|default:'' }}">
+									<img class="d-block w-100 img-fluid" src="{{ image.url|imgAWSS3Filter }}"
+										 style="height: 500px; object-fit: cover;" alt="{{ image.name|default:'' }}">
 								</a>
 							</div>
 						{% endfor %}
@@ -138,17 +138,35 @@
 				<div class="card-body">
 					<div class="col-12">
 						<ul class="nav nav-tabs">
-							<li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
-															href="#priorities">{% translate "Priorities" %}</a></li>
-							<li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-																	  href="#villages">{% translate "Villages" %}</a>
+							<li class="nav-item btn p-0">
+								<a class="nav-link active" data-toggle="tab" href="#priorities">
+									{% translate "Priorities" %}
+								</a>
 							</li>
-							<li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
-															href="#diagnostics">{% translate "Diagnostics" %}</a></li>
-							<li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
-															href="#climate">{% translate "Climate" %}</a></li>
-							<li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-																	  href="#subprojects">{% translate "Subprojects" %}</a>
+							<li class="nav-item btn p-0 pl-2 pr-2">
+								<a class="nav-link" data-toggle="tab" href="#villages">
+									{% translate "Villages" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0 pl-2 pr-2">
+								<a class="nav-link" data-toggle="tab" href="#planning-cycle">
+									{% translate "Planning Cycle" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0">
+								<a class="nav-link" data-toggle="tab" href="#diagnostics">
+									{% translate "Diagnostics" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0">
+								<a class="nav-link" data-toggle="tab" href="#climate">
+									{% translate "Climate" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0 pl-2 pr-2">
+								<a class="nav-link" data-toggle="tab" href="#subprojects">
+									{% translate "Subprojects" %}
+								</a>
 							</li>
 						</ul>
 
@@ -197,6 +215,18 @@
 										{% endfor %}
 										</tbody>
 									</table>
+								</div>
+							</div>
+							<div id="planning-cycle" class="tab-pane fade">
+								<div hx-get="{% url 'administrativelevels:canton_planning_summary' object.id %}"
+									 hx-trigger="load"
+									 hx-swap="innerHTML">
+									<div class="text-center py-5">
+										<div class="spinner-border text-primary" role="status">
+											<span class="sr-only">{% trans "Loading..." %}</span>
+										</div>
+										<p class="mt-2 text-muted">{% trans "Loading planning cycle data..." %}</p>
+									</div>
 								</div>
 							</div>
 							<div id="diagnostics" class="tab-pane fade">
@@ -257,6 +287,8 @@
 														<td class="border-sides--light">
 															<a href="" data-container="body" data-toggle="popover"
 															   data-placement="top" data-trigger="hover" data-content="
+
+
 
 																	{% if subproject.description %}{{ subproject.description }}{% else %}-{% endif %}">
 																{{ subproject.title }}
