@@ -256,57 +256,54 @@
 
 {% block javascript %}
     {{ block.super }}
-    <!-- jQuery -->
-    <script src="{% static 'AdminLTE/plugins/jquery/jquery.min.js' %}"></script>
-    <!-- Bootstrap 4 -->
-    <script src="{% static 'AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <!-- Attachments script for carrousel -->
     <script type="text/javascript">
-
-        $('[data-toggle="popover"]').popover();
-        let spin_attachments_images = $("#spin-attachments-images");
-        let attachments_images = $("#attachments_images");
-        spin_attachments_images.show();
-        attachments_images.html(`
-    {% if images_data.exists_at_least_image %}
-
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                {% for image in images_data.images %}
-                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"
-            {% if forloop.first %}class="active"{% endif %} ></li>
-                {% endfor %}
-            </ol>
-            <div class="carousel-inner">
-                {% for image in images_data.images %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
-                            <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
-                            style="height: 500px !important;"
-                            alt="{{ image.task }}">
-                        </a>
-                    </div>
-                {% endfor %}
+        document.addEventListener('DOMContentLoaded', function () {
+            $('[data-toggle="popover"]').popover();
+            let spin_attachments_images = $("#spin-attachments-images");
+            let attachments_images = $("#attachments_images");
+            spin_attachments_images.show();
+            attachments_images.html(`
+        {% if images_data.exists_at_least_image %}
+    
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    {% for image in images_data.images %}
+                        <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"
+                {% if forloop.first %}class="active"{% endif %} ></li>
+                    {% endfor %}
+                </ol>
+                <div class="carousel-inner">
+                    {% for image in images_data.images %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
+                                <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
+                                style="height: 500px !important;"
+                                alt="{{ image.task }}">
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
-
-    {% else %}
-    <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
-                <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
-    alt="Card image">
-    </a>
-
-    {% endif %}
-    `);
-        spin_attachments_images.hide();
+    
+        {% else %}
+        <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
+                    <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
+        alt="Card image">
+        </a>
+    
+        {% endif %}
+        `);
+            spin_attachments_images.hide();
+        });
     </script>
 
     <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>

@@ -153,6 +153,11 @@
 									{% translate "Planning Cycle" %}
 								</a>
 							</li>
+							<li class="nav-item btn p-0 pl-2 pr-2">
+								<a class="nav-link" data-toggle="tab" href="#map-tab">
+									{% translate "Map" %}
+								</a>
+							</li>
 							<li class="nav-item btn p-0">
 								<a class="nav-link" data-toggle="tab" href="#diagnostics">
 									{% translate "Diagnostics" %}
@@ -219,8 +224,7 @@
 							</div>
 							<div id="planning-cycle" class="tab-pane fade">
 								<div hx-get="{% url 'administrativelevels:canton_planning_summary' object.id %}"
-									 hx-trigger="load"
-									 hx-swap="innerHTML">
+									 hx-trigger="load" hx-swap="innerHTML">
 									<div class="text-center py-5">
 										<div class="spinner-border text-primary" role="status">
 											<span class="sr-only">{% trans "Loading..." %}</span>
@@ -228,6 +232,9 @@
 										<p class="mt-2 text-muted">{% trans "Loading planning cycle data..." %}</p>
 									</div>
 								</div>
+							</div>
+							<div id="map-tab" class="tab-pane fade">
+								{% include 'canton/tabs/map_tab.html' %}
 							</div>
 							<div id="diagnostics" class="tab-pane fade">
 								<h3>{% translate "In construction" %}</h3>
@@ -287,6 +294,9 @@
 														<td class="border-sides--light">
 															<a href="" data-container="body" data-toggle="popover"
 															   data-placement="top" data-trigger="hover" data-content="
+
+
+
 
 
 
@@ -451,5 +461,22 @@
                 }
             };
         });
+	</script>
+
+    <script>
+        // Mapbox map lazy-initialize: only run when the Map tab is first shown.
+        // This avoids the common Mapbox bug where the canvas has 0×0 size because
+        // it was rendered inside a hidden Bootstrap tab.
+        (function () {
+            var mapReady = false;
+            $(document).on('shown.bs.tab', 'a[href="#map-tab"]', function () {
+                if (!mapReady) {
+                    mapReady = true;
+                    // canton_map.js already ran DOMContentLoaded; we fire a custom
+                    // event so it can initialize on demand.
+                    document.dispatchEvent(new CustomEvent('cantonMapTabShown'));
+                }
+            });
+        })();
 	</script>
 {% endblock %}

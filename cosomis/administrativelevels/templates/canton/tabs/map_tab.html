@@ -1,0 +1,118 @@
+{# ============================================================ #}
+{# canton/tabs/map_tab.html                                     #}
+{# Map tab – Canton Profile                                     #}
+{# Requires context:                                            #}
+{#   mapbox_access_token  (str)                                 #}
+{#   villages_map_data    (dict – from CantonMapService)        #}
+{# ============================================================ #}{% load static i18n %}
+
+<div class="row mt-3" id="canton-map-container">
+
+	{# ---- Left column: Map + layer controls + legend ---- #}
+	<div class="col-lg-8 col-12">
+		<div class="card shadow-sm">
+			<div class="card-header d-flex align-items-center justify-content-between py-2">
+                <span class="font-weight-bold">
+                    <i class="fas fa-map-marked-alt mr-1 text-primary"></i>
+                    {% translate "Geographic Distribution" %}
+                </span>
+				{# Layer toggle buttons #}
+				<div class="btn-group btn-group-sm" role="group" aria-label="{% translate 'Map layers' %}">
+					<button type="button" class="map-layer-btn btn btn-primary" data-layer="priorities"
+							title="{% translate 'Show priority locations' %}">
+						<i class="fas fa-flag mr-1"></i>{% translate "Priorities" %}
+					</button>
+					<button type="button" class="map-layer-btn btn btn-outline-secondary" data-layer="subprojects"
+							title="{% translate 'Show active subprojects' %}">
+						<i class="fa fa-project-diagram mr-1"></i>{% translate "Subprojects" %}
+					</button>
+					<button type="button" class="map-layer-btn btn btn-outline-secondary" data-layer="planning"
+							title="{% translate 'Show planning progress' %}">
+						<i class="fas fa-tasks mr-1"></i>{% translate "Planning" %}
+					</button>
+				</div>
+			</div>
+
+			<div class="card-body p-0 position-relative">
+				{# The Mapbox container #}
+				<div id="canton-map" style="height: 450px; width: 100%;"></div>
+
+				{# Legend overlay – bottom-left of map #}
+				<div id="map-legend" style="position:absolute;bottom:24px;left:10px;z-index:10;
+                            background:rgba(255,255,255,.92);border-radius:6px;
+                            padding:8px 12px;min-width:140px;box-shadow:0 1px 4px rgba(0,0,0,.15);">
+					<div class="font-weight-bold mb-1"
+						 style="font-size:.75rem;text-transform:uppercase;letter-spacing:.05em">
+						{% translate "Legend" %}
+					</div>
+					<div id="map-legend-content">
+						{# Populated by canton_map.js #}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{# ---- Right column: Subprojects sidebar ---- #}
+	<div class="col-lg-4 col-12 mt-3 mt-lg-0">
+		<div class="card shadow-sm h-100">
+			<div class="card-header py-2">
+                <span class="font-weight-bold">
+                    <i class="fas fa-list mr-1 text-secondary"></i>
+                    {% translate "Subprojects & Priorities" %}
+                </span>
+				<small class="text-muted d-block">{% translate "Click an item to pan the map" %}</small>
+			</div>
+			<div class="card-body p-2" style="overflow-y:auto; max-height:420px;">
+				<div id="map-subprojects-list">
+					{# Populated by canton_map.js #}
+					<div class="text-center py-3">
+						<i class="fas fa-circle-notch fa-spin text-secondary"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+{# ============================================================ #}
+{# Mapbox CSS + JS                                              #}
+{# ============================================================ #}
+{% block map_css %}
+
+	<link href="{% static 'plugins/mapbox-gl-js/v3.2.0/mapbox-gl.css' %}" rel="stylesheet">
+	<style>
+        .canton-map-popup h6 {
+            font-size: .85rem;
+        }
+
+        .canton-map-popup hr {
+            margin: .4rem 0;
+        }
+
+        .map-sidebar-item {
+            transition: background .15s;
+        }
+
+        .map-sidebar-item:hover {
+            background: #f3f4f6 !important;
+        }
+
+        /* Make sure the map tab shows the map at full height */
+        #canton-map .mapboxgl-canvas {
+            outline: none;
+        }
+	</style>
+{% endblock %}
+
+{# ============================================================ #}
+{# Data injection (JSON-safe via |safe, already escaped in view) #}
+{# ============================================================ #}
+<script>
+    window.MAPBOX_TOKEN = "{{ mapbox_access_token }}";
+    window.CANTON_MAP_DATA = {{ villages_map_data_json|safe }};
+</script>
+
+{# canton_map.js should be loaded once in the base template or here #}
+<script src="{% static 'js/canton_map.js' %}"></script>

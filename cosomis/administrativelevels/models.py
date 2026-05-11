@@ -150,6 +150,23 @@ class AdministrativeLevel(BaseModel):
         """Method to get the list of the all Geographical Unit that the administrative is linked"""
         return self.geographicalunit_set.get_queryset()
 
+    def get_villages_coordinates(self):
+        coordinates = list()
+        if self.type == self.VILLAGE:
+            if self.longitude is not None and self.latitude is not None:
+                return {
+                    "name": self.name,
+                    "id": self.id,
+                    "coordinates": [float(self.longitude), float(self.latitude)]
+                }
+        for child in self.children.all():
+            if child.type == self.VILLAGE:
+                if child.longitude is not None and child.latitude is not None:
+                    coordinates.append(child.get_villages_coordinates())
+            else:
+                coordinates += child.get_villages_coordinates()
+        return coordinates
+
 
 class GeographicalUnit(BaseModel):
     canton = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Administrative level"))
