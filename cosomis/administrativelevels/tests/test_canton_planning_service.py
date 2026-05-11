@@ -68,7 +68,7 @@ class TestPhaseStatus(TestCase):
         self.assertEqual(PhaseStatus(1, "P", STATUS_IN_PROGRESS).dot_color, "#ffc107")
 
     def test_dot_color_not_started(self):
-        self.assertEqual(PhaseStatus(1, "P", STATUS_NOT_STARTED).dot_color, "#dee2e6")
+        self.assertEqual(PhaseStatus(1, "P", STATUS_NOT_STARTED).dot_color, "#6c757d")
 
     def test_dot_color_unknown_falls_back(self):
         self.assertEqual(PhaseStatus(1, "P", "???").dot_color, "#dee2e6")
@@ -89,12 +89,17 @@ class TestPhaseStatus(TestCase):
 
 class TestVillagePlanningRow(TestCase):
 
-    def _row(self, c, ip, ns):
-        return VillagePlanningRow(1, "V", completed_phases=c, in_progress_phases=ip, not_started_phases=ns)
+    def _row(self, c, ip, ns, pc=0):
+        row = VillagePlanningRow(1, "V", completed_phases=c, in_progress_phases=ip, not_started_phases=ns, priorities_count=pc)
+        # We must provide phases because percentage calculations now depend on len(self.phases)
+        row.phases = [PhaseStatus(i, "P", STATUS_COMPLETED) for i in range(c)] + \
+                     [PhaseStatus(i, "P", STATUS_IN_PROGRESS) for i in range(ip)] + \
+                     [PhaseStatus(i, "P", STATUS_NOT_STARTED) for i in range(ns)]
+        return row
 
     def test_percentages_sum_to_100_when_full(self):
         row = self._row(2, 1, 1)
-        self.assertAlmostEqual(row.completed_pct + row.in_progress_pct + row.not_started_pct, 100.0)
+        self.assertEqual(row.completed_pct + row.in_progress_pct + row.not_started_pct, 100)
 
     def test_overall_status_completed(self):
         self.assertEqual(self._row(4, 0, 0).overall_status, STATUS_COMPLETED)
@@ -115,12 +120,27 @@ class TestVillagePlanningRow(TestCase):
 
 class TestCantonPlanningSummary(TestCase):
 
-    def _summary(self, village_count, total_completed_phases):
+    def _summary(self, village_count, total_completed_phases, total_phases_per_village=4):
+        villages = []
+        for i in range(village_count):
+            # Distribute completed phases among villages for testing
+            # This is a bit arbitrary but needed since overall_completion_pct uses v.phases
+            v_completed = total_completed_phases // village_count
+            if i < total_completed_phases % village_count:
+                v_completed += 1
+            
+            row = VillagePlanningRow(i, f"V{i}", completed_phases=v_completed, 
+                                     in_progress_phases=0, 
+                                     not_started_phases=total_phases_per_village - v_completed)
+            row.phases = [PhaseStatus(j, "P", STATUS_COMPLETED) for j in range(total_phases_per_village)]
+            villages.append(row)
+
         return CantonPlanningSummary(
             canton_id=1, canton_name="C",
             village_count=village_count,
             completed_villages=0, in_progress_villages=0, not_started_villages=0,
             total_completed_phases=total_completed_phases,
+            villages=villages
         )
 
     def test_100_percent(self):
@@ -133,7 +153,7 @@ class TestCantonPlanningSummary(TestCase):
         self.assertEqual(self._summary(0, 0).overall_completion_pct, 0.0)
 
     def test_rounds_to_one_decimal(self):
-        # 3 / 16 × 100 = 18.75 → 18.8
+        # 3 / (4 * 4) × 100 = 18.75 → 18.8
         self.assertEqual(self._summary(4, 3).overall_completion_pct, 18.8)
 
 
@@ -185,7 +205,8 @@ class TestCantonPlanningServiceGetSummary(TestCase):
         Village A: 4 completed  → completed
         Village B: 2 completed, 1 in-progress, 1 not-started → in-progress
         Village C: no phases in DB → not-started
-        Expected: total_completed_phases=6, overall=6/(3×4)×100=50%
+        Expected: total_completed_phases=6, overall=6/8*100=75%
+        (Note: Village C has 0 phases, so it doesn't contribute to total_existing_phases)
         """
         canton = _make_canton()
         a = _make_village(pk=1, name="A")
@@ -209,10 +230,11 @@ class TestCantonPlanningServiceGetSummary(TestCase):
         self.assertEqual(summary.in_progress_villages, 1)
         self.assertEqual(summary.not_started_villages, 1)
         self.assertEqual(summary.total_completed_phases, 6)
-        self.assertEqual(summary.overall_completion_pct, 50.0)
+        # Total phases = 4 (A) + 4 (B) + 0 (C) = 8. 6/8 = 75%
+        self.assertEqual(summary.overall_completion_pct, 75.0)
 
-    def test_village_always_has_four_phase_slots(self):
-        """Even if only 2 phases exist in DB, we always show 4."""
+    def test_variable_phases(self):
+        """Even if only 2 phases exist in DB, we only show those 2."""
         canton = _make_canton()
         village = _make_village(pk=1, name="V")
         phases = [_make_phase(1, STATUS_COMPLETED), _make_phase(2, STATUS_IN_PROGRESS)]
@@ -221,10 +243,9 @@ class TestCantonPlanningServiceGetSummary(TestCase):
         summary = service.get_summary()
         row = summary.villages[0]
 
-        self.assertEqual(len(row.phases), TOTAL_PHASES_PER_VILLAGE)
-        # Phases 3 and 4 were not in DB → must be NOT_STARTED
-        self.assertEqual(row.phases[2].status, STATUS_NOT_STARTED)
-        self.assertEqual(row.phases[3].status, STATUS_NOT_STARTED)
+        self.assertEqual(len(row.phases), 2)
+        self.assertEqual(row.phases[0].status, STATUS_COMPLETED)
+        self.assertEqual(row.phases[1].status, STATUS_IN_PROGRESS)
 
     def test_village_row_ids_and_names_match(self):
         canton = _make_canton()
