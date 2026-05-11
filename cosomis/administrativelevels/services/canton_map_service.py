@@ -17,7 +17,8 @@ from typing import Any
 
 from django.db.models import Prefetch
 
-from administrativelevels.models import AdministrativeLevel, Phase, Task
+from administrativelevels.models import AdministrativeLevel, Phase, Task, Activity
+from administrativelevels.services.canton_planning_service import CantonPlanningService
 from investments.models import Investment
 
 logger = logging.getLogger(__name__)
@@ -144,7 +145,7 @@ class CantonMapService:
                         "sector", "sector__category"
                     ).only(
                         "id", "ranking", "title", "estimated_cost",
-                        "project_status", "climate_contribution",
+                        "project_status", "investment_status", "climate_contribution",
                         "administrative_level_id", "sector",
                     ),
                 ),
@@ -205,12 +206,21 @@ class CantonMapService:
             sub_category_color = self._color_registry.color_for(sub_category_name)
 
         # ---- Planning layer ----
-        planning_status = self._compute_planning_status(village)
+        # Use a singleton pattern or inject it to avoid multiple instantiations if performance is an issue, 
+        # but for one canton's villages (usually ~10-30), this is fine.
+        planning_service = CantonPlanningService(self._canton)
+        planning_row = planning_service._build_village_row(village, phases_qs=list(village.phases.all()))
+        planning_status = planning_row.overall_status
+        
         planning_color = {
-            "completed": PLANNING_COMPLETED,
-            "in_progress": PLANNING_IN_PROGRESS,
-            "not_started": PLANNING_NOT_STARTED,
-        }[planning_status]
+            Task.COMPLETED: PLANNING_COMPLETED,
+            Task.IN_PROGRESS: PLANNING_IN_PROGRESS,
+            Task.NOT_STARTED: PLANNING_NOT_STARTED,
+        }.get(planning_status, PLANNING_NOT_STARTED)
+
+        # Ensure we return valid JS-friendly keys if needed, 
+        # but the actual values in Task constants are 'completed', 'in progress', 'not started'.
+        # The frontend now expects these exact strings with spaces.
 
         return {
             "id": village.id,
@@ -237,63 +247,41 @@ class CantonMapService:
             # Planning layer
             "planning_status": planning_status,
             "planning_color": planning_color,
-            "phases_total": sum(1 for _ in village.phases.all()),
-            "phases_complete": sum(
-                1 for ph in village.phases.all()
-                if self._phase_status(ph) == "completed"
-            ),
+            "phases_total": planning_row.total_phases,
+            "phases_complete": planning_row.completed_phases,
         }
 
     @staticmethod
     def _get_top_priority(investments: list[Investment]) -> Investment | None:
-        """Return the highest-ranked unfunded investment (priority), or None."""
-        unfunded = [i for i in investments if i.project_status == Investment.NOT_FUNDED]
-        if not unfunded:
-            return None
-        return min(unfunded, key=lambda i: i.ranking or 9999)
-
-    @staticmethod
-    def _phase_status(phase: Phase) -> str:
-        """Determine the status of a phase based on its tasks."""
-        statuses = [
-            task.status
-            for activity in phase.activities.all()
-            for task in activity.tasks.all()
+        """Return the highest-ranked priority investment, or None."""
+        # Business Logic: A map priority is strictly an UNFUNDED investment.
+        # Even if a funded project was once a priority (investment_status='p'),
+        # it should no longer appear as a "Need" on the Priorities layer.
+        priorities = [
+            i for i in investments 
+            if i.project_status == Investment.NOT_FUNDED
         ]
-        if not statuses:
-            return "not_started"
-        if all(s == Task.COMPLETED for s in statuses):
-            return "completed"
-        if all(s == Task.NOT_STARTED for s in statuses):
-            return "not_started"
-        return "in_progress"
-
-    def _compute_planning_status(self, village: AdministrativeLevel) -> str:
-        """Return 'completed' | 'in_progress' | 'not_started' for a village."""
-        phases = list(village.phases.all())
-        if not phases:
-            return "not_started"
-        statuses = [self._phase_status(ph) for ph in phases]
-        if all(s == "completed" for s in statuses):
-            return "completed"
-        if all(s == "not_started" for s in statuses):
-            return "not_started"
-        return "in_progress"
+        if not priorities:
+            return None
+        return min(priorities, key=lambda i: i.ranking or 9999)
 
     def _build_subprojects_list(
             self, villages: list[AdministrativeLevel]
     ) -> list[dict[str, Any]]:
-        """Flat list of active investments — feeds the sidebar and subprojects layer."""
+        """Flat list of all investments — feeds the sidebar and subprojects layer."""
         result = []
         for village in villages:
+            # Determine top priority rank for this village to highlight in UI
+            top_priority = self._get_top_priority(list(village.investments.all()))
+            top_rank = top_priority.ranking if top_priority else None
+
             for inv in village.investments.all():
-                if inv.project_status == Investment.NOT_FUNDED:
-                    continue
                 category_name = self._get_category_name(inv)
                 category_color = self._color_registry.color_for(category_name)
                 result.append({
                     "id": inv.id,
                     "title": inv.title,
+                    "ranking": inv.ranking,
                     "village_id": village.id,
                     "village_name": village.name,
                     "latitude": float(village.latitude) if village.latitude else None,
@@ -303,9 +291,18 @@ class CantonMapService:
                     "category_color": category_color,
                     "estimated_cost": inv.estimated_cost,
                     "project_status": inv.project_status,
+                    "investment_status": inv.investment_status,
+                    "village_top_priority_rank": top_rank,
                 })
-        # Sort by estimated_cost descending
-        result.sort(key=lambda x: x["estimated_cost"] or 0, reverse=True)
+        # Sort by:
+        # 1. Project Status (Subprojects before Priorities)
+        # 2. Ranking (Lower rank = higher priority/importance)
+        # 3. Estimated Cost (Descending)
+        result.sort(key=lambda x: (
+            0 if x["project_status"] != Investment.NOT_FUNDED else 1,
+            x["ranking"] or 9999,
+            -(x["estimated_cost"] or 0)
+        ))
         return result
 
     @staticmethod

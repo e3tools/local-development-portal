@@ -33,9 +33,9 @@
 
     // Planning colors (must match canton_map_service.py)
     const PLANNING_COLORS = {
-        completed: "#22C55E",
-        in_progress: "#EAB308",
-        not_started: "#EF4444",
+        "completed": "#22C55E",
+        "in progress": "#EAB308",
+        "not started": "#EF4444",
     };
 
     // Keep a reference to the currently open popup so we can close it on layer switch.
@@ -56,7 +56,15 @@
         var activePane = document.querySelector('.tab-pane.active #canton-map');
         if (activePane) tryInit();
     });
-    document.addEventListener("cantonMapTabShown", tryInit, {once: true});
+    document.addEventListener("cantonMapTabShown", function() {
+        tryInit();
+    });
+
+    // If script is loaded dynamically (HTMX), and tab is already active
+    if (document.readyState !== "loading") {
+        var activePane = document.querySelector('.tab-pane.active #canton-map');
+        if (activePane) tryInit();
+    }
 
     // -------------------------------------------------------------------------
     // Initialization
@@ -263,9 +271,9 @@
         }
 
         var html = `<div class="canton-map-popup">
-      <h6 class="font-weight-bold mb-1">${props.name || ""}</h6>
-      <small class="text-muted">Pop. ${Number(props.population || 0).toLocaleString()}</small>
-      <hr class="my-1">`;
+        <h6 class="font-weight-bold mb-1">${props.name || ""}</h6>
+        <small class="text-muted">Pop. ${Number(props.population || 0).toLocaleString()}</small>
+        <hr class="my-1">`;
 
         if (layerId === LAYER_PRIORITIES) {
             if (safe("has_priority")) {
@@ -307,11 +315,11 @@
         }
 
         if (layerId === LAYER_PLANNING) {
-            var status = props.planning_status || "not_started";
+            var status = props.planning_status || "not started";
             var label = {
-                completed: "Completed",
-                in_progress: "In Progress",
-                not_started: "Not Started"
+                "completed": "Completed",
+                "in progress": "In Progress",
+                "not started": "Not Started"
             }[status] || status;
             var phases = Number(props.phases_total || 0);
             var done = Number(props.phases_complete || 0);
@@ -353,9 +361,9 @@
         }
 
         if (layerId === LAYER_PLANNING) {
-            html += legendItem(PLANNING_COLORS.completed, "Completed", false);
-            html += legendItem(PLANNING_COLORS.in_progress, "In Progress", false);
-            html += legendItem(PLANNING_COLORS.not_started, "Not Started", false);
+            html += legendItem(PLANNING_COLORS["completed"], "Completed", false);
+            html += legendItem(PLANNING_COLORS["in progress"], "In Progress", false);
+            html += legendItem(PLANNING_COLORS["not started"], "Not Started", false);
         }
 
         container.innerHTML = html;
@@ -378,29 +386,38 @@
         if (!list) return;
 
         if (!subprojects || subprojects.length === 0) {
-            list.innerHTML = '<p class="text-muted p-2"><small>No active subprojects in this canton.</small></p>';
+            list.innerHTML = '<p class="text-muted p-2"><small>No investments found in this canton.</small></p>';
             return;
         }
 
-        var items = subprojects.filter(function (s) {
-            return s.latitude != null && s.longitude != null;
-        });
-
-        list.innerHTML = items.map(function (s) {
+        list.innerHTML = subprojects.map(function (s) {
             var catColor = s.category_color || "#6B7280";
             var catName = s.category_name || "";
             var cost = Number(s.estimated_cost || 0).toLocaleString();
-            return '<div class="map-sidebar-item p-2 mb-1 rounded"'
-                + ' style="border-left:4px solid ' + catColor + ';cursor:pointer;"'
+            var isSub = s.project_status !== "N";
+            var badgeText = isSub ? "Subproject" : "Priority";
+            var badgeClass = isSub ? "badge-info" : "badge-secondary";
+            var hasCoords = s.latitude != null && s.longitude != null;
+            var rankInfo = s.ranking ? '<span class="mr-2" style="font-size:.65rem;color:#6B7280">#' + s.ranking + '</span>' : '';
+            var isTopPriority = !isSub && s.ranking === s.village_top_priority_rank;
+            var itemClass = isTopPriority ? "bg-white shadow-sm border" : "bg-light";
+
+            return '<div class="map-sidebar-item p-2 mb-1 rounded ' + itemClass + '"'
+                + ' style="border-left:4px solid ' + catColor + ';cursor:' + (hasCoords ? 'pointer' : 'default') + ';"'
                 + ' data-lng="' + s.longitude + '" data-lat="' + s.latitude + '"'
                 + ' data-village="' + s.village_name + '">'
                 + '<div class="d-flex align-items-start justify-content-between">'
                 + '  <span class="font-weight-bold" style="font-size:.85rem">' + s.village_name + '</span>'
-                + '  <span class="badge ml-1" style="background:' + catColor + ';color:#fff;font-size:.7rem;white-space:nowrap">'
-                + catName + '</span>'
+                + '  <div class="d-flex flex-column align-items-end">'
+                + '    <span class="badge" style="background:' + catColor + ';color:#fff;font-size:.65rem;white-space:nowrap;margin-bottom:2px">' + catName + '</span>'
+                + '    <span class="badge ' + badgeClass + '" style="font-size:.6rem">' + badgeText + '</span>'
+                + '  </div>'
                 + '</div>'
-                + '<div class="text-muted" style="font-size:.8rem">' + (s.title || "") + '</div>'
-                + '<div style="font-size:.75rem;color:#6B7280">' + cost + ' FCFA</div>'
+                + '<div class="text-muted" style="font-size:.8rem;line-height:1.2;margin-top:2px">' + (s.title || "") + '</div>'
+                + '<div class="d-flex justify-content-between mt-1 align-items-center">'
+                + '  <div class="d-flex align-items-center">' + rankInfo + '<div style="font-size:.75rem;color:#6B7280">' + cost + ' FCFA</div></div>'
+                + (!hasCoords ? '  <small class="text-danger" style="font-size:.65rem">No coords</small>' : '')
+                + '</div>'
                 + '</div>';
         }).join("");
 
@@ -409,13 +426,15 @@
             item.addEventListener("click", function () {
                 var lng = parseFloat(this.dataset.lng);
                 var lat = parseFloat(this.dataset.lat);
-                map.flyTo({center: [lng, lat], zoom: 13, duration: 900});
+                if (!isNaN(lng) && !isNaN(lat)) {
+                    map.flyTo({center: [lng, lat], zoom: 13, duration: 900});
 
-                // Highlight
-                list.querySelectorAll(".map-sidebar-item").forEach(function (el) {
-                    el.classList.remove("bg-light");
-                });
-                this.classList.add("bg-light");
+                    // Highlight
+                    list.querySelectorAll(".map-sidebar-item").forEach(function (el) {
+                        el.classList.remove("bg-light");
+                    });
+                    this.classList.add("bg-light");
+                }
             });
         });
     }
