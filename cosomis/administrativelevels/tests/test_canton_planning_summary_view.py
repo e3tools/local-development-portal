@@ -6,7 +6,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task
+from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Sector, Category
+from investments.models import Investment
 
 User = get_user_model()
 
@@ -167,5 +168,45 @@ class CantonPlanningSummaryViewContextTest(CantonPlanningSummaryViewBaseTest):
         ctx = self._get_context()
         summary = ctx['planning_summary']
         # Village A: 100% (1/1 completed), Village B: 0% (0/1 completed)
-        # Overall: 50%
-        self.assertEqual(summary.overall_completion_pct, 12.5) # (1 completed phase) / (2 villages * 4 phases) * 100 = 12.5
+        # Overall: (1+0)/(1+1) = 50%
+        self.assertEqual(summary.overall_completion_pct, 50.0)
+
+    def test_summary_contains_all_unique_phase_names(self):
+        # Create a new village with a different phase
+        village_c = _make_village(name="Village Gamma", canton=self.canton)
+        phase_c1 = _make_phase(village_c, "Phase 2", order=2)
+        
+        ctx = self._get_context()
+        summary = ctx['planning_summary']
+        
+        # Check all_phase_names contains "Phase 1" and "Phase 2"
+        self.assertIn("Phase 1", summary.all_phase_names)
+        self.assertIn("Phase 2", summary.all_phase_names)
+        # Check order (Phase 1 should be first because order is default None which is < 2)
+        self.assertEqual(summary.all_phase_names[0], "Phase 1")
+        self.assertEqual(summary.all_phase_names[1], "Phase 2")
+
+    def test_priorities_identified_count(self):
+        category = Category.objects.create(name="Social")
+        sector = Sector.objects.create(name="Education", category=category)
+        # Add 3 investments to village A
+        for i in range(3):
+            Investment.objects.create(
+                title=f"Inv {i}",
+                administrative_level=self.village_a,
+                sector=sector,
+                estimated_cost=1000,
+                duration=10,
+                delays_consumed=0,
+                physical_execution_rate=0,
+                financial_implementation_rate=0
+            )
+        
+        ctx = self._get_context()
+        summary = ctx['planning_summary']
+        
+        row_a = next(v for v in summary.villages if v.village_id == self.village_a.id)
+        self.assertEqual(row_a.priorities_count, 3)
+        
+        row_b = next(v for v in summary.villages if v.village_id == self.village_b.id)
+        self.assertEqual(row_b.priorities_count, 0)

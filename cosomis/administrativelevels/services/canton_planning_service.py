@@ -9,7 +9,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import List
 
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Count
 from administrativelevels.models import AdministrativeLevel, Phase, Task, Activity
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ class PhaseStatus:
         return {
             STATUS_COMPLETED: "#28a745",
             STATUS_IN_PROGRESS: "#ffc107",
-            STATUS_NOT_STARTED: "#dee2e6",
+            STATUS_NOT_STARTED: "#6c757d",
             STATUS_ERROR: "#dc3545",
         }.get(self.status, "#dee2e6")
 
@@ -56,27 +56,50 @@ class VillagePlanningRow:
     completed_phases: int
     in_progress_phases: int
     not_started_phases: int
+    priorities_count: int = 0
     phases: List[PhaseStatus] = field(default_factory=list)
 
     @property
     def total_phases(self) -> int:
-        return TOTAL_PHASES_PER_VILLAGE
+        return len(self.phases)
 
     @property
-    def completed_pct(self) -> float:
-        return (self.completed_phases / self.total_phases) * 100
+    def completed_pct(self) -> int:
+        if self.total_phases == 0:
+            return 0
+        
+        # If this is the only visible category, it's 100% (if all completed) or rounded
+        if self.completed_phases == self.total_phases:
+            return 100
+        
+        return int(round((self.completed_phases / self.total_phases) * 100))
 
     @property
-    def in_progress_pct(self) -> float:
-        return (self.in_progress_phases / self.total_phases) * 100
+    def in_progress_pct(self) -> int:
+        if self.total_phases == 0:
+            return 0
+        
+        # If this is the last visible category, take the remainder
+        if self.in_progress_phases > 0 and self.not_started_phases == 0:
+            return 100 - self.completed_pct
+        
+        return int(round((self.in_progress_phases / self.total_phases) * 100))
 
     @property
-    def not_started_pct(self) -> float:
-        return (self.not_started_phases / self.total_phases) * 100
+    def not_started_pct(self) -> int:
+        if self.total_phases == 0:
+            return 0
+        
+        # To avoid rounding issues (e.g. 71 + 14 + 14 = 99), 
+        # we make the last non-zero bar take the remainder.
+        # If not_started_pct is the last one:
+        if self.not_started_phases > 0:
+            return 100 - self.completed_pct - self.in_progress_pct
+        return 0
 
     @property
     def overall_status(self) -> str:
-        if self.completed_phases == self.total_phases:
+        if self.total_phases > 0 and self.completed_phases == self.total_phases:
             return STATUS_COMPLETED
         if self.completed_phases > 0 or self.in_progress_phases > 0:
             return STATUS_IN_PROGRESS
@@ -93,17 +116,18 @@ class CantonPlanningSummary:
     in_progress_villages: int
     not_started_villages: int
     total_completed_phases: int
+    all_phase_names: List[str] = field(default_factory=list)
     villages: List[VillagePlanningRow] = field(default_factory=list)
 
     @property
     def overall_completion_pct(self) -> float:
         """
-        Formula from AC: total_completed_phases / (village_count × 4) × 100
+        Formula from AC: total_completed_phases / total_existing_phases × 100
         """
-        denominator = self.village_count * TOTAL_PHASES_PER_VILLAGE
-        if denominator == 0:
+        total_existing_phases = sum(len(v.phases) for v in self.villages)
+        if total_existing_phases == 0:
             return 0.0
-        return round((self.total_completed_phases / denominator) * 100, 1)
+        return round((self.total_completed_phases / total_existing_phases) * 100, 1)
 
 
 class CantonPlanningRepository:
@@ -115,6 +139,7 @@ class CantonPlanningRepository:
         return (
             AdministrativeLevel.objects
             .filter(parent=canton, type=AdministrativeLevel.VILLAGE)
+            .annotate(investments_count=Count("investments"))
             .order_by("name")
         )
 
@@ -199,13 +224,22 @@ class CantonPlanningService:
         village_rows: List[VillagePlanningRow] = []
         total_completed_phases = 0
         completed_villages = in_progress_villages = not_started_villages = 0
+        
+        # Track all unique phase names in order
+        all_phase_names_map = {}
 
         for village in villages:
             if village.pk in phases_by_village:
                 v_phases = phases_by_village[village.pk]
                 row = self._build_village_row(village, v_phases)
+                for p in v_phases:
+                    if p.name not in all_phase_names_map:
+                        all_phase_names_map[p.name] = p.order
             else:
                 row = self._build_village_row(village)
+                for ps in row.phases:
+                    if ps.name not in all_phase_names_map:
+                        all_phase_names_map[ps.name] = ps.order
 
             village_rows.append(row)
             total_completed_phases += row.completed_phases
@@ -217,6 +251,11 @@ class CantonPlanningService:
             else:
                 not_started_villages += 1
 
+        # Sort phase names by their order
+        sorted_phase_names = [
+            name for name, order in sorted(all_phase_names_map.items(), key=lambda x: x[1])
+        ]
+
         summary = CantonPlanningSummary(
             canton_id=self._canton.pk,
             canton_name=self._canton.name,
@@ -225,6 +264,7 @@ class CantonPlanningService:
             in_progress_villages=in_progress_villages,
             not_started_villages=not_started_villages,
             total_completed_phases=total_completed_phases,
+            all_phase_names=sorted_phase_names,
             villages=village_rows,
         )
 
@@ -237,28 +277,20 @@ class CantonPlanningService:
     def _build_village_row(self, village: AdministrativeLevel, phases_qs=None) -> VillagePlanningRow:
         if phases_qs is None:
             phases_qs = self._repo.get_phases_for_village(village)
-        existing_phases = {p.order: p for p in phases_qs}
-
+        
         phase_statuses: List[PhaseStatus] = []
         completed_phases_count = in_progress_phases_count = not_started_phases_count = 0
 
-        for order in range(1, TOTAL_PHASES_PER_VILLAGE + 1):
-            if order in existing_phases:
-                phase = existing_phases[order]
-                # If phases_qs was prefetched, get_status would still do queries
-                # unless we use the optimized path.
-                # In tests with simple mocks, we use phase.get_status()
-                if hasattr(phase, 'activities'):
-                    status = self._get_phase_status_optimized(phase)
-                else:
-                    status = phase.get_status()
-                name = phase.name
+        for phase in phases_qs:
+            # If phases_qs was prefetched, get_status would still do queries
+            # unless we use the optimized path.
+            # In tests with simple mocks, we use phase.get_status()
+            if hasattr(phase, 'activities'):
+                status = self._get_phase_status_optimized(phase)
             else:
-                # Phase not yet created in DB → treat as not started
-                status = STATUS_NOT_STARTED
-                name = f"Phase {order}"
-
-            phase_statuses.append(PhaseStatus(order=order, name=name, status=status))
+                status = phase.get_status()
+            
+            phase_statuses.append(PhaseStatus(order=phase.order, name=phase.name, status=status))
 
             if status == STATUS_COMPLETED:
                 completed_phases_count += 1
@@ -266,6 +298,8 @@ class CantonPlanningService:
                 in_progress_phases_count += 1
             else:
                 not_started_phases_count += 1
+        
+        priorities_count = getattr(village, "investments_count", 0)
 
         return VillagePlanningRow(
             village_id=village.pk,
@@ -273,6 +307,7 @@ class CantonPlanningService:
             completed_phases=completed_phases_count,
             in_progress_phases=in_progress_phases_count,
             not_started_phases=not_started_phases_count,
+            priorities_count=priorities_count,
             phases=phase_statuses,
         )
 
