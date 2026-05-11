@@ -21,7 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView, CreateView, FormView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import BaseFormView
-
+from administrativelevels.services.canton_map_service import CantonMapService
 from administrativelevels.forms import (
     AdministrativeLevelForm,
     AttachmentFilterForm,
@@ -276,7 +276,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
         ).order_by('status_order', 'ranking')
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
-        context['children_coordinates'] = self._get_villages_coordinates_from_administrative_level(self.object)
+        context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())
 
         package = Package.objects.get_active_cart(user=self.request.user)
         context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
@@ -361,22 +361,6 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
                     ).first()
         return None
 
-    def _get_villages_coordinates_from_administrative_level(self, administrative_level):
-        coordinates = list()
-        if administrative_level.type == AdministrativeLevel.VILLAGE:
-            if administrative_level.longitude is not None and administrative_level.latitude is not None:
-                return {
-                    "name": administrative_level.name,
-                    "id": administrative_level.id,
-                    "coordinates": [float(administrative_level.longitude), float(administrative_level.latitude)]
-                }
-        for child in administrative_level.children.all():
-            if child.type == AdministrativeLevel.VILLAGE:
-                if child.longitude is not None and child.latitude is not None:
-                    coordinates.append(self._get_villages_coordinates_from_administrative_level(child))
-            else:
-                coordinates += self._get_villages_coordinates_from_administrative_level(child)
-        return coordinates
 
     def __get_upper_services_infrastructure(self, parent):
         children = parent.children.all()
@@ -649,6 +633,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         context["development_plan"] = self._get_development_plan(phases)
 
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+        context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())
         self.object.latitude = 10.693749945416448
         self.object.longitude = 0.330183201548857
 
@@ -904,7 +889,13 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
         ).exclude(project_status=Investment.NOT_FUNDED).only("id", "ranking", "title", "description", "endorsed_by_youth", "endorsed_by_women", "endorsed_by_pastoralist", "endorsed_by_agriculturist", "estimated_cost", "project_status", "funded_by", "climate_contribution", "climate_contribution_text", "administrative_level")
 
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+        context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())
         context.update(self._get_priorities_filters())
+
+        # --- Map tab data ---
+        map_service = CantonMapService(canton)
+        villages_map_data = map_service.get_villages_geo_data()
+        context["villages_map_data_json"] = json.dumps(villages_map_data, default=str)
 
         return context
 
