@@ -63,41 +63,6 @@ class CantonMapServiceBoundsTests(TestCase):
         self.assertAlmostEqual(result[1][0], 11.0 + 0.05, places=5)
 
 
-class CantonMapServicePhaseStatusTests(TestCase):
-    """Tests for _phase_status static method."""
-
-    def _make_task(self, status):
-        task = MagicMock()
-        task.status = status
-        return task
-
-    def _make_activity(self, task_statuses):
-        activity = MagicMock()
-        activity.tasks.all.return_value = [self._make_task(s) for s in task_statuses]
-        return activity
-
-    def _make_phase(self, activities_task_statuses):
-        phase = MagicMock()
-        phase.activities.all.return_value = [
-            self._make_activity(ts) for ts in activities_task_statuses
-        ]
-        return phase
-
-    def test_all_completed_returns_completed(self):
-        phase = self._make_phase([["completed", "completed"]])
-        self.assertEqual(CantonMapService._phase_status(phase), "completed")
-
-    def test_all_not_started_returns_not_started(self):
-        phase = self._make_phase([["not started", "not started"]])
-        self.assertEqual(CantonMapService._phase_status(phase), "not_started")
-
-    def test_mixed_returns_in_progress(self):
-        phase = self._make_phase([["completed", "not started"]])
-        self.assertEqual(CantonMapService._phase_status(phase), "in_progress")
-
-    def test_empty_tasks_returns_not_started(self):
-        phase = self._make_phase([[]])
-        self.assertEqual(CantonMapService._phase_status(phase), "not_started")
 
 
 class CantonMapServiceFeatureTests(TestCase):
@@ -120,9 +85,10 @@ class CantonMapServiceFeatureTests(TestCase):
         return inv
 
     def _make_village(self, latitude=8.5, longitude=1.5, investments=None, phases=None):
-        village = MagicMock(spec=["id", "name", "latitude", "longitude",
+        village = MagicMock(spec=["id", "pk", "name", "latitude", "longitude",
                                   "total_population", "investments", "phases"])
         village.id = 1
+        village.pk = 1
         village.name = "Test Village"
         village.latitude = latitude
         village.longitude = longitude

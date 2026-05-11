@@ -18,6 +18,7 @@ urlpatterns = [
     path('village/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='village_detail'),
     path('canton/<int:pk>/', views.CantonDetailView.as_view(), name='canton_detail'),
     path('canton/<int:pk>/planning-summary/', views.CantonPlanningSummaryView.as_view(), name='canton_planning_summary'),
+    path('canton/<int:pk>/map/', views.CantonMapView.as_view(), name='canton_map'),
     path('commune/<int:pk>/', views.CommuneDetailView.as_view(), name='commune_detail'),
     path('region/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='region_detail'),
     path('prefecture/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='prefecture_detail'),

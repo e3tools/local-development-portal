@@ -892,11 +892,6 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
         context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())
         context.update(self._get_priorities_filters())
 
-        # --- Map tab data ---
-        map_service = CantonMapService(canton)
-        villages_map_data = map_service.get_villages_geo_data()
-        context["villages_map_data_json"] = json.dumps(villages_map_data, default=str)
-
         return context
 
     def _get_planning_cycle(self):
@@ -1055,6 +1050,21 @@ class CantonPlanningSummaryView(LoginRequiredApproveRequiredMixin, DetailView):
         canton = self.get_object()
         planning_service = CantonPlanningService(canton)
         context["planning_summary"] = planning_service.get_summary()
+        return context
+
+
+class CantonMapView(LoginRequiredApproveRequiredMixin, DetailView):
+    model = AdministrativeLevel
+    template_name = "canton/tabs/map_tab.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        canton = self.get_object()
+        context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
+
+        map_service = CantonMapService(canton)
+        villages_map_data = map_service.get_villages_geo_data()
+        context["villages_map_data_json"] = json.dumps(villages_map_data, default=str)
         return context
 
 

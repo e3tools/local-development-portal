@@ -234,7 +234,15 @@
 								</div>
 							</div>
 							<div id="map-tab" class="tab-pane fade">
-								{% include 'canton/tabs/map_tab.html' %}
+								<div hx-get="{% url 'administrativelevels:canton_map' object.id %}"
+									 hx-trigger="load" hx-swap="innerHTML">
+									<div class="text-center py-5">
+										<div class="spinner-border text-primary" role="status">
+											<span class="sr-only">{% trans "Loading..." %}</span>
+										</div>
+										<p class="mt-2 text-muted">{% trans "Loading map data..." %}</p>
+									</div>
+								</div>
 							</div>
 							<div id="diagnostics" class="tab-pane fade">
 								<h3>{% translate "In construction" %}</h3>
@@ -471,10 +479,24 @@
             var mapReady = false;
             $(document).on('shown.bs.tab', 'a[href="#map-tab"]', function () {
                 if (!mapReady) {
-                    mapReady = true;
-                    // canton_map.js already ran DOMContentLoaded; we fire a custom
-                    // event so it can initialize on demand.
-                    document.dispatchEvent(new CustomEvent('cantonMapTabShown'));
+                    // Check if map container exists (it might be loading via HTMX)
+                    if (document.getElementById('canton-map')) {
+                        mapReady = true;
+                        document.dispatchEvent(new CustomEvent('cantonMapTabShown'));
+                    }
+                }
+            });
+
+            // Handle HTMX load event for the map
+            document.addEventListener('htmx:afterOnLoad', function(evt) {
+                if (evt.detail.target.id === 'map-tab' || evt.detail.target.closest('#map-tab')) {
+                    // If the tab is already active, initialize immediately
+                    if ($('a[href="#map-tab"]').hasClass('active') && !mapReady) {
+                        if (document.getElementById('canton-map')) {
+                            mapReady = true;
+                            document.dispatchEvent(new CustomEvent('cantonMapTabShown'));
+                        }
+                    }
                 }
             });
         })();
