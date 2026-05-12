@@ -112,6 +112,21 @@
 <script>
     window.MAPBOX_TOKEN = "{{ mapbox_access_token }}";
     window.CANTON_MAP_DATA = {{ villages_map_data_json|safe }};
+    window.MAP_STRINGS = {
+        noPriority: "{% translate 'No priority identified' %}",
+        noPriorityLegend: "{% translate 'No priority' %}",
+        activeSubproject: "{% translate 'active sub-project' %}",
+        activeSubprojects: "{% translate 'active sub-projects' %}",
+        completed: "{% translate 'Completed' %}",
+        inProgress: "{% translate 'In Progress' %}",
+        notStarted: "{% translate 'Not Started' %}",
+        phasesComplete: "{% translate 'phases complete' %}",
+        onlyVillagesWithSubprojects: "{% translate 'Only villages with active sub-projects shown' %}",
+        subproject: "{% translate 'Subproject' %}",
+        priority: "{% translate 'Priority' %}",
+        noCoords: "{% translate 'No coords' %}",
+        noInvestmentsFound: "{% translate 'No investments found in this canton.' %}"
+    };
 </script>
 
 {# canton_map.js should be loaded once in the base template or here #}

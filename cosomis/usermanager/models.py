@@ -126,7 +126,7 @@ class ValidationCode(BaseModel):
     email = models.CharField(max_length=100, verbose_name=_('Email'))
     asking_datetime = models.DateTimeField(verbose_name=_("Asking datetime"))
     validation_code_ending_datetime = models.DateTimeField(verbose_name=_("Validation Code Ending datetime"))
-    motif = models.TextField(verbose_name=_('Motif'))
+    motif = models.TextField(verbose_name=_('Reason'))
     already_use = models.BooleanField(default=False, verbose_name=_('Already Use?'))
 
 

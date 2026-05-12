@@ -187,11 +187,11 @@
                         <br /> {% endcomment %}
 
                         <div class="form-group">
-                            <label>{% translate "Code de confirmation envoyé par mail" %}</label>
+                            <label>{% translate "Confirmation code sent by email" %}</label>
                             <span style="display: block; font-size: 11px; color: red;" id="confirm_code_label_error"></span>
                             <div class="input-group">
                                 <input class="form-control" type="text" id="confirm_code" aria-describedby="confirmCode" required 
-                                    placeholder='{% translate "Code de confirmation envoyé par mail" %}'>
+                                    placeholder='{% translate "Confirmation code sent by email" %}'>
                             </div>
                             <div style="display: block; font-size: 11px;"  class="form-text text-black" id="confirmCode">
                                 <span>{% translate "A confirmation code has been e-mailed to your e-mail address" %} ({{ user.email }})</span>
