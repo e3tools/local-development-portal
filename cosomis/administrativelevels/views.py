@@ -21,7 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView, CreateView, FormView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import BaseFormView
-from administrativelevels.services.canton_map_service import CantonMapService
+
 from administrativelevels.forms import (
     AdministrativeLevelForm,
     AttachmentFilterForm,
@@ -31,6 +31,7 @@ from administrativelevels.forms import (
     VillageSearchForm,
 )
 from administrativelevels.models import AdministrativeLevel, Phase, Task, Project, Category, Sector, Activity
+from administrativelevels.services.canton_map_service import CantonMapService
 from administrativelevels.services.canton_planning_service import CantonPlanningService
 from administrativelevels.services.canton_summary_service import CantonSummaryService
 from cosomis.constants import IMAGE_EXTENSIONS
@@ -361,7 +362,6 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
                     ).first()
         return None
 
-
     def __get_upper_services_infrastructure(self, parent):
         children = parent.children.all()
         final_resp = dict()
@@ -465,6 +465,9 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
                 else:
                     package.funded_investments.add(investment)
                     track_user_activity(request, 'AddInvestmentInPackage')
+            
+            if request.headers.get('x-hx-request'):
+                return super().get(request, *args, **kwargs)
             return super().get(request, *args, **kwargs)
 
         obj = self.get_object()
@@ -644,7 +647,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
     def _get_planning_cycle(self):
         phases = list()
         admin_level = self.object
-        
+
         # Optimize phases query with selective fields and prefetch
         phases_qs = admin_level.phases.all().only(
             "id", "name", "order"
@@ -684,27 +687,27 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
                         "status": task.status,
                     }
                     activity_node["tasks"].append(task_node)
-                    
+
                     t_status = task.status
                     if tasks_status is None:
                         tasks_status = t_status
-                    
+
                     if t_status == Task.ERROR:
                         tasks_status = Task.ERROR
                     elif tasks_status == Task.COMPLETED and t_status == Task.IN_PROGRESS:
                         tasks_status = Task.IN_PROGRESS
-                
+
                 activity_node["status"] = tasks_status
                 phase_node["activities"].append(activity_node)
-                
+
                 if activities_status is None:
                     activities_status = tasks_status
-                
+
                 if activity_node["status"] == Task.ERROR:
                     activities_status = Task.ERROR
                 elif activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
                     activities_status = Task.IN_PROGRESS
-            
+
             phase_node["status"] = activities_status
             phases.append(phase_node)
         return phases
@@ -808,6 +811,9 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
                 else:
                     package.funded_investments.add(investment)
                     track_user_activity(request, 'AddInvestmentInPackage')
+            
+            if request.headers.get('x-hx-request'):
+                return super().get(request, *args, **kwargs)
             return super().get(request, *args, **kwargs)
 
         obj = self.get_object()
@@ -875,19 +881,50 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
             )
         )
 
+        base_priorities_qs = Investment.objects.filter(
+            administrative_level__parent=canton,
+            administrative_level__type=AdministrativeLevel.VILLAGE,
+        ).select_related(
+            "administrative_level",
+            "sector",
+            "funded_by",
+        ).annotate(
+            funding_order=Case(
+                When(project_status=Investment.NOT_FUNDED, then=Value(0)),
+                When(project_status=Investment.PAUSED, then=Value(1)),
+                When(project_status=Investment.FUNDED, then=Value(2)),
+                When(project_status=Investment.IN_PROGRESS, then=Value(3)),
+                When(project_status=Investment.COMPLETED, then=Value(4)),
+                default=Value(5),
+                output_field=IntegerField(),
+            )
+        ).order_by("funding_order", "ranking", "administrative_level__name")
+
+        context["all_canton_priorities"] = self._get_queryset(base_priorities_qs)
         context["investments"] = self._get_queryset(
             Investment.objects.filter(
                 project_status=Investment.NOT_FUNDED,
                 administrative_level__parent=canton,
                 administrative_level__type=AdministrativeLevel.VILLAGE,
-            ).only("id", "ranking", "title", "description", "endorsed_by_youth", "endorsed_by_women", "endorsed_by_pastoralist", "endorsed_by_agriculturist", "estimated_cost", "project_status", "sector", "administrative_level")
+            ).only(
+                "id", "ranking", "title", "description",
+                "endorsed_by_youth", "endorsed_by_women",
+                "endorsed_by_pastoralist", "endorsed_by_agriculturist",
+                "estimated_cost", "project_status", "sector", "administrative_level",
+            )
         )
 
         context["subprojects"] = Investment.objects.filter(
             administrative_level__parent=canton,
             administrative_level__type=AdministrativeLevel.VILLAGE,
-        ).exclude(project_status=Investment.NOT_FUNDED).only("id", "ranking", "title", "description", "endorsed_by_youth", "endorsed_by_women", "endorsed_by_pastoralist", "endorsed_by_agriculturist", "estimated_cost", "project_status", "funded_by", "climate_contribution", "climate_contribution_text", "administrative_level")
-
+        ).exclude(project_status=Investment.NOT_FUNDED).only(
+            "id", "ranking", "title", "description",
+            "endorsed_by_youth", "endorsed_by_women",
+            "endorsed_by_pastoralist", "endorsed_by_agriculturist",
+            "estimated_cost", "project_status", "funded_by",
+            "climate_contribution", "climate_contribution_text",
+            "administrative_level",
+        )
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
         context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())
         context.update(self._get_priorities_filters())
@@ -897,7 +934,7 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
     def _get_planning_cycle(self):
         phases = list()
         admin_level = self.object
-        
+
         # Optimize phases query with selective fields and prefetch
         phases_qs = admin_level.phases.all().only(
             "id", "name", "order"
@@ -937,27 +974,27 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
                         "status": task.status,
                     }
                     activity_node["tasks"].append(task_node)
-                    
+
                     t_status = task.status
                     if tasks_status is None:
                         tasks_status = t_status
-                    
+
                     if t_status == Task.ERROR:
                         tasks_status = Task.ERROR
                     elif tasks_status == Task.COMPLETED and t_status == Task.IN_PROGRESS:
                         tasks_status = Task.IN_PROGRESS
-                
+
                 activity_node["status"] = tasks_status
                 phase_node["activities"].append(activity_node)
-                
+
                 if activities_status is None:
                     activities_status = tasks_status
-                
+
                 if activity_node["status"] == Task.ERROR:
                     activities_status = Task.ERROR
                 elif activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
                     activities_status = Task.IN_PROGRESS
-            
+
             phase_node["status"] = activities_status
             phases.append(phase_node)
         return phases
@@ -1037,6 +1074,15 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
                 queryset = queryset
             else:
                 queryset = queryset.filter(ranking__in=priorities)
+
+        if "climate-contribution-filter" in self.request.GET and self.request.GET[
+            "climate-contribution-filter"
+        ] not in ["", None]:
+            climate_value = self.request.GET["climate-contribution-filter"]
+            if climate_value == "True":
+                queryset = queryset.filter(climate_contribution=True)
+            elif climate_value == "False":
+                queryset = queryset.filter(climate_contribution=False)
 
         return queryset
 

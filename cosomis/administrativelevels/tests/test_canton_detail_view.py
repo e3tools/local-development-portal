@@ -23,7 +23,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from administrativelevels.models import AdministrativeLevel, Category, Sector
-from investments.models import Investment, Attachment
+from investments.models import Investment, Attachment, Package
 
 User = get_user_model()
 
@@ -445,3 +445,52 @@ class CantonDetailViewTemplateRenderingTest(CantonDetailViewBaseTest):
         """The page title must include the canton's name."""
         response = self._get_response()
         self.assertContains(response, self.canton.name)
+
+
+# ---------------------------------------------------------------------------
+# Test Group 5 — Cart HTMX logic in CommuneDetailView
+# ---------------------------------------------------------------------------
+
+class CommuneDetailViewCartTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = _make_user()
+        cls.commune = AdministrativeLevel.objects.create(
+            name="Commune Test",
+            type=AdministrativeLevel.COMMUNE
+        )
+        cls.village = _make_village(name="Village", canton=cls.commune)
+        cls.category = _make_category()
+        cls.sector = _make_sector(cls.category)
+        cls.investment = _make_investment(cls.village, cls.sector)
+        cls.url = reverse("administrativelevels:commune_detail", args=[cls.commune.pk])
+
+    def setUp(self):
+        self.client.force_login(self.user)
+
+    def test_cart_toggle_add_normal_request(self):
+        """Normal POST request should return 200 and add to cart."""
+        response = self.client.post(self.url, {'cart-toggle': self.investment.id})
+        self.assertEqual(response.status_code, 200)
+        package = Package.objects.get_active_cart(user=self.user)
+        self.assertTrue(package.funded_investments.filter(id=self.investment.id).exists())
+
+    def test_cart_toggle_remove_normal_request(self):
+        """Normal POST request should remove item from cart."""
+        package = Package.objects.get_active_cart(user=self.user)
+        package.funded_investments.add(self.investment)
+        
+        response = self.client.post(self.url, {'cart-toggle': self.investment.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(package.funded_investments.filter(id=self.investment.id).exists())
+
+    def test_cart_toggle_htmx_request(self):
+        """HTMX POST request should return 200."""
+        response = self.client.post(
+            self.url, 
+            {'cart-toggle': self.investment.id},
+            HTTP_X_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+        package = Package.objects.get_active_cart(user=self.user)
+        self.assertTrue(package.funded_investments.filter(id=self.investment.id).exists())

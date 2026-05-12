@@ -177,7 +177,7 @@
 
 						<div class="tab-content">
 							<div id="priorities" class="tab-pane active">
-								{% include 'commune/tabs/priorities.html' %}
+								{% include 'canton/tabs/priorities.html' %}
 							</div>
 							<div id="villages" class="tab-pane fade">
 								<div class="table-responsive">
@@ -234,8 +234,8 @@
 								</div>
 							</div>
 							<div id="map-tab" class="tab-pane fade">
-								<div hx-get="{% url 'administrativelevels:canton_map' object.id %}"
-									 hx-trigger="load" hx-swap="innerHTML">
+								<div hx-get="{% url 'administrativelevels:canton_map' object.id %}" hx-trigger="load"
+									 hx-swap="innerHTML">
 									<div class="text-center py-5">
 										<div class="spinner-border text-primary" role="status">
 											<span class="sr-only">{% trans "Loading..." %}</span>
@@ -434,6 +434,67 @@
             $('[data-toggle="tooltip"]').tooltip();
             $('.datatable').DataTable({searching: false});
 
+            function initCantonPrioritiesDT() {
+                // Investment Types table (sub-tab 1)
+                var $typeTable = $('#priorities-investments-type-tab .canton-priorities-dt');
+                if ($typeTable.length && !$.fn.DataTable.isDataTable($typeTable)) {
+                    $typeTable.DataTable({
+                        pageLength: 10,
+                        searching: false,
+                        columnDefs: [{orderable: false, targets: [4, 5, 6, 7, 9]}]
+                    });
+                }
+
+                // Individual Villages table (sub-tab 2)
+                var $villagesTable = $('#priorities-villages-tab .canton-priorities-dt');
+                if ($villagesTable.length && !$.fn.DataTable.isDataTable($villagesTable)) {
+                    $villagesTable.DataTable({
+                        pageLength: 10,
+                        searching: false,
+                        columnDefs: [{orderable: false, targets: [3, 4, 5, 6, 10]}]
+                    });
+                }
+            }
+
+            if ($('#priorities').hasClass('active')) {
+                initCantonPrioritiesDT();
+            }
+
+            $('a[data-toggle="tab"][href="#priorities"]').on('shown.bs.tab', function () {
+                initCantonPrioritiesDT();
+            });
+
+            $('button[data-toggle="pill"]').on('shown.bs.tab', function () {
+                initCantonPrioritiesDT();
+            });
+
+            document.addEventListener('htmx:afterOnLoad', function(evt) {
+                if (evt.detail.target.id === 'priorities') {
+                    // Restaurar el tab activo si existía
+                    var activeTabId = localStorage.getItem('activePriorityTab');
+                    if (activeTabId) {
+                        var $tabButton = $('#' + activeTabId);
+                        if ($tabButton.length) {
+                            // Limpiar CUALQUIER estado activo previo inyectado por el servidor en el contenedor de prioridades
+                            $('#priorities .nav-link, #priorities .nav-item button').removeClass('active').attr('aria-selected', 'false');
+                            $('#priorities .tab-pane').removeClass('show active');
+                            
+                            $tabButton.addClass('active').attr('aria-selected', 'true');
+                            var target = $tabButton.attr('data-target') || $tabButton.attr('href');
+                            $(target).addClass('show active');
+                        }
+                    }
+
+                    initCantonPrioritiesDT();
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+
+            // Guardar el tab activo cuando cambie (delegación de eventos para HTMX)
+            $(document).on('shown.bs.tab', '#priorities button[data-toggle="pill"]', function (e) {
+                localStorage.setItem('activePriorityTab', e.target.id);
+            });
+
             $('.submit-reset').on('click', function () {
                 $('#reset-hidden-id').attr('value', 'true');
                 $('#filter-form').submit();
@@ -471,7 +532,7 @@
         });
 	</script>
 
-    <script>
+	<script>
         // Mapbox map lazy-initialize: only run when the Map tab is first shown.
         // This avoids the common Mapbox bug where the canvas has 0×0 size because
         // it was rendered inside a hidden Bootstrap tab.
@@ -488,7 +549,7 @@
             });
 
             // Handle HTMX load event for the map
-            document.addEventListener('htmx:afterOnLoad', function(evt) {
+            document.addEventListener('htmx:afterOnLoad', function (evt) {
                 if (evt.detail.target.id === 'map-tab' || evt.detail.target.closest('#map-tab')) {
                     // If the tab is already active, initialize immediately
                     if ($('a[href="#map-tab"]').hasClass('active') && !mapReady) {

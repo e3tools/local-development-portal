@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n l10n %}
 
 {# ── Summary counters ── #}
 <div class="row mt-3">
@@ -72,18 +72,18 @@
 						</td>
 						<td>
 							<div class="progress" style="height: 14px; border-radius: 7px;"
-								 title="{{ row.completed_phases }}/{{ row.total_phases }} {% trans 'completed' %}">
+								 title="{{ row.completed_phases }}/{{ row.total_phases }} {% translate 'completed' %}">
 								{% if row.completed_pct > 0 %}
 									<div class="progress-bar bg-success" role="progressbar"
-										 style="width:{{ row.completed_pct }}%;"></div>
+										 style="width:{{ row.completed_pct|unlocalize }}%;"></div>
 								{% endif %}
 								{% if row.in_progress_pct > 0 %}
 									<div class="progress-bar bg-warning" role="progressbar"
-										 style="width:{{ row.in_progress_pct }}%;"></div>
+										 style="width:{{ row.in_progress_pct|unlocalize }}%;"></div>
 								{% endif %}
 								{% if row.not_started_pct > 0 %}
 									<div class="progress-bar bg-secondary" role="progressbar"
-										 style="width:{{ row.not_started_pct }}%;"></div>
+										 style="width:{{ row.not_started_pct|unlocalize }}%;"></div>
 								{% endif %}
 							</div>
 							<small class="text-muted"

@@ -413,6 +413,33 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('.datatable').DataTable({searching: false});
+
+            document.addEventListener('htmx:afterOnLoad', function(evt) {
+                if (evt.detail.target.id === 'priorities') {
+                    // Restaurar el tab activo si existía
+                    var activeTabId = localStorage.getItem('activePriorityTab');
+                    if (activeTabId) {
+                        var $tabButton = $('#' + activeTabId);
+                        if ($tabButton.length) {
+                            // Limpiar CUALQUIER estado activo previo inyectado por el servidor en el contenedor de prioridades
+                            $('#priorities .nav-link, #priorities .nav-item button').removeClass('active').attr('aria-selected', 'false');
+                            $('#priorities .tab-pane').removeClass('show active');
+                            
+                            $tabButton.addClass('active').attr('aria-selected', 'true');
+                            var target = $tabButton.attr('data-target') || $tabButton.attr('href');
+                            $(target).addClass('show active');
+                        }
+                    }
+
+                    $('.datatable').DataTable({searching: false});
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+
+            // Guardar el tab activo cuando cambie (delegación de eventos para HTMX)
+            $(document).on('shown.bs.tab', '#priorities button[data-toggle="pill"]', function (e) {
+                localStorage.setItem('activePriorityTab', e.target.id);
+            });
     
             $('.submit-reset').on('click', function() {
                 $('#reset-hidden-id').attr('value', 'true');

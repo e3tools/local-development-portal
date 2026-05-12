@@ -262,6 +262,7 @@
     }
 
     function buildPopupHTML(props, layerId) {
+        const strings = window.MAP_STRINGS || {};
         // Mapbox serializes all property values as strings; parse booleans/objects back.
         function safe(key) {
             var v = props[key];
@@ -298,7 +299,7 @@
                     }
                 }
             } else {
-                html += '<div class="text-muted font-italic" style="font-size:.85rem">No priority identified</div>';
+                html += '<div class="text-muted font-italic" style="font-size:.85rem">' + (strings.noPriority || "No priority identified") + '</div>';
             }
         }
 
@@ -306,8 +307,8 @@
             var count = Number(props.subprojects_count || 0);
             var catN = props.sub_category_name || "";
             var catC = props.sub_category_color || "#6B7280";
-            html += '<div style="font-size:.85rem"><strong>' + count + '</strong> active subproject'
-                + (count !== 1 ? "s" : "") + '</div>';
+            var subprojectLabel = count !== 1 ? (strings.activeSubprojects || "active sub-projects") : (strings.activeSubproject || "active sub-project");
+            html += '<div style="font-size:.85rem"><strong>' + count + '</strong> ' + subprojectLabel + '</div>';
             if (catN) {
                 html += '<span class="badge mt-1" style="background:' + catC + ';color:#fff;font-size:.75rem">'
                     + catN + '</span>';
@@ -317,9 +318,9 @@
         if (layerId === LAYER_PLANNING) {
             var status = props.planning_status || "not started";
             var label = {
-                "completed": "Completed",
-                "in progress": "In Progress",
-                "not started": "Not Started"
+                "completed": strings.completed || "Completed",
+                "in progress": strings.inProgress || "In Progress",
+                "not started": strings.notStarted || "Not Started"
             }[status] || status;
             var phases = Number(props.phases_total || 0);
             var done = Number(props.phases_complete || 0);
@@ -327,7 +328,7 @@
                 + '<span class="badge" style="background:' + props.planning_color + ';color:#fff;min-width:90px">'
                 + label + '</span></div>'
                 + '<div class="mt-1 text-muted" style="font-size:.8rem">'
-                + done + ' / ' + phases + ' phases complete</div>';
+                + done + ' / ' + phases + ' ' + (strings.phasesComplete || "phases complete") + '</div>';
         }
 
         html += "</div>";
@@ -341,11 +342,12 @@
         var container = document.getElementById("map-legend-content");
         if (!container) return;
 
+        const strings = window.MAP_STRINGS || {};
         var html = "";
 
         if (layerId === LAYER_PRIORITIES) {
             // "No priority" entry always first
-            html += legendItem(/* NO_PRIORITY_COLOR */ "#9CA3AF", "No priority", false);
+            html += legendItem(/* NO_PRIORITY_COLOR */ "#9CA3AF", strings.noPriorityLegend || "No priority", false);
             var entries = window.CANTON_MAP_DATA.category_legend || [];
             entries.forEach(function (e) {
                 html += legendItem(e.color, e.name, false);
@@ -353,7 +355,7 @@
         }
 
         if (layerId === LAYER_SUBPROJECTS) {
-            html += '<div class="text-muted mb-1"><small>Only villages with active subprojects shown</small></div>';
+            html += '<div class="text-muted mb-1"><small>' + (strings.onlyVillagesWithSubprojects || "Only villages with active subprojects shown") + '</small></div>';
             var entries = window.CANTON_MAP_DATA.category_legend || [];
             entries.forEach(function (e) {
                 html += legendItem(e.color, e.name, true);
@@ -361,9 +363,9 @@
         }
 
         if (layerId === LAYER_PLANNING) {
-            html += legendItem(PLANNING_COLORS["completed"], "Completed", false);
-            html += legendItem(PLANNING_COLORS["in progress"], "In Progress", false);
-            html += legendItem(PLANNING_COLORS["not started"], "Not Started", false);
+            html += legendItem(PLANNING_COLORS["completed"], strings.completed || "Completed", false);
+            html += legendItem(PLANNING_COLORS["in progress"], strings.inProgress || "In Progress", false);
+            html += legendItem(PLANNING_COLORS["not started"], strings.notStarted || "Not Started", false);
         }
 
         container.innerHTML = html;
@@ -385,8 +387,10 @@
         var list = document.getElementById("map-subprojects-list");
         if (!list) return;
 
+        const strings = window.MAP_STRINGS || {};
+
         if (!subprojects || subprojects.length === 0) {
-            list.innerHTML = '<p class="text-muted p-2"><small>No investments found in this canton.</small></p>';
+            list.innerHTML = '<p class="text-muted p-2"><small>' + (strings.noInvestmentsFound || "No investments found in this canton.") + '</small></p>';
             return;
         }
 
@@ -395,7 +399,7 @@
             var catName = s.category_name || "";
             var cost = Number(s.estimated_cost || 0).toLocaleString();
             var isSub = s.project_status !== "N";
-            var badgeText = isSub ? "Subproject" : "Priority";
+            var badgeText = isSub ? (strings.subproject || "Subproject") : (strings.priority || "Priority");
             var badgeClass = isSub ? "badge-info" : "badge-secondary";
             var hasCoords = s.latitude != null && s.longitude != null;
             var rankInfo = s.ranking ? '<span class="mr-2" style="font-size:.65rem;color:#6B7280">#' + s.ranking + '</span>' : '';
@@ -416,7 +420,7 @@
                 + '<div class="text-muted" style="font-size:.8rem;line-height:1.2;margin-top:2px">' + (s.title || "") + '</div>'
                 + '<div class="d-flex justify-content-between mt-1 align-items-center">'
                 + '  <div class="d-flex align-items-center">' + rankInfo + '<div style="font-size:.75rem;color:#6B7280">' + cost + ' FCFA</div></div>'
-                + (!hasCoords ? '  <small class="text-danger" style="font-size:.65rem">No coords</small>' : '')
+                + (!hasCoords ? '  <small class="text-danger" style="font-size:.65rem">' + (strings.noCoords || "No coords") + '</small>' : '')
                 + '</div>'
                 + '</div>';
         }).join("");
