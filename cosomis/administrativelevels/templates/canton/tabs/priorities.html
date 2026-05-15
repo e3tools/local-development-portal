@@ -147,7 +147,7 @@
 
 	<div class="tab-content" id="priorityTabsContent">
 
-		{# ---- Sub-pestaña 1: Investment Types ---- #}
+		{# ---- Investment Types ---- #}
 		<div class="tab-pane fade {% if active_tab != 'villages' %}show active{% endif %}"
 			 id="priorities-investments-type-tab" role="tabpanel"
 			 aria-labelledby="button-priorities-investments-type-tab">
@@ -159,12 +159,14 @@
 					<table class="table table-bordered canton-priorities-dt" style="width: 100%">
 						<thead>
 						<tr>
-							<th class="align-middle" rowspan="2">{% translate 'Investment Type' %}</th>
-							<th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
-							<th class="align-middle" rowspan="2">{% translate 'Funding Needed' %}</th>
-							<th class="align-middle" rowspan="2">{% translate 'Funded By' %}</th>
+							<th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
+							<th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+							<th class="align-middle" rowspan="2">{% translate 'Description' %}</th>
 							<th class="align-middle text-center" colspan="4">{% translate 'Priorities' %}</th>
-							<th class="align-middle" rowspan="2">{% translate 'Status' %}</th>
+							<th class="align-middle" rowspan="2">{% translate 'Beneficiaries' %}</th>
+							<th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
+							<th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
+							<th class="align-middle" rowspan="2">{% translate 'Climate contribution' %}</th>
 							<th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
 						</tr>
 						<tr>
@@ -189,27 +191,23 @@
 						<tbody>
 						{% for investment in all_canton_priorities %}
 							<tr>
-								<td>{% translate investment.get_investment_status_display %}</td>
-								<td>{{ investment.sector }}</td>
-								<td>
-									{% if investment.project_status == investment.NOT_FUNDED %}
-										{{ investment.estimated_cost|intcomma }}
-									{% else %}
-										—
-									{% endif %}
-								</td>
-								<td>
-									{% if investment.funded_by %}
-										<span class="badge badge-success">{{ investment.funded_by.name }}</span>
-									{% else %}
-										—
-									{% endif %}
-								</td>
+								<td>{{ investment.ranking }}</td>
+								<td>{{ investment.sector.category.name }}</td>
+								<td>{{ investment.description }}</td>
 								<td class="text-center">{% if investment.endorsed_by_youth %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_women %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
-								<td>{% translate investment.get_project_status_display %}</td>
+								<td>{{ investment.total_beneficiaries|intcomma }}</td>
+								<td>{{ investment.estimated_cost|intcomma }}</td>
+								<td>{{ investment.funded_by.name }}</td>
+								<td>
+									{% if investment.climate_contribution %}
+										{{ investment.climate_contribution_text }}
+									{% else %}
+										{% translate 'No' %}
+									{% endif %}
+								</td>
 								<td>
 									{% if investment.project_status == investment.NOT_FUNDED %}
 										<form hx-post="{{ request.path }}?{{ request.GET.urlencode }}&active_tab=types"
@@ -225,6 +223,8 @@
 											{% endif %}
 											<input type="hidden" name="cart-toggle" value="{{ investment.id }}">
 										</form>
+									{% else %}
+										<span class="text-success">{%  translate 'Funded' %}</span>
 									{% endif %}
 								</td>
 							</tr>
@@ -235,7 +235,7 @@
 			{% endif %}
 		</div>
 
-		{# ---- Sub-pestaña 2: Individual Villages ---- #}
+		{# ---- Individual Villages ---- #}
 		<div class="tab-pane fade {% if active_tab == 'villages' %}show active{% endif %}" id="priorities-villages-tab"
 			 role="tabpanel" aria-labelledby="button-priorities-villages-tab">
 
