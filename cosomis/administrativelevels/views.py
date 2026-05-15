@@ -886,7 +886,7 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
             administrative_level__type=AdministrativeLevel.VILLAGE,
         ).select_related(
             "administrative_level",
-            "sector",
+            "sector__category",
             "funded_by",
         ).annotate(
             funding_order=Case(
@@ -897,7 +897,8 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
                 When(project_status=Investment.COMPLETED, then=Value(4)),
                 default=Value(5),
                 output_field=IntegerField(),
-            )
+            ),
+            total_beneficiaries=Sum('administrative_level__total_population')
         ).order_by("funding_order", "ranking", "administrative_level__name")
 
         context["all_canton_priorities"] = self._get_queryset(base_priorities_qs)

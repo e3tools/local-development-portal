@@ -448,7 +448,71 @@ class CantonDetailViewTemplateRenderingTest(CantonDetailViewBaseTest):
 
 
 # ---------------------------------------------------------------------------
-# Test Group 5 — Cart HTMX logic in CommuneDetailView
+# Test Group 6 — Annotated fields (funding_order, total_beneficiaries)
+# ---------------------------------------------------------------------------
+
+class CantonDetailViewAnnotationTest(CantonDetailViewBaseTest):
+
+    def _get_context(self):
+        self._login()
+        with patch('investments.models.PackageQuerySet.get_active_cart') as mock_cart:
+            mock_cart.return_value = MagicMock(
+                funded_investments=MagicMock(all=lambda: [])
+            )
+            response = self.client.get(self.url)
+        return response.context
+
+    def test_funding_order_calculation(self):
+        """Verify that funding_order is correctly annotated based on project_status."""
+        # Create investments with different statuses
+        inv_not_funded = _make_investment(self.village_a, self.sector, status=Investment.NOT_FUNDED)
+        inv_paused = _make_investment(self.village_a, self.sector, status=Investment.PAUSED)
+        inv_funded = _make_investment(self.village_a, self.sector, status=Investment.FUNDED)
+        inv_in_progress = _make_investment(self.village_a, self.sector, status=Investment.IN_PROGRESS)
+        inv_completed = _make_investment(self.village_a, self.sector, status=Investment.COMPLETED)
+
+        ctx = self._get_context()
+        priorities = ctx['all_canton_priorities']
+
+        # Map ID to funding_order from the annotated queryset
+        funding_orders = {p.id: p.funding_order for p in priorities}
+
+        self.assertEqual(funding_orders.get(inv_not_funded.id), 0)
+        self.assertEqual(funding_orders.get(inv_paused.id), 1)
+        self.assertEqual(funding_orders.get(inv_funded.id), 2)
+        self.assertEqual(funding_orders.get(inv_in_progress.id), 3)
+        self.assertEqual(funding_orders.get(inv_completed.id), 4)
+
+        # Cleanup
+        inv_not_funded.delete()
+        inv_paused.delete()
+        inv_funded.delete()
+        inv_in_progress.delete()
+        inv_completed.delete()
+
+    def test_total_beneficiaries_calculation(self):
+        """Verify that total_beneficiaries is correctly annotated (sum of village population)."""
+        # total_beneficiaries = Sum('administrative_level__total_population')
+        # Since each Investment is linked to one village, it should match that village's population
+        inv_a = _make_investment(self.village_a, self.sector)
+        inv_b = _make_investment(self.village_b, self.sector)
+
+        ctx = self._get_context()
+        priorities = ctx['all_canton_priorities']
+
+        # Map ID to total_beneficiaries from the annotated queryset
+        beneficiaries = {p.id: p.total_beneficiaries for p in priorities}
+
+        self.assertEqual(beneficiaries.get(inv_a.id), self.village_a.total_population)
+        self.assertEqual(beneficiaries.get(inv_b.id), self.village_b.total_population)
+
+        # Cleanup
+        inv_a.delete()
+        inv_b.delete()
+
+
+# ---------------------------------------------------------------------------
+# Test Group 7 — Cart HTMX logic in CommuneDetailView
 # ---------------------------------------------------------------------------
 
 class CommuneDetailViewCartTest(TestCase):
