@@ -171,27 +171,46 @@ class AdministrativeLevelForm(forms.ModelForm):
 
 # SearchVillages
 class VillageSearchForm(forms.Form):
+    # Top-level (root) entities — identified by absence of a parent rather than by
+    # the localized `type` string, so the form works regardless of whether the
+    # dataset labels its root as "Region" (Togo) or "country" (Benin), etc.
     region = forms.ModelChoiceField(
-        queryset=AdministrativeLevel.objects.filter(type="Region"),
+        queryset=AdministrativeLevel.objects.filter(parent__isnull=True),
         required=False,
         empty_label=_("All regions"),
         label=_("Region"),
     )
+    # The remaining levels are populated dynamically by the cascading AJAX in
+    # the template (parent_id-based), so the initial queryset is empty by design.
     prefecture = forms.ModelChoiceField(
-        queryset=AdministrativeLevel.objects.filter(type="Prefecture"),
+        queryset=AdministrativeLevel.objects.none(),
         required=False,
         label=_("Prefecture"),
     )
     commune = forms.ModelChoiceField(
-        queryset=AdministrativeLevel.objects.filter(type="Commune"),
+        queryset=AdministrativeLevel.objects.none(),
         required=False,
         label=_("Commune"),
     )
     canton = forms.ModelChoiceField(
-        queryset=AdministrativeLevel.objects.filter(type="Canton"),
+        queryset=AdministrativeLevel.objects.none(),
         required=False,
         label=_("Canton"),
     )
+
+    def __init__(self, *args, hierarchy_labels=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        # `hierarchy_labels` is root-first: [region, prefecture, commune, canton, leaf].
+        # Override the static labels with whatever the dataset actually calls each
+        # level (Country/Département/Commune/Arrondissement on the Benin dataset,
+        # Region/Prefecture/Commune/Canton on Togo, etc.).
+        if hierarchy_labels:
+            for field_name, label in zip(
+                ("region", "prefecture", "commune", "canton"),
+                hierarchy_labels,
+            ):
+                if label and field_name in self.fields:
+                    self.fields[field_name].label = label
 
 class FinancialPartnerForm(forms.Form):
     name = forms.CharField()

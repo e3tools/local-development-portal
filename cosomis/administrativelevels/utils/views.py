@@ -4,14 +4,17 @@ import json
 import geojson
 import os
 import subprocess
-from django.db.models import Subquery
+from django.db.models import Subquery, Sum
+from django.urls import reverse, NoReverseMatch
 from django.views import generic
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+from django.template.loader import render_to_string
 from openpyxl import Workbook
 from rest_framework import generics, response
 
 from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin, LoginRequiredApproveRequiredMixin
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Sector, GeoSegment
+from investments.models import Investment
 
 
 class GetAdministrativeLevelForCVDByADLView(AJAXRequestMixin, LoginRequiredApproveRequiredMixin, JSONResponseMixin, generic.View):
@@ -78,6 +81,98 @@ class GetAncestorAdministrativeLevelsView(AJAXRequestMixin, LoginRequiredApprove
             pass
 
         return self.render_to_json_response(ancestors, safe=False)
+
+
+class AdministrativeLevelSummaryAjaxView(AJAXRequestMixin, LoginRequiredApproveRequiredMixin, generic.View):
+    """Render a compact summary card for any administrative level.
+
+    Returns an HTML fragment (not JSON) that the search page swaps into its
+    sidebar whenever the user selects a level. The detail-page URL is picked
+    by depth-from-root, mirroring the breadcrumb logic, so the link works
+    regardless of how the dataset spells each level's `type`.
+    """
+
+    DETAIL_ROUTES_ROOT_TO_LEAF = [
+        'administrativelevels:region_detail',
+        'administrativelevels:prefecture_detail',
+        'administrativelevels:commune_detail',
+        'administrativelevels:canton_detail',
+        'administrativelevels:village_detail',
+    ]
+
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            adm = AdministrativeLevel.objects.select_related('parent').get(id=pk)
+        except AdministrativeLevel.DoesNotExist:
+            raise Http404
+
+        depth = 0
+        cur = adm.parent
+        while cur is not None:
+            depth += 1
+            cur = cur.parent
+
+        detail_url = None
+        if 0 <= depth < len(self.DETAIL_ROUTES_ROOT_TO_LEAF):
+            try:
+                detail_url = reverse(self.DETAIL_ROUTES_ROOT_TO_LEAF[depth], args=[adm.id])
+            except NoReverseMatch:
+                detail_url = None
+
+        children_qs = adm.children.all()
+        children_count = children_qs.count()
+        sample_child = children_qs.first()
+        next_level_label = (sample_child.type or '').strip().capitalize() if sample_child else ''
+
+        # Whole subtree (self + descendants). The non-leaf metrics below aggregate
+        # over every admin level rooted at `adm`, so the card answers "how big is
+        # everything under this region/commune/..." in one place.
+        descendants = adm.get_all_descendants() if children_count else []
+        subtree_ids = [adm.id] + [d.id for d in descendants]
+        total_villages = sum(1 for d in descendants if not d.children.exists())
+        if not children_count:
+            # Leaf entity (typically a village) counts as 1 itself.
+            total_villages = 1
+
+        # Population: prefer the entity's own number when set, otherwise roll up
+        # from descendants (most non-leaf rows store 0 in this dataset).
+        if adm.total_population:
+            total_population = adm.total_population
+        else:
+            total_population = (
+                AdministrativeLevel.objects
+                .filter(id__in=subtree_ids)
+                .aggregate(s=Sum('total_population'))['s'] or 0
+            )
+
+        investments_qs = Investment.objects.filter(administrative_level_id__in=subtree_ids)
+        total_priorities = investments_qs.filter(investment_status=Investment.PRIORITY).count()
+        total_projects_funded = investments_qs.exclude(project_status=Investment.NOT_FUNDED).count()
+
+        breadcrumb = []
+        cur = adm.parent
+        while cur is not None:
+            breadcrumb.insert(0, cur)
+            cur = cur.parent
+
+        ctx = {
+            'adm': adm,
+            'type_label': (adm.type or '').strip().capitalize(),
+            'detail_url': detail_url,
+            'children_count': children_count,
+            'next_level_label': next_level_label,
+            'total_villages': total_villages,
+            'total_population': total_population,
+            'has_population': total_population > 0,
+            'total_priorities': total_priorities,
+            'total_projects_funded': total_projects_funded,
+            'has_coordinates': adm.latitude is not None and adm.longitude is not None,
+            'breadcrumb': breadcrumb,
+        }
+        html = render_to_string(
+            'administrative_level/partials/summary_card.html', ctx, request=request
+        )
+        return HttpResponse(html)
 
 
 class TaskDetailAjaxView(generic.TemplateView):

@@ -62,19 +62,16 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin,
         search = self.request.GET.get("search", None)
         page_number = self.request.GET.get("page", None)
         _type = self.request.GET.get("type", "Village")
+        # `type` is stored in different casings across datasets (e.g. "Village"
+        # in the Togo seed vs "village" in the Benin dump), so always compare
+        # case-insensitively. Ordered by name so pagination is deterministic.
+        base = AdministrativeLevel.objects.filter(type__iexact=_type).order_by("name")
         if search:
             if search == "All":
-                ads = AdministrativeLevel.objects.filter(type=_type)
-                return Paginator(ads, ads.count()).get_page(page_number)
+                return Paginator(base, base.count() or 1).get_page(page_number)
             search = search.upper()
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type, name__icontains=search),
-                100,
-            ).get_page(page_number)
-        else:
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type), 100
-            ).get_page(page_number)
+            return Paginator(base.filter(name__icontains=search), 100).get_page(page_number)
+        return Paginator(base, 100).get_page(page_number)
 
         # return super().get_queryset()
 
@@ -144,26 +141,33 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredApproveRequiredM
         search = self.request.GET.get("search", None)
         page_number = self.request.GET.get("page", None)
         _type = self.request.GET.get("type", "Village")
+        # `type` is stored in different casings across datasets (e.g. "Village"
+        # in the Togo seed vs "village" in the Benin dump), so always compare
+        # case-insensitively. Ordered by name so pagination is deterministic.
+        base = AdministrativeLevel.objects.filter(type__iexact=_type).order_by("name")
         if search:
             if search == "All":
-                ads = AdministrativeLevel.objects.filter(type=_type)
-                return Paginator(ads, ads.count()).get_page(page_number)
+                return Paginator(base, base.count() or 1).get_page(page_number)
             search = search.upper()
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type, name__icontains=search),
-                100,
-            ).get_page(page_number)
-        else:
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type), 100
-            ).get_page(page_number)
+            return Paginator(base.filter(name__icontains=search), 100).get_page(page_number)
+        return Paginator(base, 100).get_page(page_number)
 
     def get_context_data(self, **kwargs):
         ctx = super(AdministrativeLevelSearchListView, self).get_context_data(**kwargs)
-        ctx["form"] = VillageSearchForm()
+        # Pull the actual level names from the data so the form labels, select2
+        # placeholders, and the "Choice the X in Y" / "See X" copy can match
+        # the dataset's vocabulary (Country/Département/... for Benin,
+        # Region/Prefecture/... for Togo, etc.).
+        hierarchy_labels = AdministrativeLevel.get_hierarchy_labels()
+        ctx["form"] = VillageSearchForm(hierarchy_labels=hierarchy_labels)
         ctx["search"] = self.request.GET.get("search", None)
         ctx["type"] = self.request.GET.get("type", "Village")
         ctx["current_language"] = translation.get_language()
+        ctx["hierarchy_labels"] = hierarchy_labels
+        ctx["leaf_label"] = hierarchy_labels[-1] if hierarchy_labels else _("Village")
+        ctx["parent_of_leaf_label"] = (
+            hierarchy_labels[-2] if len(hierarchy_labels) >= 2 else _("Canton")
+        )
         return ctx
 
 
