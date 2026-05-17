@@ -5,24 +5,56 @@
     {{ block.super }}
     <link href="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.css' %}" rel="stylesheet">
     <style>
-        .card { margin-bottom: 10px; }
-        .pie-chart { max-width: 220px; max-height: 220px; width: 100%; height: auto; }
+        .card { margin-bottom: 10px; border: 1px solid #e5e7eb; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        .pie-chart { max-width: 260px; max-height: 260px; width: 100%; height: auto; }
         .flex-container { display: flex; justify-content: space-between; align-items: center; }
-        .legend { display: flex; flex-direction: column; align-items: flex-start; list-style: none; padding: 0; margin: 0; }
-        .legend-item { display: flex; align-items: center; margin-bottom: 5px; cursor: pointer; }
-        .legend-color { display: inline-block; width: 12px; height: 12px; margin-right: 5px; }
+        .legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; list-style: none; padding: 0; margin: 0; font-size: 12.5px; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 0; cursor: pointer; line-height: 1.3; }
+        .legend-item span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .legend-color { display: inline-block; width: 10px; height: 10px; margin-right: 6px; flex-shrink: 0; border-radius: 2px; }
         .card-title-container { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; width: 100%; }
         .card-body-horizontal { display: flex; align-items: center; justify-content: space-between; }
         .form-group { margin-bottom: 5px; }
         .horizontal-form { display: flex; flex-wrap: nowrap; gap: 10px; align-items: center; }
         .horizontal-form .form-group { flex: 1; min-width: 100px; }
         .horizontal-form .btn { flex: none; }
-        .card-Administrative, .card-status { border: none; }
+        .card-Administrative, .card-status { border: none; box-shadow: none; }
         .nav-pills .nav-link { color: inherit; background-color: inherit; }
-        .card-map { min-height: 800px; min-width: 350px; overflow: hidden; position: relative; }
+        .card-map { min-height: 800px; min-width: 350px; overflow: hidden; position: relative; border-radius: 6px; background: #f9fafb; }
         #map { position: absolute; top: 0; left: 0; right: 0; height: 100%; width: 100%; }
         .marker { display: block; border: none; border-radius: 50%; cursor: pointer; width: 20px; height: 20px; transform: translate(-50%, -50%); }
         .mapboxgl-popup-content { min-width: 200px; min-height: 100px; }
+
+        /* Stat cards */
+        .stat-card { transition: box-shadow .15s ease-in-out, transform .15s ease-in-out; }
+        .stat-card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
+        .stat-card .card-body { padding: 16px 18px; }
+        .stat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .stat-icon { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #eef2ff; color: #4f46e5; border-radius: 8px; flex-shrink: 0; }
+        .stat-icon svg { width: 18px; height: 18px; }
+        .stat-title { font-size: 12px; font-weight: 600; color: #6b7280; margin: 0; text-transform: uppercase; letter-spacing: .04em; }
+        .stat-value { font-size: 30px; font-weight: 700; color: #111827; line-height: 1.1; margin: 0; word-break: break-word; }
+
+        /* Chart cards */
+        .chart-card .card-title { font-weight: 600; color: #111827; font-size: 14px; }
+        .chart-wrap { display: flex; justify-content: center; align-items: center; padding: 8px 0 12px; }
+
+        /* Funding comparison rows */
+        .funding-row { margin-top: 14px; }
+        .funding-row:first-of-type { margin-top: 4px; }
+        .funding-row-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; gap: 8px; }
+        .funding-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; }
+        .funding-value { font-size: 18px; font-weight: 700; color: #111827; line-height: 1; white-space: nowrap; }
+        .funding-value-suffix { font-size: 11px; font-weight: 600; color: #6b7280; margin-left: 2px; }
+        .funding-bar { height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden; }
+        .funding-bar-fill { height: 100%; border-radius: 4px; transition: width .4s ease; }
+        .funding-bar-fill.funded { background: #10b981; }
+        .funding-bar-fill.unfunded { background: #f59e0b; }
+
+        /* Map empty state */
+        .map-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 400px; padding: 24px; text-align: center; color: #6b7280; }
+        .map-empty .map-empty-icon { width: 56px; height: 56px; margin-bottom: 12px; opacity: 0.45; }
+        .map-empty p { margin: 0; font-size: 14px; max-width: 280px; }
     </style>
 {% endblock %}
 
@@ -156,81 +188,102 @@
 
         <div class="row mt-4">
             <div class="col-md-3 d-flex flex-column">
-                <div class="card count-card flex-fill mb-3" style="position: relative;">
+                <div class="card stat-card flex-fill mb-3">
                     <div class="card-body">
-                        <div class="col-md-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-earmark-richtext" viewBox="0 0 16 16">
-                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
-                                <path d="M4.5 12.5A.5.5 0 0 1 5 12h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m0-2A.5.5 0 0 1 5 10h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m1.639-3.708 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V8.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V8s1.54-1.274 1.639-1.208M6.25 6a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5"/>
-                            </svg>
-                            <h5 class="card-title mt-3" style="font-size: 15px;">{% translate "Total Priorities" %}</h5>
+                        <div class="stat-head">
+                            <span class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-richtext" viewBox="0 0 16 16">
+                                    <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+                                    <path d="M4.5 12.5A.5.5 0 0 1 5 12h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m0-2A.5.5 0 0 1 5 10h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m1.639-3.708 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V8.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V8s1.54-1.274 1.639-1.208M6.25 6a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5"/>
+                                </svg>
+                            </span>
+                            <h5 class="stat-title">{% translate "Total Priorities" %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3" id="total-investments" style="position: absolute; bottom: 10px; right: 10px; font-size: 30px;">0</h2>
+                        <h2 class="stat-value" id="total-investments">0</h2>
                     </div>
                 </div>
-                <div class="card count-card flex-fill mb-3" style="position: relative;">
+                <div class="card stat-card flex-fill mb-3">
                     <div class="card-body">
-                        <div class="col-md-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-houses-fill" viewBox="0 0 16 16">
-                              <path d="M7.207 1a1 1 0 0 0-1.414 0L.146 6.646a.5.5 0 0 0 .708.708L1 7.207V12.5A1.5 1.5 0 0 0 2.5 14h.55a2.5 2.5 0 0 1-.05-.5V9.415a1.5 1.5 0 0 1-.56-2.475l5.353-5.354z"/>
-                              <path d="M8.793 2a1 1 0 0 1 1.414 0L12 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l1.854 1.853a.5.5 0 0 1-.708.708L15 8.207V13.5a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 4 13.5V8.207l-.146.147a.5.5 0 1 1-.708-.708z"/>
-                            </svg>
-                            <h5 class="card-title mt-3" style="font-size: 15px;">{% translate 'Total Selected Infrastructures' %}</h5>
+                        <div class="stat-head">
+                            <span class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-houses-fill" viewBox="0 0 16 16">
+                                  <path d="M7.207 1a1 1 0 0 0-1.414 0L.146 6.646a.5.5 0 0 0 .708.708L1 7.207V12.5A1.5 1.5 0 0 0 2.5 14h.55a2.5 2.5 0 0 1-.05-.5V9.415a1.5 1.5 0 0 1-.56-2.475l5.353-5.354z"/>
+                                  <path d="M8.793 2a1 1 0 0 1 1.414 0L12 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l1.854 1.853a.5.5 0 0 1-.708.708L15 8.207V13.5a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 4 13.5V8.207l-.146.147a.5.5 0 1 1-.708-.708z"/>
+                                </svg>
+                            </span>
+                            <h5 class="stat-title">{% translate 'Total Selected Infrastructures' %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3" id="total-subprojects" style="position: absolute; bottom: 10px; right: 10px; font-size: 30px;">0</h2>
+                        <h2 class="stat-value" id="total-subprojects">0</h2>
                     </div>
                 </div>
-                <div class="card count-card flex-fill mb-3" style="position: relative;">
+                <div class="card stat-card flex-fill mb-3">
                     <div class="card-body">
-                        <div class="col-md-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
-                              <path d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z"/>
-                            </svg>
-                            <h5 class="card-title mt-3" style="font-size: 15px;">{% translate 'Completed Infrastructures' %}</h5>
+                        <div class="stat-head">
+                            <span class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
+                                  <path d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z"/>
+                                </svg>
+                            </span>
+                            <h5 class="stat-title">{% translate 'Completed Infrastructures' %}</h5>
                         </div>
-                        <h2 class="card-text mx-5 mb-3" id="total-completed-infrastructure" style="position: absolute; bottom: 10px; right: 10px; font-size: 30px;">0</h2>
+                        <h2 class="stat-value" id="total-completed-infrastructure">0</h2>
                     </div>
                 </div>
-                {# {% if request.user.is_moderator or request.user.is_staff %} #}
-                    <div class="card count-card flex-fill mb-3" style="position: relative;">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12 mb-3">
-                                    <h5 class="card-title mt-3" style="font-size: 15px;">
-                                    	{% translate 'Total Amount Funded / Total Amount Unfunded' %}(FCFA)
-                                    </h5>
-                                </div>
-                                <div class="col-12 mt-3">
-                                    <canvas id="fundedPrioritiesChart" class="bar"></canvas>
-                                </div>
+                <div class="card stat-card flex-fill mb-3">
+                    <div class="card-body">
+                        <div class="stat-head">
+                            <span class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-cash-coin" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8m0 1a5 5 0 1 1 0-10 5 5 0 0 1 0 10"/>
+                                    <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1zm.376.65c.45.105.665.272.665.569 0 .339-.254.566-.665.609z"/>
+                                    <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083q.088-.517.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528q.54.215 1 .536V1a1 1 0 0 0-1-1z"/>
+                                    <path d="M8 5.493c.682 0 1.234-.443 1.234-.989S8.682 3.5 8 3.5s-1.234.443-1.234.99.552.993 1.234.993"/>
+                                </svg>
+                            </span>
+                            <h5 class="stat-title">{% translate 'Total Amount Funded / Total Amount Unfunded' %}(FCFA)</h5>
+                        </div>
+                        <div class="funding-row">
+                            <div class="funding-row-head">
+                                <span class="funding-label">{% translate 'Funded' %}</span>
+                                <span class="funding-value" id="amount-funded">0</span>
                             </div>
-                          </div>
+                            <div class="funding-bar"><div class="funding-bar-fill funded" id="amount-funded-bar" style="width:0%"></div></div>
+                        </div>
+                        <div class="funding-row">
+                            <div class="funding-row-head">
+                                <span class="funding-label">{% translate 'Unfunded' %}</span>
+                                <span class="funding-value" id="amount-unfunded">0</span>
+                            </div>
+                            <div class="funding-bar"><div class="funding-bar-fill unfunded" id="amount-unfunded-bar" style="width:0%"></div></div>
+                        </div>
                     </div>
-                {# {% endif %} #}
+                </div>
             </div>
 
             <div class="col-md-5 d-flex flex-column">
-                <div class="card flex-fill mb-3">
+                <div class="card chart-card flex-fill mb-3">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-12 mb-3">
-                                <h6 class="card-title py-0">{% translate 'Number of priorities by sector' %} </h6>
+                            <div class="col-12 mb-2">
+                                <h6 class="card-title py-0">{% translate 'Number of priorities by sector' %}</h6>
                             </div>
-                            <div id="noDataMessage" class="col-12 mt-3 mb-5" style="display: none; font-size:30px; ">
-                                <p class="text-center mt-5" style="font-size:20px; ">
+                            <div id="noDataMessage" class="col-12 mt-3 mb-5" style="display: none;">
+                                <p class="text-center mt-5" style="font-size:18px;">
                                 	{% translate 'Priorities not yet identified in this village' %}
                                 </p>
                             </div>
-                            <div class="col-6 mt-5">
-                                <ul id="prioritiesLegend" class="legend"></ul>
+                            <div class="col-12">
+                                <div class="chart-wrap">
+                                    <canvas id="prioritiesChart" class="pie-chart"></canvas>
+                                </div>
                             </div>
-                            <div class="col-6 mt-3">
-                                <canvas id="prioritiesChart" class="pie-chart"></canvas>
+                            <div class="col-12">
+                                <ul id="prioritiesLegend" class="legend"></ul>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card flex-fill mb-3 subpopulations">
+                <div class="card chart-card flex-fill mb-3 subpopulations">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 mb-3">
@@ -238,7 +291,7 @@
                                 	{% translate 'Number of infrastructures by minority group' %}
                                 </h6>
                             </div>
-                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <ul class="nav nav-pills mb-3 col-12" id="pills-tab" role="tablist">
                                 <li class="nav-item mr-2 mb-2" role="presentation">
                                     <button class="nav-link active bg-primary" id="pills-agriculturist-tab"
                                     	data-toggle="pill" data-target="#pills-agriculturist" type="button" role="tab"
@@ -268,70 +321,46 @@
                                     </button>
                                 </li>
                             </ul>
-                            <div class="tab-content" id="pills-tabContent">
-                                <div class="tab-pane fade show active ml-2" id="pills-agriculturist" role="tabpanel"
+                            <div class="tab-content col-12" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-agriculturist" role="tabpanel"
                                 	aria-labelledby="pills-agriculturist-tab">
-                                    <div class="row">
-                                        <div class="col-12 mt-3">
-                                            <p id="noDataMessageAgriculturist" class="text-center" style="display: none; font-size: 20px;">
-                                            	{% translate 'No sub-projects for farmers yet' %}
-                                            </p>
-                                        </div>
-                                        <div class="col-6 mt-5">
-                                            <ul id="agriculturistLegend" class="legend"></ul>
-                                        </div>
-                                        <div class="col-6 mt-3">
-                                            <canvas id="agriculturistChart" class="pie-chart"></canvas>
-                                        </div>
+                                    <p id="noDataMessageAgriculturist" class="text-center" style="display: none; font-size: 16px;">
+                                    	{% translate 'No sub-projects for farmers yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="agriculturistChart" class="pie-chart"></canvas>
                                     </div>
+                                    <ul id="agriculturistLegend" class="legend"></ul>
                                 </div>
-                                <div class="tab-pane fade ml-2" id="pills-women" role="tabpanel"
+                                <div class="tab-pane fade" id="pills-women" role="tabpanel"
                                 	aria-labelledby="pills-women-tab">
-                                    <div class="row">
-                                        <div class="col-12 mt-3">
-                                            <p id="noDataMessageWomen" class="text-center" style="display: none; font-size: 20px;">
-                                            	{% translate 'No sub-projects for womens yet' %}
-                                            </p>
-                                        </div>
-                                        <div class="col-6 mt-5">
-                                            <ul id="womenLegend" class="legend"></ul>
-                                        </div>
-                                        <div class="col-6 mt-3">
-                                            <canvas id="womenChart" class="pie-chart"></canvas>
-                                        </div>
+                                    <p id="noDataMessageWomen" class="text-center" style="display: none; font-size: 16px;">
+                                    	{% translate 'No sub-projects for womens yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="womenChart" class="pie-chart"></canvas>
                                     </div>
+                                    <ul id="womenLegend" class="legend"></ul>
                                 </div>
-                                <div class="tab-pane fade ml-2" id="pills-youth" role="tabpanel" 
+                                <div class="tab-pane fade" id="pills-youth" role="tabpanel"
                                 	aria-labelledby="pills-youth-tab">
-                                    <div class="row">
-                                        <div class="col-12 mt-3">
-                                            <p id="noDataMessageYouth" class="text-center" style="display: none; font-size: 20px;">
-                                            	{% translate 'No sub-projects for youth yet' %}
-                                            </p>
-                                        </div>
-                                        <div class="col-6 mt-5">
-                                            <ul id="youthLegend" class="legend"></ul>
-                                        </div>
-                                        <div class="col-6 mt-3">
-                                            <canvas id="youthChart" class="pie-chart"></canvas>
-                                        </div>
+                                    <p id="noDataMessageYouth" class="text-center" style="display: none; font-size: 16px;">
+                                    	{% translate 'No sub-projects for youth yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="youthChart" class="pie-chart"></canvas>
                                     </div>
+                                    <ul id="youthLegend" class="legend"></ul>
                                 </div>
-                                <div class="tab-pane fade ml-2" id="pills-ethnic-minorities" role="tabpanel"
+                                <div class="tab-pane fade" id="pills-ethnic-minorities" role="tabpanel"
                                 	aria-labelledby="pills-ethnic-minorities-tab">
-                                    <div class="row">
-                                        <div class="col-12 mt-3">
-                                            <p id="noDataMessageEthnicMinorities" class="text-center" style="display: none; font-size: 20px;">
-                                            	Pas encore de sous projet pour les Minorités ethniques
-                                            </p>
-                                        </div>
-                                        <div class="col-6 mt-5">
-                                            <ul id="ethnicMinoritiesLegend" class="legend"></ul>
-                                        </div>
-                                        <div class="col-6 mt-3">
-                                            <canvas id="ethnicMinoritiesChart" class="pie-chart"></canvas>
-                                        </div>
+                                    <p id="noDataMessageEthnicMinorities" class="text-center" style="display: none; font-size: 16px;">
+                                    	{% translate 'No sub-projects for ethnic minorities yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="ethnicMinoritiesChart" class="pie-chart"></canvas>
                                     </div>
+                                    <ul id="ethnicMinoritiesLegend" class="legend"></ul>
                                 </div>
                             </div>
                         </div>
@@ -362,10 +391,28 @@
         const sectorColors = {};
         let allSubprojects = [];
 
+        function renderMapEmpty(message) {
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) return;
+            mapContainer.innerHTML =
+                '<div class="map-empty">' +
+                    '<svg class="map-empty-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">' +
+                        '<path d="M15.817.613A.5.5 0 0 1 16 1v13a.5.5 0 0 1-.402.49l-5 1a.5.5 0 0 1-.196 0L5.5 14.51l-4.902.98A.5.5 0 0 1 0 15V2a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0l4.902.98 4.902-.98a.5.5 0 0 1 .415.103M10 2.41l-4-.8v11.98l4 .8zm1 11.98 4-.8V1.61l-4 .8zm-6-.8V1.61l-4 .8v11.98z"/>' +
+                    '</svg>' +
+                    '<p>' + message + '</p>' +
+                '</div>';
+        }
+
         function initializeMap() {
-            mapboxgl.accessToken = '{{ access_token }}';
+            const token = '{{ access_token }}';
+            if (!token) {
+                renderMapEmpty('{% translate "Map unavailable: MAPBOX_ACCESS_TOKEN is not set." %}');
+                return null;
+            }
+            mapboxgl.accessToken = token;
             if (!mapboxgl.supported()) {
-                alert('Your browser does not support Mapbox GL');
+                renderMapEmpty('{% translate "Your browser does not support Mapbox GL." %}');
+                return null;
             }
             const map = new mapboxgl.Map({
                 container: 'map',
@@ -410,6 +457,7 @@
         }
 
         function updateMap(map, subprojects, filterSector = null) {
+            if (!map) return;
             markers.forEach(marker => marker.remove());
             markers = [];
 
@@ -505,7 +553,12 @@
         }
 
         $(document).ready(function() {
-            const map = initializeMap();
+            let map = null;
+            try {
+                map = initializeMap();
+            } catch (e) {
+                console.warn('Map init failed:', e);
+            }
 
             const statisticsComponent = new StatisticsComponent(map);
             initializeDashboard(statisticsComponent);
@@ -825,49 +878,29 @@
                 }
             }
 
+            formatCompactAmount(value) {
+                const n = Number(value) || 0;
+                const abs = Math.abs(n);
+                const trim = (x) => x.toFixed(1).replace(/\.0$/, '');
+                if (abs >= 1e12) return `${trim(n / 1e12)}<span class="funding-value-suffix">T</span>`;
+                if (abs >= 1e9)  return `${trim(n / 1e9)}<span class="funding-value-suffix">B</span>`;
+                if (abs >= 1e6)  return `${trim(n / 1e6)}<span class="funding-value-suffix">M</span>`;
+                if (abs >= 1e3)  return `${trim(n / 1e3)}<span class="funding-value-suffix">K</span>`;
+                return String(Math.round(n));
+            }
+
             updateFundedPriorityCharts(sectorPriorities) {
-                const labels = sectorPriorities.map(item => item.sector__category__name);
-                const data = sectorPriorities.map(item => item.total);
+                const funded = Number(sectorPriorities[0] && sectorPriorities[0].total) || 0;
+                const unfunded = Number(sectorPriorities[1] && sectorPriorities[1].total) || 0;
+                const total = funded + unfunded;
+                const fundedPct = total > 0 ? (funded / total) * 100 : 0;
+                const unfundedPct = total > 0 ? (unfunded / total) * 100 : 0;
 
-                labels.forEach((label, index) => {
-                    if (!sectorColors[label]) {
-                        sectorColors[label] = getRandomColor();
-                    }
-                });
-
-                const backgroundColor = labels.map(label => sectorColors[label]);
-
-                const chartData = {
-                    datasets: [{
-                        data: data,
-                        backgroundColor: backgroundColor
-                    }],
-                    labels: labels
-                };
-
-                 $('#fundedPrioritiesChart').show();
-                 $('#fundedPrioritiesLegend').hide();
-
-
-                 if (this.fundedPrioritiesChart) {
-                        this.fundedPrioritiesChart.data = chartData;
-                        this.fundedPrioritiesChart.update();
-                 } else {
-                        const ctx = document.getElementById('fundedPrioritiesChart').getContext('2d');
-                        this.fundedPrioritiesChart = new Chart(ctx, {
-                            type: 'bar',
-                            data: chartData,
-                            options: {
-                                plugins: {
-                                    legend: {{% comment %}{% endcomment %}
-                                        display: false
-                                    }
-                                }
-                            }
-                        });
-                    }
-                    createLegend('fundedPrioritiesLegend', chartData, this);
-                }
+                $('#amount-funded').html(this.formatCompactAmount(funded));
+                $('#amount-unfunded').html(this.formatCompactAmount(unfunded));
+                $('#amount-funded-bar').css('width', fundedPct + '%');
+                $('#amount-unfunded-bar').css('width', unfundedPct + '%');
+            }
 
         }
 
