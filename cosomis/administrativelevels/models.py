@@ -1,5 +1,6 @@
 import json
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from usermanager.models import User, Organization
 from cosomis.models_base import BaseModel
@@ -46,6 +47,19 @@ class AdministrativeLevel(BaseModel):
         (REGION, _('Region'))
     )
 
+    # Different country datasets store the same logical level under different
+    # type strings — e.g. the Benin dataset uses 'arrondissement' for Canton
+    # and 'département' for Prefecture. All comparisons against `type` go
+    # through aliases_for() / type_filter_q() / is_*() so call sites never
+    # hard-code a single spelling.
+    TYPE_ALIASES = {
+        VILLAGE: ('village',),
+        CANTON: ('canton', 'arrondissement'),
+        COMMUNE: ('commune',),
+        PREFECTURE: ('prefecture', 'département', 'departement'),
+        REGION: ('region', 'région'),
+    }
+
     # system properties
     parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"), related_name='children')
     type = models.CharField(max_length=255, verbose_name=_("Type"), choices=TYPE, default=VILLAGE)
@@ -90,7 +104,7 @@ class AdministrativeLevel(BaseModel):
         return self.name
 
     def get_current_task(self):
-        if self.type == self.VILLAGE:
+        if self.is_village():
             phases = Phase.objects.filter(village=self).order_by('-order')
             for phase in phases:
                 activities = phase.activities.all().order_by('-order')
@@ -113,20 +127,39 @@ class AdministrativeLevel(BaseModel):
             return assign.facilitator
         return None
 
+    @classmethod
+    def aliases_for(cls, canonical_type):
+        """All lowercase type strings that resolve to the given canonical type."""
+        return cls.TYPE_ALIASES.get(canonical_type, (canonical_type.lower(),))
+
+    @classmethod
+    def matches_type(cls, stored_type, canonical_type):
+        if not stored_type:
+            return False
+        return stored_type.strip().lower() in cls.aliases_for(canonical_type)
+
+    @classmethod
+    def type_filter_q(cls, canonical_type, field="type"):
+        """Q expression matching any stored alias of `canonical_type` (case-insensitive)."""
+        q = Q()
+        for alias in cls.aliases_for(canonical_type):
+            q |= Q(**{f"{field}__iexact": alias})
+        return q
+
     def is_village(self):
-        return self.type.lower() == self.VILLAGE.lower()
+        return self.matches_type(self.type, self.VILLAGE)
 
     def is_canton(self):
-        return self.type.lower() == self.CANTON.lower()
+        return self.matches_type(self.type, self.CANTON)
 
     def is_commune(self):
-        return self.type.lower() == self.COMMUNE.lower()
+        return self.matches_type(self.type, self.COMMUNE)
 
     def is_region(self):
-        return self.type.lower() == self.REGION.lower()
+        return self.matches_type(self.type, self.REGION)
 
     def is_prefecture(self):
-        return self.type.lower() == self.PREFECTURE.lower()
+        return self.matches_type(self.type, self.PREFECTURE)
 
     @property
     def children(self):
@@ -145,7 +178,7 @@ class AdministrativeLevel(BaseModel):
 
     def get_villages_coordinates(self):
         coordinates = list()
-        if self.type == self.VILLAGE:
+        if self.is_village():
             if self.longitude is not None and self.latitude is not None:
                 return {
                     "name": self.name,
@@ -153,7 +186,7 @@ class AdministrativeLevel(BaseModel):
                     "coordinates": [float(self.longitude), float(self.latitude)]
                 }
         for child in self.children.all():
-            if child.type == self.VILLAGE:
+            if child.is_village():
                 if child.longitude is not None and child.latitude is not None:
                     coordinates.append(child.get_villages_coordinates())
             else:

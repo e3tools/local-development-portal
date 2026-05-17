@@ -138,7 +138,8 @@ class CantonPlanningRepository:
     def get_villages_for_canton(self, canton: AdministrativeLevel):
         return (
             AdministrativeLevel.objects
-            .filter(parent=canton, type=AdministrativeLevel.VILLAGE)
+            .filter(parent=canton)
+            .filter(AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE))
             .annotate(investments_count=Count("investments"))
             .order_by("name")
         )
@@ -195,8 +196,8 @@ class CantonPlanningService:
     """
 
     def __init__(self, canton: AdministrativeLevel, repository: CantonPlanningRepository = None):
-        assert canton.type == AdministrativeLevel.CANTON, (
-            f"Expected CANTON, got {canton.type}"
+        assert canton.is_canton(), (
+            f"Expected canton-type AdministrativeLevel, got type={canton.type!r}"
         )
         self._canton = canton
         self._repo = repository or CantonPlanningRepository()
