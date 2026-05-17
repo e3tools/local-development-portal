@@ -215,12 +215,30 @@
         }
 
         #attachmentModal .modal-dialog {
-            max-width: 900px;
+            max-width: 1100px;
+        }
+
+        #attachmentModal .modal-content {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        #attachmentModal .modal-body {
+            padding: 16px 20px 20px;
         }
 
         #attachmentModal .carousel-item img {
-            max-height: 70vh;
+            max-height: 62vh;
+            max-width: 100%;
             width: auto;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        #attachmentModal .carousel-control-prev,
+        #attachmentModal .carousel-control-next {
+            width: 48px;
+            opacity: 0.85;
         }
 
         #attachmentModal .carousel-control-next-icon,
@@ -233,8 +251,8 @@
             width: 30px;
         }
 
-        #attachmentModal .carousel-indicators li {
-            background-color: #599cf7;
+        #attachmentModal .carousel-indicators {
+            display: none;
         }
 
         #attachmentModal .lightbox-header {
@@ -278,7 +296,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 14px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #eef1f4;
             flex-wrap: wrap;
             gap: 8px;
         }
@@ -288,6 +308,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #0e1217;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 0 36px;
         }
 
         #attachmentModal .lightbox-doc {
@@ -526,7 +550,7 @@
         $(document).ready(function () {
 
             let current_page = "{{ request.path }}";
-            let query_string = {{ filter_hierarchy_query_strings|safe }};
+            let query_string = {{ filter_hierarchy_query_strings|default_if_none:"{}"|safe }};
             const filter_inputs = [$('#id_region'), $('#id_prefecture'), $('#id_commune'), $('#id_canton'),
                 $('#id_village')];
 
@@ -629,6 +653,7 @@
 
             const lightboxStrings = {
                 openInNewTab: "{% translate 'Open in new tab' %}",
+                download: "{% translate 'Download' %}",
                 previous: "{% translate 'Previous' %}",
                 next: "{% translate 'Next' %}",
                 openDocument: "{% translate 'Open document' %}",
@@ -691,14 +716,22 @@
 
             function buildSlideFooter(card) {
                 const url = escapeHtml(card.dataset.url || '');
+                const downloadUrl = escapeHtml(card.dataset.downloadUrl || '');
                 const admUrl = card.dataset.admUrl;
+                const admLabel = card.dataset.admLabel || '';
                 let html = '<div class="lightbox-footer">';
-                html += '<a href="' + url + '" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">' +
+                if (downloadUrl) {
+                    html += '<a href="' + downloadUrl + '" class="btn btn-sm btn-primary">' +
+                        '<i class="fas fa-download"></i> ' + escapeHtml(lightboxStrings.download) +
+                        '</a>';
+                }
+                html += '<a href="' + url + '" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary ml-2">' +
                     '<i class="fas fa-external-link-alt"></i> ' + escapeHtml(lightboxStrings.openInNewTab) +
                     '</a>';
                 if (admUrl) {
+                    const label = admLabel || lightboxStrings.viewLocation;
                     html += '<a href="' + escapeHtml(admUrl) + '" class="btn btn-sm btn-outline-secondary ml-2">' +
-                        '<i class="fas fa-map-marker-alt"></i> ' + escapeHtml(lightboxStrings.viewLocation) +
+                        '<i class="fas fa-map-marker-alt"></i> ' + escapeHtml(label) +
                         '</a>';
                 }
                 html += '</div>';

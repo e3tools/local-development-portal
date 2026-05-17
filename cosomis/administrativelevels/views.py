@@ -1651,6 +1651,31 @@ def attachment_download(self, adm_id: int, url: str):
 
 
 @login_required
+def attachment_download_by_id(request, pk: int):
+    attachment = Attachment.objects.get(pk=pk)
+    url = attachment.url.split("?")[0]
+    response = requests.get(url)
+    if response.status_code != 200:
+        return HttpResponse("Failed to download the file.", status=502)
+
+    filename = url.split("/")[-1]
+    content_disposition = response.headers.get("content-disposition")
+    if content_disposition is not None:
+        try:
+            fname = re.findall('filename="(.+)"', content_disposition)
+            if len(fname) != 0:
+                filename = fname[0]
+        except:
+            pass
+
+    out = HttpResponse(
+        response.content, content_type=response.headers.get("content-type")
+    )
+    out["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return out
+
+
+@login_required
 def attachment_download_zip(self, adm_id: int):
     ids = self.GET.get("ids").split(",")
 
