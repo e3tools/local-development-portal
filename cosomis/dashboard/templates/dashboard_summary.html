@@ -363,9 +363,22 @@
         let allSubprojects = [];
 
         function initializeMap() {
-            mapboxgl.accessToken = '{{ access_token }}';
+            const token = '{{ access_token }}';
+            const mapContainer = document.getElementById('map');
+            if (!token) {
+                if (mapContainer) {
+                    mapContainer.innerHTML =
+                        '<div class="text-muted p-3">{% translate "Map unavailable: MAPBOX_ACCESS_TOKEN is not set." %}</div>';
+                }
+                return null;
+            }
+            mapboxgl.accessToken = token;
             if (!mapboxgl.supported()) {
-                alert('Your browser does not support Mapbox GL');
+                if (mapContainer) {
+                    mapContainer.innerHTML =
+                        '<div class="text-muted p-3">{% translate "Your browser does not support Mapbox GL." %}</div>';
+                }
+                return null;
             }
             const map = new mapboxgl.Map({
                 container: 'map',
@@ -410,6 +423,7 @@
         }
 
         function updateMap(map, subprojects, filterSector = null) {
+            if (!map) return;
             markers.forEach(marker => marker.remove());
             markers = [];
 
@@ -505,7 +519,12 @@
         }
 
         $(document).ready(function() {
-            const map = initializeMap();
+            let map = null;
+            try {
+                map = initializeMap();
+            } catch (e) {
+                console.warn('Map init failed:', e);
+            }
 
             const statisticsComponent = new StatisticsComponent(map);
             initializeDashboard(statisticsComponent);

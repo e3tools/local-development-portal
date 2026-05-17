@@ -24,14 +24,22 @@ class FillAdmLevelsSelectFilters(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         adm_obj = AdministrativeLevel.objects.get(id=request.POST['value'])
         opt_qs = AdministrativeLevel.objects.filter(parent=adm_obj)
-        if adm_obj.type == AdministrativeLevel.REGION:
-            opt_qs = opt_qs.filter(type=AdministrativeLevel.PREFECTURE)
-        elif adm_obj.type == AdministrativeLevel.PREFECTURE:
-            opt_qs = opt_qs.filter(type=AdministrativeLevel.COMMUNE)
-        elif adm_obj.type == AdministrativeLevel.COMMUNE:
-            opt_qs = opt_qs.filter(type=AdministrativeLevel.CANTON)
-        elif adm_obj.type == AdministrativeLevel.CANTON:
-            opt_qs = opt_qs.filter(type=AdministrativeLevel.VILLAGE)
+        if adm_obj.is_region():
+            opt_qs = opt_qs.filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
+            )
+        elif adm_obj.is_prefecture():
+            opt_qs = opt_qs.filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.COMMUNE)
+            )
+        elif adm_obj.is_commune():
+            opt_qs = opt_qs.filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.CANTON)
+            )
+        elif adm_obj.is_canton():
+            opt_qs = opt_qs.filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+            )
 
         return Response({
             'values': [{'id': adm.id, 'name': adm.name} for adm in opt_qs]

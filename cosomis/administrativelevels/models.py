@@ -57,7 +57,7 @@ class AdministrativeLevel(BaseModel):
         CANTON: ('canton', 'arrondissement'),
         COMMUNE: ('commune',),
         PREFECTURE: ('prefecture', 'département', 'departement'),
-        REGION: ('region', 'région'),
+        REGION: ('region', 'région', 'country'),
     }
 
     # system properties

@@ -29,11 +29,21 @@ class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateVi
         filters_context = {}
         adm_queryset = AdministrativeLevel.objects.all()
 
-        filters_context["regions"] = adm_queryset.filter(type=AdministrativeLevel.REGION)
-        filters_context["prefectures"] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
-        filters_context["communes"] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
-        filters_context["cantons"] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
-        filters_context["villages"] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
+        filters_context["regions"] = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.REGION)
+        )
+        filters_context["prefectures"] = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
+        )
+        filters_context["communes"] = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.COMMUNE)
+        )
+        filters_context["cantons"] = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.CANTON)
+        )
+        filters_context["villages"] = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+        )
         filters_context["organizations"] = Organization.objects.all()
         filters_context["sectors"] = Category.objects.all()
         filters_context["types"] = Investment.INVESTMENT_STATUS_CHOICES
