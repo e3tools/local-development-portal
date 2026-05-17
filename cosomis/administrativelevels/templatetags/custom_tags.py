@@ -14,38 +14,50 @@ from cosomis.utils import structure_the_words as utils_structure_the_words
 register = template.Library()
 
 
+# Detail routes from root down to leaf. The breadcrumb is name-agnostic:
+# whatever the `type` strings happen to be (Village/Canton vs village/arrondissement,
+# English vs French, etc.), the route for each ancestor is chosen by its position
+# in the chain. Index 0 is the root, index -1 is the leaf.
+_BREADCRUMB_ROUTES_ROOT_TO_LEAF = [
+    'administrativelevels:region_detail',
+    'administrativelevels:prefecture_detail',
+    'administrativelevels:commune_detail',
+    'administrativelevels:canton_detail',
+    'administrativelevels:village_detail',
+]
+
+
 @register.simple_tag
 def adm_breadcrumb(adm_level):
     """
-    Generate a breadcrumb hierarchy for an administrative level.
-    Example output: REGION > PREFECTURE > COMMUNE > CANTON > VILLAGE
-    Each parent is a clickable link to its detail page.
+    Generate a clickable breadcrumb for an administrative level by walking
+    the parent chain. The level just above the leaf is rendered with the
+    canton route, two above with the commune route, and so on — the `type`
+    string is not consulted, so datasets that label levels differently
+    (e.g. arrondissement instead of canton) still get correct links.
     """
-    # Map type to URL name
-    url_map = {
-        AdministrativeLevel.VILLAGE: 'administrativelevels:village_detail',
-        AdministrativeLevel.CANTON: 'administrativelevels:canton_detail',
-        AdministrativeLevel.COMMUNE: 'administrativelevels:commune_detail',
-        AdministrativeLevel.PREFECTURE: 'administrativelevels:prefecture_detail',
-        AdministrativeLevel.REGION: 'administrativelevels:region_detail',
-    }
-
-    # Build the chain from current to root
+    # Walk leaf -> root, then reverse so index 0 is the root.
     chain = []
     current = adm_level
     while current is not None:
         chain.append(current)
         current = current.parent
-
-    # Reverse so root is first
     chain.reverse()
+
+    # Align the chain to the leaf end of the fixed route list, so the deepest
+    # item always maps to the leaf route regardless of how short the chain is.
+    offset = len(_BREADCRUMB_ROUTES_ROOT_TO_LEAF) - len(chain)
 
     parts = []
     for i, item in enumerate(chain):
         is_last = (i == len(chain) - 1)
-        url_name = url_map.get(item.type)
+        route_idx = i + offset
+        url_name = (
+            _BREADCRUMB_ROUTES_ROOT_TO_LEAF[route_idx]
+            if 0 <= route_idx < len(_BREADCRUMB_ROUTES_ROOT_TO_LEAF)
+            else None
+        )
         if is_last:
-            # Current level: bold, no link
             parts.append(f'<span class="font-weight-bold">{item.name}</span>')
         elif url_name:
             url = reverse(url_name, args=[item.id])

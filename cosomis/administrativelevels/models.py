@@ -146,6 +146,29 @@ class AdministrativeLevel(BaseModel):
             q |= Q(**{f"{field}__iexact": alias})
         return q
 
+    @classmethod
+    def get_hierarchy_labels(cls):
+        """Return the dataset's actual level names, root-first.
+
+        Walks one branch from the root down (root -> first child -> first
+        grandchild ...) and collects each node's `type` string. The result
+        reflects what the data actually calls each depth (Country / Département
+        / Commune / Arrondissement / Village for Benin, Region / Prefecture /
+        Commune / Canton / Village for Togo, etc.) so UI labels can be driven
+        by the data instead of being hard-coded.
+        """
+        root = cls.objects.filter(parent__isnull=True).first()
+        if not root:
+            return []
+        labels = []
+        cur = root
+        seen = set()
+        while cur and cur.id not in seen:
+            labels.append((cur.type or "").strip().capitalize())
+            seen.add(cur.id)
+            cur = cur.children.first()
+        return labels
+
     def is_village(self):
         return self.matches_type(self.type, self.VILLAGE)
 

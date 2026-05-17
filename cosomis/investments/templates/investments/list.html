@@ -43,6 +43,57 @@
             }
         }
 
+        /* Skeleton shimmer placeholders for the metric cards */
+        .skeleton {
+            display: inline-block;
+            background: linear-gradient(90deg, #e9ecef 25%, #f5f5f5 37%, #e9ecef 63%);
+            background-size: 400% 100%;
+            animation: skeleton-shimmer 1.4s ease infinite;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+        .skeleton-text {
+            height: 1.1em;
+            width: 90px;
+        }
+        @keyframes skeleton-shimmer {
+            0%   { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Centered overlay shown while the investments table is fetching */
+        .dataTables_wrapper { position: relative; }
+        .table-loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.78);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10;
+            border-radius: 4px;
+            transition: opacity .15s ease;
+        }
+        .table-loading-overlay.is-active { display: flex; }
+        .table-loading-overlay .spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid #e3e3e3;
+            border-top-color: #3498db;
+            border-radius: 50%;
+            animation: rotation 0.9s linear infinite;
+        }
+        .table-loading-overlay .loading-text {
+            margin-top: 12px;
+            color: #3498db;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: .2px;
+        }
+        /* DataTables' default tiny "Processing..." is replaced by the overlay above */
+        .dataTables_processing { display: none !important; }
+
         /* Style for table links - Make canton and other links clickable and visible */
         table.table tbody tr td a {
             color: #3498db !important;
@@ -631,34 +682,34 @@
                     <div class="row">
                         <div class="col-3">
                             <p class="text-sm">{% translate 'Total villages available' %}:
-                                <b class="d-block total-villages-display">0</b>
+                                <b class="d-block total-villages-display"><span class="skeleton skeleton-text" aria-label="{% translate 'Loading' %}"></span></b>
                             </p>
                         </div>
                         <div class="col-3">
                             <p class="text-sm">{% translate 'Total sub-projects available' %}:
-                                <b class="d-block total-subprojects-display">0</b>
+                                <b class="d-block total-subprojects-display"><span class="skeleton skeleton-text" aria-label="{% translate 'Loading' %}"></span></b>
                             </p>
                         </div>
                         <div class="col-3">
                             <p class="text-sm">{% translate 'Total funding required' %}:
-                                <b class="d-block total-funding-display">0 FCFA</b>
+                                <b class="d-block total-funding-display"><span class="skeleton skeleton-text" style="width:140px" aria-label="{% translate 'Loading' %}"></span></b>
                             </p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-3">
-                            <p class="text-sm">{% translate '# Villages selected' %}: <span class="d-none loader"></span>
-                                <b class="d-block total-selected-villages-display">0</b>
+                            <p class="text-sm">{% translate '# Villages selected' %}:
+                                <b class="d-block total-selected-villages-display"><span class="skeleton skeleton-text" aria-label="{% translate 'Loading' %}"></span></b>
                             </p>
                         </div>
                         <div class="col-3">
-                            <p class="text-sm">{% translate '# Sub-projects selected' %}: <span class="d-none loader"></span>
-                                <b class="d-block total-selected-subprojects-display">0</b>
+                            <p class="text-sm">{% translate '# Sub-projects selected' %}:
+                                <b class="d-block total-selected-subprojects-display"><span class="skeleton skeleton-text" aria-label="{% translate 'Loading' %}"></span></b>
                             </p>
                         </div>
                         <div class="col-3">
-                            <p class="text-sm">{% translate 'Total funding selected' %}: <span class="d-none loader"></span>
-                                <b class="d-block total-selected-funding-display">0 FCFA</b>
+                            <p class="text-sm">{% translate 'Total funding selected' %}:
+                                <b class="d-block total-selected-funding-display"><span class="skeleton skeleton-text" style="width:140px" aria-label="{% translate 'Loading' %}"></span></b>
                             </p>
                         </div>
                     </div>
@@ -668,6 +719,10 @@
                     {% if investments.count == 0 %}
                         {% translate 'You have no investments' %}
                     {% else %}
+                        <div class="table-loading-overlay is-active" id="investments-table-overlay" role="status" aria-live="polite">
+                            <div class="spinner" aria-hidden="true"></div>
+                            <div class="loading-text">{% translate 'Loading investments…' %}</div>
+                        </div>
                         <table class="table table-bordered table-striped" style="width: 100%;">
                             <thead>
                                 <th data-priority="1" class="align-middle"><input class="" id="checkbox-select-all" type="checkbox"></th>
@@ -772,6 +827,11 @@
     let investments_list = [];
     let table = $(".table").DataTable({{ datatable_config | safe }});
 
+    // Toggle the centered overlay whenever DataTables fetches or processes rows.
+    table.on('processing.dt', function (e, settings, processing) {
+        $('#investments-table-overlay').toggleClass('is-active', !!processing);
+    });
+
     let urlObj = new URL(table.ajax.url());
     let params = new URLSearchParams(urlObj.search);
     params.set('project_id', $('#project-select-id').val());
@@ -783,9 +843,18 @@
         $('[data-toggle="popover"]').popover();
     });
 
+    const SKELETON_NUM = '<span class="skeleton skeleton-text" aria-label="Loading"></span>';
+    const SKELETON_MONEY = '<span class="skeleton skeleton-text" style="width:140px" aria-label="Loading"></span>';
+
+    function paint_skeletons(selectors_with_money) {
+        // selectors_with_money: array of [selector, isMoney]
+        selectors_with_money.forEach(function (pair) {
+            $(pair[0]).html(pair[1] ? SKELETON_MONEY : SKELETON_NUM);
+        });
+    }
+
     function sum_subprojects() {
         let base_url = window.location.href.split('?')[0]
-        let loader = $('.loader');
 
         $.ajax({
             type: "POST",
@@ -797,23 +866,26 @@
                 csrfmiddlewaretoken: '{{ csrf_token }}',
             },
             beforeSend: function() {
-                loader.removeClass('d-none');
-                loader.addClass('d-inline-block');
+                paint_skeletons([
+                    ['.total-selected-villages-display', false],
+                    ['.total-selected-subprojects-display', false],
+                    ['.total-selected-funding-display', true],
+                ]);
             },
             success: function(response) {
                 $('.total-selected-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
                 $('.total-selected-villages-display').html(numeral(response.total_villages_display).format('0,0'));
                 $('.total-selected-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
-
-                loader.removeClass('d-inline-block');
-                loader.addClass('d-none');
+            },
+            error: function() {
+                $('.total-selected-villages-display, .total-selected-subprojects-display').text('—');
+                $('.total-selected-funding-display').text('—');
             }
         })
     }
 
     function init_total_values() {
         let base_url = window.location.href.split('?')[0]
-        let loader = $('.loader');
 
         $.ajax({
             type: "POST",
@@ -825,16 +897,20 @@
                 csrfmiddlewaretoken: '{{ csrf_token }}',
             },
             beforeSend: function() {
-                loader.removeClass('d-none');
-                loader.addClass('d-inline-block');
+                paint_skeletons([
+                    ['.total-villages-display', false],
+                    ['.total-subprojects-display', false],
+                    ['.total-funding-display', true],
+                ]);
             },
             success: function(response) {
                 $('.total-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
                 $('.total-villages-display').html(numeral(response.total_villages_display).format('0,0'));
                 $('.total-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
-
-                loader.removeClass('d-inline-block');
-                loader.addClass('d-none');
+            },
+            error: function() {
+                $('.total-villages-display, .total-subprojects-display').text('—');
+                $('.total-funding-display').text('—');
             }
         })
     }
