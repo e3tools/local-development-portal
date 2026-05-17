@@ -25,6 +25,7 @@ def _make_canton(pk=1, name="Test Canton"):
     c.pk = pk
     c.name = name
     c.type = AdministrativeLevel.CANTON
+    c.is_canton.return_value = True
     return c
 
 
@@ -33,6 +34,7 @@ def _make_village(pk, name):
     v.pk = pk
     v.name = name
     v.type = AdministrativeLevel.VILLAGE
+    v.is_canton.return_value = False
     return v
 
 

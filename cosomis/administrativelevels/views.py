@@ -516,11 +516,13 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         # For Commune, include images from child cantons and grandchild villages
         child_cantons = AdministrativeLevel.objects.filter(
             parent=admin_level,
-            type=AdministrativeLevel.CANTON
+        ).filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.CANTON)
         )
         descendant_villages = AdministrativeLevel.objects.filter(
             parent__in=child_cantons,
-            type=AdministrativeLevel.VILLAGE
+        ).filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
         )
         all_descendants = AdministrativeLevel.objects.filter(
             Q(id=admin_level.id) |
@@ -868,7 +870,8 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
         # Keep existing villages queryset for the Villages tab
         context["villages"] = AdministrativeLevel.objects.filter(
             parent=canton,
-            type=AdministrativeLevel.VILLAGE
+        ).filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
         ).annotate(
             total_estimated_cost=Coalesce(Sum('investments__estimated_cost'), 0),
             total_founded=Coalesce(
@@ -883,7 +886,11 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
 
         base_priorities_qs = Investment.objects.filter(
             administrative_level__parent=canton,
-            administrative_level__type=AdministrativeLevel.VILLAGE,
+        ).filter(
+            AdministrativeLevel.type_filter_q(
+                AdministrativeLevel.VILLAGE,
+                field="administrative_level__type",
+            ),
         ).select_related(
             "administrative_level",
             "sector__category",
@@ -906,7 +913,11 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
             Investment.objects.filter(
                 project_status=Investment.NOT_FUNDED,
                 administrative_level__parent=canton,
-                administrative_level__type=AdministrativeLevel.VILLAGE,
+            ).filter(
+                AdministrativeLevel.type_filter_q(
+                    AdministrativeLevel.VILLAGE,
+                    field="administrative_level__type",
+                ),
             ).only(
                 "id", "ranking", "title", "description",
                 "endorsed_by_youth", "endorsed_by_women",
@@ -917,7 +928,11 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
 
         context["subprojects"] = Investment.objects.filter(
             administrative_level__parent=canton,
-            administrative_level__type=AdministrativeLevel.VILLAGE,
+        ).filter(
+            AdministrativeLevel.type_filter_q(
+                AdministrativeLevel.VILLAGE,
+                field="administrative_level__type",
+            ),
         ).exclude(project_status=Investment.NOT_FUNDED).only(
             "id", "ranking", "title", "description",
             "endorsed_by_youth", "endorsed_by_women",

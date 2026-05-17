@@ -14,13 +14,14 @@ class CantonSummaryService:
     """
 
     def __init__(self, canton: AdministrativeLevel):
-        assert canton.type == AdministrativeLevel.CANTON, (
-            f"Expected CANTON, got {canton.type}"
+        assert canton.is_canton(), (
+            f"Expected canton-type AdministrativeLevel, got type={canton.type!r}"
         )
         self._canton = canton
         self._child_villages = AdministrativeLevel.objects.filter(
             parent=canton,
-            type=AdministrativeLevel.VILLAGE
+        ).filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE),
         )
 
     def get_population_aggregates(self) -> dict:
