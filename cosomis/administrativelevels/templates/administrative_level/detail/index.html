@@ -33,44 +33,42 @@
             <div class="card col-12">
                 <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
+                    {% if population %}
+                        <small class="text-muted">
+                            {% translate "Aggregated from" %} {{ population.village_count|intcomma }} {% translate "villages" %}
+                        </small>
+                    {% endif %}
                 </div>
                 <div class="card-body p-2">
                     <table class="table">
                         <tbody>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.total_population }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.total|default:object.total_population|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_men }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.men|default:object.population_men|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_women }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.women|default:object.population_women|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_young }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.young|default:object.population_young|intcomma }}</td>
+                        </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_elder }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.elder|default:object.population_elder|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_handicap }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.handicap|default:object.population_handicap|intcomma }}</td>
                         </tr>
-{#                        <tr>#}
-{#                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agruculture" %}</td>#}
-{#                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_agriculturist }}</td>#}
-{#                        </tr>#}
-{#                        <tr>#}
-{#                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>#}
-{#                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_pastoralist }}</td>#}
-{#                        </tr>#}
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_minorities }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.minorities|default:object.population_minorities|intcomma }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -83,39 +81,53 @@
                 <div class="card-body p-2">
                     <table class="table">
                         <tbody>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.identified_priority }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">
-                                {% if development_plan %}
-                                <a href="{{ development_plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
-                                {% else %}
-                                -
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.facilitator }}</td>
-                        </tr>
+                        {% if object.is_village %}
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ object.identified_priority }}</td>
+                            </tr>
+                            {% if development_plan %}
+                                <tr>
+                                    <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
+                                    <td class="border-0 p-0 pr-2 text-right">
+                                        <a href="{{ development_plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if planning_status.facilitator %}
+                                <tr>
+                                    <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
+                                    <td class="border-0 p-0 pr-2 text-right">{{ planning_status.facilitator }}</td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">
+                                    {% if planning_status.completed != '-' %}{{ planning_status.completed|intcomma }} %{% else %}-{% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified|default:"-" }}</td>
+                            </tr>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -129,30 +141,39 @@
                 <div class="card-body">
                     <div class="col-12">
                         <ul class="nav nav-tabs">
-                            <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
-                                                            href="#priorities">{% translate "Priorities" %}</a></li>
+                            {% if not object.is_village %}
+                                <li class="nav-item btn p-0">
+                                    <a class="nav-link active" data-toggle="tab" href="#children">
+                                        {% if children_list.0.type %}{{ children_list.0.type|title }}{% else %}{% translate 'Children' %}{% endif %}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item btn p-0 pl-2 pr-2">
+                                <a class="nav-link {% if object.is_village %}active{% endif %}" data-toggle="tab"
+                                   href="#priorities">{% translate "Priorities" %}</a>
+                            </li>
 {#                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"#}
 {#                                                                      href="#village_population">{% translate "Village population" %}</a>#}
 {#                            </li>#}
-                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-                                                                      href="#infrastructure_services">{% translate "Infrastructure and Services" %}</a>
-                            </li>
-                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-                                                                      href="#planning_cycle">{% translate "Planning Cycle" %}</a>
-                            </li>
-                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-                                                                      href="#financial_informations">{% translate "Financial informations" %}</a>
-                            </li>
-                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-                                                                      href="#grm">{% translate "GRM" %}</a></li>
-                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
-                                                            href="#diagnostics">{% translate "Diagnostics" %}</a></li>
-                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
-                                                            href="#climate">{% translate "Climate" %}</a></li>
+                            {% if object.is_village %}
+                                <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                          href="#infrastructure_services">{% translate "Infrastructure and Services" %}</a>
+                                </li>
+                                <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                          href="#planning_cycle">{% translate "Planning Cycle" %}</a>
+                                </li>
+                                <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
+                                                                href="#climate">{% translate "Climate" %}</a></li>
+                            {% endif %}
                         </ul>
 
                         <div class="tab-content mt-3">
-                            <div id="priorities" class="tab-pane active">
+                            {% if not object.is_village %}
+                                <div id="children" class="tab-pane active">
+                                    {% include 'shared/children_list_table.html' %}
+                                </div>
+                            {% endif %}
+                            <div id="priorities" class="tab-pane {% if object.is_village %}active{% endif %}">
 								<div class="table-responsive">
 									{% include 'shared/priorities_table.html' %}
 								</div>
@@ -199,6 +220,7 @@
                                 </div>
                             </div>{% endcomment %}
                             </div>
+                            {% if object.is_village %}
                             <div id="infrastructure_services" class="tab-pane fade">
                                 <div class="card-body">
                                     {% if children_services_infrastructures %}
@@ -215,22 +237,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="financial_informations" class="tab-pane fade">
-                                <h5>{% translate "In construction" %}</h5>
-                            </div>
-                            <div id="grm" class="tab-pane fade">
-                                <div class="card">
-                                    <div class="card-body">
-                                        {% include 'shared/grm_table.html' %}
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="diagnostics" class="tab-pane fade">
-                                <h5>{% translate "In construction" %}</h5>
-                            </div>
                             <div id="climate" class="tab-pane fade position-relative">
                                 {% include 'administrative_level/detail/tabs/climate.html' %}
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

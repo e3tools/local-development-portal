@@ -238,22 +238,41 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
         }
 
         images_number = 5
+        # Walk the subtree iteratively (one query per tree level) so the
+        # carousel on region/prefecture pages can surface images attached to
+        # descendant villages, not just the level itself. is_village() is the
+        # fast path — no descendants to walk.
+        level_ids = [admin_level.id]
+        if not admin_level.is_village():
+            frontier = [admin_level.id]
+            while frontier:
+                next_ids = list(
+                    AdministrativeLevel.objects.filter(parent_id__in=frontier)
+                    .values_list('id', flat=True)
+                )
+                if not next_ids:
+                    break
+                level_ids.extend(next_ids)
+                frontier = next_ids
+
+        subtree_q = (
+            Q(adm_id__in=level_ids) |
+            Q(task__activity__phase__village_id__in=level_ids)
+        )
+
         completed = Attachment.objects.filter(
-            Q(adm=admin_level) |
-            Q(task__activity__phase__village=admin_level),
+            subtree_q,
             process_moment=Attachment.COMPLETED_INFRASTRUCTURE
         ).filter(images_extensions_query)[:3]
         in_progress = []
         if not completed:
             in_progress = Attachment.objects.filter(
-                Q(adm=admin_level) |
-                Q(task__activity__phase__village=admin_level),
+                subtree_q,
                 process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS
             ).filter(images_extensions_query)[:1]
 
         community = Attachment.objects.filter(
-            Q(adm=admin_level) |
-            Q(task__activity__phase__village=admin_level),
+            subtree_q,
             process_moment=Attachment.COMMUNITY_PROCESS
         ).filter(images_extensions_query)[:(images_number - len(completed) - len(in_progress))]
 
@@ -279,6 +298,97 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
                 output_field=IntegerField(),
             )
         ).order_by('status_order', 'ranking')
+
+        # Non-village levels (region/prefecture/etc.) have no direct
+        # population, planning, or investment rows of their own — every
+        # data point lives on descendant villages. Aggregate from the
+        # subtree we already walked above for the carousel.
+        if not admin_level.is_village():
+            descendant_villages = AdministrativeLevel.objects.filter(
+                id__in=level_ids
+            ).filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+            )
+            descendant_village_ids = list(
+                descendant_villages.values_list('id', flat=True)
+            )
+            village_count = len(descendant_village_ids)
+
+            pop_agg = descendant_villages.aggregate(
+                total=Coalesce(Sum('total_population'), 0),
+                men=Coalesce(Sum('population_men'), 0),
+                women=Coalesce(Sum('population_women'), 0),
+                young=Coalesce(Sum('population_young'), 0),
+                elder=Coalesce(Sum('population_elder'), 0),
+                handicap=Coalesce(Sum('population_handicap'), 0),
+                agriculturist=Coalesce(Sum('population_agriculturist'), 0),
+                pastoralist=Coalesce(Sum('population_pastoralist'), 0),
+                minorities=Coalesce(Sum('population_minorities'), 0),
+            )
+            context["population"] = {
+                **pop_agg,
+                "village_count": village_count,
+            }
+
+            if descendant_village_ids:
+                agg_tasks_qs = Task.objects.filter(
+                    activity__phase__village_id__in=descendant_village_ids
+                )
+                total_tasks = agg_tasks_qs.count()
+                done_tasks = agg_tasks_qs.filter(status=Task.COMPLETED).count()
+                villages_with_priorities = descendant_villages.exclude(
+                    identified_priority__isnull=True
+                ).count()
+                context["planning_status"] = {
+                    "current_phase": None,
+                    "current_activity": None,
+                    "current_task": None,
+                    "completed": round(float(done_tasks) * 100 / float(total_tasks), 2) if total_tasks else '-',
+                    "priorities_identified": f"{villages_with_priorities}/{village_count}" if village_count else "-",
+                    "village_development_plan_date": "",
+                    "facilitator": "",
+                }
+
+            # Attach aggregated village_count + total_population to each direct
+            # child by bucketing every descendant village under the child whose
+            # subtree it sits in. A single parent map over the subtree avoids
+            # per-child queries.
+            parent_map = dict(
+                AdministrativeLevel.objects.filter(id__in=level_ids)
+                .values_list('id', 'parent_id')
+            )
+            children = list(admin_level.children.all().order_by('name'))
+            direct_child_ids = {c.id for c in children}
+            child_stats = {
+                cid: {"village_count": 0, "total_population": 0}
+                for cid in direct_child_ids
+            }
+            for v in descendant_villages.values('parent_id', 'total_population'):
+                cur = v['parent_id']
+                while cur is not None and cur not in direct_child_ids:
+                    cur = parent_map.get(cur)
+                if cur is not None:
+                    child_stats[cur]["village_count"] += 1
+                    child_stats[cur]["total_population"] += v['total_population'] or 0
+            for child in children:
+                s = child_stats.get(child.id, {"village_count": 0, "total_population": 0})
+                child.computed_village_count = s["village_count"]
+                child.computed_total_population = s["total_population"]
+            context["children_list"] = children
+
+            context["investments"] = Investment.objects.filter(
+                administrative_level_id__in=descendant_village_ids
+            ).select_related('administrative_level', 'funded_by').annotate(
+                status_order=Case(
+                    When(project_status=Investment.NOT_FUNDED, then=0),
+                    When(project_status=Investment.PAUSED, then=1),
+                    When(project_status=Investment.FUNDED, then=2),
+                    When(project_status=Investment.IN_PROGRESS, then=3),
+                    When(project_status=Investment.COMPLETED, then=4),
+                    output_field=IntegerField(),
+                )
+            ).order_by('status_order', 'ranking')
+
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
         context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())

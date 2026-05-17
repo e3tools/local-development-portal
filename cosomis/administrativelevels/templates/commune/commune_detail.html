@@ -157,7 +157,11 @@
                                     <thead>
                                         <tr>
                                             <th class="align-middle">{% translate 'Name' %}</th>
-                                            <th class="align-middle">{% translate 'Canton' %}</th>
+                                            {% if villages.0.parent.type %}
+                                                <th class="align-middle">{{ villages.0.parent.type|title }}</th>
+                                            {% else %}
+                                                <th class="align-middle">{% translate 'Canton' %}</th>
+                                            {% endif %}
                                             <th class="align-middle">{% translate 'Population' %}</th>
                                             <th class="align-middle">{% translate 'Invested Capital' %}</th>
                                             <th class="align-middle">{% translate 'Required Capital' %}</th>
