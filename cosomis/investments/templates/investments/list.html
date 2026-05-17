@@ -61,38 +61,112 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Centered overlay shown while the investments table is fetching */
+        /* Skeleton loading overlay for the investments table */
+        .investments-table-stage { position: relative; }
         .dataTables_wrapper { position: relative; }
         .table-loading-overlay {
             position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.78);
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: #ffffff;
             display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
             z-index: 10;
+            overflow: hidden;
             border-radius: 4px;
-            transition: opacity .15s ease;
+            pointer-events: none;
         }
-        .table-loading-overlay.is-active { display: flex; }
-        .table-loading-overlay .spinner {
-            width: 44px;
-            height: 44px;
-            border: 4px solid #e3e3e3;
-            border-top-color: #3498db;
-            border-radius: 50%;
-            animation: rotation 0.9s linear infinite;
+        .table-loading-overlay.is-active { display: block; }
+
+        /* Skeleton table inside the overlay — mimics the real columns */
+        .skeleton-table-mock {
+            width: 100%;
+            padding: 0;
+            display: block;
         }
-        .table-loading-overlay .loading-text {
-            margin-top: 12px;
-            color: #3498db;
+        .skeleton-table-mock .skeleton-row {
+            display: grid;
+            grid-template-columns: 36px minmax(140px, 2fr) minmax(110px, 1.4fr) minmax(110px, 1.1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) 56px 90px;
+            gap: 16px;
+            padding: 14px 18px;
+            border-bottom: 1px solid #f1f3f5;
+            align-items: center;
+            opacity: 0;
+            animation: skeleton-row-in .35s ease forwards;
+        }
+        .skeleton-table-mock .skeleton-row:nth-child(odd) { background-color: rgba(0, 0, 0, 0.018); }
+        .skeleton-cell {
+            height: 11px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #e9ecef 25%, #f5f7fa 37%, #e9ecef 63%);
+            background-size: 400% 100%;
+            animation: skeleton-shimmer 1.4s ease infinite;
+        }
+        .skeleton-cell.checkbox { width: 16px; height: 16px; border-radius: 3px; }
+        .skeleton-cell.w-30 { width: 35%; }
+        .skeleton-cell.w-50 { width: 55%; }
+        .skeleton-cell.w-70 { width: 75%; }
+        .skeleton-cell.w-90 { width: 92%; }
+        .skeleton-cell.compact { height: 9px; }
+
+        /* Stagger each row's fade-in and shimmer phase for a live feel */
+        .skeleton-table-mock .skeleton-row:nth-child(1) { animation-delay: 0ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(2) { animation-delay: 50ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(3) { animation-delay: 100ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(4) { animation-delay: 150ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(5) { animation-delay: 200ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(6) { animation-delay: 250ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(7) { animation-delay: 300ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(8) { animation-delay: 350ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(2) .skeleton-cell { animation-delay: 80ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(3) .skeleton-cell { animation-delay: 160ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(4) .skeleton-cell { animation-delay: 240ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(5) .skeleton-cell { animation-delay: 320ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(6) .skeleton-cell { animation-delay: 400ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(7) .skeleton-cell { animation-delay: 480ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(8) .skeleton-cell { animation-delay: 560ms; }
+
+        @keyframes skeleton-row-in {
+            from { opacity: 0; transform: translateY(4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Subtle status pill in a corner so users know it's loading, not stuck */
+        .skeleton-status-pill {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            background: #eef5ff;
+            color: #1c64f2;
+            font-size: 11px;
             font-weight: 600;
-            font-size: 14px;
-            letter-spacing: .2px;
+            border-radius: 999px;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+            box-shadow: 0 1px 2px rgba(28, 100, 242, 0.10);
         }
+        .skeleton-status-pill::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #1c64f2;
+            animation: skeleton-pulse 1.05s ease-in-out infinite;
+        }
+        @keyframes skeleton-pulse {
+            0%, 100% { transform: scale(.85); opacity: .55; }
+            50%      { transform: scale(1.15); opacity: 1; }
+        }
+
         /* DataTables' default tiny "Processing..." is replaced by the overlay above */
         .dataTables_processing { display: none !important; }
+        /* While loading, also hide DataTables' empty-state row so the skeleton owns the view */
+        .table-loading-overlay.is-active ~ table tbody td.dataTables_empty { visibility: hidden; }
 
         /* Style for table links - Make canton and other links clickable and visible */
         table.table tbody tr td a {
@@ -719,10 +793,26 @@
                     {% if investments.count == 0 %}
                         {% translate 'You have no investments' %}
                     {% else %}
-                        <div class="table-loading-overlay is-active" id="investments-table-overlay" role="status" aria-live="polite">
-                            <div class="spinner" aria-hidden="true"></div>
-                            <div class="loading-text">{% translate 'Loading investments…' %}</div>
-                        </div>
+                        <div class="investments-table-stage">
+                            <div class="table-loading-overlay is-active" id="investments-table-overlay" role="status" aria-live="polite" aria-label="{% translate 'Loading investments…' %}">
+                                <span class="skeleton-status-pill">{% translate 'Loading investments' %}</span>
+                                <div class="skeleton-table-mock" aria-hidden="true">
+                                    {% for _ in "12345678" %}
+                                    <div class="skeleton-row">
+                                        <span class="skeleton-cell checkbox"></span>
+                                        <span class="skeleton-cell w-70"></span>
+                                        <span class="skeleton-cell w-50 compact"></span>
+                                        <span class="skeleton-cell w-90"></span>
+                                        <span class="skeleton-cell w-70"></span>
+                                        <span class="skeleton-cell w-50"></span>
+                                        <span class="skeleton-cell w-50"></span>
+                                        <span class="skeleton-cell w-50"></span>
+                                        <span class="skeleton-cell w-30"></span>
+                                        <span class="skeleton-cell w-50"></span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
                         <table class="table table-bordered table-striped" style="width: 100%;">
                             <thead>
                                 <th data-priority="1" class="align-middle"><input class="" id="checkbox-select-all" type="checkbox"></th>
@@ -806,6 +896,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                        </div>
                     {% endif %}
 
                     <input type="hidden" name="all_queryset" class="checkbox-select-all-monitor" value="false">
@@ -827,10 +918,26 @@
     let investments_list = [];
     let table = $(".table").DataTable({{ datatable_config | safe }});
 
-    // Toggle the centered overlay whenever DataTables fetches or processes rows.
+    // Toggle the skeleton overlay whenever DataTables fetches or processes rows,
+    // and align it with the tbody so the column headers remain visible.
+    function alignInvestmentsOverlay() {
+        var $stage = $('.investments-table-stage');
+        var $overlay = $('#investments-table-overlay');
+        var $thead = $stage.find('thead').first();
+        if (!$stage.length || !$overlay.length || !$thead.length) return;
+        var stageTop = $stage.offset().top;
+        var theadBottom = $thead.offset().top + $thead.outerHeight();
+        var top = Math.max(0, theadBottom - stageTop);
+        $overlay.css('top', top + 'px');
+    }
+    alignInvestmentsOverlay();
+    $(window).on('resize', alignInvestmentsOverlay);
+
     table.on('processing.dt', function (e, settings, processing) {
         $('#investments-table-overlay').toggleClass('is-active', !!processing);
+        if (processing) { alignInvestmentsOverlay(); }
     });
+    table.on('init.dt draw.dt', function () { alignInvestmentsOverlay(); });
 
     let urlObj = new URL(table.ajax.url());
     let params = new URLSearchParams(urlObj.search);
