@@ -12,6 +12,7 @@
                      data-attachment-id="{{ attachment.id }}"
                      data-count="{{ forloop.counter0 }}"
                      data-url="{{ attachment.url|imgAWSS3Filter }}"
+                     data-download-url="{% url 'administrativelevels:attachment_download_by_id' attachment.id %}"
                      data-type="{{ attachment.type }}"
                      {% if attachment.adm %}
                      data-adm-url="{% url 'administrativelevels:village_detail' attachment.adm.id %}"
