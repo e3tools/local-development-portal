@@ -48,16 +48,17 @@ class AdministrativeLevel(BaseModel):
     )
 
     # Different country datasets store the same logical level under different
-    # type strings — e.g. the Benin dataset uses 'arrondissement' for Canton
-    # and 'département' for Prefecture. All comparisons against `type` go
-    # through aliases_for() / type_filter_q() / is_*() so call sites never
-    # hard-code a single spelling.
+    # type strings — e.g. the Benin dataset uses 'arrondissement' for Canton,
+    # 'département' for Prefecture, and 'country' for the root that Togo
+    # labels 'Region'. All comparisons against `type` go through
+    # aliases_for() / type_filter_q() / is_*() so call sites never hard-code
+    # a single spelling.
     TYPE_ALIASES = {
         VILLAGE: ('village',),
         CANTON: ('canton', 'arrondissement'),
         COMMUNE: ('commune',),
         PREFECTURE: ('prefecture', 'département', 'departement'),
-        REGION: ('region', 'région'),
+        REGION: ('region', 'région', 'country'),
     }
 
     # system properties
