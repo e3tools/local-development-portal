@@ -1419,6 +1419,9 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         if babylong_query_params_list:
             context["babylong_query_params"] = '&' + '&'.join(babylong_query_params_list)
 
+        context["type_links"] = self._build_type_links(query_params)
+        context["active_filter_chips"] = self._build_active_chips(query_params)
+
         form = AttachmentFilterForm()
 
         paginator = self.__build_db_filter()
@@ -1490,6 +1493,94 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
                 resp = _build_filter_hierarchy(idx, self.request.GET[key_filter])
                 return json.dumps(resp)
 
+    @staticmethod
+    def _querystring_without(query_params, *keys_to_drop):
+        clean = query_params.copy()
+        for key in ("page",) + tuple(keys_to_drop):
+            clean.pop(key, None)
+        for key in list(clean.keys()):
+            if clean.get(key) in ("", None):
+                clean.pop(key, None)
+        encoded = clean.urlencode()
+        return "?" + encoded if encoded else "?"
+
+    def _build_type_links(self, query_params):
+        active = query_params.get("type") or ""
+        if active not in (Attachment.PHOTO, Attachment.DOCUMENT):
+            active = "all"
+
+        base = self._querystring_without(query_params, "type")
+        separator = "" if base == "?" else "&"
+        return {
+            "all": base,
+            Attachment.PHOTO: f"{base}{separator}type={Attachment.PHOTO}",
+            Attachment.DOCUMENT: f"{base}{separator}type={Attachment.DOCUMENT}",
+            "active": active,
+        }
+
+    def _build_active_chips(self, query_params):
+        chips = []
+        adm_label_keys = {
+            "region": _("Region"),
+            "prefecture": _("Prefecture"),
+            "commune": _("Commune"),
+            "canton": _("Canton"),
+            "village": _("Village"),
+        }
+
+        attachment_type = query_params.get("type")
+        if attachment_type in (Attachment.PHOTO, Attachment.DOCUMENT):
+            label_map = {Attachment.PHOTO: _("Photo"), Attachment.DOCUMENT: _("Document")}
+            chips.append({
+                "key": "type",
+                "label": "{}: {}".format(_("Type"), label_map[attachment_type]),
+                "remove_url": self._querystring_without(query_params, "type"),
+            })
+
+        for key, prefix in adm_label_keys.items():
+            value = query_params.get(key)
+            if not value:
+                continue
+            try:
+                adm_lvl = AdministrativeLevel.objects.get(id=int(value))
+                name = adm_lvl.name
+            except (AdministrativeLevel.DoesNotExist, ValueError, TypeError):
+                continue
+            chips.append({
+                "key": key,
+                "label": "{}: {}".format(prefix, name),
+                "remove_url": self._querystring_without(query_params, key),
+            })
+
+        phase_name = query_params.get("phase")
+        if phase_name:
+            chips.append({
+                "key": "phase",
+                "label": "{}: {}".format(_("Phase"), phase_name),
+                "remove_url": self._querystring_without(query_params, "phase"),
+            })
+
+        for key, model, prefix in (
+            ("activity", Activity, _("Activity")),
+            ("task", Task, _("Task")),
+            ("tasks", Task, _("Task")),
+        ):
+            value = query_params.get(key)
+            if not value:
+                continue
+            try:
+                instance = model.objects.get(id=int(value))
+                name = instance.name
+            except (model.DoesNotExist, ValueError, TypeError):
+                continue
+            chips.append({
+                "key": key,
+                "label": "{}: {}".format(prefix, name),
+                "remove_url": self._querystring_without(query_params, key),
+            })
+
+        return chips
+
     def get_queryset(self):
         queryset = super().get_queryset()
         empty_list = ["", None]
@@ -1498,6 +1589,10 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         for filter_hierarchy in self.filter_hierarchy:
             if filter_hierarchy in request_get and request_get[filter_hierarchy] in [None, ""]:
                 request_get.pop(filter_hierarchy)
+
+        attachment_type = request_get.get("type")
+        if attachment_type in (Attachment.PHOTO, Attachment.DOCUMENT):
+            queryset = queryset.filter(type=attachment_type)
 
         if "tasks" in request_get and request_get["tasks"] not in empty_list:
             queryset = queryset.filter(
