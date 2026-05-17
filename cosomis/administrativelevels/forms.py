@@ -198,7 +198,7 @@ class VillageSearchForm(forms.Form):
         label=_("Canton"),
     )
 
-    def __init__(self, *args, hierarchy_labels=None, **kwargs):
+    def __init__(self, *args, hierarchy_labels=None, single_region=None, **kwargs):
         super().__init__(*args, **kwargs)
         # `hierarchy_labels` is root-first: [region, prefecture, commune, canton, leaf].
         # Override the static labels with whatever the dataset actually calls each
@@ -211,6 +211,15 @@ class VillageSearchForm(forms.Form):
             ):
                 if label and field_name in self.fields:
                     self.fields[field_name].label = label
+        # When the dataset has a single root the region dropdown is hidden in
+        # the template, so pre-load the prefecture queryset with its direct
+        # children to make the next-level dropdown immediately usable.
+        if single_region:
+            self.fields["prefecture"].queryset = (
+                AdministrativeLevel.objects.filter(parent=single_region).filter(
+                    AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
+                )
+            )
 
 class FinancialPartnerForm(forms.Form):
     name = forms.CharField()
@@ -230,6 +239,8 @@ class AttachmentFilterForm(forms.Form):
     activity = forms.ChoiceField(widget=Select(attrs={'empty-option': '---------'}), required=False, label=_("Activity"))
     task = forms.ChoiceField(widget=Select(attrs={'empty-option': '---------'}), required=False, label=_("Task"))
     administrative_level = forms.ModelChoiceField(
-        queryset=AdministrativeLevel.objects.filter(type=AdministrativeLevel.VILLAGE),
+        queryset=AdministrativeLevel.objects.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+        ),
         widget=Select(attrs={'empty-option': '---------'}), required=False, label=_("Administrative level")
     )

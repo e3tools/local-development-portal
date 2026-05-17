@@ -436,36 +436,54 @@
                         <input type="hidden" name="type" value="{{ query_strings_raw.type }}">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="form-label">
-                                        <label for="id_region">{% translate 'Region' %}</label>
-                                    </div>
-                                    <div class="form-select-row">
+                                {% if single_region %}
+                                    {# Single-root dataset: hide the redundant top-level select but keep it in the DOM for the JS cascade. #}
+                                    <div class="form-group" style="display: none;">
                                         <select class="form-control" name="region" id="id_region" style="width: 100%;">
-                                            <option selected value="">---</option>
-                                            {% for region in regions %}
-                                                {% if 'region' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.region == region.id %}
-                                                    <option value="{{ region.id }}" selected>{{ region.name }}</option>
-                                                {% else %}
-                                                    <option value="{{ region.id }}">{{ region.name }}</option>
-                                                {% endif %}
-                                            {% endfor %}
+                                            <option value="{{ single_region.id }}" selected>{{ single_region.name }}</option>
                                         </select>
                                     </div>
-                                </div>
+                                {% else %}
+                                    <div class="form-group">
+                                        <div class="form-label">
+                                            <label for="id_region">{{ adm_labels.region }}</label>
+                                        </div>
+                                        <div class="form-select-row">
+                                            <select class="form-control" name="region" id="id_region" style="width: 100%;">
+                                                <option selected value="">---</option>
+                                                {% for region in regions %}
+                                                    {% if 'region' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.region == region.id %}
+                                                        <option value="{{ region.id }}" selected>{{ region.name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ region.id }}">{{ region.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endif %}
                                 <div class="form-group">
                                     <div class="form-label">
-                                        <label for="id_prefecture">{% translate 'Prefecture' %}</label>
+                                        <label for="id_prefecture">{{ adm_labels.prefecture }}</label>
                                     </div>
                                     <div class="form-select-row">
-                                        <select class="form-control" name="prefecture" id="id_prefecture" style="width: 100%;" disabled>
+                                        <select class="form-control" name="prefecture" id="id_prefecture" style="width: 100%;"{% if not single_region %} disabled{% endif %}>
                                             <option selected value="">---</option>
+                                            {% if single_region %}
+                                                {% for prefecture in prefectures %}
+                                                    {% if 'prefecture' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.prefecture == prefecture.id %}
+                                                        <option value="{{ prefecture.id }}" selected>{{ prefecture.name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="form-label">
-                                        <label for="id_commune">{% translate 'Commune' %}</label>
+                                        <label for="id_commune">{{ adm_labels.commune }}</label>
                                     </div>
                                     <div class="form-select-row">
                                         <select class="form-control" name="commune" id="id_commune" style="width: 100%;" disabled>
@@ -475,7 +493,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="form-label">
-                                        <label for="id_canton">{% translate 'Canton' %}</label>
+                                        <label for="id_canton">{{ adm_labels.canton }}</label>
                                     </div>
                                     <div class="form-select-row">
                                         <select class="form-control" name="canton" id="id_canton" style="width: 100%;" disabled>
@@ -487,7 +505,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="form-label">
-                                        <label for="id_village">{% translate 'Village' %}</label>
+                                        <label for="id_village">{{ adm_labels.village }}</label>
                                     </div>
                                     <div class="form-select-row">
                                         <select class="form-control" name="village" id="id_village" style="width: 100%;" disabled>

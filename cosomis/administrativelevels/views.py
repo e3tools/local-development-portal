@@ -159,7 +159,16 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredApproveRequiredM
         # the dataset's vocabulary (Country/Département/... for Benin,
         # Region/Prefecture/... for Togo, etc.).
         hierarchy_labels = AdministrativeLevel.get_hierarchy_labels()
-        ctx["form"] = VillageSearchForm(hierarchy_labels=hierarchy_labels)
+        # When the dataset has a single root (e.g. Benin = one "country" row),
+        # hide the top-level dropdown and pre-populate the next level.
+        roots = AdministrativeLevel.objects.filter(parent__isnull=True)
+        single_region = roots.first() if roots.count() == 1 else None
+        ctx["single_region"] = single_region
+        ctx["form"] = VillageSearchForm(
+            hierarchy_labels=hierarchy_labels,
+            single_region=single_region,
+            initial={"region": single_region} if single_region else None,
+        )
         ctx["search"] = self.request.GET.get("search", None)
         ctx["type"] = self.request.GET.get("type", "Village")
         ctx["current_language"] = translation.get_language()
@@ -1515,10 +1524,29 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
     def get_context_data(self, **kwargs):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
 
-        context["regions"] = AdministrativeLevel.objects.filter(
-            type=AdministrativeLevel.REGION
+        regions_qs = AdministrativeLevel.objects.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.REGION)
+        )
+        context["regions"] = regions_qs
+        # When the dataset has a single root (e.g. Benin = one "country" row),
+        # the top-level dropdown is just decoration. Auto-select it server-side
+        # and pre-load its prefectures so the modal starts at the next level.
+        single_region = regions_qs.first() if regions_qs.count() == 1 else None
+        context["single_region"] = single_region
+        context["prefectures"] = (
+            AdministrativeLevel.objects.filter(parent=single_region).filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
+            )
+            if single_region
+            else AdministrativeLevel.objects.none()
         )
         context['phases'] = Phase.objects.all().values_list('name', flat=True).distinct()
+
+        # Use the dataset's own level names so the modal/chip labels read
+        # "Country / Département / ... / Village" on Benin instead of the
+        # Togo-flavoured fallback.
+        adm_labels = AdministrativeLevel.get_filter_labels()
+        context["adm_labels"] = adm_labels
 
         query_params: dict = self.request.GET
 
@@ -1530,7 +1558,7 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
             context["babylong_query_params"] = '&' + '&'.join(babylong_query_params_list)
 
         context["type_links"] = self._build_type_links(query_params)
-        context["active_filter_chips"] = self._build_active_chips(query_params)
+        context["active_filter_chips"] = self._build_active_chips(query_params, adm_labels, single_region)
 
         form = AttachmentFilterForm()
 
@@ -1628,15 +1656,9 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
             "active": active,
         }
 
-    def _build_active_chips(self, query_params):
+    def _build_active_chips(self, query_params, adm_label_keys, single_region=None):
         chips = []
-        adm_label_keys = {
-            "region": _("Region"),
-            "prefecture": _("Prefecture"),
-            "commune": _("Commune"),
-            "canton": _("Canton"),
-            "village": _("Village"),
-        }
+        single_region_id = str(single_region.id) if single_region else None
 
         attachment_type = query_params.get("type")
         if attachment_type in (Attachment.PHOTO, Attachment.DOCUMENT):
@@ -1650,6 +1672,8 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         for key, prefix in adm_label_keys.items():
             value = query_params.get(key)
             if not value:
+                continue
+            if key == "region" and single_region_id and value == single_region_id:
                 continue
             try:
                 adm_lvl = AdministrativeLevel.objects.get(id=int(value))
