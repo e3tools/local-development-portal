@@ -170,6 +170,25 @@ class AdministrativeLevel(BaseModel):
             cur = cur.children.first()
         return labels
 
+    @classmethod
+    def get_filter_labels(cls):
+        """Return {canonical_key: display_label} for filter UIs.
+
+        Pulls labels from the dataset's actual vocabulary via
+        get_hierarchy_labels() (so Benin sees Country/Département/...) and
+        falls back to Togo's translated English when the data has fewer
+        than five levels.
+        """
+        fallback = (
+            _("Region"), _("Prefecture"), _("Commune"), _("Canton"), _("Village"),
+        )
+        keys = ("region", "prefecture", "commune", "canton", "village")
+        labels = cls.get_hierarchy_labels() or []
+        return {
+            key: (labels[i] if i < len(labels) and labels[i] else fallback[i])
+            for i, key in enumerate(keys)
+        }
+
     def is_village(self):
         return self.matches_type(self.type, self.VILLAGE)
 

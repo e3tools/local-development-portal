@@ -29,9 +29,16 @@ class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateVi
         filters_context = {}
         adm_queryset = AdministrativeLevel.objects.all()
 
-        filters_context["regions"] = adm_queryset.filter(
+        regions_qs = adm_queryset.filter(
             AdministrativeLevel.type_filter_q(AdministrativeLevel.REGION)
         )
+        filters_context["regions"] = regions_qs
+        # Hide the top-level dropdown when the dataset has a single root and
+        # pre-load its prefectures so the cascade starts one level deeper.
+        single_region = regions_qs.first() if regions_qs.count() == 1 else None
+        filters_context["single_region"] = single_region
+        filters_context["adm_labels"] = AdministrativeLevel.get_filter_labels()
+
         filters_context["prefectures"] = adm_queryset.filter(
             AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
         )
@@ -48,9 +55,12 @@ class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateVi
         filters_context["sectors"] = Category.objects.all()
         filters_context["types"] = Investment.INVESTMENT_STATUS_CHOICES
 
-        if "region-filter" in self.request.GET:
+        region_filter_id = self.request.GET.get("region-filter") or (
+            str(single_region.id) if single_region else None
+        )
+        if region_filter_id:
             filters_context["prefectures"] = filters_context["prefectures"].filter(
-                parent__id=self.request.GET["region-filter"]
+                parent__id=region_filter_id
             )
 
         if "prefecture-filter" in self.request.GET:

@@ -142,7 +142,7 @@
 
                     <div class="adl-filter">
                         {% for field in form %}
-                            <div class="form-group row">
+                            <div class="form-group row"{% if single_region and field.name == 'region' %} style="display: none;"{% endif %}>
                                 <label class="col-4 col-form-label">{{ field.label }}</label>
                                 <div class="col-8">{{ field }}</div>
                                 <a id="check_{{ field.name }}" href="" style="display: none;"></a>
@@ -235,7 +235,7 @@
           // Parcourir les identifiants et griser les champs sauf id_region
           administrative_level_ids.forEach(function(id) {
             var element = document.getElementById(id);
-            if (id !== "id_region") {
+            if (id !== "id_region"{% if single_region %} && id !== "id_prefecture"{% endif %}) {
               element.disabled = true; // Désactive le champ
 
             }

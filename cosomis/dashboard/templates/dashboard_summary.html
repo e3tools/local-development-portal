@@ -113,53 +113,63 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="region-select-id">{% translate 'Region' %}</label>
-                                        <select class="form-control" name="region-filter"
-                                        	empty-option="{% translate 'Region' %}" style="width: 100%;" id="region-select-id">
-                                            <option selected value="">{% translate 'Region' %}</option>
-                                            {% for region in regions %}
-                                                <option value="{{ region.id }}" {% if query_strings_raw|get_item:'region-filter' == region.id %}selected{% endif %}>{{ region.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
+                                    {% if single_region %}
+                                        {# Single-root dataset: keep the select in the DOM for the JS cascade but hide the row visually. #}
+                                        <div class="form-group" style="display: none;">
+                                            <select class="form-control" name="region-filter"
+                                                empty-option="{{ adm_labels.region }}" style="width: 100%;" id="region-select-id">
+                                                <option value="{{ single_region.id }}" selected>{{ single_region.name }}</option>
+                                            </select>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-group">
+                                            <label for="region-select-id">{{ adm_labels.region }}</label>
+                                            <select class="form-control" name="region-filter"
+                                                empty-option="{{ adm_labels.region }}" style="width: 100%;" id="region-select-id">
+                                                <option selected value="">{{ adm_labels.region }}</option>
+                                                {% for region in regions %}
+                                                    <option value="{{ region.id }}" {% if query_strings_raw|get_item:'region-filter' == region.id %}selected{% endif %}>{{ region.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 <div class="horizontal-form">
                                     <div class="form-group">
-                                        <label for="prefecture-select-id">{% translate 'Prefecture' %}</label>
+                                        <label for="prefecture-select-id">{{ adm_labels.prefecture }}</label>
                                         <select class="form-control" name="prefecture-filter" id="prefecture-select-id"
-                                        	empty-option="{% translate 'Prefecture' %}" style="width: 100%;" {% if not 'region-filter' in query_strings_raw %}disabled{% endif %}>
-                                            <option selected value="">{% translate 'Prefecture' %}</option>
+                                        	empty-option="{{ adm_labels.prefecture }}" style="width: 100%;" {% if not single_region and not 'region-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <option selected value="">{{ adm_labels.prefecture }}</option>
                                             {% for prefecture in prefectures %}
                                                 <option value="{{ prefecture.id }}" {% if query_strings_raw|get_item:'prefecture-filter' == prefecture.id %}selected{% endif %}>{{ prefecture.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="commune-select-id">{% translate 'Commune' %}</label>
+                                        <label for="commune-select-id">{{ adm_labels.commune }}</label>
                                         <select class="form-control" name="commune-filter" id="commune-select-id"
-                                        	empty-option="{% translate 'Commune' %}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
-                                            <option selected value="">{% translate 'Commune' %}</option>
+                                        	empty-option="{{ adm_labels.commune }}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <option selected value="">{{ adm_labels.commune }}</option>
                                             {% for commune in communes %}
                                                 <option value="{{ commune.id }}" {% if query_strings_raw|get_item:'commune-filter' == commune.id %}selected{% endif %}>{{ commune.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="canton-select-id">{% translate 'Canton' %}</label>
+                                        <label for="canton-select-id">{{ adm_labels.canton }}</label>
                                         <select class="form-control" name="canton-filter" id="canton-select-id"
-                                        	empty-option="{% translate 'Canton' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
-                                            <option selected value="">{% translate 'Canton' %}</option>
+                                        	empty-option="{{ adm_labels.canton }}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <option selected value="">{{ adm_labels.canton }}</option>
                                             {% for canton in cantons %}
                                                 <option value="{{ canton.id }}" {% if query_strings_raw|get_item:'canton-filter' == canton.id %}selected{% endif %}>{{ canton.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="village-select-id">{% translate 'Village' %}</label>
+                                        <label for="village-select-id">{{ adm_labels.village }}</label>
                                         <select class="form-control" name="village-filter" id="village-select-id"
-                                        	empty-option="{% translate 'Village' %}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
-                                            <option selected value="">{% translate 'Village' %}</option>
+                                        	empty-option="{{ adm_labels.village }}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <option selected value="">{{ adm_labels.village }}</option>
                                             {% for village in villages %}
                                                 <option value="{{ village.id }}" {% if query_strings_raw|get_item:'village-filter' == village.id %}selected{% endif %}>{{ village.name }}</option>
                                             {% endfor %}
