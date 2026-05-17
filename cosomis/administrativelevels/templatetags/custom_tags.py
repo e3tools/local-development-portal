@@ -31,10 +31,12 @@ _BREADCRUMB_ROUTES_ROOT_TO_LEAF = [
 def adm_breadcrumb(adm_level):
     """
     Generate a clickable breadcrumb for an administrative level by walking
-    the parent chain. The level just above the leaf is rendered with the
-    canton route, two above with the commune route, and so on — the `type`
-    string is not consulted, so datasets that label levels differently
-    (e.g. arrondissement instead of canton) still get correct links.
+    the parent chain. Routes are anchored at the ROOT (index 0 = region,
+    1 = prefecture, ...), not at the leaf — the current page may be any
+    level (commune, canton/arrondissement, village), so leaf-anchoring would
+    misroute ancestors whenever the chain isn't exactly 5 deep. The `type`
+    string is never consulted, so datasets that label levels differently
+    (Village/Canton vs village/arrondissement) still get correct links.
     """
     # Walk leaf -> root, then reverse so index 0 is the root.
     chain = []
@@ -44,17 +46,12 @@ def adm_breadcrumb(adm_level):
         current = current.parent
     chain.reverse()
 
-    # Align the chain to the leaf end of the fixed route list, so the deepest
-    # item always maps to the leaf route regardless of how short the chain is.
-    offset = len(_BREADCRUMB_ROUTES_ROOT_TO_LEAF) - len(chain)
-
     parts = []
     for i, item in enumerate(chain):
         is_last = (i == len(chain) - 1)
-        route_idx = i + offset
         url_name = (
-            _BREADCRUMB_ROUTES_ROOT_TO_LEAF[route_idx]
-            if 0 <= route_idx < len(_BREADCRUMB_ROUTES_ROOT_TO_LEAF)
+            _BREADCRUMB_ROUTES_ROOT_TO_LEAF[i]
+            if i < len(_BREADCRUMB_ROUTES_ROOT_TO_LEAF)
             else None
         )
         if is_last:
@@ -67,6 +64,28 @@ def adm_breadcrumb(adm_level):
 
     separator = ' <i class="fas fa-chevron-right" style="font-size: 10px; color: #999; margin: 0 5px;"></i> '
     return mark_safe(separator.join(parts))
+
+
+@register.simple_tag
+def adm_detail_url(level):
+    """
+    Return the named-route URL for an administrative level based on its
+    canonical position in the hierarchy (alias-aware via the is_*() helpers).
+    Centralises the mapping so templates don't hard-code type strings.
+    """
+    if level is None:
+        return ''
+    if level.is_region():
+        return reverse('administrativelevels:region_detail', args=[level.id])
+    if level.is_prefecture():
+        return reverse('administrativelevels:prefecture_detail', args=[level.id])
+    if level.is_commune():
+        return reverse('administrativelevels:commune_detail', args=[level.id])
+    if level.is_canton():
+        return reverse('administrativelevels:canton_detail', args=[level.id])
+    if level.is_village():
+        return reverse('administrativelevels:village_detail', args=[level.id])
+    return reverse('administrativelevels:detail', args=[level.id])
 
 
 @register.filter(name="humanize_snakecase")

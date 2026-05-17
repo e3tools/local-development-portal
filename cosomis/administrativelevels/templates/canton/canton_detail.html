@@ -159,11 +159,6 @@
 								</a>
 							</li>
 							<li class="nav-item btn p-0">
-								<a class="nav-link" data-toggle="tab" href="#diagnostics">
-									{% translate "Diagnostics" %}
-								</a>
-							</li>
-							<li class="nav-item btn p-0">
 								<a class="nav-link" data-toggle="tab" href="#climate">
 									{% translate "Climate" %}
 								</a>
@@ -185,7 +180,7 @@
 										<thead>
 										<tr>
 											<th class="align-middle">{% translate 'Name' %}</th>
-											<th class="align-middle">{% translate 'Canton' %}</th>
+											<th class="align-middle">{{ object.type|title }}</th>
 											<th class="align-middle">{% translate 'Population' %}</th>
 											<th class="align-middle">{% translate 'Invested Capital' %}</th>
 											<th class="align-middle">{% translate 'Required Capital' %}</th>
@@ -243,9 +238,6 @@
 										<p class="mt-2 text-muted">{% trans "Loading map data..." %}</p>
 									</div>
 								</div>
-							</div>
-							<div id="diagnostics" class="tab-pane fade">
-								<h3>{% translate "In construction" %}</h3>
 							</div>
 							<div id="climate" class="tab-pane fade position-relative">
 								{% include 'climate/tabs/mapbox.html' %}
