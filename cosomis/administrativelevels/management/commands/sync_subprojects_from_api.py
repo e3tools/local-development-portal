@@ -154,7 +154,7 @@ class Command(BaseCommand):
                             abandonment_history = list(best_match.abandonment_history) if best_match.abandonment_history else []
                             abandonment_history.insert(0, {
                                 'abandoned_date': subproject['updated_date'] if 'updated_date' in subproject else now.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-                                'funded_by':  ", ".join([p for p in subproject['projects']]),
+                                'funded_by':  ", ".join([p['name'] if type(p) == dict and 'name' in p else p for p in subproject['projects']]),
                                 'project_status': str(best_match.project_status),
                                 'physical_execution_rate': int(float(best_match.physical_execution_rate)),
                                 'imported_project_id': investment_id

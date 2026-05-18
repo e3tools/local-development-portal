@@ -1,152 +1,557 @@
-{% extends 'layouts/base.html' %}
-{% load static i18n humanize bootstrap4 custom_tags %}
+{% extends 'layouts/base.html' %}{% load static i18n humanize bootstrap4 custom_tags %}
 
+{% block custom_title %}
+	<div class="col-sm-12">
+		<div class="m-0 main-title text-secondary"><h2>{{ title | safe }}</h2></div>
+		<nav aria-label="breadcrumb" class="mt-1">
+			<div style="font-size: 14px;">
+				{% adm_breadcrumb object %}
+			</div>
+		</nav>
+	</div>
+{% endblock %}
 
 {% block extracss %}
-    {{ block.super }}
-    <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
+	<link href="{% static 'AdminLTE/plugins/bootstrap-switch/css/bootstrap3/bootstrap-switch.css' %}" rel="stylesheet">
 {% endblock %}
 
 
 {% block content %}
-    <div class="row mb-4">
-        <div class="col-md-8 col-12">
-            <div class="clearfix" id="attachments_images"></div>
-            <div class="overlay" id="spin-attachments-images">
-                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-            </div>
-        </div>
-        <div class="col-md-4 col-12 mt-4 mt-md-0">
-            <div class="card col-12">
-                <div class="card-header pb-0">
-                    <h5 class="font-weight-bold mb-0">{% translate "Canton Overview" %}</h5>
-                </div>
-                <div class="card-body p-2">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.total_population }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_men }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_women }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_young }}</td>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_elder }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_handicap }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agruculture" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_agriculturist }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_pastoralist }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_minorities }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="row mb-4">
+		<div class="col-md-8 col-12">
+			{% if images_data.exists_at_least_image %}
+				<div id="cantonCarousel" class="carousel slide" data-ride="carousel">
+					<ol class="carousel-indicators">
+						{% for image in images_data.images %}
+							<li data-target="#cantonCarousel" data-slide-to="{{ forloop.counter0 }}"
+								{% if forloop.first %}class="active"{% endif %}></li>
+						{% endfor %}
+					</ol>
+					<div class="carousel-inner">
+						{% for image in images_data.images %}
+							<div class="carousel-item {% if forloop.first %}active{% endif %}">
+								<a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
+									<img class="d-block w-100 img-fluid" src="{{ image.url|imgAWSS3Filter }}"
+										 style="height: 500px; object-fit: cover;" alt="{{ image.name|default:'' }}">
+								</a>
+							</div>
+						{% endfor %}
+					</div>
+					<a class="carousel-control-prev" href="#cantonCarousel" role="button" data-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					</a>
+					<a class="carousel-control-next" href="#cantonCarousel" role="button" data-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					</a>
+				</div>
+			{% else %}
+				<a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
+					<img class="card-img rounded" src="{% static 'images/village-image.jpg' %}" alt="Default image">
+				</a>
+			{% endif %}
+		</div>
+		<div class="col-md-4 col-12 mt-4 mt-md-0">
+			<div class="card col-12">
+				<div class="card-header">
+					<h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
+				</div>
+				<div class="card-body p-2">
+					<table class="table">
+						<tbody>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.total|intcomma }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.men|intcomma }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.women|intcomma }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.young|intcomma }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.elder|intcomma }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.disabilities|intcomma }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agriculturists" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.agriculturists|intcomma }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.pastoralists|intcomma }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.minorities|intcomma }}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="card col-12 mt-3">
+				<div class="card-header">
+					<h5 class="font-weight-bold mb-0">{% translate "Villages" %}</h5>
+				</div>
+				<div class="card-body p-2">
+					<table class="table">
+						<tbody>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Number of Villages" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.village_count }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Number of CVDs" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.cvd_count }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.priority_count }}</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total Estimated Cost" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.total_estimated_cost|intcomma }}
+								FCFA
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body table-responsive">
-                    <div class="col-12">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
-                                                            href="#priorities">{% translate "Priorities" %}</a></li>
-                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
-                                                            href="#climate">{% translate "Climate" %}</a></li>
-                        </ul>
-                        <div class="tab-content">
-                            <div id="priorities" class="tab-pane active">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="card-body">
-                                            {% include 'shared/priorities_table.html' %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="climate" class="tab-pane fade position-relative">
-                                {% include 'climate/tabs/mapbox.html' %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<div class="col-12">
+						<ul class="nav nav-tabs">
+							<li class="nav-item btn p-0">
+								<a class="nav-link active" data-toggle="tab" href="#priorities">
+									{% translate "Priorities" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0 pl-2 pr-2">
+								<a class="nav-link" data-toggle="tab" href="#villages">
+									{% translate "Villages" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0 pl-2 pr-2">
+								<a class="nav-link" data-toggle="tab" href="#planning-cycle">
+									{% translate "Planning Cycle" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0 pl-2 pr-2">
+								<a class="nav-link" data-toggle="tab" href="#map-tab">
+									{% translate "Map" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0">
+								<a class="nav-link" data-toggle="tab" href="#climate">
+									{% translate "Climate" %}
+								</a>
+							</li>
+							<li class="nav-item btn p-0 pl-2 pr-2">
+								<a class="nav-link" data-toggle="tab" href="#subprojects">
+									{% translate "Subprojects" %}
+								</a>
+							</li>
+						</ul>
 
-            </div>
-        </div>
-    </div>
+						<div class="tab-content">
+							<div id="priorities" class="tab-pane active">
+								{% include 'canton/tabs/priorities.html' %}
+							</div>
+							<div id="villages" class="tab-pane fade">
+								<div class="table-responsive">
+									<table class="table table-bordered">
+										<thead>
+										<tr>
+											<th class="align-middle">{% translate 'Name' %}</th>
+											<th class="align-middle">{{ object.type|title }}</th>
+											<th class="align-middle">{% translate 'Population' %}</th>
+											<th class="align-middle">{% translate 'Invested Capital' %}</th>
+											<th class="align-middle">{% translate 'Required Capital' %}</th>
+											<th class="align-middle">{% translate 'Per Capita Invested' %}</th>
+											<th class="align-middle">{% translate 'Per Capita Required' %}</th>
+											<th class="align-middle">{% translate 'Actions' %}</th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for village in villages %}
+											<tr>
+												<td>
+													<a href="{% url 'administrativelevels:detail' village.id %}">{{ village.name }}</a>
+												</td>
+												<td>
+													<a href="{% url 'administrativelevels:detail' village.parent.id %}">{{ village.parent.name }}</a>
+												</td>
+												<td>{{ village.total_population|intcomma }}</td>
+												<td>{{ village.total_founded|intcomma }}</td>
+												<td>{{ village.total_estimated_cost|intcomma }}</td>
+												<td>
+													{% widthratio village.total_founded village.total_population 1 as investment_percapita %}
+													{{ investment_percapita|intcomma }}
+												</td>
+												<td class="border-sides--light">
+													{% widthratio village.total_estimated_cost village.total_population 1 as investment_percapita_required %}
+													{{ investment_percapita_required|intcomma }}
+												</td>
+												<td><i class="nav-icon fa fa-bars" data-toggle="modal"
+													   data-target="#exampleModal"></i></td>
+											</tr>
+										{% endfor %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div id="planning-cycle" class="tab-pane fade">
+								<div hx-get="{% url 'administrativelevels:canton_planning_summary' object.id %}"
+									 hx-trigger="load" hx-swap="innerHTML">
+									<div class="text-center py-5">
+										<div class="spinner-border text-primary" role="status">
+											<span class="sr-only">{% trans "Loading..." %}</span>
+										</div>
+										<p class="mt-2 text-muted">{% trans "Loading planning cycle data..." %}</p>
+									</div>
+								</div>
+							</div>
+							<div id="map-tab" class="tab-pane fade">
+								<div hx-get="{% url 'administrativelevels:canton_map' object.id %}" hx-trigger="load"
+									 hx-swap="innerHTML">
+									<div class="text-center py-5">
+										<div class="spinner-border text-primary" role="status">
+											<span class="sr-only">{% trans "Loading..." %}</span>
+										</div>
+										<p class="mt-2 text-muted">{% trans "Loading map data..." %}</p>
+									</div>
+								</div>
+							</div>
+							<div id="climate" class="tab-pane fade position-relative">
+								{% include 'climate/tabs/mapbox.html' %}
+							</div>
+							<div id="subprojects" class="tab-pane fade">
+								{% if subprojects.count == 0 %}
+									<h3>{% translate 'You have no Sub-projects' %}</h3>
+								{% else %}
+									<div class="table-responsive">
+										<table class="table table-bordered">
+											<thead>
+											<tr>
+												<th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
+												<th class="align-middle"
+													rowspan="2">{% translate 'Sub-project priorities' %}</th>
+												<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
+												<th class="align-middle"
+													rowspan="2">{% translate 'Beneficiaries' %}</th>
+												<th class="align-middle"
+													rowspan="2">{% translate 'Estimated cost' %}</th>
+												<th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
+												<th class="align-middle"
+													rowspan="2">{% translate 'Climate contribution' %}</th>
+												<th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
+											</tr>
+											<tr>
+												<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
+													title="{% translate 'Youth' %}" data-toggle="tooltip"
+													data-placement="top">
+													<span>J</span>
+												</th>
+												<th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
+													title="{% translate 'Women' %}" data-toggle="tooltip"
+													data-placement="top">
+													<span>F</span>
+												</th>
+												<th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
+													title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip"
+													data-placement="top">
+													<span>ME</span>
+												</th>
+												<th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
+													title="{% translate 'Agriculturist' %}" data-toggle="tooltip"
+													data-placement="top">
+													<span>AE</span>
+												</th>
+											</tr>
+											</thead>
+											<tbody>
+											{% for subproject in subprojects %}
+												<tr>
+													<td>{{ subproject.ranking }}</td>
+													{% if subproject.title == "Autre" %}
+														<td class="border-sides--light">
+															<a href="" data-container="body" data-toggle="popover"
+															   data-placement="top" data-trigger="hover" data-content="
+
+
+
+
+
+
+																	{% if subproject.description %}{{ subproject.description }}{% else %}-{% endif %}">
+																{{ subproject.title }}
+															</a>
+														</td>
+													{% else %}
+														<td class="border-sides--light">{{ subproject.title }}</td>
+													{% endif %}
+													<td class="border-sides--light">
+														{% if subproject.endorsed_by_youth %}✓{% endif %}</td>
+													<td class="border-sides--light">
+														{% if subproject.endorsed_by_women %}✓{% endif %}</td>
+													<td class="border-sides--light">
+														{% if subproject.endorsed_by_pastoralist %}✓{% endif %}</td>
+													<td class="border-sides--light">
+														{% if subproject.endorsed_by_agriculturist %}✓{% endif %}</td>
+													<td class="border-sides--light">{{ subproject.beneficiaries }}</td>
+													<td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
+													<td class="border-sides--light">{{ subproject.funded_by.name }}</td>
+													<td class="border-sides--light">
+														{% if subproject.climate_contribution %}
+															{{ subproject.climate_contribution_text }}{% else %}
+															{% translate "No" %}{% endif %}</td>
+													<td><i class="nav-icon fa fa-bars" data-toggle="modal"
+														   data-target="#exampleModal"></i></td>
+												</tr>
+											{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
 
 {% endblock %}
 
+{% block modals %}
+	{{ block.super }}
+
+	<div class="modal fade" id="taskModalLong" tabindex="-1" role="dialog" aria-labelledby="taskModalLongTitle"
+		 aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div id="modal-content" class="modal-content">
+				{#            <div class="modal-header">#}
+				{#                <h4 class="modal-title text-primary" id="taskModalTitle">...</h4>#}
+				{##}
+				{#                <span class="badge badge-pill badge-lg badge-info ml-1" id="taskModalStatus">...</span>#}
+				{##}
+				{#                <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+				{#                    <span aria-hidden="true">&times;</span>#}
+				{#                </button>#}
+				{#            </div>#}
+				{#            <div class="modal-body">#}
+				{#                <p id="taskModalDescription">#}
+				{#                    ...#}
+				{#                </p>#}
+				{#                <br>#}
+				{#                <div id="taskModalAttrs"></div>#}
+				{#            </div>#}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+
 {% block javascript %}
-    {{ block.super }}
-    <!-- Attachments script for carrousel -->
-    <script type="text/javascript">
-        let spin_attachments_images = $("#spin-attachments-images");
-        let attachments_images = $("#attachments_images");
-        spin_attachments_images.show();
-        attachments_images.html(`
-    {% if images_data.exists_at_least_image %}
+	{{ block.super }}
+	<script src="{% static 'AdminLTE/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
 
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                {% for image in images_data.images %}
-                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"
-            {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
-                {% endfor %}
-            </ol>
-            <div class="carousel-inner">
-                {% for image in images_data.images %}
-                    <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
-                        <a href="{% url 'administrativelevels:village_attachments' object.id %}">
-                            <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
-                            style="height: 500px !important;"
-                            alt="{{ image.task }}">
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
+	<script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>
+	<script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
+	<script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
 
-    {% else %}
-    <a href="{% url 'administrativelevels:village_attachments' object.id %}">
-                <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
-    alt="Card image">
-    </a>
+	<!-- Planning cycle script -->
+	<script type="text/javascript" async>
+        $(document).ready(function () {
 
-    {% endif %}
-    `);
-        spin_attachments_images.hide();
+            $(".pc-btn").on('click', function () {
 
-    </script>
+                let phase_id = $(this).attr("id").split("-")[3];
+                let activity_buttons = $("#v-phase-" + phase_id + "-pills-tab").children();
+                let has_selected = false;
+                $(".tasks-pane").removeClass("active show");
+                activity_buttons.each(function () {
+                    if ($(this).hasClass("active")) {
+                        let activity_id = $(this).attr("id").split("-")[3];
+                        $("#activity-" + activity_id + "-content").tab("show");
+                        has_selected = true;
+                    }
+                });
+                if (!has_selected) {
+                    let single_button = $("#v-phase-" + phase_id + "-pills-tab").children(":first-child");
+                    let activity_id = single_button.attr("id").split("-")[3];
+                    single_button.addClass("active")
+                    $("#activity-" + activity_id + "-content").tab("show");
+                }
+            });
+
+            $('#taskModalLong').on('shown.bs.modal', function (e) {
+                let pk = e.relatedTarget.id.split('-')[3];
+                let base_url = "{% url 'administrativelevels:utils:task_detail' 0 %}";
+                base_url = base_url.replace(0, pk);
+                $.ajax({
+                    type: "GET",
+                    url: base_url,
+                    success: function (response) {
+                        $('#modal-content').html(response);
+                    }
+                });
+            });
+
+        });
+	</script>
+
+	<!-- Priorities script -->
+	<script type="text/javascript">
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('.datatable').DataTable({searching: false});
+
+            function initCantonPrioritiesDT() {
+                // Investment Types table (sub-tab 1)
+                var $typeTable = $('#priorities-investments-type-tab .canton-priorities-dt');
+                if ($typeTable.length && !$.fn.DataTable.isDataTable($typeTable)) {
+                    $typeTable.DataTable({
+                        pageLength: 10,
+                        searching: false,
+                        columnDefs: [{orderable: false, targets: [3, 4, 5, 6, 11]}]
+                    });
+                }
+
+                // Individual Villages table (sub-tab 2)
+                var $villagesTable = $('#priorities-villages-tab .canton-priorities-dt');
+                if ($villagesTable.length && !$.fn.DataTable.isDataTable($villagesTable)) {
+                    $villagesTable.DataTable({
+                        pageLength: 10,
+                        searching: false,
+                        columnDefs: [{orderable: false, targets: [3, 4, 5, 6, 10]}]
+                    });
+                }
+            }
+
+            if ($('#priorities').hasClass('active')) {
+                initCantonPrioritiesDT();
+            }
+
+            $('a[data-toggle="tab"][href="#priorities"]').on('shown.bs.tab', function () {
+                initCantonPrioritiesDT();
+            });
+
+            $('button[data-toggle="pill"]').on('shown.bs.tab', function () {
+                initCantonPrioritiesDT();
+            });
+
+            document.addEventListener('htmx:afterOnLoad', function(evt) {
+                if (evt.detail.target.id === 'priorities') {
+                    // Restaurar el tab activo si existía
+                    var activeTabId = localStorage.getItem('activePriorityTab');
+                    if (activeTabId) {
+                        var $tabButton = $('#' + activeTabId);
+                        if ($tabButton.length) {
+                            // Limpiar CUALQUIER estado activo previo inyectado por el servidor en el contenedor de prioridades
+                            $('#priorities .nav-link, #priorities .nav-item button').removeClass('active').attr('aria-selected', 'false');
+                            $('#priorities .tab-pane').removeClass('show active');
+                            
+                            $tabButton.addClass('active').attr('aria-selected', 'true');
+                            var target = $tabButton.attr('data-target') || $tabButton.attr('href');
+                            $(target).addClass('show active');
+                        }
+                    }
+
+                    initCantonPrioritiesDT();
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+
+            // Guardar el tab activo cuando cambie (delegación de eventos para HTMX)
+            $(document).on('shown.bs.tab', '#priorities button[data-toggle="pill"]', function (e) {
+                localStorage.setItem('activePriorityTab', e.target.id);
+            });
+
+            $('.submit-reset').on('click', function () {
+                $('#reset-hidden-id').attr('value', 'true');
+                $('#filter-form').submit();
+            });
+
+            $('#category-select-id').on('change', function () {
+                change_sectors_selects($(this), $('#sector-select-id'), [])
+            });
+
+            function change_sectors_selects(select_input, select_to_fill) {
+                let selected_value = select_input.find(":selected").val();
+
+                if (selected_value != '') {
+                    let base_url = "{% url 'investments:home_investments' %}";
+                    $.ajax({
+                        type: "POST",
+                        url: base_url + "ajax/sectors",
+                        data: {
+                            value: selected_value,
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function (response) {
+                            select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                            response.values.forEach((element) => {
+                                select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                            })
+                        }
+                    });
+                    select_to_fill.prop('disabled', false);
+                } else {
+                    select_to_fill.prop('disabled', 'disabled');
+                    select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                }
+            };
+        });
+	</script>
+
+	<script>
+        // Mapbox map lazy-initialize: only run when the Map tab is first shown.
+        // This avoids the common Mapbox bug where the canvas has 0×0 size because
+        // it was rendered inside a hidden Bootstrap tab.
+        (function () {
+            var mapReady = false;
+            $(document).on('shown.bs.tab', 'a[href="#map-tab"]', function () {
+                if (!mapReady) {
+                    // Check if map container exists (it might be loading via HTMX)
+                    if (document.getElementById('canton-map')) {
+                        mapReady = true;
+                        document.dispatchEvent(new CustomEvent('cantonMapTabShown'));
+                    }
+                }
+            });
+
+            // Handle HTMX load event for the map
+            document.addEventListener('htmx:afterOnLoad', function (evt) {
+                if (evt.detail.target.id === 'map-tab' || evt.detail.target.closest('#map-tab')) {
+                    // If the tab is already active, initialize immediately
+                    if ($('a[href="#map-tab"]').hasClass('active') && !mapReady) {
+                        if (document.getElementById('canton-map')) {
+                            mapReady = true;
+                            document.dispatchEvent(new CustomEvent('cantonMapTabShown'));
+                        }
+                    }
+                }
+            });
+        })();
+	</script>
 {% endblock %}

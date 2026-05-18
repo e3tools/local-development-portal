@@ -46,6 +46,27 @@
                             <li class="list-group-item">
                                 <b>{% translate 'Total target communities' %}</b> <a class="float-right">{{ user_investments_target_communities|intcomma }}</a>
                             </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap modify-password" 
+                                style="cursor:pointer;">
+                                <span class="text-secondary">{% translate "Change password" %}</span>
+                                <div class="overlay" id="spin-modify-password" style="display: none;">
+                                    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                                </div>
+                                <h6 class="mb-0">
+                                    <svg xmlns="#" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock mr-2 icon-inline">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                </h6>
+                            </li>
+
+                            
+                            <li class="list-group-item">
+                                <b><a href="{% url "usermanager:token" %}">{% translate 'Token' %}</a></b>
+                            </li>
+
+
                         </ul>
                     </div>
 
@@ -130,7 +151,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="offset-sm-2 col-sm-10">
-                                    <button class="btn btn-danger" type="submit">Submit</button>
+                                    <button class="btn btn-primary" type="submit">Submit</button>
                                 </div>
                             </div>
                         </form>
@@ -140,6 +161,112 @@
         </div>
     </div>
 </div>
+
+
+
+<div class="modal fade" id="id_modal_modify_password" tabindex="-1" role="dialog"
+    aria-labelledby="UploadTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                {% translate "Change password" %}
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="card">
+                    <div class="card-body">
+                        {% comment %} <span>{% translate "Note: If you have accounts on the CDD, GRM and/or MIS platforms, their passwords will also be changed." %}</span>
+                        <br />
+                        <br />
+                        <br /> {% endcomment %}
+
+                        <div class="form-group">
+                            <label>{% translate "Confirmation code sent by email" %}</label>
+                            <span style="display: block; font-size: 11px; color: red;" id="confirm_code_label_error"></span>
+                            <div class="input-group">
+                                <input class="form-control" type="text" id="confirm_code" aria-describedby="confirmCode" required 
+                                    placeholder='{% translate "Confirmation code sent by email" %}'>
+                            </div>
+                            <div style="display: block; font-size: 11px;"  class="form-text text-black" id="confirmCode">
+                                <span>{% translate "A confirmation code has been e-mailed to your e-mail address" %} ({{ user.email }})</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>{% translate "Current password" %}</label>
+                            <span style="display: block; font-size: 11px; color: red;" id="password_current_label_error"></span>
+                            <div class="input-group show_hide_password" id="show_hide_password_current">
+                                <input class="form-control" type="password" id="password_current" required placeholder='{% translate "Current password" %}'>
+                                <div class="input-group-addon div-a-password">
+                                    <a class="a-password" href="#show_hide_password_current"><i class="fa fa-eye-slash" aria-hidden="true" style="font-weigth: bold; font-size: 17px;"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>{% translate "New password" %}</label>
+                            <span style="display: block; font-size: 11px; color: red;" id="password_new_label_error"></span>
+                            <div class="input-group show_hide_password" id="show_hide_password_new">
+                                <input class="form-control" type="password" id="password_new" required placeholder='{% translate "New password" %}'>
+                                <div class="input-group-addon div-a-password">
+                                    <a class="a-password" href="#show_hide_password_new"><i class="fa fa-eye-slash" aria-hidden="true" style="font-weigth: bold; font-size: 17px;"></i></a>
+                                </div>
+                            </div>
+                            <div style="display: block; font-size: 11px;"  class="form-text text-black" >
+                                <span>{% translate "Enter your new password." %}</span><br />
+                                <span>- {% translate "It must contain at least 8 characters, including at least one letter and one number." %}</span><br />
+                                <span>- {% translate "Numbers and letters are accepted." %}</span><br />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>{% translate "Confirm new password" %}</label>
+                            <span style="display: block; font-size: 11px; color: red;" id="password_new_confirm_label_error"></span>
+                            <div class="input-group show_hide_password" id="show_hide_password_new_confirm">
+                                <input class="form-control" type="password" id="password_new_confirm" required placeholder='{% translate "Confirm new password" %}'>
+                                <div class="input-group-addon div-a-password">
+                                    <a class="a-password" href="#show_hide_password_new_confirm"><i class="fa fa-eye-slash" aria-hidden="true" style="font-weigth: bold; font-size: 17px;"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="overlay" id="spin-modify-password" style="display: none;">
+                            <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            
+            <span style="display: block; font-size: 15px; color: red;" id="global_label_error"></span>
+
+            <div class="modal-footer border-0">
+                <button id="btn-save-password" type="submit" class="btn btn-lg btn-info text-right">
+                    {% translate "Save" %}
+                </button>
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+</div>
+
+
 {% endblock %}
 
 {% block javascript %}
@@ -147,12 +274,229 @@
 <script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/jquery.vmap.js' %}"></script>
 <script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/maps/continents/jquery.vmap.africa.js' %}"></script>
 <script type="text/javascript">
+    function validatePassword(password) {
+        // Vérifier si le mot de passe contient uniquement des lettres et des chiffres
+        /*if (!/^[A-Za-z0-9]+$/.test(password)) {
+            return "{% translate 'The password must contain only letters and numbers.' %}";
+        }*/
 
+        // Vérifier la longueur (au moins 8 caractères)
+        if (password.length < 8) {
+            return "{% translate 'The password must contain at least 8 characters.' %}";
+        }
+    
+        // Vérifier si le mot de passe contient au moins une lettre
+        if (!/[A-Za-z]/.test(password)) {
+            return "{% translate 'The password must contain at least one letter.' %}";
+        }
+    
+        // Vérifier si le mot de passe contient au moins un chiffre
+        if (!/[0-9]/.test(password)) {
+            return "{% translate 'The password must contain at least one digit.' %}";
+        }
+    
+        return true;
+    }
+    
     $( document ).ready(function() {
 
         $(".investments-datatable").DataTable({{ investments_datatable_config | safe }});
         $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
         $('#world-map').vectorMap({ map: 'africa_en' });
+
+
+
+        // Change password
+
+        var confirm_code_label_error = $('#confirm_code_label_error');
+        var password_current_label_error = $('#password_current_label_error');
+        var password_new_label_error = $('#password_new_label_error');
+        var password_new_confirm_label_error = $('#password_new_confirm_label_error');
+        var global_label_error = $('#global_label_error');
+
+        confirm_code_label_error.hide();
+        password_current_label_error.hide();
+        password_new_label_error.hide();
+        password_new_confirm_label_error.hide();
+        global_label_error.hide();
+
+        function input_fill(jqurey_id, jquery_label_error){
+            if(jqurey_id.val()){
+                jquery_label_error.text("");
+                jquery_label_error.hide();
+            }else{
+                jquery_label_error.text("{% translate 'This field is mandatory' %}");
+                jquery_label_error.show();
+            }
+        }
+
+        $(".show_hide_password a").on('click', function(event) {
+            event.preventDefault();
+
+            let id = this.href.split('#')[1];
+            
+            if($(`#${id} input`).attr("type") == "text"){
+                $(`#${id} input`).attr('type', 'password');
+                $(`#${id} i`).addClass( "fa-eye-slash" );
+                $(`#${id} i`).removeClass( "fa-eye" );
+            }else if($(`#${id} input`).attr("type") == "password"){
+                $(`#${id} input`).attr('type', 'text');
+                $(`#${id} i`).removeClass( "fa-eye-slash" );
+                $(`#${id} i`).addClass( "fa-eye" );
+            }
+        });
+
+        $('#password_new').on('keyup', function(event) {
+            event.preventDefault();
+            
+            let result = validatePassword(this.value);
+            if(result == true){
+                password_new_label_error.text("");
+                password_new_label_error.hide();
+            }else{
+                password_new_label_error.text(result);
+                password_new_label_error.show();
+            }
+
+            if($('#password_new_confirm').val()){
+                if($('#password_new_confirm').val() == $('#password_new').val()){
+                    password_new_confirm_label_error.text("");
+                    password_new_confirm_label_error.hide();
+                }else{
+                    password_new_confirm_label_error.text(`{% translate "The password must be the same as the previous one." %}`);
+                    password_new_confirm_label_error.show();
+                }
+            }
+            
+
+        });
+
+        $('#password_new_confirm').on('keyup', function(event) {
+            event.preventDefault();
+            if(this.value){
+                if(this.value == $('#password_new').val()){
+                    password_new_confirm_label_error.text("");
+                    password_new_confirm_label_error.hide();
+                }else{
+                    password_new_confirm_label_error.text(`{% translate "The password must be the same as the previous one." %}`);
+                    password_new_confirm_label_error.show();
+                }
+            }
+        });
+
+
+
+        $('.modify-password').click(function (event) {
+            event.preventDefault();
+            global_label_error.text("");
+            global_label_error.hide();
+
+            $('#spin-modify-password').show();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'usermanager:user_manager_email_notification' %}",
+                data: {
+                    email: "{{ user.email }}",
+                    first_name: "{{ user.first_name }}",
+                    last_name: "{{ user.last_name }}",
+                    name: "{{ user.name }}",
+                    username: "{{ user.username }}",
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    $('#spin-modify-password').hide();
+                    if(response.msg_text == "error"){
+                        showPopupMessage(response.msg);
+                    }else{
+                        $('#id_modal_modify_password').modal('show');
+                    }
+
+                },
+                error: function (data) {
+                    $('#spin-modify-password').hide();
+                    alert(error_server_message + "Error " + data.status);
+                }
+            });
+
+            
+        });
+
+        $("#btn-save-password").on('click', function(event) {
+            event.preventDefault();
+            
+            let confirm_code = $('#confirm_code');
+            let current_password = $('#password_current');
+            let password_new = $('#password_new');
+            let password_new_confirm = $('#password_new_confirm');
+
+            input_fill(confirm_code, confirm_code_label_error);
+            input_fill(current_password, password_current_label_error);
+            input_fill(password_new, password_new_label_error);
+            input_fill(password_new_confirm, password_new_confirm_label_error);
+
+
+            if(current_password.val() && confirm_code.val() && password_new.val() && password_new_confirm.val()){
+                global_label_error.text("");
+                global_label_error.hide();
+
+                $('#spin-modify-password').show();
+
+                $("#btn-save-password").html(`{% translate "Recording in progress..." %}`);
+                $("#btn-save-password").prop('disabled', true);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'usermanager:change_password' %}",
+                    data: {
+                        confirm_code: confirm_code.val(),
+                        current_password: current_password.val(),
+                        password_new: password_new.val(),
+                        password_new_confirm: password_new_confirm.val(),
+
+                        email: "{{ user.email }}",
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if(response.ok == true){
+                            $('#id_modal_modify_password').modal('hide');
+                            showPopupMessage(response.msg);
+                            
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 3000);
+                            
+                        }else{
+                            global_label_error.text(response.msg_text);
+                            global_label_error.show();
+                        }
+
+                        $('#spin-modify-password').hide();
+                        
+                        $("#btn-save-password").html("{% translate 'Save' %}");
+                        $("#btn-save-password").prop('disabled', false);
+
+                    },
+                    error: function (data) {
+                        $('#spin-modify-password').hide();
+                        alert(error_server_message + "Error " + data.status);
+
+                        $("#btn-save-password").html("{% translate 'Save' %}");
+                        $("#btn-save-password").prop('disabled', false);
+
+                    }
+                });
+
+            }else{
+                alert("{% translate 'You have to fill all the fields' %}");
+                
+                global_label_error.text("{% translate 'You have to fill all the fields' %}");
+                global_label_error.show();
+            }
+
+        });
+        
+
+        // End Change password
 
     });
 </script>

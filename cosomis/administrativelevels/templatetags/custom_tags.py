@@ -1,14 +1,91 @@
 from django import template
 from django.utils.translation import gettext_lazy
+from django.utils.safestring import mark_safe
+from django.urls import reverse
+from datetime import datetime
 import json
 
-from administrativelevels.models import Project
+from administrativelevels.models import Project, AdministrativeLevel
 from itertools import zip_longest
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
 from investments.models import Investment, Package
 from cosomis.utils import structure_the_words as utils_structure_the_words
 
 register = template.Library()
+
+
+# Detail routes from root down to leaf. The breadcrumb is name-agnostic:
+# whatever the `type` strings happen to be (Village/Canton vs village/arrondissement,
+# English vs French, etc.), the route for each ancestor is chosen by its position
+# in the chain. Index 0 is the root, index -1 is the leaf.
+_BREADCRUMB_ROUTES_ROOT_TO_LEAF = [
+    'administrativelevels:region_detail',
+    'administrativelevels:prefecture_detail',
+    'administrativelevels:commune_detail',
+    'administrativelevels:canton_detail',
+    'administrativelevels:village_detail',
+]
+
+
+@register.simple_tag
+def adm_breadcrumb(adm_level):
+    """
+    Generate a clickable breadcrumb for an administrative level by walking
+    the parent chain. Routes are anchored at the ROOT (index 0 = region,
+    1 = prefecture, ...), not at the leaf — the current page may be any
+    level (commune, canton/arrondissement, village), so leaf-anchoring would
+    misroute ancestors whenever the chain isn't exactly 5 deep. The `type`
+    string is never consulted, so datasets that label levels differently
+    (Village/Canton vs village/arrondissement) still get correct links.
+    """
+    # Walk leaf -> root, then reverse so index 0 is the root.
+    chain = []
+    current = adm_level
+    while current is not None:
+        chain.append(current)
+        current = current.parent
+    chain.reverse()
+
+    parts = []
+    for i, item in enumerate(chain):
+        is_last = (i == len(chain) - 1)
+        url_name = (
+            _BREADCRUMB_ROUTES_ROOT_TO_LEAF[i]
+            if i < len(_BREADCRUMB_ROUTES_ROOT_TO_LEAF)
+            else None
+        )
+        if is_last:
+            parts.append(f'<span class="font-weight-bold">{item.name}</span>')
+        elif url_name:
+            url = reverse(url_name, args=[item.id])
+            parts.append(f'<a href="{url}" style="color: #3498db;">{item.name}</a>')
+        else:
+            parts.append(f'<span>{item.name}</span>')
+
+    separator = ' <i class="fas fa-chevron-right" style="font-size: 10px; color: #999; margin: 0 5px;"></i> '
+    return mark_safe(separator.join(parts))
+
+
+@register.simple_tag
+def adm_detail_url(level):
+    """
+    Return the named-route URL for an administrative level based on its
+    canonical position in the hierarchy (alias-aware via the is_*() helpers).
+    Centralises the mapping so templates don't hard-code type strings.
+    """
+    if level is None:
+        return ''
+    if level.is_region():
+        return reverse('administrativelevels:region_detail', args=[level.id])
+    if level.is_prefecture():
+        return reverse('administrativelevels:prefecture_detail', args=[level.id])
+    if level.is_commune():
+        return reverse('administrativelevels:commune_detail', args=[level.id])
+    if level.is_canton():
+        return reverse('administrativelevels:canton_detail', args=[level.id])
+    if level.is_village():
+        return reverse('administrativelevels:village_detail', args=[level.id])
+    return reverse('administrativelevels:detail', args=[level.id])
 
 
 @register.filter(name="humanize_snakecase")
@@ -454,3 +531,9 @@ def display_update_investment_button(investment):
 @register.filter(name="attachments_urls_list")
 def attachments_urls_list(investment):
     return ",".join([attachment.url for attachment in investment.attachments.all()])
+
+
+@register.filter(expects_localtime=True)
+def string_to_date(date_time, date_format="%Y-%m-%dT%H:%M:%S.%fZ"):
+    if date_time:
+        return datetime.strptime(date_time, date_format)

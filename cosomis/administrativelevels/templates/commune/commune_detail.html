@@ -1,6 +1,17 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n humanize bootstrap4 custom_tags %}
 
+{% block custom_title %}
+    <div class="col-sm-12">
+        <div class="m-0 main-title" style="color: #707070 !important;"><h2>{{ title | safe }}</h2></div>
+        <nav aria-label="breadcrumb" class="mt-1">
+            <div style="font-size: 14px;">
+                {% adm_breadcrumb object %}
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
 {% block extracss %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
@@ -20,53 +31,58 @@
         </div>
         <div class="col-md-4 col-12 mt-4 mt-md-0">
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
+                    <small class="text-muted">
+                        {% translate "Aggregated from" %} {{ population.village_count }} {% translate "villages" %}
+                        ({{ population.canton_count }} {% translate "cantons" %})
+                    </small>
                 </div>
                 <div class="card-body p-2">
                     <table class="table">
                         <tbody>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.total_population }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.total|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_men }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.men|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_women }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.women|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_young }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.young|intcomma }}</td>
+                        </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_elder }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.elder|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_handicap }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.handicap|intcomma }}</td>
                         </tr>
                         <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agruculture" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_agriculturist }}</td>
+                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agriculture" %}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.agriculturist|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_pastoralist }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.pastoralist|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_minorities }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.minorities|intcomma }}</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
                 </div>
                 <div class="card-body p-2">
@@ -132,22 +148,26 @@
                             </li>
                         </ul>
 
-                        <div class="tab-content">
+                        <div class="tab-content mt-3">
                             <div id="priorities" class="tab-pane active pt-3">
                                 {% include 'commune/tabs/priorities.html' %}
                             </div>
                             <div id="villages" class="tab-pane fade pt-3">
-                                <table class="table rounded-table">
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th class="align-middle border-top-left-corner">{% translate 'Name' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Canton' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Population' %}</th>
-                                            <th class="align-middle border-bottom-0 rounded-0">{% translate 'Invested Capital' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Required Capital' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Invested' %}</th>
-                                            <th class="align-middle rounded-0 border-bottom-0">{% translate 'Per Capita Required' %}</th>
-                                            <th class="align-middle border-top-right-corner border-bottom-0">{% translate 'Actions' %}</th>
+                                            <th class="align-middle">{% translate 'Name' %}</th>
+                                            {% if villages.0.parent.type %}
+                                                <th class="align-middle">{{ villages.0.parent.type|title }}</th>
+                                            {% else %}
+                                                <th class="align-middle">{% translate 'Canton' %}</th>
+                                            {% endif %}
+                                            <th class="align-middle">{% translate 'Population' %}</th>
+                                            <th class="align-middle">{% translate 'Invested Capital' %}</th>
+                                            <th class="align-middle">{% translate 'Required Capital' %}</th>
+                                            <th class="align-middle">{% translate 'Per Capita Invested' %}</th>
+                                            <th class="align-middle">{% translate 'Per Capita Required' %}</th>
+                                            <th class="align-middle">{% translate 'Actions' %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -174,26 +194,26 @@
                                 </table>
                             </div>
                             <div id="diagnostics" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <h5>{% translate "In construction" %}</h5>
                             </div>
                             <div id="climate" class="tab-pane fade position-relative">
                                 {% include 'climate/tabs/mapbox.html' %}
                             </div>
                             <div id="subprojects" class="tab-pane fade pt-3">
                                 {% if subprojects.count == 0 %}
-                                    <h3>{% translate 'You have no Sub-projects' %}</h3>
+                                    <h5>{% translate 'You have no Sub-projects' %}</h5>
                                 {% else %}
-                                <table class="table rounded-table">
+                                <table class="table table-bordered">
                                     <thead>
                                     <tr>
-                                        <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Sub-project priorities' %}</th>
-                                        <th class="align-middle border-bottom-0 rounded-0" colspan="4">{%  translate 'Priorities' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{%  translate 'Beneficiaries' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Estimated cost' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Funded by' %}</th>
-                                        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Climate contribution' %}</th>
-                                        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">{% translate 'Actions' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+                                        <th class="align-middle" colspan="4">{%  translate 'Priorities' %}</th>
+                                        <th class="align-middle" rowspan="2">{%  translate 'Beneficiaries' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Climate contribution' %}</th>
+                                        <th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
                                     </tr>
                                     <tr>
                                         <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
@@ -311,13 +331,13 @@
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
                 {% for image in images_data.images %}
-                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"
-            {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"
+            {% if forloop.first %}class="active"{% endif %} ></li>
                 {% endfor %}
             </ol>
             <div class="carousel-inner">
                 {% for image in images_data.images %}
-                    <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
                         <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
                             <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
                             style="height: 500px !important;"
@@ -397,6 +417,33 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
             $('.datatable').DataTable({searching: false});
+
+            document.addEventListener('htmx:afterOnLoad', function(evt) {
+                if (evt.detail.target.id === 'priorities') {
+                    // Restaurar el tab activo si existía
+                    var activeTabId = localStorage.getItem('activePriorityTab');
+                    if (activeTabId) {
+                        var $tabButton = $('#' + activeTabId);
+                        if ($tabButton.length) {
+                            // Limpiar CUALQUIER estado activo previo inyectado por el servidor en el contenedor de prioridades
+                            $('#priorities .nav-link, #priorities .nav-item button').removeClass('active').attr('aria-selected', 'false');
+                            $('#priorities .tab-pane').removeClass('show active');
+                            
+                            $tabButton.addClass('active').attr('aria-selected', 'true');
+                            var target = $tabButton.attr('data-target') || $tabButton.attr('href');
+                            $(target).addClass('show active');
+                        }
+                    }
+
+                    $('.datatable').DataTable({searching: false});
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+
+            // Guardar el tab activo cuando cambie (delegación de eventos para HTMX)
+            $(document).on('shown.bs.tab', '#priorities button[data-toggle="pill"]', function (e) {
+                localStorage.setItem('activePriorityTab', e.target.id);
+            });
     
             $('.submit-reset').on('click', function() {
                 $('#reset-hidden-id').attr('value', 'true');

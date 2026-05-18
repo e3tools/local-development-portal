@@ -1,6 +1,17 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n humanize bootstrap4 custom_tags %}
 
+{% block custom_title %}
+    <div class="col-sm-12">
+        <div class="m-0 main-title" style="color: #707070 !important;"><h2>{{ title | safe }}</h2></div>
+        <nav aria-label="breadcrumb" class="mt-1">
+            <div style="font-size: 14px;">
+                {% adm_breadcrumb object %}
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
 {% block extracss %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
@@ -20,91 +31,103 @@
         </div>
         <div class="col-md-4 col-12 mt-4 mt-md-0">
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
+                    {% if population %}
+                        <small class="text-muted">
+                            {% translate "Aggregated from" %} {{ population.village_count|intcomma }} {% translate "villages" %}
+                        </small>
+                    {% endif %}
                 </div>
                 <div class="card-body p-2">
                     <table class="table">
                         <tbody>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.total_population }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.total|default:object.total_population|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_men }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.men|default:object.population_men|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_women }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.women|default:object.population_women|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_young }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.young|default:object.population_young|intcomma }}</td>
+                        </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_elder }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.elder|default:object.population_elder|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_handicap }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.handicap|default:object.population_handicap|intcomma }}</td>
                         </tr>
-{#                        <tr>#}
-{#                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agruculture" %}</td>#}
-{#                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_agriculturist }}</td>#}
-{#                        </tr>#}
-{#                        <tr>#}
-{#                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>#}
-{#                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_pastoralist }}</td>#}
-{#                        </tr>#}
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.population_minorities }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.minorities|default:object.population_minorities|intcomma }}</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="card col-12">
-                <div class="card-header pb-0">
+                <div class="card-header">
                     <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
                 </div>
                 <div class="card-body p-2">
                     <table class="table">
                         <tbody>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ object.identified_priority }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">
-                                {% if development_plan %}
-                                <a href="{{ development_plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
-                                {% else %}
-                                -
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.facilitator }}</td>
-                        </tr>
+                        {% if object.is_village %}
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ object.identified_priority }}</td>
+                            </tr>
+                            {% if development_plan %}
+                                <tr>
+                                    <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
+                                    <td class="border-0 p-0 pr-2 text-right">
+                                        <a href="{{ development_plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if planning_status.facilitator %}
+                                <tr>
+                                    <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
+                                    <td class="border-0 p-0 pr-2 text-right">{{ planning_status.facilitator }}</td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">
+                                    {% if planning_status.completed != '-' %}{{ planning_status.completed|intcomma }} %{% else %}-{% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified|default:"-" }}</td>
+                            </tr>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -115,41 +138,48 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body table-responsive">
+                <div class="card-body">
                     <div class="col-12">
                         <ul class="nav nav-tabs">
-                            <li class="nav-item btn p-0"><a class="nav-link active" data-toggle="tab"
-                                                            href="#priorities">{% translate "Priorities" %}</a></li>
+                            {% if not object.is_village %}
+                                <li class="nav-item btn p-0">
+                                    <a class="nav-link active" data-toggle="tab" href="#children">
+                                        {% if children_list.0.type %}{{ children_list.0.type|title }}{% else %}{% translate 'Children' %}{% endif %}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item btn p-0 pl-2 pr-2">
+                                <a class="nav-link {% if object.is_village %}active{% endif %}" data-toggle="tab"
+                                   href="#priorities">{% translate "Priorities" %}</a>
+                            </li>
 {#                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"#}
 {#                                                                      href="#village_population">{% translate "Village population" %}</a>#}
 {#                            </li>#}
-                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-                                                                      href="#infrastructure_services">{% translate "Infrastructure and Services" %}</a>
-                            </li>
-                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-                                                                      href="#planning_cycle">{% translate "Planning Cycle" %}</a>
-                            </li>
-                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-                                                                      href="#financial_informations">{% translate "Financial informations" %}</a>
-                            </li>
-                            <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
-                                                                      href="#grm">{% translate "GRM" %}</a></li>
-                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
-                                                            href="#diagnostics">{% translate "Diagnostics" %}</a></li>
-                            <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
-                                                            href="#climate">{% translate "Climate" %}</a></li>
+                            {% if object.is_village %}
+                                <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                          href="#infrastructure_services">{% translate "Infrastructure and Services" %}</a>
+                                </li>
+                                <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                          href="#planning_cycle">{% translate "Planning Cycle" %}</a>
+                                </li>
+                                <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
+                                                                href="#climate">{% translate "Climate" %}</a></li>
+                            {% endif %}
                         </ul>
 
-                        <div class="tab-content">
-                            <div id="priorities" class="tab-pane active">
-                                <div class="card">
-                                    <div class="card-body">
-                                        {% include 'shared/priorities_table.html' %}
-                                    </div>
+                        <div class="tab-content mt-3">
+                            {% if not object.is_village %}
+                                <div id="children" class="tab-pane active">
+                                    {% include 'shared/children_list_table.html' %}
                                 </div>
+                            {% endif %}
+                            <div id="priorities" class="tab-pane {% if object.is_village %}active{% endif %}">
+								<div class="table-responsive">
+									{% include 'shared/priorities_table.html' %}
+								</div>
                             </div>
                             <div id="village_population" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
+                                <h5>{% translate "In construction" %}</h5>
                                 {% comment %}<div class="row">
                                 <div class="col-12"></div>
                             </div>
@@ -190,6 +220,7 @@
                                 </div>
                             </div>{% endcomment %}
                             </div>
+                            {% if object.is_village %}
                             <div id="infrastructure_services" class="tab-pane fade">
                                 <div class="card-body">
                                     {% if children_services_infrastructures %}
@@ -206,18 +237,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="financial_informations" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
-                            </div>
-                            <div id="grm" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
-                            </div>
-                            <div id="diagnostics" class="tab-pane fade">
-                                <h3>{% translate "In construction" %}</h3>
-                            </div>
                             <div id="climate" class="tab-pane fade position-relative">
                                 {% include 'administrative_level/detail/tabs/climate.html' %}
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -243,57 +266,54 @@
 
 {% block javascript %}
     {{ block.super }}
-    <!-- jQuery -->
-    <script src="{% static 'AdminLTE/plugins/jquery/jquery.min.js' %}"></script>
-    <!-- Bootstrap 4 -->
-    <script src="{% static 'AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <!-- Attachments script for carrousel -->
     <script type="text/javascript">
-
-        $('[data-toggle="popover"]').popover();
-        let spin_attachments_images = $("#spin-attachments-images");
-        let attachments_images = $("#attachments_images");
-        spin_attachments_images.show();
-        attachments_images.html(`
-    {% if images_data.exists_at_least_image %}
-
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                {% for image in images_data.images %}
-                    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"
-            {% if image.url == images_data.first_image.url %}class="active"{% endif %} ></li>
-                {% endfor %}
-            </ol>
-            <div class="carousel-inner">
-                {% for image in images_data.images %}
-                    <div class="carousel-item {% if image.url == images_data.first_image.url %}active{% endif %}">
-                        <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
-                            <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
-                            style="height: 500px !important;"
-                            alt="{{ image.task }}">
-                        </a>
-                    </div>
-                {% endfor %}
+        document.addEventListener('DOMContentLoaded', function () {
+            $('[data-toggle="popover"]').popover();
+            let spin_attachments_images = $("#spin-attachments-images");
+            let attachments_images = $("#attachments_images");
+            spin_attachments_images.show();
+            attachments_images.html(`
+        {% if images_data.exists_at_least_image %}
+    
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    {% for image in images_data.images %}
+                        <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"
+                {% if forloop.first %}class="active"{% endif %} ></li>
+                    {% endfor %}
+                </ol>
+                <div class="carousel-inner">
+                    {% for image in images_data.images %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
+                                <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
+                                style="height: 500px !important;"
+                                alt="{{ image.task }}">
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
-
-    {% else %}
-    <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
-                <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
-    alt="Card image">
-    </a>
-
-    {% endif %}
-    `);
-        spin_attachments_images.hide();
+    
+        {% else %}
+        <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
+                    <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
+        alt="Card image">
+        </a>
+    
+        {% endif %}
+        `);
+            spin_attachments_images.hide();
+        });
     </script>
 
     <script src="{% static 'plugins/datepicker/datepicker.js' %}"></script>

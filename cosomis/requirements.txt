@@ -66,3 +66,5 @@ xhtml2pdf==0.2.16
 fuzzywuzzy==0.18.0
 python_levenshtein==0.27.3
 mixpanel==5.0.0
+django-cors-headers==3.10.0
+djangorestframework-simplejwt==4.8.0

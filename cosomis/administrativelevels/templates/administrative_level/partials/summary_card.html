@@ -1,0 +1,70 @@
+{% load i18n humanize %}
+<div class="adm-summary">
+    {% if breadcrumb %}
+        <div class="adm-summary__path">
+            {% for ancestor in breadcrumb %}
+                <span>{{ ancestor.name }}</span>{% if not forloop.last %} <i class="fas fa-chevron-right"></i> {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <span class="adm-summary__type">{{ type_label }}</span>
+    <h3 class="adm-summary__name" title="{{ adm.name }}">{{ adm.name }}</h3>
+
+    <dl class="adm-summary__stats">
+        {% if children_count %}
+            <div>
+                <dt>
+                    <i class="fas fa-sitemap"></i>
+                    {% if next_level_label %}{{ next_level_label }}s{% else %}{% translate 'Children' %}{% endif %}
+                </dt>
+                <dd>{{ children_count|intcomma }}</dd>
+            </div>
+        {% endif %}
+        {% if total_villages and total_villages > 1 and next_level_label != "Village" %}
+            <div>
+                <dt><i class="fas fa-home"></i> {% translate 'Villages' %}</dt>
+                <dd>{{ total_villages|intcomma }}</dd>
+            </div>
+        {% endif %}
+        {% if has_population %}
+            <div>
+                <dt><i class="fas fa-users"></i> {% translate 'Total population' %}</dt>
+                <dd>{{ total_population|intcomma }}</dd>
+            </div>
+        {% endif %}
+        <div>
+            <dt><i class="fas fa-flag"></i> {% translate 'Total priorities' %}</dt>
+            <dd>{{ total_priorities|intcomma }}</dd>
+        </div>
+        <div>
+            <dt><i class="fas fa-hand-holding-usd"></i> {% translate 'Projects funded' %}</dt>
+            <dd>{{ total_projects_funded|intcomma }}</dd>
+        </div>
+        {% if adm.identified_priority %}
+            <div>
+                <dt><i class="far fa-calendar-check"></i> {% translate 'Priority identified' %}</dt>
+                <dd>{{ adm.identified_priority|date:"d M Y" }}</dd>
+            </div>
+        {% endif %}
+        {% if has_coordinates %}
+            <div>
+                <dt><i class="fas fa-map-marker-alt"></i> {% translate 'Coordinates' %}</dt>
+                <dd>{{ adm.latitude|floatformat:4 }}, {{ adm.longitude|floatformat:4 }}</dd>
+            </div>
+        {% endif %}
+        {% if adm.code_loc %}
+            <div>
+                <dt><i class="fas fa-fingerprint"></i> {% translate 'Code' %}</dt>
+                <dd>{{ adm.code_loc }}</dd>
+            </div>
+        {% endif %}
+    </dl>
+
+    {% if detail_url %}
+        <a href="{{ detail_url }}" class="btn btn-primary btn-block adm-summary__cta">
+            {% blocktranslate with type=type_label %}Open {{ type }} profile{% endblocktranslate %}
+            <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+    {% endif %}
+</div>

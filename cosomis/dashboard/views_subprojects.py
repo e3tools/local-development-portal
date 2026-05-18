@@ -36,58 +36,58 @@ class DashboardSubprojectsMixin:
         ctx.setdefault('table_thead_class_style', self.table_thead_class_style)
         return ctx
     
-    def get_queryset(self):
-        administrative_level_ids_get = self.request.GET.getlist('administrative_level_id[]', None)
-        administrative_level_type = self.request.GET.get('administrative_level_type', 'All').title()
-        
-        administrative_level_type = "All" if administrative_level_type in ("", "null", "undefined") else administrative_level_type
-
-        ald_filter_ids = []
-        administrative_levels_ids = []
-        if not administrative_level_ids_get:
-            administrative_level_ids_get.append("")
-        for ald_id in administrative_level_ids_get:
-            ald_id = 0 if ald_id in ("", "null", "undefined", "All") else ald_id
-            administrative_levels_ids += get_administrative_level_ids_descendants(
-                ald_id, administrative_level_type, []
-            )
-            if ald_id:
-                ald_filter_ids.append(ald_id)
-
-        administrative_levels_ids = list(set(administrative_levels_ids))
-        administrative_levels = AdministrativeLevel.objects.filter(id__in=administrative_levels_ids)
-        if administrative_level_type == "All":
-            administrative_levels = AdministrativeLevel.objects.filter(type="Region")
-        elif ald_filter_ids and administrative_level_type != "All":
-            administrative_levels = AdministrativeLevel.objects.filter(parent__id__in=ald_filter_ids)
-        elif administrative_level_type:
-            administrative_levels = AdministrativeLevel.objects.filter(parent__type=administrative_level_type)
-        
-        if not administrative_levels:
-            administrative_levels = AdministrativeLevel.objects.filter(id__in=ald_filter_ids)
-
-        subprojects = Subproject.objects.filter()
-
-        sectors = sorted(list(set(list(subprojects.values_list('subproject_sector')))))
-        
-        if not ald_filter_ids:
-            pass
-        else:
-            subprojects = Subproject.objects.filter(
-                Q(location_subproject_realized__id__in=administrative_levels_ids) | 
-                Q(canton__id__in=administrative_levels_ids)
-            )
-        administrative_level = administrative_levels.first()
-
-        
-        return {
-            'subprojects': subprojects,
-            'sectors': [s[0] for s in sectors],
-            'administrative_level_type': administrative_level.type if administrative_level else "",
-            'columns_tuples': list(administrative_levels.filter(Q(type=administrative_level.type)if administrative_level else Q()).order_by('name').values_list('id', 'name')),
-            'ald_filter_ids': ald_filter_ids,
-            'administrative_levels_ids': administrative_levels_ids
-        }
+    # def get_queryset(self):
+    #     administrative_level_ids_get = self.request.GET.getlist('administrative_level_id[]', None)
+    #     administrative_level_type = self.request.GET.get('administrative_level_type', 'All').title()
+    #
+    #     administrative_level_type = "All" if administrative_level_type in ("", "null", "undefined") else administrative_level_type
+    #
+    #     ald_filter_ids = []
+    #     administrative_levels_ids = []
+    #     if not administrative_level_ids_get:
+    #         administrative_level_ids_get.append("")
+    #     for ald_id in administrative_level_ids_get:
+    #         ald_id = 0 if ald_id in ("", "null", "undefined", "All") else ald_id
+    #         administrative_levels_ids += get_administrative_level_ids_descendants(
+    #             ald_id, administrative_level_type, []
+    #         )
+    #         if ald_id:
+    #             ald_filter_ids.append(ald_id)
+    #
+    #     administrative_levels_ids = list(set(administrative_levels_ids))
+    #     administrative_levels = AdministrativeLevel.objects.filter(id__in=administrative_levels_ids)
+    #     if administrative_level_type == "All":
+    #         administrative_levels = AdministrativeLevel.objects.filter(type="Region")
+    #     elif ald_filter_ids and administrative_level_type != "All":
+    #         administrative_levels = AdministrativeLevel.objects.filter(parent__id__in=ald_filter_ids)
+    #     elif administrative_level_type:
+    #         administrative_levels = AdministrativeLevel.objects.filter(parent__type=administrative_level_type)
+    #
+    #     if not administrative_levels:
+    #         administrative_levels = AdministrativeLevel.objects.filter(id__in=ald_filter_ids)
+    #
+    #     subprojects = Subproject.objects.filter()
+    #
+    #     sectors = sorted(list(set(list(subprojects.values_list('subproject_sector')))))
+    #
+    #     if not ald_filter_ids:
+    #         pass
+    #     else:
+    #         subprojects = Subproject.objects.filter(
+    #             Q(location_subproject_realized__id__in=administrative_levels_ids) |
+    #             Q(canton__id__in=administrative_levels_ids)
+    #         )
+    #     administrative_level = administrative_levels.first()
+    #
+    #
+    #     return {
+    #         'subprojects': subprojects,
+    #         'sectors': [s[0] for s in sectors],
+    #         'administrative_level_type': administrative_level.type if administrative_level else "",
+    #         'columns_tuples': list(administrative_levels.filter(Q(type=administrative_level.type)if administrative_level else Q()).order_by('name').values_list('id', 'name')),
+    #         'ald_filter_ids': ald_filter_ids,
+    #         'administrative_levels_ids': administrative_levels_ids
+    #     }
     
 
 class DashboardSubprojectsListView(DashboardSubprojectsMixin, AJAXRequestMixin, LoginRequiredApproveRequiredMixin, generic.ListView):
@@ -268,38 +268,38 @@ class DashboardSubprojectsListView(DashboardSubprojectsMixin, AJAXRequestMixin, 
     #     }
 
 
-    def get_context_data(self, **kwargs):
-        ctx = super(DashboardSubprojectsListView, self).get_context_data(**kwargs)
-        # subprojects = ctx['queryset_results']['subprojects']
-        sectors = ctx['queryset_results']['sectors']
-        columns_tuples = ctx['queryset_results']['columns_tuples']
-        columns_listes = []
-        for column in columns_tuples:
-            ids_descendants = get_administrative_level_ids_descendants(column[0], None, [])
-            columns_listes.append(
-                [
-                    column[0],
-                    column[1],
-                    [column[0]] + ids_descendants if column[0] != "All" else ids_descendants
-                ]
-            )
-        all_subprojects = ctx['queryset_results']['subprojects']
-        all_steps = Step.objects.all().order_by('-ranking')
-
-        ctx["summary"] = {}
-
-        characters_length = 0 #len(str(all_subprojects.count()))
-        ctx["summary"]["summary_subprojects_by_sectors_1"] = {}
-        for k, v in self.summary_subprojects_by_sectors_1(columns_listes, sectors, all_subprojects, characters_length).items():
-            ctx["summary"]["summary_subprojects_by_sectors_1"][k] = v
-        
-        # characters_length = 0 #len(str(all_subprojects.aggregate(Sum('estimated_cost'))['estimated_cost__sum']))
-        # ctx["summary"]["summary_amount_subprojects_by_sectors_1"] = {}
-        # for k, v in self.summary_amount_subprojects_by_sectors_1(columns_listes, sectors, all_subprojects, characters_length).items():
-        #     ctx["summary"]["summary_amount_subprojects_by_sectors_1"][k] = v
-
-
-        return ctx
+    # def get_context_data(self, **kwargs):
+    #     ctx = super(DashboardSubprojectsListView, self).get_context_data(**kwargs)
+    #     # subprojects = ctx['queryset_results']['subprojects']
+    #     sectors = ctx['queryset_results']['sectors']
+    #     columns_tuples = ctx['queryset_results']['columns_tuples']
+    #     columns_listes = []
+    #     for column in columns_tuples:
+    #         ids_descendants = get_administrative_level_ids_descendants(column[0], None, [])
+    #         columns_listes.append(
+    #             [
+    #                 column[0],
+    #                 column[1],
+    #                 [column[0]] + ids_descendants if column[0] != "All" else ids_descendants
+    #             ]
+    #         )
+    #     all_subprojects = ctx['queryset_results']['subprojects']
+    #     all_steps = Step.objects.all().order_by('-ranking')
+    #
+    #     ctx["summary"] = {}
+    #
+    #     characters_length = 0 #len(str(all_subprojects.count()))
+    #     ctx["summary"]["summary_subprojects_by_sectors_1"] = {}
+    #     for k, v in self.summary_subprojects_by_sectors_1(columns_listes, sectors, all_subprojects, characters_length).items():
+    #         ctx["summary"]["summary_subprojects_by_sectors_1"][k] = v
+    #
+    #     # characters_length = 0 #len(str(all_subprojects.aggregate(Sum('estimated_cost'))['estimated_cost__sum']))
+    #     # ctx["summary"]["summary_amount_subprojects_by_sectors_1"] = {}
+    #     # for k, v in self.summary_amount_subprojects_by_sectors_1(columns_listes, sectors, all_subprojects, characters_length).items():
+    #     #     ctx["summary"]["summary_amount_subprojects_by_sectors_1"][k] = v
+    #
+    #
+    #     return ctx
     
 
 
@@ -373,32 +373,32 @@ class DashboardSubprojectsBySectorAmountListView(DashboardSubprojectsMixin, AJAX
         }
 
 
-    def get_context_data(self, **kwargs):
-        ctx = super(DashboardSubprojectsBySectorAmountListView, self).get_context_data(**kwargs)
-        # subprojects = ctx['queryset_results']['subprojects']
-        sectors = ctx['queryset_results']['sectors']
-        columns_tuples = ctx['queryset_results']['columns_tuples']
-        columns_listes = []
-        for column in columns_tuples:
-            ids_descendants = get_administrative_level_ids_descendants(column[0], None, [])
-            columns_listes.append(
-                [
-                    column[0],
-                    column[1],
-                    [column[0]] + ids_descendants if column[0] != "All" else ids_descendants
-                ]
-            )
-        all_subprojects = ctx['queryset_results']['subprojects']
-        all_steps = Step.objects.all().order_by('-ranking')
-
-        ctx["summary"] = {}
-        
-        characters_length = 0 #len(str(all_subprojects.aggregate(Sum('estimated_cost'))['estimated_cost__sum']))
-        ctx["summary"]["summary_amount_subprojects_by_sectors_1"] = {}
-        for k, v in self.summary_amount_subprojects_by_sectors_1(columns_listes, sectors, all_subprojects, characters_length).items():
-            ctx["summary"]["summary_amount_subprojects_by_sectors_1"][k] = v
-
-        return ctx
+    # def get_context_data(self, **kwargs):
+    #     ctx = super(DashboardSubprojectsBySectorAmountListView, self).get_context_data(**kwargs)
+    #     # subprojects = ctx['queryset_results']['subprojects']
+    #     sectors = ctx['queryset_results']['sectors']
+    #     columns_tuples = ctx['queryset_results']['columns_tuples']
+    #     columns_listes = []
+    #     for column in columns_tuples:
+    #         ids_descendants = get_administrative_level_ids_descendants(column[0], None, [])
+    #         columns_listes.append(
+    #             [
+    #                 column[0],
+    #                 column[1],
+    #                 [column[0]] + ids_descendants if column[0] != "All" else ids_descendants
+    #             ]
+    #         )
+    #     all_subprojects = ctx['queryset_results']['subprojects']
+    #     all_steps = Step.objects.all().order_by('-ranking')
+    #
+    #     ctx["summary"] = {}
+    #
+    #     characters_length = 0 #len(str(all_subprojects.aggregate(Sum('estimated_cost'))['estimated_cost__sum']))
+    #     ctx["summary"]["summary_amount_subprojects_by_sectors_1"] = {}
+    #     for k, v in self.summary_amount_subprojects_by_sectors_1(columns_listes, sectors, all_subprojects, characters_length).items():
+    #         ctx["summary"]["summary_amount_subprojects_by_sectors_1"][k] = v
+    #
+    #     return ctx
     
 
 
@@ -481,26 +481,26 @@ class DashboardSubprojectsSectorsAndStepsListView(DashboardSubprojectsMixin, AJA
         }
 
 
-    def get_context_data(self, **kwargs):
-        ctx = super(DashboardSubprojectsSectorsAndStepsListView, self).get_context_data(**kwargs)
-        adls = ctx['queryset_results']['ald_filter_ids'] + ctx['queryset_results']['administrative_levels_ids']
-        all_subprojects = subprojects = Subproject.objects.filter(
-                Q(location_subproject_realized__id__in=adls) | 
-                Q(canton__id__in=adls)
-            )
-        
-        # all_subprojects = ctx['queryset_results']['subprojects']
-        
-        ctx["summary"] = {}
-
-        characters_length = 3
-        ctx["summary"]["summary_subprojects_by_sectors_and_steps"] = {}
-        for k, v in self.summary_subprojects_by_sectors_and_steps(all_subprojects, characters_length).items():
-            ctx["summary"]["summary_subprojects_by_sectors_and_steps"][k] = v
-
-        ctx["queryset_results"]["administrative_level_type"] = None
-        ctx['not_allow_datatable_auto_width'] = True
-        return ctx
+    # def get_context_data(self, **kwargs):
+    #     ctx = super(DashboardSubprojectsSectorsAndStepsListView, self).get_context_data(**kwargs)
+    #     adls = ctx['queryset_results']['ald_filter_ids'] + ctx['queryset_results']['administrative_levels_ids']
+    #     all_subprojects = subprojects = Subproject.objects.filter(
+    #             Q(location_subproject_realized__id__in=adls) |
+    #             Q(canton__id__in=adls)
+    #         )
+    #
+    #     # all_subprojects = ctx['queryset_results']['subprojects']
+    #
+    #     ctx["summary"] = {}
+    #
+    #     characters_length = 3
+    #     ctx["summary"]["summary_subprojects_by_sectors_and_steps"] = {}
+    #     for k, v in self.summary_subprojects_by_sectors_and_steps(all_subprojects, characters_length).items():
+    #         ctx["summary"]["summary_subprojects_by_sectors_and_steps"][k] = v
+    #
+    #     ctx["queryset_results"]["administrative_level_type"] = None
+    #     ctx['not_allow_datatable_auto_width'] = True
+    #     return ctx
     
 
 
@@ -517,12 +517,12 @@ class DashboardSubprojectsStepsAlreadyTrackListView(DashboardSubprojectsMixin, A
         
         count = 0
 
-        for step in Step.objects.all():
-            datas[_("Step")][count] = step.__str__()
-
-            datas[_("Number")][count] = all_subprojects.filter_by_steps_already_track(Subproject, step_id=step.id).count()
-        
-            count += 1
+        # for step in Step.objects.all():
+        #     datas[_("Step")][count] = step.__str__()
+        #
+        #     datas[_("Number")][count] = all_subprojects.filter_by_steps_already_track(Subproject, step_id=step.id).count()
+        #
+        #     count += 1
 
 
         return {
@@ -564,12 +564,12 @@ class DashboardSubprojectsCurrentStepsListView(DashboardSubprojectsMixin, AJAXRe
         
         count = 0
 
-        for step in Step.objects.all():
-            datas[_("Step")][count] = step.__str__()
-
-            datas[_("Number")][count] = all_subprojects.filter_by_step(Subproject, step_id=step.id).count()
-        
-            count += 1
+        # for step in Step.objects.all():
+        #     datas[_("Step")][count] = step.__str__()
+        #
+        #     datas[_("Number")][count] = all_subprojects.filter_by_step(Subproject, step_id=step.id).count()
+        #
+        #     count += 1
 
         
         datas[_("Step")][count] = _("Total")

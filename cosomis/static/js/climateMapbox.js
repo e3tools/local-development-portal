@@ -143,26 +143,28 @@ function loadGeoJsonMap(
         // .setLngLat(admin_level_coordinates)
         // .addTo(mymap)
 
-        admin_level_coordinates = parseListOfLists(admin_level_coordinates);
-        admin_level_coordinates.forEach( coord => {
-            const popup = new mapboxgl.Popup({ offset: 25 }).setText(coord.name);
-            let marker = new mapboxgl.Marker()
-                .setLngLat(coord.coordinates)
-                .addTo(mymap)
+        admin_level_coordinates = (typeof admin_level_coordinates === 'string') ? parseListOfLists(admin_level_coordinates) : admin_level_coordinates;
+        if (admin_level_coordinates) {
+            admin_level_coordinates.forEach( coord => {
+                const popup = new mapboxgl.Popup({ offset: 25 }).setText(coord.name);
+                let marker = new mapboxgl.Marker()
+                    .setLngLat(coord.coordinates)
+                    .addTo(mymap)
 
-            let markerElement = marker.getElement()
-            markerElement.addEventListener('click', () => {
-                window.open(village_url.replace('0', coord.id.toString()), '_blank')
-            });
+                let markerElement = marker.getElement()
+                markerElement.addEventListener('click', () => {
+                    window.open(village_url.replace('0', coord.id.toString()), '_blank')
+                });
 
-            markerElement.addEventListener('mouseenter', () => {
-                popup.setLngLat(coord.coordinates).addTo(mymap);
-            });
+                markerElement.addEventListener('mouseenter', () => {
+                    popup.setLngLat(coord.coordinates).addTo(mymap);
+                });
 
-            markerElement.addEventListener('mouseleave', () => {
-                popup.remove();
-            });
-        })
+                markerElement.addEventListener('mouseleave', () => {
+                    popup.remove();
+                });
+            })
+        }
 
         mymap.on('load', () => {
 

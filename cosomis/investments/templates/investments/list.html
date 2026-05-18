@@ -13,11 +13,51 @@
         }
 
         table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control::before {
-            content: '>';
+            content: '+';
         }
 
         table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before {
             content: '-';
+        }
+
+        /* Responsive expand-chevron: align with the top of the cell content,
+           recolor to match the brand, give the first column extra left padding
+           so the chevron and the checkbox sit side-by-side cleanly. */
+        .investments-table-stage table.dataTable.dtr-inline.collapsed > thead > tr > th:first-child,
+        .investments-table-stage table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child {
+            padding-left: 46px !important;
+            position: relative;
+        }
+        .investments-table-stage table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before {
+            top: 14px !important;
+            left: 14px !important;
+            margin-top: 0 !important;
+            width: 18px !important;
+            height: 18px !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            text-indent: 0 !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+            border: 1.5px solid #ffffff !important;
+            background-color: #4f46e5 !important;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25) !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: #ffffff !important;
+            font-family: 'Helvetica Neue', Arial, sans-serif !important;
+            transition: transform .15s ease, background-color .12s ease;
+        }
+        .investments-table-stage table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before {
+            background-color: #10b981 !important;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) !important;
+        }
+        .investments-table-stage table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:hover::before {
+            transform: scale(1.08);
+            cursor: pointer;
         }
 
         .input-group-text {
@@ -42,6 +82,541 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Skeleton shimmer placeholders for the metric cards */
+        .skeleton {
+            display: inline-block;
+            background: linear-gradient(90deg, #e9ecef 25%, #f5f5f5 37%, #e9ecef 63%);
+            background-size: 400% 100%;
+            animation: skeleton-shimmer 1.4s ease infinite;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+        .skeleton-text {
+            height: 1.1em;
+            width: 90px;
+        }
+        @keyframes skeleton-shimmer {
+            0%   { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Skeleton loading overlay for the investments table */
+        .investments-table-stage { position: relative; }
+        .dataTables_wrapper { position: relative; }
+        .table-loading-overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: #ffffff;
+            display: none;
+            z-index: 10;
+            overflow: hidden;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        .table-loading-overlay.is-active { display: block; }
+
+        /* Skeleton table inside the overlay — mimics the real columns */
+        .skeleton-table-mock {
+            width: 100%;
+            padding: 0;
+            display: block;
+        }
+        .skeleton-table-mock .skeleton-row {
+            display: grid;
+            grid-template-columns: 36px minmax(140px, 2fr) minmax(110px, 1.4fr) minmax(110px, 1.1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) 56px 90px;
+            gap: 16px;
+            padding: 14px 18px;
+            border-bottom: 1px solid #f1f3f5;
+            align-items: center;
+            opacity: 0;
+            animation: skeleton-row-in .35s ease forwards;
+        }
+        .skeleton-table-mock .skeleton-row:nth-child(odd) { background-color: rgba(0, 0, 0, 0.018); }
+        .skeleton-cell {
+            height: 11px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #e9ecef 25%, #f5f7fa 37%, #e9ecef 63%);
+            background-size: 400% 100%;
+            animation: skeleton-shimmer 1.4s ease infinite;
+        }
+        .skeleton-cell.checkbox { width: 16px; height: 16px; border-radius: 3px; }
+        .skeleton-cell.w-30 { width: 35%; }
+        .skeleton-cell.w-50 { width: 55%; }
+        .skeleton-cell.w-70 { width: 75%; }
+        .skeleton-cell.w-90 { width: 92%; }
+        .skeleton-cell.compact { height: 9px; }
+
+        /* Stagger each row's fade-in and shimmer phase for a live feel */
+        .skeleton-table-mock .skeleton-row:nth-child(1) { animation-delay: 0ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(2) { animation-delay: 50ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(3) { animation-delay: 100ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(4) { animation-delay: 150ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(5) { animation-delay: 200ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(6) { animation-delay: 250ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(7) { animation-delay: 300ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(8) { animation-delay: 350ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(2) .skeleton-cell { animation-delay: 80ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(3) .skeleton-cell { animation-delay: 160ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(4) .skeleton-cell { animation-delay: 240ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(5) .skeleton-cell { animation-delay: 320ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(6) .skeleton-cell { animation-delay: 400ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(7) .skeleton-cell { animation-delay: 480ms; }
+        .skeleton-table-mock .skeleton-row:nth-child(8) .skeleton-cell { animation-delay: 560ms; }
+
+        @keyframes skeleton-row-in {
+            from { opacity: 0; transform: translateY(4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Subtle status pill in a corner so users know it's loading, not stuck */
+        .skeleton-status-pill {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            background: #eef5ff;
+            color: #1c64f2;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 999px;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+            box-shadow: 0 1px 2px rgba(28, 100, 242, 0.10);
+        }
+        .skeleton-status-pill::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #1c64f2;
+            animation: skeleton-pulse 1.05s ease-in-out infinite;
+        }
+        @keyframes skeleton-pulse {
+            0%, 100% { transform: scale(.85); opacity: .55; }
+            50%      { transform: scale(1.15); opacity: 1; }
+        }
+
+        /* DataTables' default tiny "Processing..." is replaced by the overlay above */
+        .dataTables_processing { display: none !important; }
+        /* While loading, also hide DataTables' empty-state row so the skeleton owns the view */
+        .table-loading-overlay.is-active ~ table tbody td.dataTables_empty { visibility: hidden; }
+
+        /* Results header: title + project picker + add-to-cart in one row */
+        .results-header { padding: 18px 22px; }
+        .results-top {
+            display: grid;
+            grid-template-columns: minmax(160px, 1fr) minmax(260px, 1.6fr) auto;
+            gap: 18px;
+            align-items: stretch;
+            margin-bottom: 14px;
+        }
+        @media (max-width: 768px) {
+            .results-top { grid-template-columns: 1fr; align-items: stretch; }
+        }
+        .results-title-wrap { display: flex; flex-direction: column; gap: 2px; align-self: start; padding-top: 4px; }
+        .results-title { font-size: 16px; font-weight: 700; color: #111827; margin: 0; letter-spacing: -0.01em; }
+        .results-sub { font-size: 12px; color: #6b7280; }
+
+        .results-project-wrap { display: flex; flex-direction: column; gap: 4px; min-width: 0; align-self: stretch; }
+        .results-project-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: .05em; margin: 0; }
+        .results-project-select { width: 100%; max-width: 100%; }
+        .results-funds-meta { display: flex; align-items: baseline; gap: 6px; margin-top: 2px; font-size: 12px; }
+        .results-funds-label { color: #6b7280; font-weight: 500; }
+        .results-funds-value { color: #4338ca; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .results-funds-value b { font-weight: 700; }
+        .results-funds-currency { color: #6b7280; font-weight: 500; font-size: 11px; margin-left: 2px; }
+
+        /* Add-to-cart button: vertically centered against the project picker */
+        .results-action-wrap { display: flex; align-items: center; align-self: center; }
+        .results-submit {
+            background: #4f46e5;
+            border-color: #4f46e5;
+            padding: 10px 22px;
+            font-weight: 600;
+            font-size: 13px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(79, 70, 229, 0.15);
+            transition: transform .12s ease, background-color .12s ease, box-shadow .12s ease;
+            color: #ffffff;
+        }
+        .results-submit:hover, .results-submit:focus {
+            background: #4338ca;
+            border-color: #4338ca;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+            color: #ffffff;
+        }
+
+        .results-filters { margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .results-no-project { margin-bottom: 14px; }
+
+        /* 3 stat cards: villages / sub-projects / funding selected */
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 4px;
+        }
+        .results-stat-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #ffffff;
+            transition: border-color .12s ease, box-shadow .12s ease;
+        }
+        .results-stat-card:hover { border-color: #c7d2fe; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.05); }
+        .results-stat-icon {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .results-stat-icon svg { width: 18px; height: 18px; }
+        /* Stat icons all share the indigo brand palette */
+        .results-stat-icon--villages    { background: #eef2ff; color: #4f46e5; }
+        .results-stat-icon--subprojects { background: #e0e7ff; color: #4338ca; }
+        .results-stat-icon--funding     { background: #c7d2fe; color: #3730a3; }
+        .results-stat-body { flex: 1; min-width: 0; }
+        .results-stat-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 4px;
+        }
+        .results-stat-line {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            font-variant-numeric: tabular-nums;
+        }
+        .results-stat-num {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.1;
+        }
+        .results-stat-num .skeleton { width: 40px; height: 1em; }
+        .results-stat-sep { color: #d1d5db; font-size: 18px; font-weight: 500; }
+        .results-stat-denom {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        .results-stat-denom .skeleton { width: 48px; height: 1em; }
+        .results-stat-currency { font-size: 12px; color: #6b7280; font-weight: 500; }
+        .results-stat-caption {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        .results-stat-caption b { color: #111827; font-weight: 600; }
+
+        /* Instructional alert above the investments table */
+        .alert-instructions {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: linear-gradient(180deg, #eef2ff 0%, #f5f3ff 100%);
+            border: 1px solid #c7d2fe;
+            border-left: 4px solid #4f46e5;
+            color: #1e1b4b;
+            border-radius: 10px;
+            padding: 14px 18px 14px 16px;
+            margin-bottom: 18px;
+            box-shadow: 0 1px 2px rgba(79, 70, 229, 0.05);
+            position: relative;
+        }
+        .alert-instructions-icon {
+            flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: rgba(79, 70, 229, 0.12);
+            color: #4f46e5;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .alert-instructions-icon svg { width: 18px; height: 18px; }
+        .alert-instructions-body { flex: 1; min-width: 0; }
+        .alert-instructions-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #312e81;
+            margin: 2px 0 6px;
+            letter-spacing: .01em;
+        }
+        .alert-instructions-list {
+            margin: 0;
+            padding-left: 18px;
+            color: #3730a3;
+            font-size: 12.5px;
+            line-height: 1.55;
+        }
+        .alert-instructions-list li { margin-bottom: 2px; }
+        .alert-instructions-list li:last-child { margin-bottom: 0; }
+        .alert-instructions-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            color: #4338ca;
+            opacity: .6;
+            font-size: 20px;
+            font-weight: 500;
+            padding: 4px 6px;
+            line-height: 1;
+            transition: opacity .12s ease;
+        }
+        .alert-instructions-close:hover,
+        .alert-instructions-close:focus { opacity: 1; color: #312e81; }
+
+        /* ------------------------------------------------------------- */
+        /* Modern investments table look                                 */
+        /* ------------------------------------------------------------- */
+
+        /* Wrap for the table — borderless / flat; the parent card already
+           provides the visual frame. Keep position:relative so the skeleton
+           overlay anchors correctly. */
+        .investments-table-stage {
+            background: #ffffff;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        /* Reset Bootstrap's heavy borders + striping */
+        .investments-table-stage table.table.table-bordered,
+        .investments-table-stage table.table.table-bordered > thead > tr > th,
+        .investments-table-stage table.table.table-bordered > tbody > tr > td {
+            border: none !important;
+        }
+        .investments-table-stage table.table.table-striped tbody tr:nth-of-type(odd) {
+            background-color: transparent !important;
+        }
+        .investments-table-stage table.table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        /* Header: small caps, muted, light tint */
+        .investments-table-stage table.table thead th {
+            background: #f9fafb !important;
+            color: #6b7280 !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: 14px 18px !important;
+            border-bottom: 1px solid #e5e7eb !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .investments-table-stage table.table thead th:first-child { padding-left: 20px !important; }
+        .investments-table-stage table.table thead th:last-child  { padding-right: 20px !important; }
+
+        /* Body cells */
+        .investments-table-stage table.table tbody td {
+            padding: 14px 18px !important;
+            border-bottom: 1px solid #f1f3f5 !important;
+            vertical-align: top;
+            font-size: 13px;
+            color: #374151;
+        }
+        .investments-table-stage table.table tbody td:first-child { padding-left: 20px !important; }
+        .investments-table-stage table.table tbody td:last-child  { padding-right: 20px !important; }
+        .investments-table-stage table.table tbody tr:last-child td { border-bottom: none !important; }
+
+        /* Subtle hover lift on rows */
+        .investments-table-stage table.table tbody tr { transition: background-color .12s ease; }
+        .investments-table-stage table.table tbody tr:hover { background-color: #fafbff !important; }
+
+        /* Custom checkbox — sized so its centre lines up with the responsive chevron */
+        .inv-checkbox { position: relative; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; margin: 0; padding: 0; line-height: 0; }
+        .inv-checkbox input[type="checkbox"] { position: absolute; opacity: 0; pointer-events: none; }
+        .inv-checkbox span {
+            width: 18px; height: 18px; border-radius: 4px;
+            background: #ffffff; border: 1.5px solid #d1d5db;
+            display: inline-block; transition: all .12s ease;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .inv-checkbox:hover span { border-color: #4f46e5; }
+        .inv-checkbox input:checked + span { background: #4f46e5; border-color: #4f46e5; }
+        .inv-checkbox input:checked + span::after {
+            content: ""; position: absolute;
+            top: 2px; left: 5px; width: 5px; height: 9px;
+            border: solid #fff; border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Title: clamp at 3 lines with ellipsis, full text in title attr */
+        .inv-title {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.4;
+            font-size: 13px;
+            max-width: 320px;
+        }
+        .inv-title-extra { color: #6b7280; font-weight: 400; }
+        .inv-title-link { text-decoration: none !important; color: inherit !important; }
+        .inv-title-link:hover .inv-title { color: #4f46e5; }
+
+        /* Source / type pill + priority caption */
+        .inv-source-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .02em;
+            text-transform: capitalize;
+            white-space: nowrap;
+        }
+        .inv-source-priority {
+            display: block;
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 6px;
+            line-height: 1.3;
+            max-width: 160px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Estimated cost — bold green, right-aligned, tabular figures */
+        .inv-cost {
+            display: inline-block;
+            font-weight: 700;
+            color: #047857;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        .inv-cost-currency { color: #6b7280; font-size: 11px; font-weight: 500; margin-left: 2px; letter-spacing: .03em; }
+        .inv-cost-na { color: #9ca3af !important; font-style: italic; font-weight: 500; }
+
+        /* Place cells (Village / Canton / Commune / Prefecture) */
+        .inv-place { font-size: 13px; color: #374151; }
+        .inv-muted { color: #d1d5db; font-weight: 500; }
+
+        /* Ranking badge */
+        .inv-rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+        }
+        .inv-rank-1 { background: #fef3c7; color: #b45309; box-shadow: inset 0 0 0 1.5px #f59e0b; }
+        .inv-rank-2 { background: #e5e7eb; color: #4b5563; box-shadow: inset 0 0 0 1.5px #9ca3af; }
+        .inv-rank-3 { background: #fed7aa; color: #c2410c; box-shadow: inset 0 0 0 1.5px #ea580c; }
+        .inv-rank-other { background: #f3f4f6; color: #6b7280; }
+        .inv-rank-none { color: #d1d5db; font-weight: 500; background: transparent; box-shadow: none; }
+
+        /* Endorsement chips (population priority) */
+        .inv-endorse-wrap { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+        .inv-endorse-chip {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 24px; padding: 3px 7px;
+            border-radius: 6px; font-size: 11px; font-weight: 700;
+            letter-spacing: .03em; line-height: 1;
+        }
+        .inv-endorse-J  { background: #dbeafe; color: #1d4ed8; }
+        .inv-endorse-F  { background: #fce7f3; color: #be185d; }
+        .inv-endorse-AG { background: #d1fae5; color: #047857; }
+        .inv-endorse-ME { background: #fef3c7; color: #92400e; }
+
+        /* Generic in-row links keep the indigo/violet brand */
+        .investments-table-stage table.table tbody tr td a.inv-link,
+        .investments-table-stage table.table tbody tr td a.inv-link:link,
+        .investments-table-stage table.table tbody tr td a.inv-link:visited {
+            color: #4f46e5 !important;
+            text-decoration: none !important;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .investments-table-stage table.table tbody tr td a.inv-link:hover,
+        .investments-table-stage table.table tbody tr td a.inv-link:focus {
+            color: #4338ca !important;
+            text-decoration: underline !important;
+        }
+
+        /* Compact DataTables pagination + select to match */
+        .dataTables_wrapper .dataTables_length { display: inline-flex; align-items: center; gap: 8px; }
+        .dataTables_wrapper .dataTables_length label { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 13px; color: #374151; font-weight: 500; }
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 4px 26px 4px 10px;
+            font-size: 13px;
+            min-width: 72px;
+            width: auto;
+            height: auto;
+            line-height: 1.4;
+            background-color: #fff;
+            color: #111827;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+        }
+        .dataTables_wrapper .dataTables_length select:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.15); }
+        .dataTables_wrapper .dataTables_filter input { border: 1px solid #d1d5db; border-radius: 6px; padding: 4px 10px; font-size: 13px; margin-left: 8px; }
+        .dataTables_wrapper .dataTables_info { color: #6b7280; font-size: 12px; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 4px 10px !important;
+            margin-left: 2px !important;
+            border-radius: 6px !important;
+            border: 1px solid transparent !important;
+            font-size: 12px;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #eef2ff !important;
+            border-color: #c7d2fe !important;
+            color: #4338ca !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: #4f46e5 !important;
+            border-color: #4f46e5 !important;
+            color: #ffffff !important;
+        }
+
+        /* Legacy/fallback: any other plain <a> inside the table keeps a sensible color */
+        .investments-table-stage table tbody tr td a:not(.inv-link):not(.inv-title-link) { color: #4f46e5; }
+        .investments-table-stage table tbody tr td a:not(.inv-link):not(.inv-title-link):hover { color: #4338ca; text-decoration: underline; }
     </style>
 {% endblock %}
 
@@ -199,70 +774,39 @@
                         <div class="row">
                             <div class="col-9">
                                 <div class="row">
-                                    <div class="col-4">
-                                        <div class="form-group">
-                                            <label for="region-select-id">{% translate 'Region' %}</label>
-                                            <select class="form-control" name="region-filter" empty-option="{% translate 'Region' %}" style="width: 100%;" id="region-select-id">
-                                                <option selected value="">{% translate 'Region' %}</option>
-                                                {% for region in regions %}
-                                                    {% if 'region-filter' in query_strings_raw %}
-                                                        {% if query_strings_raw|get_item:'region-filter' == region.id %}
-                                                        <option value="{{ region.id }}" selected>{{ region.name }}</option>
-                                                        {% else %}
-                                                        <option value="{{ region.id }}">{{ region.name }}</option>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <option value="{{ region.id }}">{{ region.name }}</option>
-                                                    {% endif %}
-                                                {% endfor %}
+                                    {% if single_region %}
+                                        {# Single-root dataset: keep the select in the DOM for the JS cascade but visually hide the column. #}
+                                        <div class="col-4" style="display: none;">
+                                            <select class="form-control" name="region-filter" empty-option="{{ adm_labels.region }}" style="width: 100%;" id="region-select-id">
+                                                <option value="{{ single_region.id }}" selected>{{ single_region.name }}</option>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-group">
-                                            <label for="commune-select-id">{% translate 'Commune' %}</label>
-                                            <select class="form-control" name="commune-filter" id="commune-select-id" empty-option="{% translate 'Commune' %}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
-                                                <option selected value="">{% translate 'Commune' %}</option>
-                                                {% for commune in communes %}
-                                                    {% if 'commune-filter' in query_strings_raw %}
-                                                        {% if query_strings_raw|get_item:'commune-filter' == commune.id %}
-                                                        <option value="{{ commune.id }}" selected>{{ commune.name }}</option>
+                                    {% else %}
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="region-select-id">{{ adm_labels.region }}</label>
+                                                <select class="form-control" name="region-filter" empty-option="{{ adm_labels.region }}" style="width: 100%;" id="region-select-id">
+                                                    <option selected value="">{{ adm_labels.region }}</option>
+                                                    {% for region in regions %}
+                                                        {% if 'region-filter' in query_strings_raw %}
+                                                            {% if query_strings_raw|get_item:'region-filter' == region.id %}
+                                                            <option value="{{ region.id }}" selected>{{ region.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ region.id }}">{{ region.name }}</option>
+                                                            {% endif %}
                                                         {% else %}
-                                                        <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                            <option value="{{ region.id }}">{{ region.name }}</option>
                                                         {% endif %}
-                                                    {% else %}
-                                                        <option value="{{ commune.id }}">{{ commune.name }}</option>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </select>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
+                                    {% endif %}
                                     <div class="col-4">
                                         <div class="form-group">
-                                            <label for="village-select-id">{% translate 'Village' %}</label>
-                                            <select class="form-control" name="village-filter" id="village-select-id" empty-option="{% translate 'Village' %}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
-                                                <option selected value="">{% translate 'Village' %}</option>
-                                                {% for village in villages %}
-                                                    {% if 'village-filter' in query_strings_raw %}
-                                                        {% if query_strings_raw|get_item:'village-filter' == village.id %}
-                                                        <option value="{{ village.id }}" selected>{{ village.name }}</option>
-                                                        {% else %}
-                                                        <option value="{{ village.id }}">{{ village.name }}</option>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <option value="{{ village.id }}">{{ village.name }}</option>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-4">
-                                        <div class="form-group">
-                                            <label for="prefecture-select-id">{% translate 'Prefecture' %}</label>
-                                            <select class="form-control" name="prefecture-filter" id="prefecture-select-id" empty-option="{% translate 'Prefecture' %}" style="width: 100%;" {% if not 'region-filter' in query_strings_raw %}disabled{% endif %}>
-                                                <option selected value="">{% translate 'Prefecture' %}</option>
+                                            <label for="prefecture-select-id">{{ adm_labels.prefecture }}</label>
+                                            <select class="form-control" name="prefecture-filter" id="prefecture-select-id" empty-option="{{ adm_labels.prefecture }}" style="width: 100%;" {% if not single_region and not 'region-filter' in query_strings_raw %}disabled{% endif %}>
+                                                <option selected value="">{{ adm_labels.prefecture }}</option>
                                                 {% for prefecture in prefectures %}
                                                     {% if 'prefecture-filter' in query_strings_raw %}
                                                         {% if query_strings_raw|get_item:'prefecture-filter' == prefecture.id %}
@@ -279,9 +823,30 @@
                                     </div>
                                     <div class="col-4">
                                         <div class="form-group">
-                                            <label for="canton-select-id">{% translate 'Canton' %}</label>
-                                            <select class="form-control" name="canton-filter" id="canton-select-id" empty-option="{% translate 'Canton' %}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
-                                                <option selected value="">{% translate 'Canton' %}</option>
+                                            <label for="commune-select-id">{{ adm_labels.commune }}</label>
+                                            <select class="form-control" name="commune-filter" id="commune-select-id" empty-option="{{ adm_labels.commune }}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
+                                                <option selected value="">{{ adm_labels.commune }}</option>
+                                                {% for commune in communes %}
+                                                    {% if 'commune-filter' in query_strings_raw %}
+                                                        {% if query_strings_raw|get_item:'commune-filter' == commune.id %}
+                                                        <option value="{{ commune.id }}" selected>{{ commune.name }}</option>
+                                                        {% else %}
+                                                        <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <option value="{{ commune.id }}">{{ commune.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="canton-select-id">{{ adm_labels.canton }}</label>
+                                            <select class="form-control" name="canton-filter" id="canton-select-id" empty-option="{{ adm_labels.canton }}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                                <option selected value="">{{ adm_labels.canton }}</option>
                                                 {% for canton in cantons %}
                                                     {% if 'canton-filter' in query_strings_raw %}
                                                         {% if query_strings_raw|get_item:'canton-filter' == canton.id %}
@@ -291,6 +856,25 @@
                                                         {% endif %}
                                                     {% else %}
                                                         <option value="{{ canton.id }}">{{ canton.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="village-select-id">{{ adm_labels.village }}</label>
+                                            <select class="form-control" name="village-filter" id="village-select-id" empty-option="{{ adm_labels.village }}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
+                                                <option selected value="">{{ adm_labels.village }}</option>
+                                                {% for village in villages %}
+                                                    {% if 'village-filter' in query_strings_raw %}
+                                                        {% if query_strings_raw|get_item:'village-filter' == village.id %}
+                                                        <option value="{{ village.id }}" selected>{{ village.name }}</option>
+                                                        {% else %}
+                                                        <option value="{{ village.id }}">{{ village.name }}</option>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <option value="{{ village.id }}">{{ village.name }}</option>
                                                     {% endif %}
                                                 {% endfor %}
                                             </select>
@@ -503,24 +1087,24 @@
                                     <div class="custom-control custom-switch">
                                         <input checked class="custom-control-input column-switch"
                                                data-column="4" id="customSwitchVillage" type="checkbox">
-                                        <label class="custom-control-label" for="customSwitchVillage">{% translate 'Village' %}</label>
+                                        <label class="custom-control-label" for="customSwitchVillage">{{ adm_labels.village }}</label>
                                     </div>
                                     <div class="custom-control custom-switch">
                                         <input checked class="custom-control-input column-switch"
                                                data-column="5" id="customSwitchCommunity" type="checkbox">
-                                        <label class="custom-control-label" for="customSwitchCommunity">{% translate 'Commune' %}</label>
+                                        <label class="custom-control-label" for="customSwitchCommunity">{{ adm_labels.commune }}</label>
                                     </div>
                                     <div class="custom-control custom-switch">
                                         <input checked class="custom-control-input column-switch"
                                                data-column="6" id="customSwitchPrefecture" type="checkbox">
-                                        <label class="custom-control-label" for="customSwitchPrefecture">{% translate 'Prefecture' %}</label>
+                                        <label class="custom-control-label" for="customSwitchPrefecture">{{ adm_labels.prefecture }}</label>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="custom-control custom-switch">
                                         <input checked class="custom-control-input column-switch"
                                                data-column="7" id="customSwitchRegion" type="checkbox">
-                                        <label class="custom-control-label" for="customSwitchRegion">{% translate 'Region' %}</label>
+                                        <label class="custom-control-label" for="customSwitchRegion">{{ adm_labels.region }}</label>
                                     </div>
                                     <div class="custom-control custom-switch">
                                         <input checked class="custom-control-input column-switch"
@@ -547,116 +1131,158 @@
     <div class="col-12">
         <form action="" method="POST" id="investment-form" name="investments-form">
             <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <h6>{% translate 'Results' %}</h6>
-                    </div>
-                    <div class="row">
-                        <div class="{% if not user.is_moderator %}col-9{% else %}col-12{% endif %} mb-3">
-                            {% for key, value in query_strings.items %}
-                                <span class="filter-badge align-middle" title="{{ value }}" style="font-size: 10px; line-height: 20px; display: inline-flex; align-items: center;">
-                                    <span class="filter-badge-label">{{ key }} : {{ value|truncatechars:20 }}</span>
-                                </span>
-                            {% endfor %}
+                <div class="card-header results-header">
+                    <div class="results-top">
+                        <div class="results-title-wrap">
+                            <h6 class="results-title">{% translate 'Results' %}</h6>
+                            <span class="results-sub">{% translate 'Pick investments to assemble a funding package.' %}</span>
                         </div>
                         {% if not user.is_moderator %}
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label for="project-select-id">{% translate 'Project' %}</label>
-                                <select class="form-control" name="project" id="project-select-id" style="width: 100%;" required>
-                                    <option selected value="">{% translate 'project' %}</option>
-                                    {% for project in projects %}
-                                        {% if cart_project %}
-                                            {% if cart_project.id == project.id %}
-                                            <option value="{{ project.id }}" data-budget="{{ project.total_amount|intcomma }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
-                                            {% else %}
-                                            <option value="{{ project.id }}" data-budget="{{ project.total_amount|intcomma }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
-                                            {% endif %}
-                                        {% else %}
-                                            <option value="{{ project.id }}" data-budget="{{ project.total_amount|intcomma }}" {% if forloop.first %} selected {% endif %}>{{ project.name }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
+                        <div class="results-project-wrap">
+                            <label for="project-select-id" class="results-project-label">{% translate 'Project' %}</label>
+                            <select class="form-control results-project-select" name="project" id="project-select-id" required>
+                                <option selected value="">{% translate 'project' %}</option>
+                                {% for project in projects %}
+                                    <option value="{{ project.id }}" data-budget="{{ project.total_amount|intcomma }}" {% if forloop.first %}selected{% endif %}>{{ project.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="results-funds-meta">
+                                <span class="results-funds-label">{% translate 'Available' %}</span>
+                                <span class="results-funds-value">
+                                    <b class="project-total-funds-display">{% if cart_project %}{% for project in projects %}{% if cart_project.id == project.id %}{{ project.total_amount|intcomma }}{% endif %}{% endfor %}{% else %}{{ projects.0.total_amount|intcomma }}{% endif %}</b>
+                                    <span class="results-funds-currency">FCFA</span>
+                                </span>
                             </div>
-                            <p class="text-sm">{% translate 'Total funds available' %}:
-                                <b class="d-block project-total-funds-display">
-                                    {% if cart_project %}
-                                        {% for project in projects %}
-                                            {% if cart_project.id == project.id %}
-                                                {{ project.total_amount|intcomma }}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        {{ projects.0.total_amount|intcomma }}
-                                    {% endif %}
-                                </b>
-                            </p>
-                            {% if projects|length == 0 %}
-                                <div class="alert alert-danger" role="alert">
-                                    {% translate 'Your organization must have a project to submit investments' %}
-                                    </br>
-                                    <a href="{% url 'administrativelevels:project-create' %}" class="underline">{% translate 'Click to your first project' %}</a>
-                                </div>
-                            {% endif %}
-                            <input type="submit" class="btn btn-primary btn-sm pull-right" name="investments-submit" value="{% translate 'Add to Cart' %}" id="investments-submit">
+                        </div>
+                        <div class="results-action-wrap">
+                            <input type="submit" class="btn btn-primary results-submit" name="investments-submit" value="{% translate 'Add to Cart' %}" id="investments-submit">
                         </div>
                         {% endif %}
                     </div>
-                    <div class="row">
-                        <div class="col-3">
-                            <p class="text-sm">{% translate 'Total villages available' %}:
-                                <b class="d-block total-villages-display">0</b>
-                            </p>
-                        </div>
-                        <div class="col-3">
-                            <p class="text-sm">{% translate 'Total sub-projects available' %}:
-                                <b class="d-block total-subprojects-display">0</b>
-                            </p>
-                        </div>
-                        <div class="col-3">
-                            <p class="text-sm">{% translate 'Total funding required' %}:
-                                <b class="d-block total-funding-display">0 FCFA</b>
-                            </p>
-                        </div>
+
+                    {% if query_strings %}
+                    <div class="results-filters">
+                        {% for key, value in query_strings.items %}
+                            <span class="filter-badge align-middle" title="{{ value }}">
+                                <span class="filter-badge-label">{{ key }} : {{ value|truncatechars:20 }}</span>
+                            </span>
+                        {% endfor %}
                     </div>
-                    <div class="row">
-                        <div class="col-3">
-                            <p class="text-sm">{% translate '# Villages selected' %}: <span class="d-none loader"></span>
-                                <b class="d-block total-selected-villages-display">0</b>
-                            </p>
+                    {% endif %}
+
+                    {% if not user.is_moderator and projects|length == 0 %}
+                    <div class="alert alert-danger results-no-project" role="alert">
+                        {% translate 'Your organization must have a project to submit investments' %}
+                        <a href="{% url 'administrativelevels:project-create' %}" class="underline">{% translate 'Click to create your first project' %}</a>
+                    </div>
+                    {% endif %}
+
+                    <div class="results-stats">
+                        <div class="results-stat-card">
+                            <div class="results-stat-icon results-stat-icon--villages" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5"/><path d="M5 10v10h14V10"/></svg>
+                            </div>
+                            <div class="results-stat-body">
+                                <div class="results-stat-label">{% translate 'Villages' %}</div>
+                                <div class="results-stat-line">
+                                    <span class="results-stat-num total-selected-villages-display"><span class="skeleton skeleton-text" aria-label="{% translate 'Loading' %}"></span></span>
+                                    <span class="results-stat-sep">/</span>
+                                    <span class="results-stat-denom total-villages-display"><span class="skeleton skeleton-text" aria-label="{% translate 'Loading' %}"></span></span>
+                                </div>
+                                <div class="results-stat-caption">{% translate 'selected of available' %}</div>
+                            </div>
                         </div>
-                        <div class="col-3">
-                            <p class="text-sm">{% translate '# Sub-projects selected' %}: <span class="d-none loader"></span>
-                                <b class="d-block total-selected-subprojects-display">0</b>
-                            </p>
+
+                        <div class="results-stat-card">
+                            <div class="results-stat-icon results-stat-icon--subprojects" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                            </div>
+                            <div class="results-stat-body">
+                                <div class="results-stat-label">{% translate 'Sub-projects' %}</div>
+                                <div class="results-stat-line">
+                                    <span class="results-stat-num total-selected-subprojects-display"><span class="skeleton skeleton-text" aria-label="{% translate 'Loading' %}"></span></span>
+                                    <span class="results-stat-sep">/</span>
+                                    <span class="results-stat-denom total-subprojects-display"><span class="skeleton skeleton-text" aria-label="{% translate 'Loading' %}"></span></span>
+                                </div>
+                                <div class="results-stat-caption">{% translate 'selected of available' %}</div>
+                            </div>
                         </div>
-                        <div class="col-3">
-                            <p class="text-sm">{% translate 'Total funding selected' %}: <span class="d-none loader"></span>
-                                <b class="d-block total-selected-funding-display">0 FCFA</b>
-                            </p>
+
+                        <div class="results-stat-card">
+                            <div class="results-stat-icon results-stat-icon--funding" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
+                            <div class="results-stat-body">
+                                <div class="results-stat-label">{% translate 'Funding selected' %}</div>
+                                <div class="results-stat-line">
+                                    <span class="results-stat-num total-selected-funding-display"><span class="skeleton skeleton-text" style="width:90px" aria-label="{% translate 'Loading' %}"></span></span>
+                                    <span class="results-stat-currency">FCFA</span>
+                                </div>
+                                <div class="results-stat-caption">
+                                    {% translate 'of' %} <b class="total-funding-display"><span class="skeleton skeleton-text" style="width:90px" aria-label="{% translate 'Loading' %}"></span></b> {% translate 'required' %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     {% csrf_token %}
+                    <div class="alert alert-instructions alert-dismissible fade show" role="alert" id="investments-howto-alert" data-storage-key="inv_howto_dismissed_v1">
+                        <span class="alert-instructions-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        </span>
+                        <div class="alert-instructions-body">
+                            <div class="alert-instructions-title">{% translate 'How to use this table' %}</div>
+                            <ul class="alert-instructions-list">
+                                <li>{% translate 'Tick the box on the left of a row to add that investment to your cart. Use the header checkbox to select every result.' %}</li>
+                                <li>{% translate 'Click the indigo + button to expand a row and see any columns hidden on narrow screens.' %}</li>
+                                <li>{% translate 'Sort by any column by clicking its header; use “Show … registers” to change the page size.' %}</li>
+                                <li>{% translate 'Village, canton, commune and prefecture names are clickable — they open the corresponding profile in a new tab.' %}</li>
+                                <li>{% translate 'When you are happy with your selection, click the “Add to Cart” button above to fund the chosen investments.' %}</li>
+                            </ul>
+                        </div>
+                        <button type="button" class="close alert-instructions-close" data-dismiss="alert" aria-label="{% translate 'Close' %}">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     {% if investments.count == 0 %}
                         {% translate 'You have no investments' %}
                     {% else %}
-                        <table class="table rounded-table table-striped" style="width: 100%;">
+                        <div class="investments-table-stage">
+                            <div class="table-loading-overlay is-active" id="investments-table-overlay" role="status" aria-live="polite" aria-label="{% translate 'Loading investments…' %}">
+                                <span class="skeleton-status-pill">{% translate 'Loading investments' %}</span>
+                                <div class="skeleton-table-mock" aria-hidden="true">
+                                    {% for _ in "12345678" %}
+                                    <div class="skeleton-row">
+                                        <span class="skeleton-cell checkbox"></span>
+                                        <span class="skeleton-cell w-70"></span>
+                                        <span class="skeleton-cell w-50 compact"></span>
+                                        <span class="skeleton-cell w-90"></span>
+                                        <span class="skeleton-cell w-70"></span>
+                                        <span class="skeleton-cell w-50"></span>
+                                        <span class="skeleton-cell w-50"></span>
+                                        <span class="skeleton-cell w-50"></span>
+                                        <span class="skeleton-cell w-30"></span>
+                                        <span class="skeleton-cell w-50"></span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        <table class="table table-bordered table-striped" style="width: 100%;">
                             <thead>
-                                <th data-priority="1" class="align-middle border-top-left-corner"><input class="" id="checkbox-select-all" type="checkbox"></th>
-                                <th data-priority="2" class="align-middle rounded-0 border-0">{% translate 'Name' %}</th>
-                                <th data-priority="3" class="align-middle rounded-0 border-0">{% translate 'Source' %}</th>
-                                <th data-priority="4" class="align-middle rounded-0 border-0">{% translate 'Estimate cost' %}</th>
-                                <th data-priority="5" class="align-middle rounded-0 border-0">{% translate 'Village' %}</th>
-                                <th data-priority="6" class="align-middle rounded-0 border-0">{% translate 'Canton' %}</th>
-                                <th data-priority="7" class="align-middle rounded-0 border-0">{% translate 'Commune' %}</th>
-                                <th data-priority="8" class="align-middle rounded-0 border-0">{% translate 'Prefecture' %}</th>
-                                <th data-priority="9" class="align-middle rounded-0 border-0">{% translate 'Village priority' %}</th>
-                                <th data-priority="10" class="align-middle border-top-right-corner border-bottom-0">{% translate 'Population priority' %}</th>
+                                <th data-priority="1" class="align-middle"><input class="" id="checkbox-select-all" type="checkbox"></th>
+                                <th data-priority="2" class="align-middle">{% translate 'Name' %}</th>
+                                <th data-priority="3" class="align-middle">{% translate 'Source' %}</th>
+                                <th data-priority="4" class="align-middle">{% translate 'Estimate cost' %}</th>
+                                <th data-priority="5" class="align-middle">{{ adm_labels.village }}</th>
+                                <th data-priority="6" class="align-middle">{{ adm_labels.canton }}</th>
+                                <th data-priority="7" class="align-middle">{{ adm_labels.commune }}</th>
+                                <th data-priority="8" class="align-middle">{{ adm_labels.prefecture }}</th>
+                                <th data-priority="9" class="align-middle">{% translate 'Village priority' %}</th>
+                                <th data-priority="10" class="align-middle">{% translate 'Population priority' %}</th>
                             </thead>
                         <tbody>
-                        {% for investment in object_list %}
+                        {% for investments in object_list %}
                         <tr>
                             <td>
                                 <input class="project-table-check" id="checkbox-{{ investment.id }}" value="{{ investment.id }}" type="checkbox">
@@ -688,12 +1314,24 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="{% url 'administrativelevels:detail' investment.administrative_level.parent.id %}" target="_blank">
-                                    {{ investment.administrative_level.parent.name }}
+                                {% if investment.administrative_level.parent %}
+                                    <a href="{% url 'administrativelevels:canton_detail' investment.administrative_level.parent.id %}" target="_blank">
+                                        {{ investment.administrative_level.parent.name }}
+                                    </a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'administrativelevels:commune_detail' investment.administrative_level.parent.parent.id %}" target="_blank">
+                                    {{ investment.administrative_level.parent.parent.name }}
                                 </a>
                             </td>
-                            <td>{{ investment.administrative_level.parent.parent.name }}</td>
-                            <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
+                            <td>
+                                <a href="{% url 'administrativelevels:detail' investment.administrative_level.parent.parent.parent.id %}" target="_blank">
+                                    {{ investment.administrative_level.parent.parent.parent.name }}
+                                </a>
+                            </td>
                             <td>{{ investment.ranking }}</td>
                             <td>
                                 {% if investment.endorsed_by_youth %}
@@ -713,6 +1351,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                        </div>
                     {% endif %}
 
                     <input type="hidden" name="all_queryset" class="checkbox-select-all-monitor" value="false">
@@ -734,6 +1373,43 @@
     let investments_list = [];
     let table = $(".table").DataTable({{ datatable_config | safe }});
 
+    // Toggle the skeleton overlay whenever DataTables fetches or processes rows,
+    // and align it with the tbody so the column headers remain visible.
+    function alignInvestmentsOverlay() {
+        var $stage = $('.investments-table-stage');
+        var $overlay = $('#investments-table-overlay');
+        var $thead = $stage.find('thead').first();
+        if (!$stage.length || !$overlay.length || !$thead.length) return;
+        var stageTop = $stage.offset().top;
+        var theadBottom = $thead.offset().top + $thead.outerHeight();
+        var top = Math.max(0, theadBottom - stageTop);
+        $overlay.css('top', top + 'px');
+    }
+    alignInvestmentsOverlay();
+    $(window).on('resize', alignInvestmentsOverlay);
+
+    table.on('processing.dt', function (e, settings, processing) {
+        $('#investments-table-overlay').toggleClass('is-active', !!processing);
+        if (processing) { alignInvestmentsOverlay(); }
+    });
+    table.on('init.dt draw.dt', function () { alignInvestmentsOverlay(); });
+
+    // Persistent dismissal of the "How to use this table" alert
+    (function () {
+        var $alert = $('#investments-howto-alert');
+        if (!$alert.length) return;
+        var key = $alert.data('storage-key') || 'inv_howto_dismissed_v1';
+        try {
+            if (window.localStorage && localStorage.getItem(key) === '1') {
+                $alert.remove();
+                return;
+            }
+        } catch (e) { /* storage unavailable — show the alert as usual */ }
+        $alert.on('closed.bs.alert', function () {
+            try { localStorage.setItem(key, '1'); } catch (e) { /* noop */ }
+        });
+    })();
+
     let urlObj = new URL(table.ajax.url());
     let params = new URLSearchParams(urlObj.search);
     params.set('project_id', $('#project-select-id').val());
@@ -745,9 +1421,18 @@
         $('[data-toggle="popover"]').popover();
     });
 
+    const SKELETON_NUM = '<span class="skeleton skeleton-text" aria-label="Loading"></span>';
+    const SKELETON_MONEY = '<span class="skeleton skeleton-text" style="width:140px" aria-label="Loading"></span>';
+
+    function paint_skeletons(selectors_with_money) {
+        // selectors_with_money: array of [selector, isMoney]
+        selectors_with_money.forEach(function (pair) {
+            $(pair[0]).html(pair[1] ? SKELETON_MONEY : SKELETON_NUM);
+        });
+    }
+
     function sum_subprojects() {
         let base_url = window.location.href.split('?')[0]
-        let loader = $('.loader');
 
         $.ajax({
             type: "POST",
@@ -759,23 +1444,26 @@
                 csrfmiddlewaretoken: '{{ csrf_token }}',
             },
             beforeSend: function() {
-                loader.removeClass('d-none');
-                loader.addClass('d-inline-block');
+                paint_skeletons([
+                    ['.total-selected-villages-display', false],
+                    ['.total-selected-subprojects-display', false],
+                    ['.total-selected-funding-display', true],
+                ]);
             },
             success: function(response) {
                 $('.total-selected-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
                 $('.total-selected-villages-display').html(numeral(response.total_villages_display).format('0,0'));
                 $('.total-selected-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
-
-                loader.removeClass('d-inline-block');
-                loader.addClass('d-none');
+            },
+            error: function() {
+                $('.total-selected-villages-display, .total-selected-subprojects-display').text('—');
+                $('.total-selected-funding-display').text('—');
             }
         })
     }
 
     function init_total_values() {
         let base_url = window.location.href.split('?')[0]
-        let loader = $('.loader');
 
         $.ajax({
             type: "POST",
@@ -787,16 +1475,20 @@
                 csrfmiddlewaretoken: '{{ csrf_token }}',
             },
             beforeSend: function() {
-                loader.removeClass('d-none');
-                loader.addClass('d-inline-block');
+                paint_skeletons([
+                    ['.total-villages-display', false],
+                    ['.total-subprojects-display', false],
+                    ['.total-funding-display', true],
+                ]);
             },
             success: function(response) {
                 $('.total-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
                 $('.total-villages-display').html(numeral(response.total_villages_display).format('0,0'));
                 $('.total-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
-
-                loader.removeClass('d-inline-block');
-                loader.addClass('d-none');
+            },
+            error: function() {
+                $('.total-villages-display, .total-subprojects-display').text('—');
+                $('.total-funding-display').text('—');
             }
         })
     }

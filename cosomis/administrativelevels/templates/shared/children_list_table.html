@@ -1,0 +1,30 @@
+{% load i18n humanize custom_tags %}
+{% if children_list %}
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="align-middle">{% translate 'Name' %}</th>
+                <th class="align-middle">{% translate 'Type' %}</th>
+                <th class="align-middle text-right">{% translate 'Villages' %}</th>
+                <th class="align-middle text-right">{% translate 'Population' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for child in children_list %}
+                <tr>
+                    <td>
+                        {% adm_detail_url child as child_url %}
+                        <a href="{{ child_url }}">{{ child.name }}</a>
+                    </td>
+                    <td>{{ child.type|title }}</td>
+                    <td class="text-right">{{ child.computed_village_count|intcomma }}</td>
+                    <td class="text-right">{{ child.computed_total_population|intcomma }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p class="text-muted mb-0">{% translate "No sub-levels under this administrative level." %}</p>
+{% endif %}
