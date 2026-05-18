@@ -120,31 +120,49 @@ class IndexListView(
 
     def get_context_data(self, **kwargs):
         adm_queryset = AdministrativeLevel.objects.all()
-        kwargs["regions"] = adm_queryset.filter(type=AdministrativeLevel.REGION)
+        regions_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.REGION)
+        )
+        kwargs["regions"] = regions_qs
 
-        kwargs["prefectures"] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
-        if "region-filter" in self.request.GET:
-            kwargs["prefectures"] = kwargs["prefectures"].filter(
-                parent__id=self.request.GET["region-filter"]
-            )
+        # When the dataset has a single root (Benin = one "country" row), hide
+        # the top-level select and treat that root as implicitly selected so
+        # the prefecture dropdown starts pre-loaded.
+        single_region = regions_qs.first() if regions_qs.count() == 1 else None
+        kwargs["single_region"] = single_region
+        kwargs["adm_labels"] = AdministrativeLevel.get_filter_labels()
 
-        kwargs["communes"] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
+        region_filter_id = self.request.GET.get("region-filter") or (
+            str(single_region.id) if single_region else None
+        )
+
+        prefectures_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
+        )
+        if region_filter_id:
+            prefectures_qs = prefectures_qs.filter(parent__id=region_filter_id)
+        kwargs["prefectures"] = prefectures_qs
+
+        communes_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.COMMUNE)
+        )
         if "prefecture-filter" in self.request.GET:
-            kwargs["communes"] = kwargs["communes"].filter(
-                parent__id=self.request.GET["prefecture-filter"]
-            )
+            communes_qs = communes_qs.filter(parent__id=self.request.GET["prefecture-filter"])
+        kwargs["communes"] = communes_qs
 
-        kwargs["cantons"] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
+        cantons_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.CANTON)
+        )
         if "commune-filter" in self.request.GET:
-            kwargs["cantons"] = kwargs["cantons"].filter(
-                parent__id=self.request.GET["commune-filter"]
-            )
+            cantons_qs = cantons_qs.filter(parent__id=self.request.GET["commune-filter"])
+        kwargs["cantons"] = cantons_qs
 
-        kwargs["villages"] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
+        villages_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+        )
         if "cantons-filter" in self.request.GET:
-            kwargs["villages"] = kwargs["villages"].filter(
-                parent__id=self.request.GET["cantons-filter"]
-            )
+            villages_qs = villages_qs.filter(parent__id=self.request.GET["cantons-filter"])
+        kwargs["villages"] = villages_qs
 
         kwargs["categories"] = Category.objects.all()
         if "category-filter" in self.request.GET:

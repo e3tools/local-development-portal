@@ -17,6 +17,8 @@ urlpatterns = [
          name='attachment_download'),
     path('detail/<int:adm_id>/attachments/download-zip/', views.attachment_download_zip,
          name='attachment_download_zip'),
+    path('attachments/<int:pk>/download/', views.attachment_download_by_id,
+         name='attachment_download_by_id'),
 
     path('village/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='village_detail'),
     path('canton/<int:pk>/', views.CantonDetailView.as_view(), name='canton_detail'),

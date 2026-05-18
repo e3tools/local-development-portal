@@ -1,0 +1,69 @@
+{% load i18n humanize %}
+<div class="drilldown-header">
+    <div>
+        <h3 class="panel-title">{{ stage_label }}</h3>
+        <p class="panel-subtitle">
+            {% blocktranslate count counter=total trimmed %}
+                {{ counter }} village currently at this stage
+            {% plural %}
+                {{ counter|intcomma }} villages currently at this stage
+            {% endblocktranslate %}
+        </p>
+    </div>
+</div>
+
+{% if page_obj.object_list %}
+    <div class="village-grid">
+        {% for village in page_obj.object_list %}
+            <a class="village-chip"
+               href="{% url 'administrativelevels:village_detail' village.id %}"
+               title="{{ village.name }}{% if village.parent %} — {{ village.parent.name }}{% endif %}">
+                <span class="village-chip-name">{{ village.name }}</span>
+                {% if village.parent %}<span class="village-chip-parent">{{ village.parent.name }}</span>{% endif %}
+            </a>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+        <div class="drilldown-pagination">
+            {% if page_obj.has_previous %}
+                <button type="button"
+                        hx-get="{% url 'cdd_funnel:stage_drilldown' stage_key %}?page={{ page_obj.previous_page_number }}"
+                        hx-target="#drilldown" hx-swap="innerHTML"
+                        hx-indicator="#drilldown-indicator"
+                        class="drilldown-page-btn">
+                    &laquo; {% translate 'Previous' %}
+                </button>
+            {% endif %}
+            <span class="drilldown-page-info">
+                {% blocktranslate with current=page_obj.number total=page_obj.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktranslate %}
+            </span>
+            {% if page_obj.has_next %}
+                <button type="button"
+                        hx-get="{% url 'cdd_funnel:stage_drilldown' stage_key %}?page={{ page_obj.next_page_number }}"
+                        hx-target="#drilldown" hx-swap="innerHTML"
+                        hx-indicator="#drilldown-indicator"
+                        class="drilldown-page-btn">
+                    {% translate 'Next' %} &raquo;
+                </button>
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="drilldown-empty">
+        <p>{% translate 'No villages at this stage yet.' %}</p>
+    </div>
+{% endif %}
+
+<style>
+    .drilldown-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .village-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .village-chip { display: flex; flex-direction: column; padding: 12px 14px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; text-decoration: none; color: #111827; transition: all .12s ease; min-height: 56px; }
+    .village-chip:hover { border-color: #4f46e5; background: #eef2ff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79,70,229,0.08); text-decoration: none; color: #111827; }
+    .village-chip-name { font-size: 13px; font-weight: 600; line-height: 1.2; }
+    .village-chip-parent { font-size: 11px; color: #6b7280; margin-top: 3px; }
+    .drilldown-pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
+    .drilldown-page-btn { background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: #374151; cursor: pointer; transition: all .12s; }
+    .drilldown-page-btn:hover { border-color: #4f46e5; color: #4f46e5; background: #eef2ff; }
+    .drilldown-page-info { font-size: 12px; color: #6b7280; }
+</style>

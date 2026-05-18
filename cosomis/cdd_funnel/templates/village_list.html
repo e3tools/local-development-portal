@@ -26,18 +26,22 @@
 							</tr>
 							</thead>
 							<tbody>
-							{% with villages as villages %}
-								{% for village in villages %}
-									<tr>
-										<td class="text-left">
-											<a href="{% url 'administrativelevels:village_detail' village.id %}">
-												{{ village.name }}
-											</a>
-										</td>
-										<td>{{ village.uncompleted_tasks }}</td>
-									</tr>
-								{% endfor %}
-							{% endwith %}
+							{% for village in villages %}
+								<tr>
+									<td class="text-left">
+										<a href="{% url 'administrativelevels:village_detail' village.id %}">
+											{{ village.name }}
+										</a>
+									</td>
+									<td>{{ village.uncompleted_tasks }}</td>
+								</tr>
+							{% empty %}
+								<tr>
+									<td colspan="2" class="text-center text-muted py-3">
+										{% translate 'No villages with uncompleted tasks.' %}
+									</td>
+								</tr>
+							{% endfor %}
 							</tbody>
 						</table>
 						<div class="pagination">

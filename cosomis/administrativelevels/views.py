@@ -62,19 +62,16 @@ class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin,
         search = self.request.GET.get("search", None)
         page_number = self.request.GET.get("page", None)
         _type = self.request.GET.get("type", "Village")
+        # `type` is stored in different casings across datasets (e.g. "Village"
+        # in the Togo seed vs "village" in the Benin dump), so always compare
+        # case-insensitively. Ordered by name so pagination is deterministic.
+        base = AdministrativeLevel.objects.filter(type__iexact=_type).order_by("name")
         if search:
             if search == "All":
-                ads = AdministrativeLevel.objects.filter(type=_type)
-                return Paginator(ads, ads.count()).get_page(page_number)
+                return Paginator(base, base.count() or 1).get_page(page_number)
             search = search.upper()
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type, name__icontains=search),
-                100,
-            ).get_page(page_number)
-        else:
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type), 100
-            ).get_page(page_number)
+            return Paginator(base.filter(name__icontains=search), 100).get_page(page_number)
+        return Paginator(base, 100).get_page(page_number)
 
         # return super().get_queryset()
 
@@ -144,26 +141,42 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredApproveRequiredM
         search = self.request.GET.get("search", None)
         page_number = self.request.GET.get("page", None)
         _type = self.request.GET.get("type", "Village")
+        # `type` is stored in different casings across datasets (e.g. "Village"
+        # in the Togo seed vs "village" in the Benin dump), so always compare
+        # case-insensitively. Ordered by name so pagination is deterministic.
+        base = AdministrativeLevel.objects.filter(type__iexact=_type).order_by("name")
         if search:
             if search == "All":
-                ads = AdministrativeLevel.objects.filter(type=_type)
-                return Paginator(ads, ads.count()).get_page(page_number)
+                return Paginator(base, base.count() or 1).get_page(page_number)
             search = search.upper()
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type, name__icontains=search),
-                100,
-            ).get_page(page_number)
-        else:
-            return Paginator(
-                AdministrativeLevel.objects.filter(type=_type), 100
-            ).get_page(page_number)
+            return Paginator(base.filter(name__icontains=search), 100).get_page(page_number)
+        return Paginator(base, 100).get_page(page_number)
 
     def get_context_data(self, **kwargs):
         ctx = super(AdministrativeLevelSearchListView, self).get_context_data(**kwargs)
-        ctx["form"] = VillageSearchForm()
+        # Pull the actual level names from the data so the form labels, select2
+        # placeholders, and the "Choice the X in Y" / "See X" copy can match
+        # the dataset's vocabulary (Country/Département/... for Benin,
+        # Region/Prefecture/... for Togo, etc.).
+        hierarchy_labels = AdministrativeLevel.get_hierarchy_labels()
+        # When the dataset has a single root (e.g. Benin = one "country" row),
+        # hide the top-level dropdown and pre-populate the next level.
+        roots = AdministrativeLevel.objects.filter(parent__isnull=True)
+        single_region = roots.first() if roots.count() == 1 else None
+        ctx["single_region"] = single_region
+        ctx["form"] = VillageSearchForm(
+            hierarchy_labels=hierarchy_labels,
+            single_region=single_region,
+            initial={"region": single_region} if single_region else None,
+        )
         ctx["search"] = self.request.GET.get("search", None)
         ctx["type"] = self.request.GET.get("type", "Village")
         ctx["current_language"] = translation.get_language()
+        ctx["hierarchy_labels"] = hierarchy_labels
+        ctx["leaf_label"] = hierarchy_labels[-1] if hierarchy_labels else _("Village")
+        ctx["parent_of_leaf_label"] = (
+            hierarchy_labels[-2] if len(hierarchy_labels) >= 2 else _("Canton")
+        )
         return ctx
 
 
@@ -235,22 +248,41 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
         }
 
         images_number = 5
+        # Walk the subtree iteratively (one query per tree level) so the
+        # carousel on region/prefecture pages can surface images attached to
+        # descendant villages, not just the level itself. is_village() is the
+        # fast path — no descendants to walk.
+        level_ids = [admin_level.id]
+        if not admin_level.is_village():
+            frontier = [admin_level.id]
+            while frontier:
+                next_ids = list(
+                    AdministrativeLevel.objects.filter(parent_id__in=frontier)
+                    .values_list('id', flat=True)
+                )
+                if not next_ids:
+                    break
+                level_ids.extend(next_ids)
+                frontier = next_ids
+
+        subtree_q = (
+            Q(adm_id__in=level_ids) |
+            Q(task__activity__phase__village_id__in=level_ids)
+        )
+
         completed = Attachment.objects.filter(
-            Q(adm=admin_level) |
-            Q(task__activity__phase__village=admin_level),
+            subtree_q,
             process_moment=Attachment.COMPLETED_INFRASTRUCTURE
         ).filter(images_extensions_query)[:3]
         in_progress = []
         if not completed:
             in_progress = Attachment.objects.filter(
-                Q(adm=admin_level) |
-                Q(task__activity__phase__village=admin_level),
+                subtree_q,
                 process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS
             ).filter(images_extensions_query)[:1]
 
         community = Attachment.objects.filter(
-            Q(adm=admin_level) |
-            Q(task__activity__phase__village=admin_level),
+            subtree_q,
             process_moment=Attachment.COMMUNITY_PROCESS
         ).filter(images_extensions_query)[:(images_number - len(completed) - len(in_progress))]
 
@@ -276,6 +308,97 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
                 output_field=IntegerField(),
             )
         ).order_by('status_order', 'ranking')
+
+        # Non-village levels (region/prefecture/etc.) have no direct
+        # population, planning, or investment rows of their own — every
+        # data point lives on descendant villages. Aggregate from the
+        # subtree we already walked above for the carousel.
+        if not admin_level.is_village():
+            descendant_villages = AdministrativeLevel.objects.filter(
+                id__in=level_ids
+            ).filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+            )
+            descendant_village_ids = list(
+                descendant_villages.values_list('id', flat=True)
+            )
+            village_count = len(descendant_village_ids)
+
+            pop_agg = descendant_villages.aggregate(
+                total=Coalesce(Sum('total_population'), 0),
+                men=Coalesce(Sum('population_men'), 0),
+                women=Coalesce(Sum('population_women'), 0),
+                young=Coalesce(Sum('population_young'), 0),
+                elder=Coalesce(Sum('population_elder'), 0),
+                handicap=Coalesce(Sum('population_handicap'), 0),
+                agriculturist=Coalesce(Sum('population_agriculturist'), 0),
+                pastoralist=Coalesce(Sum('population_pastoralist'), 0),
+                minorities=Coalesce(Sum('population_minorities'), 0),
+            )
+            context["population"] = {
+                **pop_agg,
+                "village_count": village_count,
+            }
+
+            if descendant_village_ids:
+                agg_tasks_qs = Task.objects.filter(
+                    activity__phase__village_id__in=descendant_village_ids
+                )
+                total_tasks = agg_tasks_qs.count()
+                done_tasks = agg_tasks_qs.filter(status=Task.COMPLETED).count()
+                villages_with_priorities = descendant_villages.exclude(
+                    identified_priority__isnull=True
+                ).count()
+                context["planning_status"] = {
+                    "current_phase": None,
+                    "current_activity": None,
+                    "current_task": None,
+                    "completed": round(float(done_tasks) * 100 / float(total_tasks), 2) if total_tasks else '-',
+                    "priorities_identified": f"{villages_with_priorities}/{village_count}" if village_count else "-",
+                    "village_development_plan_date": "",
+                    "facilitator": "",
+                }
+
+            # Attach aggregated village_count + total_population to each direct
+            # child by bucketing every descendant village under the child whose
+            # subtree it sits in. A single parent map over the subtree avoids
+            # per-child queries.
+            parent_map = dict(
+                AdministrativeLevel.objects.filter(id__in=level_ids)
+                .values_list('id', 'parent_id')
+            )
+            children = list(admin_level.children.all().order_by('name'))
+            direct_child_ids = {c.id for c in children}
+            child_stats = {
+                cid: {"village_count": 0, "total_population": 0}
+                for cid in direct_child_ids
+            }
+            for v in descendant_villages.values('parent_id', 'total_population'):
+                cur = v['parent_id']
+                while cur is not None and cur not in direct_child_ids:
+                    cur = parent_map.get(cur)
+                if cur is not None:
+                    child_stats[cur]["village_count"] += 1
+                    child_stats[cur]["total_population"] += v['total_population'] or 0
+            for child in children:
+                s = child_stats.get(child.id, {"village_count": 0, "total_population": 0})
+                child.computed_village_count = s["village_count"]
+                child.computed_total_population = s["total_population"]
+            context["children_list"] = children
+
+            context["investments"] = Investment.objects.filter(
+                administrative_level_id__in=descendant_village_ids
+            ).select_related('administrative_level', 'funded_by').annotate(
+                status_order=Case(
+                    When(project_status=Investment.NOT_FUNDED, then=0),
+                    When(project_status=Investment.PAUSED, then=1),
+                    When(project_status=Investment.FUNDED, then=2),
+                    When(project_status=Investment.IN_PROGRESS, then=3),
+                    When(project_status=Investment.COMPLETED, then=4),
+                    output_field=IntegerField(),
+                )
+            ).order_by('status_order', 'ranking')
+
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
         context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())
@@ -733,11 +856,13 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, CommunePri
         # For Commune, include images from child cantons and grandchild villages
         child_cantons = AdministrativeLevel.objects.filter(
             parent=admin_level,
-            type=AdministrativeLevel.CANTON
+        ).filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.CANTON)
         )
         descendant_villages = AdministrativeLevel.objects.filter(
             parent__in=child_cantons,
-            type=AdministrativeLevel.VILLAGE
+        ).filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
         )
         all_descendants = AdministrativeLevel.objects.filter(
             Q(id=admin_level.id) |
@@ -1037,7 +1162,8 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, CantonPrior
         # Keep existing villages queryset for the Villages tab
         context["villages"] = AdministrativeLevel.objects.filter(
             parent=canton,
-            type=AdministrativeLevel.VILLAGE
+        ).filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
         ).annotate(
             total_estimated_cost=Coalesce(Sum('investments__estimated_cost'), 0),
             total_founded=Coalesce(
@@ -1051,10 +1177,30 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, CantonPrior
         )
 
         context.update(self._build_priorities_context(canton))
+        context["investments"] = self._get_queryset(
+            Investment.objects.filter(
+                project_status=Investment.NOT_FUNDED,
+                administrative_level__parent=canton,
+            ).filter(
+                AdministrativeLevel.type_filter_q(
+                    AdministrativeLevel.VILLAGE,
+                    field="administrative_level__type",
+                ),
+            ).only(
+                "id", "ranking", "title", "description",
+                "endorsed_by_youth", "endorsed_by_women",
+                "endorsed_by_pastoralist", "endorsed_by_agriculturist",
+                "estimated_cost", "project_status", "sector", "administrative_level",
+            )
+        )
 
         context["subprojects"] = Investment.objects.filter(
             administrative_level__parent=canton,
-            administrative_level__type=AdministrativeLevel.VILLAGE,
+        ).filter(
+            AdministrativeLevel.type_filter_q(
+                AdministrativeLevel.VILLAGE,
+                field="administrative_level__type",
+            ),
         ).exclude(project_status=Investment.NOT_FUNDED).only(
             "id", "ranking", "title", "description",
             "endorsed_by_youth", "endorsed_by_women",
@@ -1450,10 +1596,29 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
     def get_context_data(self, **kwargs):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
 
-        context["regions"] = AdministrativeLevel.objects.filter(
-            type=AdministrativeLevel.REGION
+        regions_qs = AdministrativeLevel.objects.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.REGION)
+        )
+        context["regions"] = regions_qs
+        # When the dataset has a single root (e.g. Benin = one "country" row),
+        # the top-level dropdown is just decoration. Auto-select it server-side
+        # and pre-load its prefectures so the modal starts at the next level.
+        single_region = regions_qs.first() if regions_qs.count() == 1 else None
+        context["single_region"] = single_region
+        context["prefectures"] = (
+            AdministrativeLevel.objects.filter(parent=single_region).filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
+            )
+            if single_region
+            else AdministrativeLevel.objects.none()
         )
         context['phases'] = Phase.objects.all().values_list('name', flat=True).distinct()
+
+        # Use the dataset's own level names so the modal/chip labels read
+        # "Country / Département / ... / Village" on Benin instead of the
+        # Togo-flavoured fallback.
+        adm_labels = AdministrativeLevel.get_filter_labels()
+        context["adm_labels"] = adm_labels
 
         query_params: dict = self.request.GET
 
@@ -1463,6 +1628,9 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         babylong_query_params_list = [key + '=' + value for key, value in context["query_strings_raw"].items()]
         if babylong_query_params_list:
             context["babylong_query_params"] = '&' + '&'.join(babylong_query_params_list)
+
+        context["type_links"] = self._build_type_links(query_params)
+        context["active_filter_chips"] = self._build_active_chips(query_params, adm_labels, single_region)
 
         form = AttachmentFilterForm()
 
@@ -1535,6 +1703,90 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
                 resp = _build_filter_hierarchy(idx, self.request.GET[key_filter])
                 return json.dumps(resp)
 
+    @staticmethod
+    def _querystring_without(query_params, *keys_to_drop):
+        clean = query_params.copy()
+        for key in ("page",) + tuple(keys_to_drop):
+            clean.pop(key, None)
+        for key in list(clean.keys()):
+            if clean.get(key) in ("", None):
+                clean.pop(key, None)
+        encoded = clean.urlencode()
+        return "?" + encoded if encoded else "?"
+
+    def _build_type_links(self, query_params):
+        active = query_params.get("type") or ""
+        if active not in (Attachment.PHOTO, Attachment.DOCUMENT):
+            active = "all"
+
+        base = self._querystring_without(query_params, "type")
+        separator = "" if base == "?" else "&"
+        return {
+            "all": base,
+            Attachment.PHOTO: f"{base}{separator}type={Attachment.PHOTO}",
+            Attachment.DOCUMENT: f"{base}{separator}type={Attachment.DOCUMENT}",
+            "active": active,
+        }
+
+    def _build_active_chips(self, query_params, adm_label_keys, single_region=None):
+        chips = []
+        single_region_id = str(single_region.id) if single_region else None
+
+        attachment_type = query_params.get("type")
+        if attachment_type in (Attachment.PHOTO, Attachment.DOCUMENT):
+            label_map = {Attachment.PHOTO: _("Photo"), Attachment.DOCUMENT: _("Document")}
+            chips.append({
+                "key": "type",
+                "label": "{}: {}".format(_("Type"), label_map[attachment_type]),
+                "remove_url": self._querystring_without(query_params, "type"),
+            })
+
+        for key, prefix in adm_label_keys.items():
+            value = query_params.get(key)
+            if not value:
+                continue
+            if key == "region" and single_region_id and value == single_region_id:
+                continue
+            try:
+                adm_lvl = AdministrativeLevel.objects.get(id=int(value))
+                name = adm_lvl.name
+            except (AdministrativeLevel.DoesNotExist, ValueError, TypeError):
+                continue
+            chips.append({
+                "key": key,
+                "label": "{}: {}".format(prefix, name),
+                "remove_url": self._querystring_without(query_params, key),
+            })
+
+        phase_name = query_params.get("phase")
+        if phase_name:
+            chips.append({
+                "key": "phase",
+                "label": "{}: {}".format(_("Phase"), phase_name),
+                "remove_url": self._querystring_without(query_params, "phase"),
+            })
+
+        for key, model, prefix in (
+            ("activity", Activity, _("Activity")),
+            ("task", Task, _("Task")),
+            ("tasks", Task, _("Task")),
+        ):
+            value = query_params.get(key)
+            if not value:
+                continue
+            try:
+                instance = model.objects.get(id=int(value))
+                name = instance.name
+            except (model.DoesNotExist, ValueError, TypeError):
+                continue
+            chips.append({
+                "key": key,
+                "label": "{}: {}".format(prefix, name),
+                "remove_url": self._querystring_without(query_params, key),
+            })
+
+        return chips
+
     def get_queryset(self):
         queryset = super().get_queryset()
         empty_list = ["", None]
@@ -1543,6 +1795,10 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         for filter_hierarchy in self.filter_hierarchy:
             if filter_hierarchy in request_get and request_get[filter_hierarchy] in [None, ""]:
                 request_get.pop(filter_hierarchy)
+
+        attachment_type = request_get.get("type")
+        if attachment_type in (Attachment.PHOTO, Attachment.DOCUMENT):
+            queryset = queryset.filter(type=attachment_type)
 
         if "tasks" in request_get and request_get["tasks"] not in empty_list:
             queryset = queryset.filter(
@@ -1598,6 +1854,31 @@ def attachment_download(self, adm_id: int, url: str):
 
     else:
         return HttpResponse("Failed to download the file.")
+
+
+@login_required
+def attachment_download_by_id(request, pk: int):
+    attachment = Attachment.objects.get(pk=pk)
+    url = attachment.url.split("?")[0]
+    response = requests.get(url)
+    if response.status_code != 200:
+        return HttpResponse("Failed to download the file.", status=502)
+
+    filename = url.split("/")[-1]
+    content_disposition = response.headers.get("content-disposition")
+    if content_disposition is not None:
+        try:
+            fname = re.findall('filename="(.+)"', content_disposition)
+            if len(fname) != 0:
+                filename = fname[0]
+        except:
+            pass
+
+    out = HttpResponse(
+        response.content, content_type=response.headers.get("content-type")
+    )
+    out["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return out
 
 
 @login_required

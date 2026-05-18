@@ -1,79 +1,180 @@
 {% extends 'layouts/base.html' %}
 {% load static i18n custom_tags %}
 
+{% block extracss %}
+    {{ block.super }}
+    <style>
+        /* --- Summary card styling --- */
+        .adm-summary-wrapper {
+            position: sticky;
+            top: 80px;
+        }
+        .adm-summary {
+            background: linear-gradient(135deg, #ffffff 0%, #f7f9fc 100%);
+            border: 1px solid #e3e6f0;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.08);
+            animation: adm-summary-in .25s ease;
+        }
+        @keyframes adm-summary-in {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .adm-summary--empty {
+            text-align: center;
+            padding: 56px 24px;
+            border: 2px dashed #d6dbe4;
+            background: #fafbfd;
+            color: #8a93a3;
+        }
+        .adm-summary--empty .adm-summary__icon {
+            font-size: 42px;
+            color: #c4ccd9;
+            margin-bottom: 12px;
+        }
+        .adm-summary--loading {
+            text-align: center;
+            padding: 56px 24px;
+            color: #6c757d;
+        }
+        .adm-summary--loading .spinner {
+            width: 36px;
+            height: 36px;
+            border: 4px solid #e3e3e3;
+            border-top-color: #3498db;
+            border-radius: 50%;
+            animation: adm-rot .8s linear infinite;
+            margin: 0 auto 14px;
+        }
+        @keyframes adm-rot {
+            to { transform: rotate(360deg); }
+        }
+
+        .adm-summary__path {
+            font-size: 12px;
+            color: #8a93a3;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .adm-summary__path i { font-size: 8px; margin: 0 4px; opacity: .6; }
+
+        .adm-summary__type {
+            display: inline-block;
+            background: #3498db;
+            color: #fff;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+        }
+        .adm-summary__name {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 10px 0 20px;
+            color: #2c3e50;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+        .adm-summary__stats {
+            margin: 0 0 20px;
+            padding: 0;
+        }
+        .adm-summary__stats > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eef0f4;
+        }
+        .adm-summary__stats > div:last-child { border-bottom: none; }
+        .adm-summary__stats dt {
+            color: #6c757d;
+            font-weight: 500;
+            font-size: 13px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .adm-summary__stats dt i {
+            width: 18px;
+            color: #3498db;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+        .adm-summary__stats dd {
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            font-size: 14px;
+        }
+        .adm-summary__cta {
+            font-weight: 600;
+            letter-spacing: .3px;
+        }
+
+        /* Compact form rows so the left column stays balanced with the card */
+        .adl-filter .form-group { margin-bottom: 0.75rem; }
+    </style>
+{% endblock %}
+
 {% block content %}
     <div class="row">
-        <div class="col-12">
+        <!-- Left column: cascading filters + village list -->
+        <div class="col-md-7">
             <div class="card">
                 <div class="card-body">
-                    <div class="col-3 pull-right" style="display: inline-block;">
-                        <form method="get" class="d-flex">
-
-                            <div class="input-group input-group-sm">
-                            	<input type="hidden" name="type" value="{{ type }}">
-                            	<input class="form-control" name="search"
-                            	placeholder="{% translate 'Search a level' %}...">
-								<span class="input-group-append">
-									<button type="button" class="btn btn-default btn-flat">
-										<i class="fas fa-search"></i>
-									</button>
-								</span>
-							</div>
-
-                        </form>
-                    </div>
-                    <div class="col-9 justify-content-left">
-                    <div class="row">
-                        <div class="col-12 adl-filter">
-                            {% for field in form %}
-                            <div class="form-group row">
-                                <label class="col-3 col-form-label">{{ field.label }}</label>
-                                <div class="col-6">
-                                    {{ field }}
-                                </div>
-                                <div class="col-3">
-                                 <a id="check_{{ field.name }}" href="" class="btn btn-primary" style="display: none;">{% translate 'Check' %}</a>
-                                </div>
-                                {% comment%}
-                                <div class="col-3" >
-                                    <span class="_mobile"><i class="fa fa-eye"></i></span>
-                                    <a id="profil">{{field.label}}</a>
-                                </div>
-                                {% endcomment %}
-                                {% if field.errors %}
-                                <div class="alert alert-danger alert-sm form_alert">{{ field.errors }}</div>
-                                {% endif %}
-                                <div class="clearfix"></div>
-                            </div>
-                            {% endfor %}
+                    <form method="get" class="d-flex mb-3">
+                        <div class="input-group input-group-sm">
+                            <input type="hidden" name="type" value="{{ type }}">
+                            <input class="form-control" name="search"
+                                value="{{ search|default_if_none:'' }}"
+                                placeholder="{% translate 'Search a level' %}...">
+                            <span class="input-group-append">
+                                <button type="submit" class="btn btn-default btn-flat">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </span>
                         </div>
+                    </form>
 
+                    <div class="adl-filter">
+                        {% for field in form %}
+                            <div class="form-group row"{% if single_region and field.name == 'region' %} style="display: none;"{% endif %}>
+                                <label class="col-4 col-form-label">{{ field.label }}</label>
+                                <div class="col-8">{{ field }}</div>
+                                <a id="check_{{ field.name }}" href="" style="display: none;"></a>
+                                {% if field.errors %}
+                                    <div class="alert alert-danger alert-sm form_alert">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                     </div>
-                    </div>
 
-                     <strong id="villages_title">{% translate 'Choice the village in canton' %} : </strong><br>
-                    <div id="search_results">
-
-                    </div>
-                    <a
-                        class="btn btn-primary pull right" style="display: none;"
-                        type="button" id="seeVillage"
-                        href="#"
-
-                    >
-                        {% translate 'See village' %}
-                    </a>
-
+                    <strong id="villages_title" class="d-block mt-3">
+                        {% blocktranslate with leaf=leaf_label parent=parent_of_leaf_label %}Choice the {{ leaf }} in {{ parent }}{% endblocktranslate %} :
+                    </strong>
+                    <div id="search_results" class="mt-2"></div>
+                    <a id="seeVillage" href="#" style="display: none;"></a>
                 </div>
-                <div>
+            </div>
+        </div>
 
-
+        <!-- Right column: live summary card -->
+        <div class="col-md-5">
+            <div class="adm-summary-wrapper">
+                <div id="adm-summary-card">
+                    <div class="adm-summary adm-summary--empty">
+                        <div class="adm-summary__icon"><i class="fas fa-map-marked-alt"></i></div>
+                        <p class="mb-0">{% translate 'Pick a level on the left to see a summary here.' %}</p>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
-    {% endblock %}
+{% endblock %}
 
     {% block javascript %}
     {{ block.super }}
@@ -81,6 +182,36 @@
     <script type="text/javascript">
 
         var url_village= "";
+
+        // --- Summary card helpers ------------------------------------------------
+        const SUMMARY_URL_TPL = "{% url 'administrativelevels:utils:administrative_level_summary' 0 %}";
+        const SUMMARY_EMPTY_HTML = `
+            <div class="adm-summary adm-summary--empty">
+                <div class="adm-summary__icon"><i class="fas fa-map-marked-alt"></i></div>
+                <p class="mb-0">{% translate 'Pick a level on the left to see a summary here.' %}</p>
+            </div>`;
+        const SUMMARY_LOADING_HTML = `
+            <div class="adm-summary adm-summary--loading">
+                <div class="spinner"></div>
+                <div>{% translate 'Loading summary…' %}</div>
+            </div>`;
+
+        let summaryRequest = null;
+        function loadAdmSummary(id) {
+            const $card = $('#adm-summary-card');
+            if (!id) { $card.html(SUMMARY_EMPTY_HTML); return; }
+            if (summaryRequest) { summaryRequest.abort(); }
+            $card.html(SUMMARY_LOADING_HTML);
+            summaryRequest = $.ajax({
+                type: 'GET',
+                url: SUMMARY_URL_TPL.replace(/0\/$/, id + '/'),
+                success: function (html) { $card.html(html); },
+                error: function (xhr) {
+                    if (xhr.statusText === 'abort') return;
+                    $card.html(`<div class="adm-summary adm-summary--empty"><p class="mb-0 text-danger">{% translate 'Could not load summary.' %}</p></div>`);
+                }
+            });
+        }
 
         function set_datas(element, data) {
 
@@ -104,7 +235,7 @@
           // Parcourir les identifiants et griser les champs sauf id_region
           administrative_level_ids.forEach(function(id) {
             var element = document.getElementById(id);
-            if (id !== "id_region") {
+            if (id !== "id_region"{% if single_region %} && id !== "id_prefecture"{% endif %}) {
               element.disabled = true; // Désactive le champ
 
             }
@@ -120,6 +251,9 @@
                         document.getElementById(identifier).style.display = "block";
                         let url = `{% url 'administrativelevels:list' %}` + type + '/' + $(this).val();
                         document.getElementById(identifier).setAttribute('href', url);
+
+                        // Update the right-hand summary card with whatever was just selected.
+                        loadAdmSummary($(this).val());
 
                         $.ajax({
                             type: 'GET',
@@ -172,10 +306,9 @@
                                     $(".radio-button-search").click(function(event){
                                        let url = `{% url "administrativelevels:village_detail" 0 %}`.replace('0', this.value);
                                         url_village = url;
-                                        document.getElementById("seeVillage").style.display = "block";
-                                        //window.location.href = url;
-                                        document.getElementById("seeVillage").disabled = false;
                                         document.getElementById("seeVillage").setAttribute('href', url);
+                                        // Refresh the summary card to reflect the selected village.
+                                        loadAdmSummary(this.value);
                                     });
                                     if(url_village == ""){
                                         document.getElementById("seeVillage").disabled = true;
@@ -218,6 +351,10 @@
                                 document.getElementById("search_results").style.display = "none";
                             }
                         }
+                        // Clearing the top-most select fully resets the picker, so empty the card too.
+                        if (next_index === 0) {
+                            loadAdmSummary(null);
+                        }
                     }
 
                 });
@@ -230,24 +367,24 @@
 <script type="text/javascript">
     $("#id_region").select2({
         language: '{{ current_language }}',
-        placeholder: "{% translate 'Region' %}",
+        placeholder: "{{ form.region.label|default:_('Region') }}",
         allowClear: true,
         width: 'inherit'
     });
     $("#id_prefecture").select2({
-        placeholder: "{% translate 'Prefecture' %}",
+        placeholder: "{{ form.prefecture.label|default:_('Prefecture') }}",
         language: '{{ current_language }}',
         allowClear: true,
         width: 'inherit'
     });
     $("#id_commune").select2({
-        placeholder: "{% translate 'Commune' %}",
+        placeholder: "{{ form.commune.label|default:_('Commune') }}",
         language: '{{ current_language }}',
         allowClear: true,
         width: 'inherit'
     });
     $("#id_canton").select2({
-        placeholder: "{% translate 'Canton' %}",
+        placeholder: "{{ form.canton.label|default:_('Canton') }}",
         language: '{{ current_language }}',
         allowClear: true,
         width: 'inherit'

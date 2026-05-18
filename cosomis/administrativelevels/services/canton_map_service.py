@@ -81,8 +81,9 @@ class CantonMapService:
     """
 
     def __init__(self, canton: AdministrativeLevel) -> None:
-        assert canton.type == AdministrativeLevel.CANTON, (
-            "CantonMapService must receive a Canton-type AdministrativeLevel"
+        assert canton.is_canton(), (
+            f"CantonMapService must receive a Canton-type AdministrativeLevel "
+            f"(got type={canton.type!r})"
         )
         self._canton = canton
         self._color_registry = _CategoryColorRegistry()
@@ -135,7 +136,8 @@ class CantonMapService:
         return list(
             AdministrativeLevel.objects.filter(
                 parent=self._canton,
-                type=AdministrativeLevel.VILLAGE,
+            ).filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE),
             )
             .prefetch_related(
                 # investments for priorities and subprojects layers

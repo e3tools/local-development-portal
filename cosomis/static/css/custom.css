@@ -1,6 +1,127 @@
+/* =========================================================================
+   Platform-wide brand: typography + button system.
+   These rules sit at the top of custom.css so they win against AdminLTE
+   and Bootstrap defaults without any !important escalation per call-site.
+   ========================================================================= */
+
+:root {
+    --brand-primary: #4f46e5;       /* indigo-600 */
+    --brand-primary-dark: #4338ca;  /* indigo-700, used for hover/active */
+    --brand-primary-soft: #eef2ff;  /* indigo-50, used for tints */
+    --brand-text: #111827;
+    --brand-muted: #6b7280;
+    --brand-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                  'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+}
+
+body,
+.content-wrapper,
+.main-sidebar,
+.main-header,
+.modal,
+.navbar,
+.card,
+.dropdown-menu,
+.btn,
+.form-control,
+.custom-select,
+input,
+select,
+textarea,
+table.dataTable,
+.popover,
+.tooltip,
+.alert {
+    font-family: var(--brand-font) !important;
+}
+
+body {
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--brand-font);
+    letter-spacing: -0.01em;
+}
+
+/* Unified button shape, weight, padding, and motion across the platform.
+   Per-variant colours (success/danger/warning/info) are left to Bootstrap
+   so destructive vs positive actions remain distinguishable. */
+.btn {
+    font-family: var(--brand-font);
+    font-weight: 600;
+    font-size: 13px;
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: background-color .12s ease,
+                border-color .12s ease,
+                color .12s ease,
+                box-shadow .12s ease,
+                transform .12s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.btn:focus,
+.btn.focus {
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+    outline: none;
+}
+
+.btn-sm, .btn-group-sm > .btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+/* Indigo primary CTA — same exact treatment everywhere */
+.btn-primary,
+.btn-primary:visited {
+    color: #ffffff !important;
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active {
+    background-color: var(--brand-primary-dark) !important;
+    border-color: var(--brand-primary-dark) !important;
+    color: #ffffff !important;
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+}
+.btn-primary:disabled,
+.btn-primary.disabled {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    opacity: 0.55;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Outlined primary, link button & generic anchor share the brand colour */
+.btn-outline-primary,
+.btn-outline-primary:visited {
+    color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    background-color: transparent;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #ffffff;
+}
+
+/* Neutralize the global .btn:hover { opacity: 0.8 } legacy rule
+   that washed every button out — replace with a crisp colour change. */
+.btn:hover { opacity: 1; }
 
 a {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .radio-button_search {
@@ -44,43 +165,11 @@ a {
     margin-top: 25px !important;
 }
 
-.btn:hover {
-    opacity: 0.8;
-}
-
-.btn-primary {
-    color: #ffffff !important;
-    background-color: #599CF7;
-    border-color: #599CF7;
-}
-
-.btn-outline-primary {
-    color: #599CF7;
-    border-color: #599CF7;
-}
-
-.btn-outline-primary:hover {
-    background-color: #599CF7;
-    border-color: #599CF7;
-}
-
-.btn-outline-primary.disabled, .btn-outline-primary:disabled {
-    color: #599CF7;
-}
-
-.btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active,
-.show > .btn-outline-primary.dropdown-toggle {
-    background-color: #599CF7;
-    border-color: #599CF7;
-}
-
-.btn-link {
-    color: #599CF7;
-}
-
-.btn-link:hover {
-    color: #599cf7;
-}
+/* Legacy .btn / .btn-primary / .btn-outline-primary / .btn-link rules
+   moved to the brand block at the top of this file. Kept .btn-link
+   colour rule explicit so the cascade can't drop it under AdminLTE. */
+.btn-link, .btn-link:visited { color: var(--brand-primary); }
+.btn-link:hover, .btn-link:focus { color: var(--brand-primary-dark); }
 
 .btn-lg, .btn-group-lg > .btn {
     padding: 16px 22.5px !important;
@@ -90,12 +179,12 @@ a {
 }
 
 .dropdown-item.active, .dropdown-item:active {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .custom-control-input:checked ~ .custom-control-label::before {
-    border-color: #599CF7;
-    background-color: #599CF7;
+    border-color: #4f46e5;
+    background-color: #4f46e5;
 }
 
 .custom-control-input[disabled] ~ .custom-control-label::before, .custom-control-input:disabled ~ .custom-control-label::before {
@@ -103,12 +192,12 @@ a {
 }
 
 .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {
-    border-color: #599CF7;
-    background-color: #599CF7;
+    border-color: #4f46e5;
+    background-color: #4f46e5;
 }
 
 .custom-range::-webkit-slider-thumb {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .custom-range::-webkit-slider-runnable-track {
@@ -116,7 +205,7 @@ a {
 }
 
 .custom-range::-moz-range-thumb {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .custom-range::-moz-range-track {
@@ -124,7 +213,7 @@ a {
 }
 
 .custom-range::-ms-thumb {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .custom-range::-ms-fill-lower {
@@ -158,20 +247,20 @@ a {
 }
 
 .page-link {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .page-link:hover {
-    color: #599cf7;
+    color: #4338ca;
 }
 
 .page-item.active .page-link {
-    background-color: #599CF7;
-    border-color: #599CF7;
+    background-color: #4f46e5;
+    border-color: #4f46e5;
 }
 
 .badge-primary {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .badge-yellow {
@@ -180,12 +269,12 @@ a {
 }
 
 .progress-bar {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .list-group-item.active {
-    background-color: #599CF7;
-    border-color: #599CF7;
+    background-color: #4f46e5;
+    border-color: #4f46e5;
 }
 
 .border {
@@ -209,7 +298,7 @@ a {
 }
 
 .border-primary {
-    border-color: #599CF7 !important;
+    border-color: #4f46e5 !important;
 }
 
 .rounded-xl {
@@ -217,7 +306,7 @@ a {
 }
 
 .text-primary {
-    color: #599CF7 !important;
+    color: #4f46e5 !important;
 }
 
 .main-header {
@@ -250,7 +339,7 @@ a {
 
 .user-panel .info a.name {
     font-size: 14px;
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .user-panel .info .email {
@@ -287,11 +376,11 @@ a {
 }
 
 .nav-pills .nav-link:not(.active):hover {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .navbar-primary {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .navbar-mediumslateblue {
@@ -315,23 +404,23 @@ a {
 }
 
 .custom-range.custom-range-primary::-webkit-slider-thumb {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .custom-range.custom-range-primary::-moz-range-thumb {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .custom-range.custom-range-primary::-ms-thumb {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .card-primary:not(.card-outline) > .card-header {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .card-primary.card-outline {
-    border-top: 3px solid #599CF7;
+    border-top: 3px solid #4f46e5;
 }
 
 .card-primary.card-outline-tabs > .card-header a:hover {
@@ -339,7 +428,7 @@ a {
 }
 
 .card-primary.card-outline-tabs > .card-header a.active {
-    border-top: 3px solid #599CF7;
+    border-top: 3px solid #4f46e5;
 }
 
 .card-secondary.card-outline-tabs > .card-header a:hover {
@@ -443,7 +532,7 @@ a {
 }
 
 .todo-list .primary {
-    border-left-color: #599CF7;
+    border-left-color: #4f46e5;
 }
 
 .btn-default:hover, .btn-default:active, .btn-default.hover {
@@ -463,12 +552,12 @@ a {
 }
 
 .direct-chat-primary .right > .direct-chat-text {
-    background: #599CF7;
-    border-color: #599CF7;
+    background: #4f46e5;
+    border-color: #4f46e5;
 }
 
 .direct-chat-primary .right > .direct-chat-text::after, .direct-chat-primary .right > .direct-chat-text::before {
-    border-left-color: #599CF7;
+    border-left-color: #4f46e5;
 }
 
 .profile-user-img {
@@ -482,116 +571,116 @@ a {
 
 .select2-container--default .select2-primary .select2-results__option--highlighted,
 .select2-primary .select2-container--default .select2-results__option--highlighted {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .icheck-primary > input:first-child:not(:checked):not(:disabled):hover + label::before,
 .icheck-primary > input:first-child:not(:checked):not(:disabled):hover + input[type="hidden"] + label::before {
-    border-color: #599CF7;
+    border-color: #4f46e5;
 }
 
 .icheck-primary > input:first-child:not(:checked):not(:disabled):focus + label::before,
 .icheck-primary > input:first-child:not(:checked):not(:disabled):focus + input[type="hidden"] + label::before {
-    border-color: #599CF7;
+    border-color: #4f46e5;
 }
 
 .icheck-primary > input:first-child:checked + label::before,
 .icheck-primary > input:first-child:checked + input[type="hidden"] + label::before {
-    background-color: #599CF7;
-    border-color: #599CF7;
+    background-color: #4f46e5;
+    border-color: #4f46e5;
 }
 
 #toast-container .toast {
-    background-color: #599CF7;
+    background-color: #4f46e5;
 }
 
 .pace-primary .pace .pace-progress {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 .pace-barber-shop-primary .pace .pace-progress {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 .pace-bounce-primary .pace .pace-activity {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 .pace-center-atom-primary .pace-progress::before {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 .pace-center-atom-primary .pace-activity {
-    border-color: #599CF7;
+    border-color: #4f46e5;
 }
 
 .pace-center-atom-primary .pace-activity::after, .pace-center-atom-primary .pace-activity::before {
-    border-color: #599CF7;
+    border-color: #4f46e5;
 }
 
 .pace-center-radar-primary .pace .pace-activity {
-    border-color: #599CF7 transparent transparent;
+    border-color: #4f46e5 transparent transparent;
 }
 
 .pace-center-radar-primary .pace .pace-activity::before {
-    border-color: #599CF7 transparent transparent;
+    border-color: #4f46e5 transparent transparent;
 }
 
 .pace-center-simple-primary .pace {
-    border-color: #599CF7;
+    border-color: #4f46e5;
 }
 
 .pace-center-simple-primary .pace .pace-progress {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 .pace-material-primary .pace {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .pace-corner-indicator-primary .pace .pace-activity {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 .pace-flash-primary .pace .pace-progress {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 .pace-flash-primary .pace .pace-progress-inner {
-    box-shadow: 0 0 10px #599CF7, 0 0 5px #599CF7;
+    box-shadow: 0 0 10px #4f46e5, 0 0 5px #4f46e5;
 }
 
 .pace-flash-primary .pace .pace-activity {
-    border-top-color: #599CF7;
-    border-left-color: #599CF7;
+    border-top-color: #4f46e5;
+    border-left-color: #4f46e5;
 }
 
 .pace-loading-bar-primary .pace .pace-progress {
-    background: #599CF7;
-    color: #599CF7;
+    background: #4f46e5;
+    color: #4f46e5;
     box-shadow: 120px 0 #ffffff, 240px 0 #ffffff;
 }
 
 .pace-loading-bar-primary .pace .pace-activity {
-    box-shadow: inset 0 0 0 2px #599CF7, inset 0 0 0 7px #ffffff;
+    box-shadow: inset 0 0 0 2px #4f46e5, inset 0 0 0 7px #ffffff;
 }
 
 .pace-mac-osx-primary .pace .pace-progress {
-    background-color: #599CF7;
-    box-shadow: inset -1px 0 #599CF7, inset 0 -1px #599CF7, inset 0 2px rgba(255, 255, 255, 0.5), inset 0 6px rgba(255, 255, 255, 0.3);
+    background-color: #4f46e5;
+    box-shadow: inset -1px 0 #4f46e5, inset 0 -1px #4f46e5, inset 0 2px rgba(255, 255, 255, 0.5), inset 0 6px rgba(255, 255, 255, 0.3);
 }
 
 .pace-progress-color-primary .pace-progress {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary,
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 blockquote {
-    border-left: 0.7rem solid #599CF7;
+    border-left: 0.7rem solid #4f46e5;
 }
 
 blockquote h1,
@@ -600,11 +689,11 @@ blockquote h3,
 blockquote h4,
 blockquote h5,
 blockquote h6 {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 blockquote.quote-primary {
-    border-color: #599CF7;
+    border-color: #4f46e5;
 }
 
 blockquote.quote-primary h1,
@@ -613,11 +702,11 @@ blockquote.quote-primary h3,
 blockquote.quote-primary h4,
 blockquote.quote-primary h5,
 blockquote.quote-primary h6 {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 blockquote.quote-blue {
-    border-color: #599CF7;
+    border-color: #4f46e5;
 }
 
 blockquote.quote-blue h1,
@@ -626,42 +715,42 @@ blockquote.quote-blue h3,
 blockquote.quote-blue h4,
 blockquote.quote-blue h5,
 blockquote.quote-blue h6 {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .bg-primary.btn:hover {
-    border-color: #599cf7;
+    border-color: #4338ca;
 }
 
 .bg-primary.btn:not(:disabled):not(.disabled):active, .bg-primary.btn:not(:disabled):not(.disabled).active, .bg-primary.btn:active, .bg-primary.btn.active {
-    background-color: #599cf7 !important;
-    border-color: #599cf7;
+    background-color: #4338ca !important;
+    border-color: #4338ca;
 }
 
 .accent-primary .btn-link,
 .accent-primary a:not(.dropdown-item):not(.btn-app):not(.nav-link):not(.brand-link):not(.page-link):not(.btn) {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .accent-primary .dropdown-item:active, .accent-primary .dropdown-item.active {
-    background: #599CF7;
+    background: #4f46e5;
 }
 
 .accent-primary .page-item .page-link {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .accent-primary .page-item.active a,
 .accent-primary .page-item.active .page-link {
-    background-color: #599CF7;
-    border-color: #599CF7;
+    background-color: #4f46e5;
+    border-color: #4f46e5;
 }
 
 /*# sourceMappingURL=../AdminLTE/dist/css/adminlte.css.map */
 .main-title {
     font-size: 22px;
     line-height: 1.64;
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .toogle-sidebar-button {
@@ -895,7 +984,7 @@ blockquote.quote-blue h6 {
 }
 
 .chevron-item {
-    color: #599CF7;
+    color: #4f46e5;
     position: absolute;
     bottom: 1px;
     right: 9px;
@@ -1015,7 +1104,7 @@ blockquote.quote-blue h6 {
 }
 
 .link {
-    color: #599CF7;
+    color: #4f46e5;
     cursor: pointer;
 }
 
@@ -1030,14 +1119,14 @@ blockquote.quote-blue h6 {
     height: 35px;
     padding: 10px;
     text-align: left;
-    color: #599CF7;
+    color: #4f46e5;
     display: block;
     width: fit-content;
     background-color: #f7f7f7;
 }
 
 .btn-link-primary {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .btn-link-primary:hover {
@@ -1118,7 +1207,7 @@ blockquote.quote-blue h6 {
 
 .ol-control button {
     margin-bottom: 10px !important;
-    color: #599CF7 !important;
+    color: #4f46e5 !important;
     font-size: 22px !important;
     text-decoration: none !important;
     height: 35px !important;
@@ -1130,7 +1219,7 @@ blockquote.quote-blue h6 {
 
 .ol-control button:hover {
     color: #ffffff !important;
-    background-color: #599CF7 !important;
+    background-color: #4f46e5 !important;
 }
 
 .modal-confirmation .modal-content {
@@ -1184,7 +1273,7 @@ blockquote.quote-blue h6 {
 
 .table thead.primary th {
     background-color: transparent;
-    color: #599CF7;
+    color: #4f46e5;
     border-radius: 0;
 }
 
@@ -1241,7 +1330,7 @@ blockquote.quote-blue h6 {
 }
 
 .success-color {
-    color: #599CF7;
+    color: #4f46e5;
 }
 
 .gray-color {
