@@ -1,0 +1,129 @@
+[
+    { 
+        "name": "Accès à l'eau",
+        "sectors": [
+            "Poste d'eau autonome (PEA)",
+            "Adduction d'eau villageoise (AEV)",
+            "Système d'alimentation en eau potable (SAEP)",
+            "Forage simple",
+            "Forage + abreuvoir"
+        ]
+    },
+    {
+        "name": "Infrastructure marchande",
+        "sectors":[
+            "Hangar de marché",
+            "Boutique",
+            "Gare routière à l’intérieur ou à proximité du marché",
+            "Ponceau d'accès aux marchés",
+            "Passage d'accès à l'intérieur d'un marché",
+            "Magasin de stockage",
+            "Marché de bétail"
+        ]
+    },
+    {
+        "name": "Transport rural (connectivité)",
+        "sectors": [
+            "Piste de desserte rurale",
+            "Passage busé",
+            "Caniveau",
+            "Dalots"
+        ]
+    },
+    {
+        "name": "Santé",
+        "sectors": [
+            "Centre de santé d'arrondissement (CSA) ou Centre de santé de commune (CSC)",
+            "Dispensaire isolé",
+            "Paillote de pesée",
+            "Incinérateur",
+            "Lits de maternité et d’hospitalisation"
+        ]
+    },
+    {
+        "name": "Education",
+        "sectors": [
+            "Salles de classes pour les collèges et lycées",
+            "Clôture de collèges et lycées",
+            "Laboratoire pour les collèges et lycées",
+            "Centre multimédia dans les collèges",
+            "Bibliothèque pour les collèges et lycées",
+            "Table + bancs pour les collèges et lycées",
+            "Module de trois (3) salles de classes + bureau et magasins pour les écoles primaires",
+            "Module de deux (2) salles de classe pour les écoles maternelles",
+            "Bureau d’école primaire",
+            "Magasin d’école",
+            "Complexe pour les cantines scolaires",
+            "Logement pour les enseignants du primaire",
+            "Table + bancs pour les écoles primaires",
+            "Table + chaises pour les écoles maternelles",
+            "Infrastructures d'éclairage scolaires + équipements", 
+            "Infrastructure d'alphabétisation",
+            "Mobilier/équipement d'alpahébisation"
+        ]
+    },
+    {
+        "name": "Hygiène et assainissement (WASH)",
+        "sectors": [
+            "Bloc de latrine pour les collèges",
+            "Construction de bloc de latrines modernes pour les centres de santé d’arrondissement ou communaux",
+            "Bloc de latrines modernes pour les marchés urbains ou régionaux",
+            "Blocs de latrines publiques modernes",
+            "Hygiène des lieux publics",
+            "Bloc de latrine pour les écoles maternelles et primaires",
+            "Bloc de latrines pour les centres de santé et dispensaire isolés",
+            "Bloc de latrines pour les marchés locaux",
+            "Ouvrage d’assainissement dans les marchés locaux"
+        ]
+    },
+    {
+        "name": "Production végétale",
+        "sectors": [
+            "Aménagement"
+        ]
+    },
+    {
+        "name": "Production animale",
+        "sectors": [
+            "Aménagement",
+            "Alimentation",
+            "Parc de vaccination",
+            "Pharmacie vétérinaire"      
+        ]
+    },
+    {
+        "name": "Transformation",
+        "sectors": [
+            "Atelier",
+            "Mobilier",
+            "Equipement"
+        ]
+    },
+    {
+        "name": "Sport et loisirs ",
+        "sectors": [
+            "Kits de football (crampons, filets, ballon, maillots)",
+            "Kits de basketball (crampons, filets, ballon, maillots)",
+            "Kits de handball (crampons, filets, ballon, maillots)",
+            "Terrain de football",
+            "Jeu ludique",
+            "Infrastructure",
+            "Équipement + panneaux photovoltaïques"
+        ]
+    },
+    {
+        "name": "Énergie et éclairage",
+        "sectors": [
+            "Éclairage public solaire",
+            "Électrification rurale hors réseau",
+            "Extension du réseau électrique"
+        ]
+    },
+    {
+        "name": "Autre",
+        "sectors": [
+            "Autre"
+        ]
+    }
+]
+

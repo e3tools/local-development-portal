@@ -47,7 +47,7 @@ class Investment(BaseModel): # Investment module
         (SUBPROJECT, _("SubProject")),
     )
     ranking = models.PositiveIntegerField(null=True, blank=True)
-    title = models.CharField(max_length=255)
+    title = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     responsible_structure = models.CharField(max_length=255, null=True, blank=True)
     administrative_level = models.ForeignKey(

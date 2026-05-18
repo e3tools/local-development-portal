@@ -81,6 +81,11 @@ SECTOR_ESTIMATED_COSTS = {
     "Infrastructure": 100_000_000,
     "Équipement + panneaux photovoltaïques": 45_000_000,
 
+    #Énergie et éclairage
+    "Éclairage public solaire" : 2_150_000,
+    "Électrification rurale hors réseau" : 4_200_000,
+    "Extension du réseau électrique" : 4_200_000,
+    
     # Autre
     "Autre": 5_000_000,
 }
