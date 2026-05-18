@@ -16,6 +16,38 @@
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
     <link rel="stylesheet" href="{% static 'AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}" />
+    <style>
+        .coming-soon-panel {
+            padding: 4rem 1.5rem;
+            background: linear-gradient(135deg, #f5f8f5 0%, #eaf4ec 100%);
+            border-radius: 14px;
+        }
+        .coming-soon-icon {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #009639;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 24px rgba(0, 86, 47, .12);
+        }
+        .coming-soon-title {
+            color: #00562f;
+            font-weight: 600;
+            margin-bottom: .5rem;
+            letter-spacing: .2px;
+        }
+        .coming-soon-subtitle {
+            color: #5b6b62;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+    </style>
 {% endblock %}
 
 
@@ -223,11 +255,15 @@
                             {% if object.is_village %}
                             <div id="infrastructure_services" class="tab-pane fade">
                                 <div class="card-body">
-                                    {% if children_services_infrastructures %}
-                                        {% include 'administrative_level/detail/tabs/upper_service_infrastructure.html' %}
-                                    {% else %}
-                                        {% include 'administrative_level/detail/tabs/service_infrastructure.html' %}
-                                    {% endif %}
+                                    <div class="coming-soon-panel text-center">
+                                        <div class="coming-soon-icon">
+                                            <i class="fas fa-tools"></i>
+                                        </div>
+                                        <h3 class="coming-soon-title">{% translate 'Coming soon' %}</h3>
+                                        <p class="coming-soon-subtitle">
+                                            {% translate "We're building the Infrastructure and Services view for this village. Check back shortly." %}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div id="planning_cycle" class="tab-pane fade">
