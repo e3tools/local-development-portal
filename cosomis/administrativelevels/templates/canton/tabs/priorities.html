@@ -161,6 +161,7 @@
 						<tr>
 							<th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
 							<th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+							<th class="align-middle" rowspan="2">{% translate 'Village' %}</th>
 							<th class="align-middle" rowspan="2">{% translate 'Description' %}</th>
 							<th class="align-middle text-center" colspan="4">{% translate 'Priorities' %}</th>
 							<th class="align-middle" rowspan="2">{% translate 'Beneficiaries' %}</th>
@@ -193,6 +194,11 @@
 							<tr>
 								<td>{{ investment.ranking }}</td>
 								<td>{{ investment.sector.category.name }}</td>
+								<td>
+									<a href="{% url 'administrativelevels:detail' investment.administrative_level.id %}">
+										{{ investment.administrative_level.name }}
+									</a>
+								</td>
 								<td>{{ investment.description }}</td>
 								<td class="text-center">{% if investment.endorsed_by_youth %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_women %}✓{% endif %}</td>

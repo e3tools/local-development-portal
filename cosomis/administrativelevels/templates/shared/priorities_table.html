@@ -8,7 +8,6 @@
         <th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
         <th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
         <th class="align-middle" colspan="4">{%  translate 'Priorities' %}</th>
-        <th class="align-middle" rowspan="2">{%  translate 'Beneficiaries' %}</th>
         <th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
         <th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
         <th class="align-middle" rowspan="2">{% translate 'Climate contribution' %}</th>
@@ -67,7 +66,6 @@
                 {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
             <td class="border-sides--light">
                 {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
-            <td class="border-sides--light">{{ investment.beneficiaries }}</td>
         {% if investment.estimated_cost < 1000000 %}
             <td class="border-sides--light">{% translate "Not available" %}</td>
         {% else %}
