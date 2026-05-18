@@ -16,3 +16,8 @@ venv/
 .env
 
 Procfile
+
+# Local-only Docker setup
+Dockerfile.dev
+docker-compose.yml
+.dockerignore

@@ -296,17 +296,12 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             "first_image": images[0] if len(images) > 0 else None,
         }
 
+        # Always display village priorities in ranking order, regardless of
+        # funding state. NULL rankings sink to the bottom so legacy rows
+        # without a ranking don't jump to the top.
         context["investments"] = self.__investment_repository.find_by_criteria(
-            InvestmentCriteria(administrative_level=self.object)).annotate(
-            status_order=Case(
-                When(project_status=Investment.NOT_FUNDED, then=0),
-                When(project_status=Investment.PAUSED, then=1),
-                When(project_status=Investment.FUNDED, then=2),
-                When(project_status=Investment.IN_PROGRESS, then=3),
-                When(project_status=Investment.COMPLETED, then=4),
-                output_field=IntegerField(),
-            )
-        ).order_by('status_order', 'ranking')
+            InvestmentCriteria(administrative_level=self.object)
+        ).order_by(F('ranking').asc(nulls_last=True), 'id')
 
         # Non-village levels (region/prefecture/etc.) have no direct
         # population, planning, or investment rows of their own — every
