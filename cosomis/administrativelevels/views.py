@@ -192,6 +192,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
         self.__investment_repository = DbInvestmentRepository()
 
     def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         if 'cart-toggle' in request.POST:
             investment = Investment.objects.get(id=request.POST['cart-toggle'])
             if investment.project_status == Investment.NOT_FUNDED:
@@ -563,7 +564,221 @@ class AdministrativeLevelInfrastructureDistributionDetailView(
         return has_it, villages
 
 
-class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
+class CommunePrioritiesMixin:
+
+    def _get_params(self):
+        """Unified method to get params from GET or POST for HTMX requests."""
+        if self.request.htmx and self.request.method == 'POST':
+            return self.request.POST
+        return self.request.GET
+
+    def _get_priorities_filters(self):
+        context = {}
+        params = self._get_params()
+
+        context["categories"] = Category.objects.all()
+        if params.get("category-filter"):
+            context["sectors"] = Sector.objects.filter(
+                category=params["category-filter"]
+            )
+        else:
+            context["sectors"] = Sector.objects.none()
+
+        context["subpopulations"] = [
+            {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
+            {"id": "endorsed_by_women", "name": _("Endorsed by women")},
+            {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
+            {"id": "endorsed_by_pastoralist", "name": _("Endorsed by ethnic minorities")},
+        ]
+
+        context["funding_statuses"] = [
+            {"id": Investment.FUNDED, "name": _("Funded")},
+            {"id": Investment.NOT_FUNDED, "name": _("Not Funded")},
+        ]
+
+        package = Package.objects.get_active_cart(user=self.request.user)
+        context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
+        return context
+
+    def _get_queryset(self, queryset):
+        empty = ["", None]
+        params = self._get_params()
+
+        if params.get("category-filter") not in empty:
+            queryset = queryset.filter(sector__category__id=params["category-filter"])
+
+        if params.get("sector-filter") not in empty:
+            queryset = queryset.filter(sector__id=params["sector-filter"])
+
+        if params.get("subpopulation-filter") not in empty:
+            queryset = queryset.filter(**{params["subpopulation-filter"]: True})
+
+        climate_val = params.get("climate-contribution-filter", "")
+        if climate_val == "True":
+            queryset = queryset.filter(climate_contribution=True)
+        elif climate_val == "False":
+            queryset = queryset.filter(climate_contribution=False)
+
+        if params.get("funding-status-filter") not in empty:
+            if params["funding-status-filter"] == Investment.FUNDED:
+                queryset = queryset.filter(
+                    project_status__in=[
+                        Investment.FUNDED, Investment.IN_PROGRESS, Investment.PAUSED, Investment.COMPLETED
+                    ]
+                )
+            else:
+                queryset = queryset.filter(project_status=Investment.NOT_FUNDED)
+
+        return queryset
+
+    def _build_investments_qs(self, admin_level):
+        """QuerySet base de investments de la commune, con filtros aplicados."""
+        base_qs = Investment.objects.filter(
+            administrative_level__in=Subquery(
+                AdministrativeLevel.objects.filter(
+                    parent__parent=admin_level
+                ).values_list("id", flat=True)
+            )
+        ).select_related("sector__category", "administrative_level__parent")
+        return self._get_queryset(base_qs)
+
+    def _build_priorities_context(self, admin_level):
+        """Contexto completo para priorities.html."""
+        context = self._get_priorities_filters()
+        context["investments"] = self._build_investments_qs(admin_level)
+
+        params = self._get_params()
+        context["query_strings_raw"] = {
+            k: v[0] if isinstance(v, list) and v else v
+            for k, v in params.lists()
+        }
+
+        context["commune_post_url"] = reverse(
+            "administrativelevels:commune_detail",
+            args=[admin_level.pk],
+        )
+
+        context["priorities_partial_url"] = reverse(
+            "administrativelevels:commune_priorities_partial",
+            args=[admin_level.pk],
+        )
+        return context
+
+
+class CantonPrioritiesMixin:
+
+    def _get_params(self):
+        """Unified method to get params from GET or POST for HTMX requests."""
+        if self.request.htmx and self.request.method == 'POST':
+            return self.request.POST
+        return self.request.GET
+
+    def _get_priorities_filters(self):
+        context = {}
+        params = self._get_params()
+
+        context["categories"] = Category.objects.all()
+        if params.get("category-filter"):
+            context["sectors"] = Sector.objects.filter(
+                category=params["category-filter"]
+            )
+        else:
+            context["sectors"] = Sector.objects.none()
+
+        context["subpopulations"] = [
+            {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
+            {"id": "endorsed_by_women", "name": _("Endorsed by women")},
+            {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
+            {"id": "endorsed_by_pastoralist", "name": _("Endorsed by ethnic minorities")},
+        ]
+
+        context["priorities"] = [
+            {"id": 1, "name": _("Priority 1")},
+            {"id": 2, "name": _("Priorities 1 and 2")},
+            {"id": 3, "name": _("All priorities")}
+        ]
+
+        package = Package.objects.get_active_cart(user=self.request.user)
+        context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
+        return context
+
+    def _get_queryset(self, queryset):
+        empty = ["", None]
+        params = self._get_params()
+
+        if params.get("category-filter") not in empty:
+            queryset = queryset.filter(sector__category__id=params["category-filter"])
+
+        if params.get("sector-filter") not in empty:
+            queryset = queryset.filter(sector__id=params["sector-filter"])
+
+        if params.get("subpopulation-filter") not in empty:
+            queryset = queryset.filter(**{params["subpopulation-filter"]: True})
+
+        if params.get("priorities-filter") not in empty:
+            priorities = [1]
+            if params["priorities-filter"] in ["2", "3"]:
+                priorities = [1, 2]
+            if params["priorities-filter"] == "3":
+                pass
+            else:
+                queryset = queryset.filter(ranking__in=priorities)
+
+        climate_val = params.get("climate-contribution-filter", "")
+        if climate_val == "True":
+            queryset = queryset.filter(climate_contribution=True)
+        elif climate_val == "False":
+            queryset = queryset.filter(climate_contribution=False)
+
+        return queryset
+
+    def _build_investments_qs(self, admin_level):
+        """QuerySet base de investments del canton, con filtros aplicados."""
+        base_qs = Investment.objects.filter(
+            administrative_level__parent=admin_level,
+            administrative_level__type=AdministrativeLevel.VILLAGE,
+        ).select_related(
+            "administrative_level",
+            "sector__category",
+            "funded_by",
+        ).annotate(
+            funding_order=Case(
+                When(project_status=Investment.NOT_FUNDED, then=Value(0)),
+                When(project_status=Investment.PAUSED, then=Value(1)),
+                When(project_status=Investment.FUNDED, then=Value(2)),
+                When(project_status=Investment.IN_PROGRESS, then=Value(3)),
+                When(project_status=Investment.COMPLETED, then=Value(4)),
+                default=Value(5),
+                output_field=IntegerField(),
+            ),
+            total_beneficiaries=Sum('administrative_level__total_population')
+        ).order_by("funding_order", "ranking", "administrative_level__name")
+        return self._get_queryset(base_qs)
+
+    def _build_priorities_context(self, admin_level):
+        """Contexto completo para priorities.html del canton."""
+        context = self._get_priorities_filters()
+        context["all_canton_priorities"] = self._build_investments_qs(admin_level)
+
+        params = self._get_params()
+        context["query_strings_raw"] = {
+            k: v[0] if isinstance(v, list) and v else v
+            for k, v in params.lists()
+        }
+
+        context["canton_post_url"] = reverse(
+            "administrativelevels:canton_detail",
+            args=[admin_level.pk],
+        )
+
+        context["priorities_partial_url"] = reverse(
+            "administrativelevels:canton_priorities_partial",
+            args=[admin_level.pk],
+        )
+        return context
+
+
+class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, CommunePrioritiesMixin, DetailView):
     model = AdministrativeLevel
     template_name = "commune/commune_detail.html"
     active_level1 = "administrative_levels"
@@ -573,6 +788,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         self.__investment_repository = DbInvestmentRepository()
 
     def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         if 'cart-toggle' in request.POST:
             investment = Investment.objects.get(id=request.POST['cart-toggle'])
             if investment.project_status == Investment.NOT_FUNDED:
@@ -583,9 +799,10 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
                 else:
                     package.funded_investments.add(investment)
                     track_user_activity(request, 'AddInvestmentInPackage')
-            
+
             if request.headers.get('x-hx-request'):
-                return super().get(request, *args, **kwargs)
+                context = self.get_context_data(**kwargs)
+                return self.render_to_response(context)
             return super().get(request, *args, **kwargs)
 
         obj = self.get_object()
@@ -615,7 +832,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
         return redirect(url)
 
     def get_context_data(self, **kwargs):
-        context = super(CommuneDetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         images_extensions_query = Q()
         for ext in IMAGE_EXTENSIONS:
@@ -688,6 +905,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
             agg_population_agriculturist=Coalesce(Sum('population_agriculturist'), 0),
             agg_population_pastoralist=Coalesce(Sum('population_pastoralist'), 0),
             agg_population_minorities=Coalesce(Sum('population_minorities'), 0),
+            agg_total_estimated_cost=Coalesce(Sum('investments__estimated_cost'), 0),
         )
         context["population"] = {
             "total": population_aggregation['agg_total_population'],
@@ -699,6 +917,7 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
             "agriculturist": population_aggregation['agg_population_agriculturist'],
             "pastoralist": population_aggregation['agg_population_pastoralist'],
             "minorities": population_aggregation['agg_population_minorities'],
+            "total_estimated_cost": population_aggregation['agg_total_estimated_cost'],
             "village_count": descendant_villages.count(),
             "canton_count": child_cantons.count(),
         }
@@ -720,18 +939,13 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
             )
         )
 
-        context["investments"] = self._get_queryset(Investment.objects.filter(
-            project_status=Investment.NOT_FUNDED,
-            administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
-                parent__parent=admin_level
-            ).values_list('id')
-                                              )))
-
         context["subprojects"] = Investment.objects.filter(
-            administrative_level__in=Subquery(AdministrativeLevel.objects.filter(
-                parent__parent=admin_level
-            ).values_list('id')
-                                              )).exclude(project_status=Investment.NOT_FUNDED, )
+            administrative_level__in=Subquery(
+                AdministrativeLevel.objects.filter(
+                    parent__parent=admin_level
+                ).values_list('id', flat=True)
+            )
+        ).exclude(project_status=Investment.NOT_FUNDED)
 
         # Add planning status information
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
@@ -751,16 +965,13 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
             "facilitator": "",
         }
 
-        # Add development plan
         phases = self._get_planning_cycle()
         context["development_plan"] = self._get_development_plan(phases)
 
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
         context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())
-        self.object.latitude = 10.693749945416448
-        self.object.longitude = 0.330183201548857
 
-        context.update(self._get_priorities_filters())
+        context.update(self._build_priorities_context(admin_level))
 
         return context
 
@@ -846,72 +1057,28 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView
                     ).first()
         return None
 
-    def _get_priorities_filters(self):
-        context = dict()
 
-        context["categories"] = Category.objects.all()
-        if "category-filter" in self.request.GET:
-            context["sectors"] = Sector.objects.filter(
-                category=self.request.GET["category-filter"]
-            )
+class CommunePrioritiesPartialView(LoginRequiredApproveRequiredMixin, CommunePrioritiesMixin, DetailView):
+    model = AdministrativeLevel
+    template_name = "commune/tabs/priorities.html"
 
-        context["subpopulations"] = [
-            {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
-            {"id": "endorsed_by_women", "name": _("Endorsed by women")},
-            {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
-            {
-                "id": "endorsed_by_pastoralist",
-                "name": _("Endorsed by ethnic minorities"),
-            },
-        ]
-
-        context["priorities"] = [
-            {"id": 1, "name": _("Priority 1")},
-            {"id": 2, "name": _("Priorities 1 and 2")},
-            {"id": 3, "name": _("All priorities")}
-        ]
-
-        package = Package.objects.get_active_cart(
-            user=self.request.user
-        )
-        context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self._build_priorities_context(self.object))
         return context
 
-    def _get_queryset(self, queryset):
 
-        if "sector-filter" in self.request.GET and self.request.GET[
-            "sector-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
-        if "category-filter" in self.request.GET and self.request.GET[
-            "category-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                sector__category__id=self.request.GET["category-filter"]
-            )
+class CantonPrioritiesPartialView(LoginRequiredApproveRequiredMixin, CantonPrioritiesMixin, DetailView):
+    model = AdministrativeLevel
+    template_name = "canton/tabs/priorities.html"
 
-        if "subpopulation-filter" in self.request.GET and self.request.GET[
-            "subpopulation-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                **{self.request.GET["subpopulation-filter"]: True}
-            )
-
-        if "priorities-filter" in self.request.GET and self.request.GET[
-            "priorities-filter"
-        ] not in ["", None]:
-            priorities = [1]
-            if self.request.GET["priorities-filter"] in ["2", "3"]:
-                priorities = [1, 2]
-            if self.request.GET["priorities-filter"] == "3":
-                queryset = queryset
-            else:
-                queryset = queryset.filter(ranking__in=priorities)
-
-        return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self._build_priorities_context(self.object))
+        return context
 
 
-class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
+class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, CantonPrioritiesMixin, DetailView):
     model = AdministrativeLevel
     template_name = "canton/canton_detail.html"
     active_level1 = "administrative_levels"
@@ -921,6 +1088,7 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
         self.__investment_repository = DbInvestmentRepository()
 
     def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         if 'cart-toggle' in request.POST:
             investment = Investment.objects.get(id=request.POST['cart-toggle'])
             if investment.project_status == Investment.NOT_FUNDED:
@@ -931,9 +1099,10 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
                 else:
                     package.funded_investments.add(investment)
                     track_user_activity(request, 'AddInvestmentInPackage')
-            
+
             if request.headers.get('x-hx-request'):
-                return super().get(request, *args, **kwargs)
+                context = self.get_context_data(**kwargs)
+                return self.render_to_response(context)
             return super().get(request, *args, **kwargs)
 
         obj = self.get_object()
@@ -1002,31 +1171,7 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
             )
         )
 
-        base_priorities_qs = Investment.objects.filter(
-            administrative_level__parent=canton,
-        ).filter(
-            AdministrativeLevel.type_filter_q(
-                AdministrativeLevel.VILLAGE,
-                field="administrative_level__type",
-            ),
-        ).select_related(
-            "administrative_level",
-            "sector__category",
-            "funded_by",
-        ).annotate(
-            funding_order=Case(
-                When(project_status=Investment.NOT_FUNDED, then=Value(0)),
-                When(project_status=Investment.PAUSED, then=Value(1)),
-                When(project_status=Investment.FUNDED, then=Value(2)),
-                When(project_status=Investment.IN_PROGRESS, then=Value(3)),
-                When(project_status=Investment.COMPLETED, then=Value(4)),
-                default=Value(5),
-                output_field=IntegerField(),
-            ),
-            total_beneficiaries=Sum('administrative_level__total_population')
-        ).order_by("funding_order", "ranking", "administrative_level__name")
-
-        context["all_canton_priorities"] = self._get_queryset(base_priorities_qs)
+        context.update(self._build_priorities_context(canton))
         context["investments"] = self._get_queryset(
             Investment.objects.filter(
                 project_status=Investment.NOT_FUNDED,
@@ -1061,7 +1206,6 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
         )
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
         context['children_coordinates'] = json.dumps(self.object.get_villages_coordinates())
-        context.update(self._get_priorities_filters())
 
         return context
 
@@ -1147,78 +1291,6 @@ class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView)
                     ).first()
         return None
 
-    def _get_priorities_filters(self):
-        context = dict()
-
-        context["categories"] = Category.objects.all()
-        if "category-filter" in self.request.GET:
-            context["sectors"] = Sector.objects.filter(
-                category=self.request.GET["category-filter"]
-            )
-
-        context["subpopulations"] = [
-            {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
-            {"id": "endorsed_by_women", "name": _("Endorsed by women")},
-            {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
-            {
-                "id": "endorsed_by_pastoralist",
-                "name": _("Endorsed by ethnic minorities"),
-            },
-        ]
-
-        context["priorities"] = [
-            {"id": 1, "name": _("Priority 1")},
-            {"id": 2, "name": _("Priorities 1 and 2")},
-            {"id": 3, "name": _("All priorities")}
-        ]
-
-        package = Package.objects.get_active_cart(
-            user=self.request.user
-        )
-        context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
-        return context
-
-    def _get_queryset(self, queryset):
-
-        if "sector-filter" in self.request.GET and self.request.GET[
-            "sector-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
-        if "category-filter" in self.request.GET and self.request.GET[
-            "category-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                sector__category__id=self.request.GET["category-filter"]
-            )
-
-        if "subpopulation-filter" in self.request.GET and self.request.GET[
-            "subpopulation-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                **{self.request.GET["subpopulation-filter"]: True}
-            )
-
-        if "priorities-filter" in self.request.GET and self.request.GET[
-            "priorities-filter"
-        ] not in ["", None]:
-            priorities = [1]
-            if self.request.GET["priorities-filter"] in ["2", "3"]:
-                priorities = [1, 2]
-            if self.request.GET["priorities-filter"] == "3":
-                queryset = queryset
-            else:
-                queryset = queryset.filter(ranking__in=priorities)
-
-        if "climate-contribution-filter" in self.request.GET and self.request.GET[
-            "climate-contribution-filter"
-        ] not in ["", None]:
-            climate_value = self.request.GET["climate-contribution-filter"]
-            if climate_value == "True":
-                queryset = queryset.filter(climate_contribution=True)
-            elif climate_value == "False":
-                queryset = queryset.filter(climate_contribution=False)
-
-        return queryset
 
 
 class CantonPlanningSummaryView(LoginRequiredApproveRequiredMixin, DetailView):

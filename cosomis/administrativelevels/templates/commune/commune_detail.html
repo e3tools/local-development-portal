@@ -12,6 +12,9 @@
     </div>
 {% endblock %}
 
+{% block select2 %}
+{% endblock %}
+
 {% block extracss %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
@@ -105,7 +108,7 @@
                             <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified|default:"0" }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
@@ -123,6 +126,49 @@
                         </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3 col-6">
+            <div class="card stat-card">
+                <div class="card-body text-center">
+                    <div class="stat-value h2 font-weight-bold">{{ population.canton_count }}</div>
+                    <div class="stat-label text-muted">{% translate "Cantons" %}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card stat-card">
+                <div class="card-body text-center">
+                    <div class="stat-value h2 font-weight-bold">{{ population.village_count }}</div>
+                    <div class="stat-label text-muted">{% translate "Villages" %}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card stat-card">
+                <div class="card-body text-center">
+                    <div class="stat-value h2 font-weight-bold">{{ planning_status.priorities_identified|default:"0" }}</div>
+                    <div class="stat-label text-muted">{% translate "Priorities Identified" %}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card stat-card">
+                <div class="card-body text-center">
+                    <div class="stat-value h2 font-weight-bold">
+                        {% if population.total_estimated_cost >= 1000000000 %}
+                            {{ population.total_estimated_cost|divide:1000000000|floatformat:1 }}B
+                        {% elif population.total_estimated_cost >= 1000000 %}
+                            {{ population.total_estimated_cost|divide:1000000|floatformat:1 }}M
+                        {% else %}
+                            {{ population.total_estimated_cost|intcomma }}
+                        {% endif %}
+                    </div>
+                    <div class="stat-label text-muted">{% translate "Total Estimated Cost (FCFA)" %}</div>
                 </div>
             </div>
         </div>
@@ -416,16 +462,46 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
-            $('.datatable').DataTable({searching: false});
+
+            function initCommunePrioritiesDT() {
+                // Investment Types table (sub-tab 1)
+                var $typeTable = $('#priorities-investments-type-tab .commune-priorities-dt');
+                if ($typeTable.length && !$.fn.DataTable.isDataTable($typeTable)) {
+                    $typeTable.DataTable({
+                        searching: false,
+                        columnDefs: [{orderable: false, targets: [3, 4, 5, 6, 8]}]
+                    });
+                }
+
+                // Individual Villages table (sub-tab 2)
+                var $villagesTable = $('#priorities-villages-tab .commune-priorities-dt');
+                if ($villagesTable.length && !$.fn.DataTable.isDataTable($villagesTable)) {
+                    $villagesTable.DataTable({
+                        searching: false,
+                        columnDefs: [{orderable: false, targets: [3, 4, 5, 6, 9]}]
+                    });
+                }
+            }
+
+            if ($('#priorities').hasClass('active')) {
+                initCommunePrioritiesDT();
+            }
+
+            $('a[data-toggle="tab"][href="#priorities"]').on('shown.bs.tab', function () {
+                initCommunePrioritiesDT();
+            });
+
+            $('button[data-toggle="pill"]').on('shown.bs.tab', function () {
+                initCommunePrioritiesDT();
+            });
 
             document.addEventListener('htmx:afterOnLoad', function(evt) {
                 if (evt.detail.target.id === 'priorities') {
-                    // Restaurar el tab activo si existía
+
                     var activeTabId = localStorage.getItem('activePriorityTab');
                     if (activeTabId) {
                         var $tabButton = $('#' + activeTabId);
                         if ($tabButton.length) {
-                            // Limpiar CUALQUIER estado activo previo inyectado por el servidor en el contenedor de prioridades
                             $('#priorities .nav-link, #priorities .nav-item button').removeClass('active').attr('aria-selected', 'false');
                             $('#priorities .tab-pane').removeClass('show active');
                             
@@ -435,51 +511,14 @@
                         }
                     }
 
-                    $('.datatable').DataTable({searching: false});
+                    initCommunePrioritiesDT();
                     $('[data-toggle="tooltip"]').tooltip();
                 }
             });
 
-            // Guardar el tab activo cuando cambie (delegación de eventos para HTMX)
             $(document).on('shown.bs.tab', '#priorities button[data-toggle="pill"]', function (e) {
                 localStorage.setItem('activePriorityTab', e.target.id);
             });
-    
-            $('.submit-reset').on('click', function() {
-                $('#reset-hidden-id').attr('value', 'true');
-                $('#filter-form').submit();
-            });
-    
-            $('#category-select-id').on('change', function(){
-                change_sectors_selects($(this), $('#sector-select-id'), [])
-            });
-    
-            function change_sectors_selects(select_input, select_to_fill){
-                let selected_value = select_input.find(":selected").val();
-    
-                if (selected_value != '') {
-                    let base_url = "{% url 'investments:home_investments' %}";
-                    $.ajax({
-                        type : "POST",
-                        url: base_url + "ajax/sectors",
-                        data: {
-                          value: selected_value,
-                          csrfmiddlewaretoken: '{{ csrf_token }}',
-                        },
-                        success: function(response){
-                            select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
-                            response.values.forEach((element) => {
-                                select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
-                            })
-                        }
-                    });
-                    select_to_fill.prop('disabled', false);
-                }
-                else {
-                    select_to_fill.prop('disabled', 'disabled');
-                    select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
-                }
-            };
         });
     </script>
 {% endblock %}
