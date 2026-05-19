@@ -137,7 +137,6 @@
                 return;
             }
 
-            // ── Serializa los selects con valor no vacío ───────────────────────────
             function serializeSelects() {
                 var parts = [];
                 form.querySelectorAll("select[name]").forEach(function (sel) {
@@ -150,7 +149,6 @@
                 return parts.join("&");
             }
 
-            // ── Lanza el partial GET ───────────────────────────────────────────────
             function loadPartial(queryString) {
                 var activeBtn = document.querySelector("#pills-tab .nav-link.active");
                 var activeTab = "types";
@@ -161,7 +159,6 @@
                     }
                 }
                 
-                // Añadir active_tab a la queryString
                 if (queryString) {
                     queryString += "&active_tab=" + activeTab;
                 } else {
