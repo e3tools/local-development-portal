@@ -323,7 +323,6 @@
             return;
         }
 
-        // ── Serializa los selects con valor no vacío ───────────────────────────
         function serializeSelects() {
             var parts = [];
             form.querySelectorAll("select[name]").forEach(function (sel) {
@@ -336,7 +335,6 @@
             return parts.join("&");
         }
 
-        // ── Lanza el partial GET ───────────────────────────────────────────────
         function loadPartial(queryString) {
             var activeBtn = document.querySelector("#pills-tab .nav-link.active");
             var activeTab = "types";
@@ -347,7 +345,6 @@
                 }
             }
             
-            // Añadir active_tab a la queryString
             if (queryString) {
                 queryString += "&active_tab=" + activeTab;
             } else {
@@ -386,7 +383,6 @@
                 loadPartial("");
             });
 
-        // ── Recarga dinámica del select Type al cambiar Sector ────────────────
         var categorySel = document.getElementById("category-select-id");
         var typeSel = document.getElementById("sector-select-id");
 
@@ -421,7 +417,6 @@
                 updateSectors(categorySel.value);
             });
             
-            // Carga inicial si hay una categoría seleccionada (para mantener el valor tras recarga)
             var initialCategory = categorySel.value;
             var initialSector = "";
             {% if query_strings_raw %}

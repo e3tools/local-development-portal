@@ -937,6 +937,17 @@ class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, CommunePri
                     )
                 ), 0
             )
+        ).annotate(
+            per_capita_invested=Case(
+                When(total_population__gt=0, then=F('total_founded') / F('total_population')),
+                default=0,
+                output_field=IntegerField(),
+            ),
+            per_capita_required=Case(
+                When(total_population__gt=0, then=F('total_estimated_cost') / F('total_population')),
+                default=0,
+                output_field=IntegerField(),
+            )
         )
 
         context["subprojects"] = Investment.objects.filter(

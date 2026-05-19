@@ -183,12 +183,7 @@
 										<thead>
 										<tr>
 											<th class="align-middle">{% translate 'Name' %}</th>
-											<th class="align-middle">{{ object.type|title }}</th>
 											<th class="align-middle">{% translate 'Population' %}</th>
-											<th class="align-middle">{% translate 'Invested Capital' %}</th>
-											<th class="align-middle">{% translate 'Required Capital' %}</th>
-											<th class="align-middle">{% translate 'Per Capita Invested' %}</th>
-											<th class="align-middle">{% translate 'Per Capita Required' %}</th>
 											<th class="align-middle">{% translate 'Actions' %}</th>
 										</tr>
 										</thead>
@@ -196,23 +191,12 @@
 										{% for village in villages %}
 											<tr>
 												<td>
-													<a href="{% url 'administrativelevels:detail' village.id %}">{{ village.name }}</a>
-												</td>
-												<td>
-													<a href="{% url 'administrativelevels:detail' village.parent.id %}">{{ village.parent.name }}</a>
+													<a href="{% url 'administrativelevels:village_detail' village.id %}">
+														{{ village.name }}
+													</a>
 												</td>
 												<td>{{ village.total_population|intcomma }}</td>
-												<td>{{ village.total_founded|intcomma }}</td>
-												<td>{{ village.total_estimated_cost|intcomma }}</td>
-												<td>
-													{% widthratio village.total_founded village.total_population 1 as investment_percapita %}
-													{{ investment_percapita|intcomma }}
-												</td>
-												<td class="border-sides--light">
-													{% widthratio village.total_estimated_cost village.total_population 1 as investment_percapita_required %}
-													{{ investment_percapita_required|intcomma }}
-												</td>
-												<td><i class="nav-icon fa fa-bars" data-toggle="modal"
+												<td><i class="nav-icon fa fa-bars text-primary" data-toggle="modal"
 													   data-target="#exampleModal"></i></td>
 											</tr>
 										{% endfor %}
@@ -297,12 +281,6 @@
 														<td class="border-sides--light">
 															<a href="" data-container="body" data-toggle="popover"
 															   data-placement="top" data-trigger="hover" data-content="
-
-
-
-
-
-
 																	{% if subproject.description %}{{ subproject.description }}{% else %}-{% endif %}">
 																{{ subproject.title }}
 															</a>
@@ -460,7 +438,7 @@
                 initCantonPrioritiesDT();
             });
 
-            document.addEventListener('htmx:afterOnLoad', function(evt) {
+            document.addEventListener('htmx:afterOnLoad', function (evt) {
                 if (evt.detail.target.id === 'priorities') {
                     var activeTabId = localStorage.getItem('activePriorityTab');
                     if (activeTabId) {
@@ -468,7 +446,7 @@
                         if ($tabButton.length) {
                             $('#priorities .nav-link, #priorities .nav-item button').removeClass('active').attr('aria-selected', 'false');
                             $('#priorities .tab-pane').removeClass('show active');
-                            
+
                             $tabButton.addClass('active').attr('aria-selected', 'true');
                             var target = $tabButton.attr('data-target') || $tabButton.attr('href');
                             $(target).addClass('show active');
