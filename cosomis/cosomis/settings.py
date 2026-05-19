@@ -38,6 +38,13 @@ DEBUG = env.bool('DEBUG', False)
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', list, ['localhost'])
 
+# Per-deployment program name shown on login and other branded surfaces.
+# Defaults to the Togo wording; override per country via the PROGRAM_NAME env var.
+PROGRAM_NAME = env(
+    'PROGRAM_NAME',
+    default='Emergency program to strengthen community resilience and security',
+)
+
 
 # Application definition
 
