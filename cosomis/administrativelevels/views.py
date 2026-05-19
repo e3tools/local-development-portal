@@ -283,7 +283,8 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             payload = {
                 "token": GRM_SECRET_KEY_GENRATE,
                 "region": str(self.object.id),
-                "region_name": str(self.object.name)
+                "region_name": str(self.object.name),
+                "region_parent_name": str(self.object.parent.name) if self.object.parent else "",
             }
             complaints, links_error = get_api_datas(f"{GRM_URL}/api/issue/get-issues/", payload)
         except Exception as e:
