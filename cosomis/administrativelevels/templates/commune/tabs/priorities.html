@@ -152,7 +152,7 @@
 						<th class="align-middle" rowspan="2">{% translate 'Investment Type' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Funding Needed' %}</th>
-						<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
+						<th class="align-middle" colspan="5">{% translate 'Priorities' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Status' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
 					</tr>
@@ -160,6 +160,10 @@
 						<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
 							title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top">
 							<span>J</span>
+						</th>
+						<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Chefferie' %}" data-toggle="tooltip" data-placement="top">
+							<span>C</span>
 						</th>
 						<th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
 							title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top">
@@ -183,13 +187,15 @@
 							<td>{% if investment.project_status == investment.NOT_FUNDED %}
 								{{ investment.estimated_cost }}{% else %}-{% endif %}</td>
 							<td>
-								{% if investment.endorsed_by_youth %}✓{% endif %}</td>
+								{% if investment.endorsed_groups.youth %}✓{% endif %}</td>
 							<td>
-								{% if investment.endorsed_by_women %}✓{% endif %}</td>
+								{% if investment.endorsed_groups.chiefs %}✓{% endif %}</td>
 							<td>
-								{% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
+								{% if investment.endorsed_groups.women %}✓{% endif %}</td>
 							<td>
-								{% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
+								{% if investment.endorsed_groups.minorities %}✓{% endif %}</td>
+							<td>
+								{% if investment.endorsed_groups.farmers %}✓{% endif %}</td>
 							<td>{{ investment.get_project_status_display }}</td>
 							<td>
 								{% if investment.project_status == investment.NOT_FUNDED %}
@@ -225,7 +231,7 @@
 						<th class="align-middle" rowspan="2">{% translate 'Village Name' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Sub-Project' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
-						<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
+						<th class="align-middle" colspan="5">{% translate 'Priorities' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Village Priority' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Funding Needed' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
@@ -234,6 +240,10 @@
 						<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
 							title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top">
 							<span>J</span>
+						</th>
+						<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
+							title="{% translate 'Chefferie' %}" data-toggle="tooltip" data-placement="top">
+							<span>C</span>
 						</th>
 						<th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
 							title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top">
@@ -258,13 +268,15 @@
 							<td>{{ investment.title }}</td>
 							<td>{{ investment.sector }}</td>
 							<td>
-								{% if investment.endorsed_by_youth %}✓{% endif %}</td>
+								{% if investment.endorsed_groups.youth %}✓{% endif %}</td>
 							<td>
-								{% if investment.endorsed_by_women %}✓{% endif %}</td>
+								{% if investment.endorsed_groups.chiefs %}✓{% endif %}</td>
 							<td>
-								{% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
+								{% if investment.endorsed_groups.women %}✓{% endif %}</td>
 							<td>
-								{% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
+								{% if investment.endorsed_groups.minorities %}✓{% endif %}</td>
+							<td>
+								{% if investment.endorsed_groups.farmers %}✓{% endif %}</td>
 							<td>{{ investment.ranking }}</td>
 							<td>{{ investment.estimated_cost|intcomma }}</td>
 							<td>

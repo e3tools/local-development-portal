@@ -253,7 +253,7 @@
 												<th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
 												<th class="align-middle"
 													rowspan="2">{% translate 'Sub-project priorities' %}</th>
-												<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
+												<th class="align-middle" colspan="5">{% translate 'Priorities' %}</th>
 												<th class="align-middle"
 													rowspan="2">{% translate 'Beneficiaries' %}</th>
 												<th class="align-middle"
@@ -268,6 +268,11 @@
 													title="{% translate 'Youth' %}" data-toggle="tooltip"
 													data-placement="top">
 													<span>J</span>
+												</th>
+												<th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
+													title="{% translate 'Chefferie' %}" data-toggle="tooltip"
+													data-placement="top">
+													<span>C</span>
 												</th>
 												<th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
 													title="{% translate 'Women' %}" data-toggle="tooltip"
@@ -308,13 +313,15 @@
 														<td class="border-sides--light">{{ subproject.title }}</td>
 													{% endif %}
 													<td class="border-sides--light">
-														{% if subproject.endorsed_by_youth %}✓{% endif %}</td>
+														{% if subproject.endorsed_groups.youth %}✓{% endif %}</td>
 													<td class="border-sides--light">
-														{% if subproject.endorsed_by_women %}✓{% endif %}</td>
+														{% if subproject.endorsed_groups.chiefs %}✓{% endif %}</td>
 													<td class="border-sides--light">
-														{% if subproject.endorsed_by_pastoralist %}✓{% endif %}</td>
+														{% if subproject.endorsed_groups.women %}✓{% endif %}</td>
 													<td class="border-sides--light">
-														{% if subproject.endorsed_by_agriculturist %}✓{% endif %}</td>
+														{% if subproject.endorsed_groups.minorities %}✓{% endif %}</td>
+													<td class="border-sides--light">
+														{% if subproject.endorsed_groups.farmers %}✓{% endif %}</td>
 													<td class="border-sides--light">{{ subproject.beneficiaries }}</td>
 													<td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
 													<td class="border-sides--light">{{ subproject.funded_by.name }}</td>

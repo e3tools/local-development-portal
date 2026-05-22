@@ -106,7 +106,18 @@ class Investment(BaseModel): # Investment module
             return ", ".join([p.name for p in projects])
         else:
             return projects
-        
+    
+    @property
+    def endorsed_groups(self):
+        description = (self.description or "").lower()
+
+        return {
+            "youth": "jeunes" in description,
+            "chiefs": "chefferie" in description,
+            "women": "femmes" in description,
+            "minorities": "minorités ethniques" in description,
+            "farmers": "agriculteurs éleveurs" in description,
+        }
         
     def __str__(self):
         return f'{self.title}'
