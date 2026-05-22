@@ -12,6 +12,8 @@ venv/
 
 #media
 /media/
+collected_static/
+
 
 .env
 
