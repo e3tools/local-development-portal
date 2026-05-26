@@ -42,7 +42,7 @@ ALLOWED_HOSTS = env('ALLOWED_HOSTS', list, ['localhost'])
 # Defaults to the Togo wording; override per country via the PROGRAM_NAME env var.
 PROGRAM_NAME = env(
     'PROGRAM_NAME',
-    default='Emergency program to strengthen community resilience and security',
+    default=_('Emergency program to strengthen community resilience and security'),
 )
 
 
