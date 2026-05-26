@@ -292,20 +292,20 @@
 						<tbody>
 						{% for investment in all_canton_priorities %}
 							<tr>
-								<td>{{ investment.ranking }}</td>
+								<td>{% if investment.ranking %}{{ investment.ranking }}{% else %}-{% endif %}</td>
 								<td>{{ investment.sector.category.name }}</td>
 								<td>
 									<a href="{% url 'administrativelevels:detail' investment.administrative_level.id %}">
 										{{ investment.administrative_level.name }}
 									</a>
 								</td>
-								<td>{{ investment.description }}</td>
+								<td>{% if investment.description %}{{ investment.description }}{% else %}-{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_youth %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_women %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
-								<td>{{ investment.total_beneficiaries|intcomma }}</td>
-								<td>{{ investment.estimated_cost|intcomma }}</td>
+								<td>{% if investment.total_beneficiaries %}{{ investment.total_beneficiaries|intcomma }}{% else %}-{% endif %}</td>
+								<td>{% if investment.estimated_cost %}{{ investment.estimated_cost|intcomma }}{% else %}-{% endif %}</td>
 								<td>{{ investment.funded_by.name }}</td>
 								<td>
 									{% if investment.climate_contribution %}

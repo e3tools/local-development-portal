@@ -288,7 +288,7 @@
 											<tbody>
 											{% for subproject in subprojects %}
 												<tr>
-													<td>{{ subproject.ranking }}</td>
+													<td>{% if subproject.ranking %}{{ subproject.ranking }}{% else %}-{% endif %}</td>
 													{% if subproject.title == "Autre" %}
 														<td class="border-sides--light">
 															<a href="" data-container="body" data-toggle="popover"
@@ -308,8 +308,8 @@
 														{% if subproject.endorsed_by_pastoralist %}✓{% endif %}</td>
 													<td class="border-sides--light">
 														{% if subproject.endorsed_by_agriculturist %}✓{% endif %}</td>
-													<td class="border-sides--light">{{ subproject.beneficiaries }}</td>
-													<td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
+													<td class="border-sides--light">{% if subproject.beneficiaries %}{{ subproject.beneficiaries|intcomma }}{% else %}-{% endif %}</td>
+													<td class="border-sides--light">{% if subproject.estimated_cost %}{{ subproject.estimated_cost|intcomma }}{% else %}-{% endif %}</td>
 													<td class="border-sides--light">{{ subproject.funded_by.name }}</td>
 													<td class="border-sides--light">
 														{% if subproject.climate_contribution %}
