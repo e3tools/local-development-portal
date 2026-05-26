@@ -1,32 +1,28 @@
 from datetime import datetime, timedelta
+from urllib.parse import urlencode
 
+from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
 from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.views import generic
-from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.http import Http404, HttpResponseRedirect
-from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.db.models import Subquery, Sum, Count
-from urllib.parse import urlencode
-from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from django.views import generic
 
-from usermanager.models import User
-from administrativelevels.models import AdministrativeLevel, Category, Sector, Project, GeoSegment
-
-from usermanager.permissions import IsInvestorMixin, IsModeratorMixin
-
+from administrativelevels.models import AdministrativeLevel, Category, Sector, Project
 from static.config.datatable import get_datatable_config
-
-from .models import Investment, Package, PackageFundedInvestment
+from usermanager.models import User
+from usermanager.permissions import IsInvestorMixin, IsModeratorMixin
 from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
+from .models import Investment, Package, PackageFundedInvestment
 from utils.mixpanel.utils import track_user_activity
+
 
 
 class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
     template_name = "investments/profile.html"
-
 
     def get_object(self, queryset=None):
         """
@@ -56,9 +52,10 @@ class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
         user_investments_qs = Investment.objects.filter(packages__user=self.request.user)
         context['user_investments'] = user_investments_qs.count()
         context['user_investments_commited_funds'] = user_investments_qs.aggregate(
-                Sum("estimated_cost")
-            )["estimated_cost__sum"]
-        context['user_investments_target_communities'] = user_investments_qs.values('administrative_level').distinct().count()
+            Sum("estimated_cost")
+        )["estimated_cost__sum"]
+        context['user_investments_target_communities'] = user_investments_qs.values(
+            'administrative_level').distinct().count()
         return context
 
 
@@ -85,9 +82,9 @@ class IndexListView(
 
         for key, value in request.GET.items():
             if (
-                key in request.POST
-                and value != request.POST[key]
-                and request.POST[key] != ""
+                    key in request.POST
+                    and value != request.POST[key]
+                    and request.POST[key] != ""
             ):
                 final_querystring.pop(key)
 
@@ -123,31 +120,49 @@ class IndexListView(
 
     def get_context_data(self, **kwargs):
         adm_queryset = AdministrativeLevel.objects.all()
-        kwargs["regions"] = adm_queryset.filter(type=AdministrativeLevel.REGION)
+        regions_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.REGION)
+        )
+        kwargs["regions"] = regions_qs
 
-        kwargs["prefectures"] = adm_queryset.filter(type=AdministrativeLevel.PREFECTURE)
-        if "region-filter" in self.request.GET:
-            kwargs["prefectures"] = kwargs["prefectures"].filter(
-                parent__id=self.request.GET["region-filter"]
-            )
+        # When the dataset has a single root (Benin = one "country" row), hide
+        # the top-level select and treat that root as implicitly selected so
+        # the prefecture dropdown starts pre-loaded.
+        single_region = regions_qs.first() if regions_qs.count() == 1 else None
+        kwargs["single_region"] = single_region
+        kwargs["adm_labels"] = AdministrativeLevel.get_filter_labels()
 
-        kwargs["communes"] = adm_queryset.filter(type=AdministrativeLevel.COMMUNE)
+        region_filter_id = self.request.GET.get("region-filter") or (
+            str(single_region.id) if single_region else None
+        )
+
+        prefectures_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
+        )
+        if region_filter_id:
+            prefectures_qs = prefectures_qs.filter(parent__id=region_filter_id)
+        kwargs["prefectures"] = prefectures_qs
+
+        communes_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.COMMUNE)
+        )
         if "prefecture-filter" in self.request.GET:
-            kwargs["communes"] = kwargs["communes"].filter(
-                parent__id=self.request.GET["prefecture-filter"]
-            )
+            communes_qs = communes_qs.filter(parent__id=self.request.GET["prefecture-filter"])
+        kwargs["communes"] = communes_qs
 
-        kwargs["cantons"] = adm_queryset.filter(type=AdministrativeLevel.CANTON)
+        cantons_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.CANTON)
+        )
         if "commune-filter" in self.request.GET:
-            kwargs["cantons"] = kwargs["cantons"].filter(
-                parent__id=self.request.GET["commune-filter"]
-            )
+            cantons_qs = cantons_qs.filter(parent__id=self.request.GET["commune-filter"])
+        kwargs["cantons"] = cantons_qs
 
-        kwargs["villages"] = adm_queryset.filter(type=AdministrativeLevel.VILLAGE)
+        villages_qs = adm_queryset.filter(
+            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+        )
         if "cantons-filter" in self.request.GET:
-            kwargs["villages"] = kwargs["villages"].filter(
-                parent__id=self.request.GET["cantons-filter"]
-            )
+            villages_qs = villages_qs.filter(parent__id=self.request.GET["cantons-filter"])
+        kwargs["villages"] = villages_qs
 
         kwargs["categories"] = Category.objects.all()
         if "category-filter" in self.request.GET:
@@ -176,7 +191,8 @@ class IndexListView(
         kwargs["query_strings"] = self.get_query_strings_context()
         kwargs["query_strings_raw"] = self.request.GET.copy()
 
-        kwargs["selected_investments_data_querystring"] = '&'.join([key + '=' + value for key, value in kwargs["query_strings_raw"].items()])
+        kwargs["selected_investments_data_querystring"] = '&'.join(
+            [key + '=' + value for key, value in kwargs["query_strings_raw"].items()])
 
         if self.request.user.organization is not None:
             kwargs["projects"] = self.request.user.organization.projects.all()
@@ -218,7 +234,8 @@ class IndexListView(
         context["datatable_config"]["server-side"] = "true"
         context["datatable_config"]["processing"] = "true"
         context["datatable_config"]["searching"] = "false"
-        context["datatable_config"]["ajax"] = self.request.scheme + '://' + self.request.get_host() + self.request.path + "ajax/datatable?format=datatables"
+        context["datatable_config"][
+            "ajax"] = self.request.scheme + '://' + self.request.get_host() + self.request.path + "ajax/datatable?format=datatables"
         context["datatable_config"]["columns"] = [
             {'data': 'select_input', 'name': 'select_input', 'searchable': 'false', 'orderable': 'false'},
             {'data': 'title'},
@@ -233,7 +250,7 @@ class IndexListView(
 
         ]
         context["datatable_config"]["order"] = [3, 'asc']
-        if len(kwargs["query_strings_raw"]) > 0 :
+        if len(kwargs["query_strings_raw"]) > 0:
             context["datatable_config"]["ajax"] += "&" + kwargs["selected_investments_data_querystring"]
         context.update(kwargs)
 
@@ -721,9 +738,9 @@ class ModeratorPackageReviewView(
 
         for key, value in request.GET.items():
             if (
-                key in request.POST
-                and value != request.POST[key]
-                and request.POST[key] != ""
+                    key in request.POST
+                    and value != request.POST[key]
+                    and request.POST[key] != ""
             ):
                 final_querystring.pop(key)
 

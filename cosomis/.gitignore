@@ -1,3 +1,5 @@
+# Python virtual environment
+venv/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
@@ -14,3 +16,8 @@
 .env
 
 Procfile
+
+# Local-only Docker setup
+Dockerfile.dev
+docker-compose.yml
+.dockerignore

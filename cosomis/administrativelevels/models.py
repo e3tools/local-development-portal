@@ -1,5 +1,6 @@
 import json
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from usermanager.models import User, Organization
 from cosomis.models_base import BaseModel
@@ -46,6 +47,20 @@ class AdministrativeLevel(BaseModel):
         (REGION, _('Region'))
     )
 
+    # Different country datasets store the same logical level under different
+    # type strings — e.g. the Benin dataset uses 'arrondissement' for Canton,
+    # 'département' for Prefecture, and 'country' for the root that Togo
+    # labels 'Region'. All comparisons against `type` go through
+    # aliases_for() / type_filter_q() / is_*() so call sites never hard-code
+    # a single spelling.
+    TYPE_ALIASES = {
+        VILLAGE: ('village',),
+        CANTON: ('canton', 'arrondissement'),
+        COMMUNE: ('commune',),
+        PREFECTURE: ('prefecture', 'département', 'departement'),
+        REGION: ('region', 'région', 'country'),
+    }
+
     # system properties
     parent = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Parent"), related_name='children')
     type = models.CharField(max_length=255, verbose_name=_("Type"), choices=TYPE, default=VILLAGE)
@@ -90,7 +105,7 @@ class AdministrativeLevel(BaseModel):
         return self.name
 
     def get_current_task(self):
-        if self.type == self.VILLAGE:
+        if self.is_village():
             phases = Phase.objects.filter(village=self).order_by('-order')
             for phase in phases:
                 activities = phase.activities.all().order_by('-order')
@@ -102,13 +117,6 @@ class AdministrativeLevel(BaseModel):
         else:
             return None
 
-    def get_list_priorities(self):
-        """Method to get the list of the all priorities that the administrative is linked"""
-        return self.villagepriority_set.get_queryset()
-    
-    # def get_list_subprojects(self):
-    #     """Method to get the list of the all subprojects that the administrative is linked"""
-    #     return self.subproject_set.get_queryset()
     def get_list_subprojects(self):
         """Method to get the list of the all subprojects that the administrative is linked"""
         if self.cvd:
@@ -120,20 +128,81 @@ class AdministrativeLevel(BaseModel):
             return assign.facilitator
         return None
 
+    @classmethod
+    def aliases_for(cls, canonical_type):
+        """All lowercase type strings that resolve to the given canonical type."""
+        return cls.TYPE_ALIASES.get(canonical_type, (canonical_type.lower(),))
+
+    @classmethod
+    def matches_type(cls, stored_type, canonical_type):
+        if not stored_type:
+            return False
+        return stored_type.strip().lower() in cls.aliases_for(canonical_type)
+
+    @classmethod
+    def type_filter_q(cls, canonical_type, field="type"):
+        """Q expression matching any stored alias of `canonical_type` (case-insensitive)."""
+        q = Q()
+        for alias in cls.aliases_for(canonical_type):
+            q |= Q(**{f"{field}__iexact": alias})
+        return q
+
+    @classmethod
+    def get_hierarchy_labels(cls):
+        """Return the dataset's actual level names, root-first.
+
+        Walks one branch from the root down (root -> first child -> first
+        grandchild ...) and collects each node's `type` string. The result
+        reflects what the data actually calls each depth (Country / Département
+        / Commune / Arrondissement / Village for Benin, Region / Prefecture /
+        Commune / Canton / Village for Togo, etc.) so UI labels can be driven
+        by the data instead of being hard-coded.
+        """
+        root = cls.objects.filter(parent__isnull=True).first()
+        if not root:
+            return []
+        labels = []
+        cur = root
+        seen = set()
+        while cur and cur.id not in seen:
+            labels.append((cur.type or "").strip().capitalize())
+            seen.add(cur.id)
+            cur = cur.children.first()
+        return labels
+
+    @classmethod
+    def get_filter_labels(cls):
+        """Return {canonical_key: display_label} for filter UIs.
+
+        Pulls labels from the dataset's actual vocabulary via
+        get_hierarchy_labels() (so Benin sees Country/Département/...) and
+        falls back to Togo's translated English when the data has fewer
+        than five levels.
+        """
+        fallback = (
+            _("Region"), _("Prefecture"), _("Commune"), _("Canton"), _("Village"),
+        )
+        keys = ("region", "prefecture", "commune", "canton", "village")
+        labels = cls.get_hierarchy_labels() or []
+        return {
+            key: (labels[i] if i < len(labels) and labels[i] else fallback[i])
+            for i, key in enumerate(keys)
+        }
+
     def is_village(self):
-        return self.type.lower() == self.VILLAGE.lower()
+        return self.matches_type(self.type, self.VILLAGE)
 
     def is_canton(self):
-        return self.type.lower() == self.CANTON.lower()
+        return self.matches_type(self.type, self.CANTON)
 
     def is_commune(self):
-        return self.type.lower() == self.COMMUNE.lower()
+        return self.matches_type(self.type, self.COMMUNE)
 
     def is_region(self):
-        return self.type.lower() == self.REGION.lower()
+        return self.matches_type(self.type, self.REGION)
 
     def is_prefecture(self):
-        return self.type.lower() == self.PREFECTURE.lower()
+        return self.matches_type(self.type, self.PREFECTURE)
 
     @property
     def children(self):
@@ -149,6 +218,23 @@ class AdministrativeLevel(BaseModel):
     def get_list_geographical_unit(self):
         """Method to get the list of the all Geographical Unit that the administrative is linked"""
         return self.geographicalunit_set.get_queryset()
+
+    def get_villages_coordinates(self):
+        coordinates = list()
+        if self.is_village():
+            if self.longitude is not None and self.latitude is not None:
+                return {
+                    "name": self.name,
+                    "id": self.id,
+                    "coordinates": [float(self.longitude), float(self.latitude)]
+                }
+        for child in self.children.all():
+            if child.is_village():
+                if child.longitude is not None and child.latitude is not None:
+                    coordinates.append(child.get_villages_coordinates())
+            else:
+                coordinates += child.get_villages_coordinates()
+        return coordinates
 
 
 class GeographicalUnit(BaseModel):
@@ -414,15 +500,15 @@ class Task(BaseModel):
             return dict()
 
 
-def update_or_create_amd_couch(sender, instance, **kwargs):
-    print("test", instance.id, kwargs['created'])
-    client = CddClient()
-    if kwargs['created']:
-        couch_object_id = client.create_administrative_level(instance)
-        to_update = AdministrativeLevel.objects.filter(id=instance.id)
-        to_update.update(no_sql_db_id=couch_object_id)
-    else:
-        client.update_administrative_level(instance)
+# def update_or_create_amd_couch(sender, instance, **kwargs):
+#     print("test", instance.id, kwargs['created'])
+#     client = CddClient()
+#     if kwargs['created']:
+#         couch_object_id = client.create_administrative_level(instance)
+#         to_update = AdministrativeLevel.objects.filter(id=instance.id)
+#         to_update.update(no_sql_db_id=couch_object_id)
+#     else:
+#         client.update_administrative_level(instance)
 
 # def delete_amd_couch(sender, instance, **kwargs):
 #     client = CddClient()

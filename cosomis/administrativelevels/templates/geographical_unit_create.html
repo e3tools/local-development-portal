@@ -59,10 +59,6 @@
 
     <script type="text/javascript">
         function set_datas(element, data){
-            $(element).next().find('b[role="presentation"]').hide();
-            $(element).next().find('.select2-selection__arrow').append(
-                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
-
             let options = '';
             $.each(data, function (index, value) {
                 let option = '<option value="' + value.id + '">';
@@ -103,25 +99,6 @@
                     success: function (data) {
                         if (data.length > 0) {
                             set_datas(child, data);
-                            {% comment %} $(child).next().find('b[role="presentation"]').hide();
-                            $(child).next().find('.select2-selection__arrow').append(
-                                '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
-
-                            let options = '';
-                            $.each(data, function (index, value) {
-                                let administrative_id = value.id;
-                                let option = '<option id="' + administrative_id + '" value="' + value.id + '">';
-                                
-                                option += value.name + '</option>';
-                                options += option
-
-                            });
-                            child.html(options);
-                            child.trigger('change');
-                            let child_val = child.val();
-                            if (child_val !== '') {
-                                child.val(child_val)
-                            } {% endcomment %}
                         }
                     },
                     error: function (data) {

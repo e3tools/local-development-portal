@@ -9,21 +9,25 @@
 {#<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">#}
 {#<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">#}
 {#<link rel="mask-icon" href="{% static 'images/safari-pinned-tab.svg' %}" color="#5bbad5">#}
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
-<meta name="msapplication-TileColor" content="#da532c">
+<link rel="icon" type="image/jpeg" href="{% static 'images/logos/setco-coso.jpg' %}">
+<link rel="apple-touch-icon" href="{% static 'images/logos/setco-coso.jpg' %}">
+<meta name="msapplication-TileColor" content="#009639">
 <title>{{ title }}</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
 
-<!-- Google Font: Source Sans Pro -->
+<!-- Platform-wide UI font: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"/>
+<!-- Source Sans Pro retained as fallback for legacy AdminLTE plugin defaults -->
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"/>
 <!-- Font Awesome Free 5.13.0 -->
 <link rel="stylesheet" href="{% static 'AdminLTE/plugins/fontawesome-free/css/all.min.css' %}"/>
 <link rel="stylesheet" href="{% static 'AdminLTE/plugins/fontawesome-free/css/v4-shims.min.css' %}"/>
-<!-- Ionicons -->
-<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
 <!-- Select2 -->
 <link rel="stylesheet" href="{% static 'AdminLTE/plugins/select2/css/select2.min.css' %}"/>
 <!-- DataTables -->
@@ -42,9 +46,9 @@
 <!-- overlayScrollbars -->
 <link rel="stylesheet" href="{% static 'AdminLTE/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}"/>
 <!-- Theme style -->
+<link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.css' %}"/>
 <link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
 <link href="{% static 'css/iconography.css' %}" rel="stylesheet">
-<link href="{% static 'css/fonts.css' %}" rel="stylesheet">
 <link href="{% static 'AdminLTE/plugins/chart.js/Chart.css' %}" rel="stylesheet">
 <style>
       .modal-body {

@@ -4,200 +4,422 @@
 {% block extracss %}
     {{ block.super }}
     <style>
-        .attachment-container {
-            display: inline-flex;
-            gap: 0 40px;
-            flex-wrap: wrap;
-            @media (max-width: 700px) {
-                gap: 10px;
-            }
+        .gallery-toolbar {
+            gap: 12px;
+            row-gap: 8px;
         }
 
-        .attachment-link-container {
-            width: 120px;
-            text-align: center;
-
-            &:nth-child(even) .attachment-link {
-                width: 120px;
-
-                .attachment-placeholder:not(.attachment-placeholder--document) {
-                    width: 120px;
-                }
-            }
-        }
-
-        .attachment-link {
-            width: 80px;
-            height: 80px;
-            background: #f6f9fb;
-            border-radius: 10px;
-            margin-top: 10px;
-            position: relative;
-        }
-
-        .attachment-placeholder {
-            height: 80px;
-            width: auto;
-            border-radius: 10px;
-        }
-
-        .attachment-placeholder--document {
-            height: 40px;
-            width: 30px;
-        }
-
-        #attachmentModal, #attachmentFilterModal {
-            .modal-header {
-                border: 0;
-            }
-
-            .btn-closeModal {
-                margin-bottom: 30px;
-                background-color: #599cf7;
-                color: white;
-                padding: 5px !important;
-                font-size: 10px;
-                height: 25px;
-                width: 25px;
-                opacity: 1;
-                border-radius: 50%;
-                margin: 5px;
-                margin-left: auto;
-                outline: transparent;
-            }
-        }
-
-        .checkbox {
-            position: absolute;
-            left: 5px;
-            top: 5px;
-        }
-
-        .form-attachment {
-            gap: 0 20px;
-            flex-wrap: wrap;
-        }
-
-        .pagination {
+        .gallery-toolbar .btn-group .btn {
+            border-radius: 999px !important;
+            padding: 4px 14px;
             font-size: 13px;
+            font-weight: 500;
         }
 
-        #attachmentModal {
-            .attachment-modal-link {
-                width: calc(100% - 120px);
-                height: 50vh;
-                margin: auto;
-                display: flex;
-            }
-
-            .attachment-placeholder {
-                height: 50vh;
-                width: 100%;
-                margin: auto;
-            }
-
-            .carousel-control-next, .carousel-control-prev {
-                bottom: -50px;
-            }
-
-            .carousel-control-next-icon, .carousel-control-prev-icon {
-                border-radius: 50%;
-                background-color: #599cf7;
-                padding: 5px !important;
-                background-size: 10px;
-                height: 25px;
-                width: 25px;
-                bottom: -40px;
-            }
-
-            .carousel-indicators {
-                bottom: -40px;
-            }
-
-            .carousel-indicators li {
-                background-color: #599cf7;
-            }
-
-            .download {
-                display: inline-flex;
-                width: calc(100% - 25px);
-                justify-content: flex-end;
-            }
+        .gallery-toolbar .btn-group .btn + .btn {
+            margin-left: 6px;
         }
 
-        .attachment-filter {
-            background-color: transparent;
-            border-radius: 50%;
-            border: 1px solid black;
-            height: 25px;
-            width: 25px;
-            padding: 2px 0 0 1px;
-        }
-
-        #attachmentFilterModal {
-            .form-checkbox-row {
-                display: inline-flex;
-                gap: 10px;
-                justify-content: center;
-            }
-
-            .select2-container--default .select2-selection--single .select2-selection__rendered {
-                color: black;
-            }
-
-            .form-checkbox label {
-                margin: 0 !important;
-            }
-
-            .btn-primary {
-                border-radius: 8px !important;
-                font-size: 12px;
-                float: right;
-            }
-        }
-
-        .download-all {
+        .gallery-toolbar .btn-group .btn.active {
             background-color: #599cf7;
-            outline: transparent;
-            border-radius: 4px;
-            padding: 5px 10px 3px 10px;
+            border-color: #599cf7;
+            color: #fff;
+        }
+
+        .gallery-toolbar .active-chips {
+            row-gap: 6px;
+        }
+
+        .gallery-toolbar .active-chips .badge {
+            font-size: 12px;
+            font-weight: 500;
+            background-color: #eef4fb;
+            color: #234;
+            border: 1px solid #d6e4f5;
+        }
+
+        .gallery-toolbar .active-chips .badge a {
+            text-decoration: none;
+            color: inherit;
+            font-weight: 600;
+        }
+
+        .gallery-toolbar .active-chips .badge a:hover {
+            color: #d9534f;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .gallery-card {
+            position: relative;
+            aspect-ratio: 4 / 3;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f6f9fb;
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+        }
+
+        .gallery-card__media,
+        .gallery-card__media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-card__doc {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 8px;
+            padding: 16px;
+            text-align: center;
+            background: linear-gradient(180deg, #ffffff 0%, #f1f5fa 100%);
+        }
+
+        .gallery-card__missing {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 6px;
+            padding: 16px;
+            text-align: center;
+            background: repeating-linear-gradient(
+                45deg,
+                #fafbfc,
+                #fafbfc 8px,
+                #f1f3f6 8px,
+                #f1f3f6 16px
+            );
+            color: #8a96a6;
+        }
+
+        .gallery-card__missing i {
+            font-size: 32px;
+            color: #c5cdd8;
+        }
+
+        .gallery-card__missing .label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .gallery-card__missing .hint {
+            font-size: 11px;
+            color: #adb5bd;
+            max-width: 100%;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+
+        .gallery-card__doc .name {
+            max-width: 100%;
+            word-break: break-all;
+        }
+
+        .gallery-card__doc .ext {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #6c757d;
+            letter-spacing: .05em;
+            font-weight: 600;
+        }
+
+        .gallery-card__overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 10px 12px;
+            background: linear-gradient(to top, rgba(0, 0, 0, .75) 0%, rgba(0, 0, 0, 0) 100%);
+            color: #fff;
+            opacity: 0;
+            transition: opacity .15s ease;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+
+        .gallery-card:hover .gallery-card__overlay {
+            opacity: 1;
+        }
+
+        .gallery-card__checkbox {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            opacity: 0;
+            transition: opacity .15s ease;
+            z-index: 2;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        #gallery-root.select-mode .gallery-card__checkbox,
+        .gallery-card:hover .gallery-card__checkbox,
+        .gallery-card.is-selected .gallery-card__checkbox {
+            opacity: 1;
+        }
+
+        .gallery-card.is-selected {
+            outline: 3px solid #599cf7;
+            outline-offset: -3px;
+        }
+
+        .gallery-card__badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, .55);
+            color: #fff;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+
+        .gallery-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .gallery-empty i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: .5;
+            display: block;
+        }
+
+        #attachmentModal .modal-header,
+        #attachmentFilterModal .modal-header {
             border: 0;
         }
 
-        .download-all, .download-all:focus, .download-all:hover {
-            color: white;
-            text-transform: capitalize;
+        #attachmentModal .modal-dialog {
+            max-width: 1100px;
         }
 
-        .download-all:focus, .download-all:hover {
-            opacity: 0.8;
+        #attachmentModal .modal-content {
+            border-radius: 12px;
+            overflow: hidden;
         }
 
+        #attachmentModal .modal-body {
+            padding: 16px 20px 20px;
+        }
+
+        #attachmentModal .carousel-item img {
+            max-height: 62vh;
+            max-width: 100%;
+            width: auto;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        #attachmentModal .carousel-control-prev,
+        #attachmentModal .carousel-control-next {
+            width: 48px;
+            opacity: 0.85;
+        }
+
+        #attachmentModal .carousel-control-next-icon,
+        #attachmentModal .carousel-control-prev-icon {
+            border-radius: 50%;
+            background-color: #599cf7;
+            padding: 5px !important;
+            background-size: 10px;
+            height: 30px;
+            width: 30px;
+        }
+
+        #attachmentModal .carousel-indicators {
+            display: none;
+        }
+
+        #attachmentModal .lightbox-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px 16px;
+            padding: 8px 16px;
+            margin-bottom: 12px;
+            background: #f6f9fb;
+            border-radius: 8px;
+        }
+
+        #attachmentModal .lightbox-header__location {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #1a5fb4;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        #attachmentModal .lightbox-header__location:hover {
+            color: #0d4a99;
+            text-decoration: underline;
+        }
+
+        #attachmentModal .lightbox-header__location--static {
+            color: #455a73;
+            cursor: default;
+        }
+
+        #attachmentModal .lightbox-header__task {
+            font-size: 13px;
+            text-align: right;
+        }
+
+        #attachmentModal .lightbox-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #eef1f4;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        #attachmentModal .lightbox-photo {
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0e1217;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 0 36px;
+        }
+
+        #attachmentModal .lightbox-doc {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            min-height: 40vh;
+            text-align: center;
+            color: #455a73;
+        }
+
+        #attachmentModal .lightbox-missing__panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 40vh;
+            color: #8a96a6;
+            background: repeating-linear-gradient(
+                45deg,
+                #fafbfc,
+                #fafbfc 8px,
+                #f1f3f6 8px,
+                #f1f3f6 16px
+            );
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        #attachmentFilterModal .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #455a73;
+        }
+
+        #attachmentFilterModal .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: black;
+        }
+
+        #attachmentFilterModal .btn-primary {
+            border-radius: 8px !important;
+        }
     </style>
-    <link rel="stylesheet" href="{% static 'plugins/babylon-grid/babylongrid-default.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div class="row">
+    <div class="gallery-toolbar d-flex flex-wrap align-items-center mb-3">
+        <div class="btn-group" role="group" aria-label="{% translate 'Attachment type' %}">
+            <a href="{{ type_links.all }}"
+               class="btn btn-outline-secondary {% if type_links.active == 'all' %}active{% endif %}">
+                {% translate 'All' %}
+            </a>
+            <a href="{{ type_links.Photo }}"
+               class="btn btn-outline-secondary {% if type_links.active == 'Photo' %}active{% endif %}">
+                <i class="fas fa-image"></i> {% translate 'Photos' %}
+            </a>
+            <a href="{{ type_links.Document }}"
+               class="btn btn-outline-secondary {% if type_links.active == 'Document' %}active{% endif %}">
+                <i class="fas fa-file-alt"></i> {% translate 'Documents' %}
+            </a>
+        </div>
 
-        <div class="col-12 p-0 d-flex justify-content-end">
-            <button class="attachment-filter" data-toggle="modal" data-target="#attachmentFilterModal">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-filter" viewBox="0 0 16 16">
-                    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
-                </svg>
+        {% if active_filter_chips %}
+            <div class="active-chips d-flex flex-wrap align-items-center">
+                {% for chip in active_filter_chips %}
+                    <span class="badge badge-pill px-2 py-1 mr-1">
+                        {{ chip.label }}
+                        <a href="{{ chip.remove_url }}" class="ml-1"
+                           aria-label="{% translate 'Remove filter' %}">&times;</a>
+                    </span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="ml-auto d-flex flex-wrap align-items-center">
+            <button type="button" id="toggleSelectMode" class="btn btn-outline-primary btn-sm mr-2">
+                <i class="fas fa-check-square"></i> {% translate 'Select' %}
+            </button>
+            <button type="button" class="btn btn-primary btn-sm download-all mr-2" disabled>
+                <i class="fas fa-download"></i> {% translate 'Download selected' %}
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#attachmentFilterModal">
+                <i class="fas fa-sliders-h"></i> {% translate 'More filters' %}
             </button>
         </div>
+    </div>
 
-        <div class="col-12">
-
-            {% include 'attachments/_grid.html' with attachments=attachments %}
-
-        </div>
+    <div id="gallery-root">
+        {% include 'attachments/_grid.html' with attachments=attachments %}
     </div>
 {% endblock %}
 
 {% block modals %}
+    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="attachmentFilterModal" tabindex="-1" role="dialog"
          aria-labelledby="attachmentFilterModalLabel"
          aria-hidden="true">
@@ -205,58 +427,63 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>{% translate 'Choose attachments to view' %}</h5>
-                    <button type="button" class="close btn-closeModal" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="card-body">
+                <div class="modal-body">
                     <form action="" method="get">
-                        <div class="form-checkbox-row">
-                            <div class="form-checkbox">
-                                <label for="id_type_0"><input type="radio" name="type" value="Photo" id="id_type_0" required="" {% if 'type' in query_strings_raw and query_strings_raw.type == 'Photo' %}checked=""{% endif %}> Photo</label>
-                            </div>
-
-                            <div class="form-checkbox">
-                                <label for="id_type_1"><input type="radio" name="type" value="Document" id="id_type_1" required="" {% if 'type' in query_strings_raw and query_strings_raw.type == 'Document' %}checked=""{% endif %}> Document</label>
-                            </div>
-
-                            <div class="form-checkbox">
-                                <label for="id_type_2"><input type="radio" name="type" value="" id="id_type_2" required="" {% if not 'type' in query_strings_raw or query_strings_raw.type not in 'Photo,Document' %}checked=""{% endif %}> Both</label>
-                            </div>
-                        </div>
-                        <br><br>
+                        <input type="hidden" name="type" value="{{ query_strings_raw.type }}">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="form-label">
-                                        <label for="id_region">{% translate 'Region' %}</label>
-                                    </div>
-                                    <div class="form-select-row">
+                                {% if single_region %}
+                                    {# Single-root dataset: hide the redundant top-level select but keep it in the DOM for the JS cascade. #}
+                                    <div class="form-group" style="display: none;">
                                         <select class="form-control" name="region" id="id_region" style="width: 100%;">
-                                            <option selected value="">---</option>
-                                            {% for region in regions %}
-                                                {% if 'region' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.region == region.id %}
-                                                    <option value="{{ region.id }}" selected>{{ region.name }}</option>
-                                                {% else %}
-                                                    <option value="{{ region.id }}">{{ region.name }}</option>
-                                                {% endif %}
-                                            {% endfor %}
+                                            <option value="{{ single_region.id }}" selected>{{ single_region.name }}</option>
                                         </select>
                                     </div>
-                                </div>
+                                {% else %}
+                                    <div class="form-group">
+                                        <div class="form-label">
+                                            <label for="id_region">{{ adm_labels.region }}</label>
+                                        </div>
+                                        <div class="form-select-row">
+                                            <select class="form-control" name="region" id="id_region" style="width: 100%;">
+                                                <option selected value="">---</option>
+                                                {% for region in regions %}
+                                                    {% if 'region' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.region == region.id %}
+                                                        <option value="{{ region.id }}" selected>{{ region.name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ region.id }}">{{ region.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endif %}
                                 <div class="form-group">
                                     <div class="form-label">
-                                        <label for="id_prefecture">{% translate 'Prefecture' %}</label>
+                                        <label for="id_prefecture">{{ adm_labels.prefecture }}</label>
                                     </div>
                                     <div class="form-select-row">
-                                        <select class="form-control" name="prefecture" id="id_prefecture" style="width: 100%;" disabled>
+                                        <select class="form-control" name="prefecture" id="id_prefecture" style="width: 100%;"{% if not single_region %} disabled{% endif %}>
                                             <option selected value="">---</option>
+                                            {% if single_region %}
+                                                {% for prefecture in prefectures %}
+                                                    {% if 'prefecture' in filter_hierarchy_query_strings and filter_hierarchy_query_strings.prefecture == prefecture.id %}
+                                                        <option value="{{ prefecture.id }}" selected>{{ prefecture.name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ prefecture.id }}">{{ prefecture.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="form-label">
-                                        <label for="id_commune">{% translate 'Commune' %}</label>
+                                        <label for="id_commune">{{ adm_labels.commune }}</label>
                                     </div>
                                     <div class="form-select-row">
                                         <select class="form-control" name="commune" id="id_commune" style="width: 100%;" disabled>
@@ -266,7 +493,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="form-label">
-                                        <label for="id_canton">{% translate 'Canton' %}</label>
+                                        <label for="id_canton">{{ adm_labels.canton }}</label>
                                     </div>
                                     <div class="form-select-row">
                                         <select class="form-control" name="canton" id="id_canton" style="width: 100%;" disabled>
@@ -278,7 +505,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="form-label">
-                                        <label for="id_village">{% translate 'Village' %}</label>
+                                        <label for="id_village">{{ adm_labels.village }}</label>
                                     </div>
                                     <div class="form-select-row">
                                         <select class="form-control" name="village" id="id_village" style="width: 100%;" disabled>
@@ -326,7 +553,7 @@
                             </div>
                         </div>
 
-                        <input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}">
+                        <input type="submit" class="btn btn-primary float-right" value="{% translate 'Apply' %}">
                     </form>
                 </div>
             </div>
@@ -336,201 +563,296 @@
 
 {% block javascript %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'plugins/babylon-grid/jquery.babylongrid.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/htmx.min.js' %}" defer></script>
-    <script type="text/javascript" data-attachments="{{ attachments }}">
+    <script type="text/javascript">
         $(document).ready(function () {
-            
-            let current_page = "{{ request.path }}";
-            let query_string = {{ filter_hierarchy_query_strings|safe }};
-            const filter_inputs = [$('#id_region'), $('#id_prefecture'), $('#id_commune'), $('#id_canton'), 
-                $('#id_village')]
-        
-            const development_inputs = [$('#id_phase'), $('#id_activity'), $('#id_task')]
 
-            $('input[type=checkbox]').click(function (event) {
-                if (event.stopPropagation) {
-                    event.stopPropagation();
-                } else {
-                    event.cancelBubble = true;
-                }
-            });
-            
+            let current_page = "{{ request.path }}";
+            let query_string = {{ filter_hierarchy_query_strings|default_if_none:"{}"|safe }};
+            const filter_inputs = [$('#id_region'), $('#id_prefecture'), $('#id_commune'), $('#id_canton'),
+                $('#id_village')];
+
+            const development_inputs = [$('#id_phase'), $('#id_activity'), $('#id_task')];
+
             init_change_filters_selects(0);
-            
+
             filter_inputs.forEach((input) => {
-                input.on('change', function(){
+                input.on('change', function () {
                     change_filters_selects(input, filter_inputs);
                 });
             });
-            
+
             development_inputs.forEach((input) => {
-                input.on('change', function(){
+                input.on('change', function () {
                     change_filters_selects(input, development_inputs);
                 });
             });
 
-            $('.babylongrid').babylongrid({
-                scheme: [
-                    {
-                        minWidth: 1250,
-                        columns: 3
-                    },
-                    {
-                        minWidth: 960,
-                        columns: 3
-                    },
-                    {
-                        minWidth: 500,
-                        columns: 2
-                    },
-                    {
-                        minWidth: 0,
-                        columns: 1
-                    }
-                ]
-            });
+            const root = document.getElementById('gallery-root');
+            const selected = new Set();
+            const downloadBtn = document.querySelector('.download-all');
+            const selectToggle = document.getElementById('toggleSelectMode');
 
-            $('.download-all').click(function (event) {
-                var formArray = $('.form-attachment').serializeArray();
-                let ids = '';
-                formArray.forEach((input, index) => {
-                    if (index != 0) {
-                        ids = ids + ','
-                    }
-                    ids = ids + input.value;
-                });
-                if (ids.length != 0) {
-                    window.location = current_page + 'download-zip/?ids=' + ids;
+            const missingFileLabel = "{% translate 'Missing file' %}";
+            const missingFileHint = "{% translate 'The image could not be loaded.' %}";
+
+            function escapeHtml(value) {
+                return String(value == null ? '' : value).replace(/[&<>"']/g, (c) => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                }[c]));
+            }
+
+            function markImageMissing(img) {
+                const media = img.closest('.gallery-card__media');
+                if (!media || media.dataset.missing === '1') return;
+                media.dataset.missing = '1';
+                const card = media.closest('.gallery-card');
+                const titleEl = card ? card.querySelector('.gallery-card__overlay .font-weight-bold') : null;
+                const titleText = titleEl ? titleEl.textContent.trim() : '';
+                const detail = titleText || img.alt || '';
+                media.classList.add('gallery-card__missing');
+                media.classList.remove('gallery-card__media');
+                media.innerHTML =
+                    '<i class="fas fa-image"></i>' +
+                    '<div class="label">' + escapeHtml(missingFileLabel) + '</div>' +
+                    (detail ? '<div class="hint">' + escapeHtml(detail) + '</div>' : '');
+            }
+
+            root.addEventListener('error', (e) => {
+                if (e.target && e.target.tagName === 'IMG' && e.target.closest('.gallery-card__media')) {
+                    markImageMissing(e.target);
+                }
+            }, true);
+
+            // Catch images that already failed before the listener was attached.
+            root.querySelectorAll('.gallery-card__media img').forEach((img) => {
+                if (img.complete && img.naturalWidth === 0) {
+                    markImageMissing(img);
                 }
             });
 
-            <!-- Script for carrousel -->
-            $('.attachment-link, .second-target').click(function () {
-                $("#attachmentModal .modal-body").html(`
-                <div class="clearfix" id="attachments">
-                        <div id="carouselIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
-                            <ol class="carousel-indicators">
-                                {% for attachment in attachments %}
-                                    <li data-target="#carouselIndicators" #selectorId{{ forloop.counter0 }}
-                                        data-slide-to="{{ forloop.counter0 }}"
-                                        {% if attachment.url == selectedAttachmentUrl %}class="active"{% endif %}></li>
-                                {% endfor %}
-                            </ol>
-                            <div class="carousel-inner">
-                                {% for attachment in attachments %}
-                                    <div class="carousel-item text-center" #slideid{{ forloop.counter0 }}>
-                                        {% if attachment.type == 'Photo' %}
-                                            <a class="attachment-modal-link" target="_blank"
-                                               href="{{ attachment.url|imgAWSS3Filter }}">
-                                                <img class="img-fluid mx-auto d-block"
-                                                     src="{{ attachment.url|imgAWSS3Filter }}"
-                                                     alt="{{ attachment.task }}" style="max-width: 100%; height: auto;">
-                                            </a>
-                                        {% else %}
-                                            <a class="align-items-center justify-content-center attachment-modal-link"
-                                               target="_blank" href="{{ attachment.url|imgAWSS3Filter }}">
-                                                <embed src="{{ attachment.url|imgAWSS3Filter }}" type="application/pdf" height="100%">
-                                            </a>
-                                        {% endif %}
-
-                    {#<a target="_blank" class="download" href="{% url 'administrativelevels:attachment_download' adm_id=adm_id url=attachment.url %}">#}
-
-                    {#    <img width="30px" height="auto" src="{% static 'images/download_icon.svg' %}" alt="download">#}
-                                       {#</a>#}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            <a class="carousel-control-prev" href="#carouselIndicators" role="button"
-                               data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselIndicators" role="button"
-                               data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="overlay" id="spin-attachments">
-                        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-                    </div>
-                  `);
-                let spin_attachments = $("#spin-attachments");
-                spin_attachments.show();
-                const count = $(this).data('count');
-                $('.carousel-item').eq(count).addClass('active');
-                $('.carousel-indicators li').eq(count).addClass('active');
-                spin_attachments.hide();
+            selectToggle.addEventListener('click', () => {
+                root.classList.toggle('select-mode');
+                if (!root.classList.contains('select-mode')) {
+                    selected.clear();
+                    document.querySelectorAll('.gallery-card.is-selected').forEach((c) => c.classList.remove('is-selected'));
+                    document.querySelectorAll('.gallery-card__checkbox').forEach((cb) => { cb.checked = false; });
+                    downloadBtn.disabled = true;
+                }
             });
 
-            function change_filters_selects(select_input, context_inputs){
+            root.addEventListener('click', (e) => {
+                const card = e.target.closest('.gallery-card');
+                if (!card) return;
+
+                if (root.classList.contains('select-mode')) {
+                    e.preventDefault();
+                    const id = card.dataset.attachmentId;
+                    const checkbox = card.querySelector('.gallery-card__checkbox');
+                    if (selected.has(id)) {
+                        selected.delete(id);
+                        card.classList.remove('is-selected');
+                        if (checkbox) checkbox.checked = false;
+                    } else {
+                        selected.add(id);
+                        card.classList.add('is-selected');
+                        if (checkbox) checkbox.checked = true;
+                    }
+                    downloadBtn.disabled = selected.size === 0;
+                } else {
+                    openLightbox(card);
+                }
+            });
+
+            downloadBtn.addEventListener('click', () => {
+                if (!selected.size) return;
+                window.location = current_page + 'download-zip/?ids=' + [...selected].join(',');
+            });
+
+            const lightboxStrings = {
+                openInNewTab: "{% translate 'Open in new tab' %}",
+                download: "{% translate 'Download' %}",
+                previous: "{% translate 'Previous' %}",
+                next: "{% translate 'Next' %}",
+                openDocument: "{% translate 'Open document' %}",
+                documentHint: "{% translate 'This file opens in a new tab.' %}",
+                viewLocation: "{% translate 'View location' %}"
+            };
+
+            function buildSlideHeader(card) {
+                const admUrl = card.dataset.admUrl;
+                const admLabel = card.dataset.admLabel;
+                const taskLabel = card.dataset.taskLabel;
+                if (!admUrl && !admLabel && !taskLabel) return '';
+                let html = '<div class="lightbox-header">';
+                if (admUrl && admLabel) {
+                    html += '<a href="' + escapeHtml(admUrl) + '" class="lightbox-header__location">' +
+                        '<i class="fas fa-map-marker-alt"></i> ' + escapeHtml(admLabel) +
+                        ' <i class="fas fa-arrow-right ml-1 small"></i>' +
+                        '</a>';
+                } else if (admLabel) {
+                    html += '<span class="lightbox-header__location lightbox-header__location--static">' +
+                        '<i class="fas fa-map-marker-alt"></i> ' + escapeHtml(admLabel) +
+                        '</span>';
+                }
+                if (taskLabel) {
+                    html += '<span class="lightbox-header__task text-muted">' + escapeHtml(taskLabel) + '</span>';
+                }
+                html += '</div>';
+                return html;
+            }
+
+            function buildSlideBody(card) {
+                const url = card.dataset.url || '';
+                const safeUrl = escapeHtml(url);
+                const admLabel = card.dataset.admLabel || '';
+                const filenameEl = card.querySelector('.gallery-card__doc .name');
+                const filename = filenameEl ? filenameEl.textContent.trim() : '';
+                const altText = admLabel || filename || '';
+
+                const onError = "this.onerror=null;this.parentNode.classList.add('lightbox-missing');" +
+                    "this.outerHTML='<div class=\\'lightbox-missing__panel\\'>" +
+                    "<i class=\\'fas fa-image fa-3x\\'></i>" +
+                    "<div class=\\'mt-2 font-weight-bold\\'>" + escapeHtml(missingFileLabel) + "</div>" +
+                    "<div class=\\'small text-muted\\'>" + escapeHtml(missingFileHint) + "</div>" +
+                    "</div>';";
+
+                if (card.dataset.type === 'Photo') {
+                    return '<div class="lightbox-photo">' +
+                        '<img src="' + safeUrl + '" class="img-fluid mx-auto d-block" alt="' + escapeHtml(altText) + '" onerror="' + onError + '">' +
+                        '</div>';
+                }
+                return '<div class="lightbox-doc">' +
+                    '<i class="fas fa-file-pdf fa-5x text-danger"></i>' +
+                    (filename ? '<div class="mt-3 font-weight-bold">' + escapeHtml(filename) + '</div>' : '') +
+                    '<a href="' + safeUrl + '" target="_blank" rel="noopener" class="btn btn-primary mt-3">' +
+                    '<i class="fas fa-external-link-alt"></i> ' + escapeHtml(lightboxStrings.openDocument) +
+                    '</a>' +
+                    '<div class="small text-muted mt-2">' + escapeHtml(lightboxStrings.documentHint) + '</div>' +
+                    '</div>';
+            }
+
+            function buildSlideFooter(card) {
+                const url = escapeHtml(card.dataset.url || '');
+                const downloadUrl = escapeHtml(card.dataset.downloadUrl || '');
+                const admUrl = card.dataset.admUrl;
+                const admLabel = card.dataset.admLabel || '';
+                let html = '<div class="lightbox-footer">';
+                if (downloadUrl) {
+                    html += '<a href="' + downloadUrl + '" class="btn btn-sm btn-primary">' +
+                        '<i class="fas fa-download"></i> ' + escapeHtml(lightboxStrings.download) +
+                        '</a>';
+                }
+                html += '<a href="' + url + '" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary ml-2">' +
+                    '<i class="fas fa-external-link-alt"></i> ' + escapeHtml(lightboxStrings.openInNewTab) +
+                    '</a>';
+                if (admUrl) {
+                    const label = admLabel || lightboxStrings.viewLocation;
+                    html += '<a href="' + escapeHtml(admUrl) + '" class="btn btn-sm btn-outline-secondary ml-2">' +
+                        '<i class="fas fa-map-marker-alt"></i> ' + escapeHtml(label) +
+                        '</a>';
+                }
+                html += '</div>';
+                return html;
+            }
+
+            function openLightbox(card) {
+                const cards = [].slice.call(document.querySelectorAll('.gallery-card'));
+                const idx = cards.indexOf(card);
+                const slidesHtml = cards.map((c, i) => {
+                    const active = i === idx ? ' active' : '';
+                    return '<div class="carousel-item' + active + '">' +
+                        buildSlideHeader(c) +
+                        buildSlideBody(c) +
+                        buildSlideFooter(c) +
+                        '</div>';
+                }).join('');
+                const indicators = cards.map((_, i) =>
+                    '<li data-target="#carouselIndicators" data-slide-to="' + i + '" class="' + (i === idx ? 'active' : '') + '"></li>'
+                ).join('');
+
+                $('#attachmentModal .modal-body').html(
+                    '<div id="carouselIndicators" class="carousel slide" data-ride="carousel" data-interval="false">' +
+                    '<ol class="carousel-indicators">' + indicators + '</ol>' +
+                    '<div class="carousel-inner">' + slidesHtml + '</div>' +
+                    '<a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">' +
+                    '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
+                    '<span class="sr-only">' + escapeHtml(lightboxStrings.previous) + '</span>' +
+                    '</a>' +
+                    '<a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">' +
+                    '<span class="carousel-control-next-icon" aria-hidden="true"></span>' +
+                    '<span class="sr-only">' + escapeHtml(lightboxStrings.next) + '</span>' +
+                    '</a>' +
+                    '</div>'
+                );
+                $('#attachmentModal').modal('show');
+            }
+
+            function change_filters_selects(select_input, context_inputs) {
                 let empty_option = new Option("---", "", false, false);
                 let base_index = context_inputs.indexOf(select_input);
-                let select_to_fill = context_inputs[base_index + 1]
-                let other_selects = context_inputs.slice(base_index + 2)
-                
+                let select_to_fill = context_inputs[base_index + 1];
+                let other_selects = context_inputs.slice(base_index + 2);
+
                 let selected_value = select_input.find(":selected").val();
 
                 if (selected_value !== '') {
                     let base_url = "{% url 'administrativelevels:utils:attachment_filter' %}";
                     $.ajax({
-                        type : "POST",
+                        type: "POST",
                         url: base_url,
                         data: {
-                          type: select_input.attr('name'),
-                          value: selected_value,
-                          csrfmiddlewaretoken: '{{ csrf_token }}',
+                            type: select_input.attr('name'),
+                            value: selected_value,
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
                         },
-                        success: function(response){
+                        success: function (response) {
                             select_to_fill.empty();
                             select_to_fill.append(empty_option);
                             response.values.forEach((element) => {
-                                if (['task', 'activity', 'phase'].includes(select_input.attr('name'))){
+                                if (['task', 'activity', 'phase'].includes(select_input.attr('name'))) {
                                     select_to_fill.append(new Option(element.name, element.name, false, false));
-                                }else{
+                                } else {
                                     select_to_fill.append(new Option(element.name, element.id, false, false));
                                 }
-                            })
+                            });
                         }
                     });
                     select_to_fill.prop('disabled', false);
-                }
-                else {
+                } else {
                     select_to_fill.prop('disabled', 'disabled');
-                    select_to_fill.empty()
+                    select_to_fill.empty();
                     select_to_fill.append(empty_option);
                 }
                 other_selects.forEach((select) => {
                     select.prop('disabled', 'disabled');
-                    select.empty()
+                    select.empty();
                     select.append(empty_option);
                 });
             }
-            
-            function init_change_filters_selects(base_index){
+
+            function init_change_filters_selects(base_index) {
                 let empty_option = new Option("---", "", false, false);
                 let base_url = "{% url 'administrativelevels:utils:attachment_filter' %}";
-                let current_select = filter_inputs[base_index]
-                let select_to_fill = filter_inputs[base_index + 1]
-                
-                if ( query_string.hasOwnProperty(current_select.attr('name')) && query_string[current_select.attr('name')] !== "" ){
+                let current_select = filter_inputs[base_index];
+                let select_to_fill = filter_inputs[base_index + 1];
+
+                if (query_string && query_string.hasOwnProperty(current_select.attr('name')) && query_string[current_select.attr('name')] !== "") {
                     let selected_value = query_string[current_select.attr('name')];
                     current_select.val(selected_value);
-                    if ( base_index === 0 ) {  // I don't know why us only needed on index 0
+                    if (base_index === 0) {
                         current_select.trigger('change');
                     }
-                    
+
                     $.ajax({
-                        type : "POST",
+                        type: "POST",
                         url: base_url,
                         data: {
-                          type: current_select.attr('name'),
-                          value: selected_value,
-                          csrfmiddlewaretoken: '{{ csrf_token }}',
+                            type: current_select.attr('name'),
+                            value: selected_value,
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
                         },
-                        success: function(response){
+                        success: function (response) {
                             select_to_fill.empty();
                             select_to_fill.append(empty_option);
                             response.values.forEach((element) => {
@@ -542,30 +864,6 @@
                     });
                 }
             }
-
-            document.addEventListener('htmx:afterRequest', function(evt) {
-                $('.babylongrid').babylongrid({
-                    scheme: [
-                        {
-                            minWidth: 1250,
-                            columns: 3
-                        },
-                        {
-                            minWidth: 960,
-                            columns: 3
-                        },
-                        {
-                            minWidth: 500,
-                            columns: 2
-                        },
-                        {
-                            minWidth: 0,
-                            columns: 1
-                        }
-                    ]
-                });
-                $('.babylongrid').trigger('babylongrid:resize');
-            });
         });
     </script>
 {% endblock %}

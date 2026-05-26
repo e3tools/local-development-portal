@@ -1,18 +1,17 @@
 {% load static i18n humanize custom_tags %}
 {% if investments.count == 0 %}
-    <h3>{% translate 'You have no priorities' %}</h3>
+    <h5>{% translate 'You have no priorities' %}</h5>
 {% else %}
-    <table class="table datatable rounded-table">
+    <table class="table datatable table-bordered">
     <thead>
     <tr>
-        <th class="align-middle border-top-left-corner" rowspan="2">{% translate 'Ranking' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Sub-project priorities' %}</th>
-        <th class="align-middle border-bottom-0 rounded-0" colspan="4">{%  translate 'Priorities' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{%  translate 'Beneficiaries' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Estimated cost' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Funded by' %}</th>
-        <th class="align-middle rounded-0 border-bottom-0" rowspan="2">{% translate 'Climate contribution' %}</th>
-        <th class="align-middle border-top-right-corner border-bottom-0" rowspan="2">{% translate 'Actions' %}</th>
+        <th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
+        <th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+        <th class="align-middle" colspan="4">{%  translate 'Priorities' %}</th>
+        <th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
+        <th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
+        <th class="align-middle" rowspan="2">{% translate 'Climate contribution' %}</th>
+        <th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
     </tr>
     <tr>
         <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
@@ -67,7 +66,6 @@
                 {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
             <td class="border-sides--light">
                 {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
-            <td class="border-sides--light">{{ investment.beneficiaries }}</td>
         {% if investment.estimated_cost < 1000000 %}
             <td class="border-sides--light">{% translate "Not available" %}</td>
         {% else %}

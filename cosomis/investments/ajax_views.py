@@ -24,14 +24,22 @@ class FillAdmLevelsSelectFilters(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         adm_obj = AdministrativeLevel.objects.get(id=request.POST['value'])
         opt_qs = AdministrativeLevel.objects.filter(parent=adm_obj)
-        if adm_obj.type == AdministrativeLevel.REGION:
-            opt_qs = opt_qs.filter(type=AdministrativeLevel.PREFECTURE)
-        elif adm_obj.type == AdministrativeLevel.PREFECTURE:
-            opt_qs = opt_qs.filter(type=AdministrativeLevel.COMMUNE)
-        elif adm_obj.type == AdministrativeLevel.COMMUNE:
-            opt_qs = opt_qs.filter(type=AdministrativeLevel.CANTON)
-        elif adm_obj.type == AdministrativeLevel.CANTON:
-            opt_qs = opt_qs.filter(type=AdministrativeLevel.VILLAGE)
+        if adm_obj.is_region():
+            opt_qs = opt_qs.filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
+            )
+        elif adm_obj.is_prefecture():
+            opt_qs = opt_qs.filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.COMMUNE)
+            )
+        elif adm_obj.is_commune():
+            opt_qs = opt_qs.filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.CANTON)
+            )
+        elif adm_obj.is_canton():
+            opt_qs = opt_qs.filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+            )
 
         return Response({
             'values': [{'id': adm.id, 'name': adm.name} for adm in opt_qs]
@@ -131,42 +139,57 @@ class InvestmentModelViewSet(ModelViewSet):
             "region-filter"
         ] not in ["", None]:
             queryset = queryset.filter(
+                AdministrativeLevel.type_filter_q(
+                    AdministrativeLevel.REGION,
+                    field="administrative_level__parent__parent__parent__parent__type",
+                ),
                 administrative_level__parent__parent__parent__parent__id=self.request.GET[
                     "region-filter"
                 ],
-                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION,
             )
         if "prefecture-filter" in self.request.GET and self.request.GET[
             "prefecture-filter"
         ] not in ["", None]:
             queryset = queryset.filter(
+                AdministrativeLevel.type_filter_q(
+                    AdministrativeLevel.PREFECTURE,
+                    field="administrative_level__parent__parent__parent__type",
+                ),
                 administrative_level__parent__parent__parent__id=self.request.GET[
                     "prefecture-filter"
                 ],
-                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE,
             )
         if "commune-filter" in self.request.GET and self.request.GET[
             "commune-filter"
         ] not in ["", None]:
             queryset = queryset.filter(
+                AdministrativeLevel.type_filter_q(
+                    AdministrativeLevel.COMMUNE,
+                    field="administrative_level__parent__parent__type",
+                ),
                 administrative_level__parent__parent__id=self.request.GET[
                     "commune-filter"
                 ],
-                administrative_level__parent__parent__type=AdministrativeLevel.COMMUNE,
             )
         if "canton-filter" in self.request.GET and self.request.GET[
             "canton-filter"
         ] not in ["", None]:
             queryset = queryset.filter(
+                AdministrativeLevel.type_filter_q(
+                    AdministrativeLevel.CANTON,
+                    field="administrative_level__parent__type",
+                ),
                 administrative_level__parent__id=self.request.GET["canton-filter"],
-                administrative_level__parent__type=AdministrativeLevel.CANTON,
             )
         if "village-filter" in self.request.GET and self.request.GET[
             "village-filter"
         ] not in ["", None]:
             queryset = queryset.filter(
+                AdministrativeLevel.type_filter_q(
+                    AdministrativeLevel.VILLAGE,
+                    field="administrative_level__type",
+                ),
                 administrative_level__id=self.request.GET["village-filter"],
-                administrative_level__type=AdministrativeLevel.VILLAGE,
             )
 
         if "sector-filter" in self.request.GET and self.request.GET[

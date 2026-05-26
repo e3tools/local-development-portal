@@ -38,6 +38,13 @@ DEBUG = env.bool('DEBUG', False)
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', list, ['localhost'])
 
+# Per-deployment program name shown on login and other branded surfaces.
+# Defaults to the Togo wording; override per country via the PROGRAM_NAME env var.
+PROGRAM_NAME = env(
+    'PROGRAM_NAME',
+    default='Emergency program to strengthen community resilience and security',
+)
+
 
 # Application definition
 
@@ -97,7 +104,7 @@ AUTH_USER_MODEL = 'usermanager.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['cosomis/templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'cosomis', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,6 +144,15 @@ else:
         # EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
     }
     
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         #'NAME': '/Users/asucr/Downloads/database1.db',  # This is where you put the name of the db file.
+#         # If one doesn't exist, it will be created at migration time.
+#         'NAME': os.path.join(BASE_DIR, 'database1.db'),
+#     }
+#  }
 
 MAX_RESPONSE_DAYS = 3
 

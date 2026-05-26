@@ -21,9 +21,13 @@ cosomis/cosomis/*.env
 *.db
 
 .idea/
+cosomis/.junie/
 
 cosomis/AWSCLIV2.pkg
 
 cosomis/coso_subprojects.xlsx
 
 *.xlsx
+
+# Environment
+venv/

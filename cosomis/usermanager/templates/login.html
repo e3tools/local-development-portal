@@ -4,88 +4,102 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="description" content=""/>
-    <meta name="author" content=""/>
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
-    <link rel="mask-icon" href="{% static 'images/safari-pinned-tab.svg' %}" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <title>{% translate 'Log in' %}</title>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta name="description" content=""/>
+	<meta name="author" content=""/>
+	<link rel="icon" type="image/jpeg" href="{% static 'images/logos/setco-coso.jpg' %}">
+	<link rel="apple-touch-icon" href="{% static 'images/logos/setco-coso.jpg' %}">
+	<meta name="msapplication-TileColor" content="#009639">
+	<title>{% translate 'Log in' %}</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{% static 'AdminLTE/plugins/fontawesome-free/css/all.min.css' %}" />
-    <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="{% static 'AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}" />
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
-    <link href="{% static 'css/fonts.css' %}" rel="stylesheet">
+	<!-- Google Font: Source Sans Pro -->
+	<link rel="stylesheet"
+		  href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"/>
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="{% static 'AdminLTE/plugins/fontawesome-free/css/all.min.css' %}"/>
+	<!-- icheck bootstrap -->
+	<link rel="stylesheet" href="{% static 'AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}"/>
+	<!-- Theme style -->
+	<link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
+	<style>
+		.login-page { background: linear-gradient(135deg, #f5f8f5 0%, #eaf4ec 100%); }
+		.login-box { width: 420px; max-width: 92vw; }
+		.login-logo { margin-bottom: 1rem; }
+		.login-logo .brand-mark {
+			display: block;
+			width: 160px;
+			height: 160px;
+			margin: 0 auto .75rem;
+			object-fit: contain;
+			border-radius: 16px;
+			background: #ffffff;
+			padding: 12px;
+			box-shadow: 0 8px 24px rgba(0, 86, 47, .12);
+		}
+		.login-logo .structure_name {
+			font-family: 'Inter', 'Source Sans Pro', sans-serif;
+			font-weight: 600;
+			font-size: 1.1rem;
+			line-height: 1.35;
+			color: #00562f;
+			margin: 0;
+			text-align: center;
+			letter-spacing: .2px;
+		}
+		.card { border: 0; border-radius: 14px; box-shadow: 0 12px 32px rgba(0, 86, 47, .10); }
+		.login-card-body { border-radius: 14px; }
+		.btn-primary { background-color: #009639; border-color: #009639; }
+		.btn-primary:hover, .btn-primary:focus { background-color: #007a2e; border-color: #007a2e; }
+	</style>
 </head>
-<style>
-    .structure_name {
-    font-size: 22px; /* Taille de police plus grande */
-    font-weight: 500;
-    color: #196A62;
-    margin-bottom: 0px; /* Espace en dessous */
-    line-height: 1.2; /* Pour espacer les lignes */
-    }
 
-</style>
-
-<div class="structure_name">
-    <small>Programme d’urgence de renforcement</small><br>
-    <small>de la résilience et de la sécurité</small><br>
-    <small>des communautés</small>
-</div>
 <body class="hold-transition login-page">
-{%  if OTHER_LANGUAGES %}
-    <nav class="main-header navbar navbar-expand">
-        <ul class="navbar-nav ml-auto">
-            {% include 'layouts/language_dropdown.html' %}
-        </ul>
-    </nav>
+{% if OTHER_LANGUAGES %}
+	<nav class="main-header navbar navbar-expand">
+		<ul class="navbar-nav ml-auto">
+			{% include 'layouts/language_dropdown.html' %}
+		</ul>
+	</nav>
 {% endif %}
 <div class="login-box">
-<!--     <div class="text-center"> -->
-<!--         <img src="{% static 'images/logos/rtg.jpg' %}" alt="PURS Logo" class="profile-user-img img-fluid img-circle mb-3" style="opacity: .8; width: 50%"> -->
-<!--     </div> -->
-    <!-- /.login-logo -->
+	<div class="login-logo">
+		<img class="brand-mark" src="{% static 'images/logos/setco-coso.jpg' %}" alt="SETCO / COSO">
+		<p class="structure_name">
+			{{ PROGRAM_NAME }}
+		</p>
+	</div>
+	<div class="card">
+		<div class="card-body login-card-body">
+			<p class="login-box-msg">
+				{% translate "Log in to start your session" %}
+			</p>
 
-<div class="card">
-        <div class="card-body login-card-body">
-            <p class="login-box-msg">
-                {% translate "Log in to start your session" %}
-            </p>
-
-            <form method="post">
-                {% csrf_token %}
-                {% bootstrap_field form.email %}
-                {% bootstrap_field form.password %}
-                <div class="row">
-                    <!-- /.col -->
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-block">
-                            {% translate "Log in" %}
-                        </button>
-                    </div>
-                    <!-- /.col -->
-                </div>
-            </form>
-                <p class="mt-1 mb-0">
-                    <a href="{% url 'usermanager:password_reset' %}">{% translate 'I forgot my password' %}</a>
-                </p>
-                <p class="mt-1 mb-0">
-                    <a href="{% url 'usermanager:signup' %}" class="text-center">{% translate 'Sign up as a partner' %}</a>
-                </p>
-        </div>
-        <!-- /.login-card-body -->
-    </div>
+			<form method="post">
+				{% csrf_token %}
+				{% bootstrap_field form.email %}
+				{% bootstrap_field form.password %}
+				<div class="row">
+					<!-- /.col -->
+					<div class="col-12">
+						<button type="submit" class="btn btn-primary btn-block">
+							{% translate "Log in" %}
+						</button>
+					</div>
+					<!-- /.col -->
+				</div>
+			</form>
+			<p class="mt-3">
+				<a href="{% url 'usermanager:password_reset' %}">{% translate 'I forgot my password' %}</a>
+			</p>
+			<p class="mt-3 mb-0">
+				<a href="{% url 'usermanager:signup' %}" class="text-center">{% translate 'Sign up as a partner' %}</a>
+			</p>
+		</div>
+		<!-- /.login-card-body -->
+	</div>
 </div>
 <!-- /.login-box -->
 
