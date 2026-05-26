@@ -35,7 +35,7 @@ from administrativelevels.services.canton_map_service import CantonMapService
 from administrativelevels.services.canton_planning_service import CantonPlanningService
 from administrativelevels.services.canton_summary_service import CantonSummaryService
 from cosomis.constants import IMAGE_EXTENSIONS
-from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
+from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin, GRMMixin
 from cosomis.utils_functions import get_api_datas
 from investments.domain.investment_criteria import InvestmentCriteria
 from investments.infrastructure.repositories.db_investment_repository import DbInvestmentRepository
@@ -180,7 +180,7 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredApproveRequiredM
         return ctx
 
 
-class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin, DetailView):
+class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, DetailView):
     """Class to present the detail page of one village"""
 
     model = AdministrativeLevel
@@ -400,24 +400,6 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
 
         package = Package.objects.get_active_cart(user=self.request.user)
         context["cart_items_id"] = [inv.id for inv in package.funded_investments.all()]
-
-        # GRM Call
-        complaints = []
-        try:
-            GRM_SECRET_KEY_GENRATE = settings.GRM_SECRET_KEY_GENRATE
-            GRM_URL = settings.GRM_URL
-            payload = {
-                "token": GRM_SECRET_KEY_GENRATE,
-                "region": str(self.object.id),
-                "region_name": str(self.object.name),
-                "region_parent_name": str(self.object.parent.name) if self.object.parent else "",
-            }
-            complaints, links_error = get_api_datas(f"{GRM_URL}/api/issue/get-issues/", payload)
-        except Exception as e:
-            print(f"Error fetching data from GRM API: {str(e)}")
-
-        context["complaints"] = complaints
-        # End GRM Call
 
         return context
 
@@ -779,7 +761,7 @@ class CantonPrioritiesMixin:
         return context
 
 
-class CommuneDetailView(PageMixin, LoginRequiredApproveRequiredMixin, CommunePrioritiesMixin, DetailView):
+class CommuneDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, CommunePrioritiesMixin, DetailView):
     model = AdministrativeLevel
     template_name = "commune/commune_detail.html"
     active_level1 = "administrative_levels"
@@ -1090,7 +1072,7 @@ class CantonPrioritiesPartialView(LoginRequiredApproveRequiredMixin, CantonPrior
         return context
 
 
-class CantonDetailView(PageMixin, LoginRequiredApproveRequiredMixin, CantonPrioritiesMixin, DetailView):
+class CantonDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, CantonPrioritiesMixin, DetailView):
     model = AdministrativeLevel
     template_name = "canton/canton_detail.html"
     active_level1 = "administrative_levels"

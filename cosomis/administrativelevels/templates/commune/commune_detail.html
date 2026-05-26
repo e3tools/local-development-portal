@@ -186,6 +186,8 @@
 							</li>
 							<li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
 															href="#diagnostics">{% translate "Diagnostics" %}</a></li>
+							<li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+																	href="#grm">{% translate "GRM" %}</a></li>
 							<li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
 															href="#climate">{% translate "Climate" %}</a></li>
 							<li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
@@ -243,6 +245,13 @@
 							<div id="diagnostics" class="tab-pane fade">
 								<h5>{% translate "In construction" %}</h5>
 							</div>
+                            <div id="grm" class="tab-pane fade">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% include 'shared/grm_table.html' %}
+                                    </div>
+                                </div>
+                            </div>
 							<div id="climate" class="tab-pane fade position-relative">
 								{% include 'climate/tabs/mapbox.html' %}
 							</div>

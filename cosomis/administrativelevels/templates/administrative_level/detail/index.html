@@ -194,6 +194,8 @@
                                 <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
                                                                           href="#planning_cycle">{% translate "Planning Cycle" %}</a>
                                 </li>
+                                <li class="nav-item btn p-0 pl-2 pr-2"><a class="nav-link" data-toggle="tab"
+                                                                        href="#grm">{% translate "GRM" %}</a></li>
                                 <li class="nav-item btn p-0"><a class="nav-link" data-toggle="tab"
                                                                 href="#climate">{% translate "Climate" %}</a></li>
                             {% endif %}
@@ -270,6 +272,13 @@
                                 <div class="card">
                                     <div class="card-body">
                                         {% include 'administrative_level/detail/tabs/planning_cycle.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="grm" class="tab-pane fade">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% include 'shared/grm_table.html' %}
                                     </div>
                                 </div>
                             </div>

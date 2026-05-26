@@ -1,7 +1,10 @@
 from django.contrib.auth.mixins import AccessMixin
 from django.http import Http404, JsonResponse
+from django.conf import settings
 
 from utils.mixpanel.utils import track_user_activity
+from cosomis.utils_functions import get_api_datas
+from administrativelevels.models import AdministrativeLevel
 
 
 class PageMixin(object):
@@ -73,3 +76,32 @@ class LoginRequiredApproveRequiredMixin(AccessMixin):
         if not request.user.is_authenticated or not request.user.is_approved:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
+
+
+class GRMMixin(object):
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['complaints'] = self.get_grm_complaints()
+        return ctx
+
+    def get_grm_complaints(self):
+        # GRM Call
+        complaints = []
+        if hasattr(self, 'object') and self.object and hasattr(self.object, 'type') and self.object.type in [AdministrativeLevel.VILLAGE, AdministrativeLevel.CANTON, AdministrativeLevel.COMMUNE, AdministrativeLevel.PREFECTURE, AdministrativeLevel.REGION]:
+            try:
+                GRM_SECRET_KEY_GENRATE = settings.GRM_SECRET_KEY_GENRATE
+                GRM_URL = settings.GRM_URL
+                payload = {
+                    "token": GRM_SECRET_KEY_GENRATE,
+                    "region": str(self.object.id),
+                    "region_name": str(self.object.name),
+                    "region_parent_name": str(self.object.parent.name) if self.object.parent else "",
+                }
+                complaints, links_error = get_api_datas(f"{GRM_URL}/api/issue/get-issues/", payload)
+            except Exception as e:
+                print(f"Error fetching data from GRM API: {str(e)}")
+
+        # End GRM Call
+
+        return complaints
