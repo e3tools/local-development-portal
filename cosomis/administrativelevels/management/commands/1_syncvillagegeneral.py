@@ -25,6 +25,12 @@ class Command(BaseCommand):
         for document in docs:
             create_or_update_adm(document)
             recursive_administrative_level(document, db)
+
+        # delete all Country administrative levels and set parent to null for Region administrative levels for Togo
+        if AdministrativeLevel.objects.filter(type__icontains='Country', name__icontains='Togo').exists():
+            set_region_parent_null_and_delete_country_administrative_levels()
+            self.stdout.write(self.style.SUCCESS('Successfully set parent to null for Region administrative levels and deleted Country administrative levels for Togo!'))
+
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))
 
 
@@ -81,3 +87,11 @@ def create_or_update_adm(administrative_level_data):
         adm_level.save()
 
     # The record is now saved or updated in the Django model
+
+
+def set_region_parent_null_and_delete_country_administrative_levels():
+    # sets the parent field to null for all AdministrativeLevel records with type 'Region'
+    AdministrativeLevel.objects.filter(type__icontains='Region').update(parent=None) # Important to set parent to null before deleting Country 
+    
+    # deletes all AdministrativeLevel records with type 'Country'
+    AdministrativeLevel.objects.filter(type__icontains='Country').delete()
