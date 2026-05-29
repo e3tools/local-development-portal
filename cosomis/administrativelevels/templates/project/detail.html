@@ -3,7 +3,7 @@
 
 {% block extracss %}
     {{ block.super }}
-    <link href="{% static 'AdminLTE/plugins/jqvmap/jqvmap.css' %}" media="screen" rel="stylesheet" type="text/css">
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" href="{% static 'css/detail.css' %}"/>
     <style>
         .table th {
@@ -80,9 +80,9 @@
                 <div class="card">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
-{#                            <li class="nav-item">#}
-{#                                <a class="nav-link" data-toggle="tab" href="#investments_map">{% translate 'Investments map' %}</a>#}
-{#                            </li>#}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#investments_map">{% translate 'Investments map' %}</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" href="#investments_list">{% translate 'Investments list' %}</a>
                             </li>
@@ -100,10 +100,11 @@
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="tab-pane" id="investments_map">
-
                                 <div class="col-12">
-                                    <div id="world-map" style="height: 650px; width: 100%; position: relative; overflow: hidden; background-color: transparent;">
-                                    </div>
+                                    <div id="project-investments-map" style="height: 650px; width: 100%;"></div>
+                                    {% if not mapbox_access_token %}
+                                    <p class="text-warning mt-2">{% translate "Map unavailable: MAPBOX_ACCESS_TOKEN is not configured." %}</p>
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -369,32 +370,91 @@
 
 {% block javascript %}
 {{ block.super }}
-<script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/jquery.vmap.js' %}"></script>
-<script type="text/javascript" src="{% static 'AdminLTE/plugins/jqvmap/maps/continents/jquery.vmap.africa.js' %}"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
     <script src="{% static 'AdminLTE/plugins/daterangepicker/daterangepicker.js' %}"></script>
 <script type="text/javascript">
 
+    // ---- Carte Mapbox des investissements ----
+    (function () {
+        const token = '{{ mapbox_access_token }}';
+        const investmentsData = {{ investments_map_data|safe }};
+
+        function initProjectMap() {
+            if (!token) return;
+            mapboxgl.accessToken = token;
+            if (!mapboxgl.supported()) return;
+
+            const map = new mapboxgl.Map({
+                container: 'project-investments-map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [0, 10],
+                zoom: 5
+            });
+            map.addControl(new mapboxgl.NavigationControl());
+
+            const bounds = new mapboxgl.LngLatBounds();
+            let hasCoords = false;
+
+            investmentsData.forEach(function (inv) {
+                if (!inv.latitude || !inv.longitude) return;
+                hasCoords = true;
+                const lngLat = [parseFloat(inv.longitude), parseFloat(inv.latitude)];
+                bounds.extend(lngLat);
+
+                const popupHtml =
+                    '<strong>' + (inv.title || '') + '</strong>' +
+                    (inv.description ? '<br><em>' + inv.description + '</em>' : '') +
+                    '<br><b>{% translate "Sector" %}:</b> ' + (inv.sector__name || inv.sector__category__name || '—') +
+                    '<br><b>{% translate "Physical rate" %}:</b> ' + (inv.physical_execution_rate || 0) + ' %' +
+                    '<br><b>{% translate "Status" %}:</b> ' + (inv.project_status || '—');
+
+                new mapboxgl.Marker({ color: '#3b82f6' })
+                    .setLngLat(lngLat)
+                    .setPopup(new mapboxgl.Popup({ offset: 20 }).setHTML(popupHtml))
+                    .addTo(map);
+            });
+
+            if (hasCoords) {
+                map.fitBounds(bounds, { padding: 60, maxZoom: 14 });
+            }
+        }
+
+        // Initialiser quand l'onglet "Investments map" est activé
+        let mapInitialized = false;
+        $('a[href="#investments_map"]').on('shown.bs.tab', function () {
+            if (!mapInitialized) {
+                mapInitialized = true;
+                initProjectMap();
+            }
+        });
+    })();
+    // ---- Fin carte ----
+
     $( document ).ready(function() {
-        
+
         $(".investments-datatable").DataTable({{ investments_datatable_config | safe }});
         $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
-        $('#world-map').vectorMap({ map: 'africa_en' });
-        
+
         $('.investment-update-badge').on('click', function (){
-            $('#investment-hidden').val($(this).data('investment'));
-            $('#project-status').val($(this).data('status')).trigger("change");
-            $('#lastUpdatedHelpTextId').html($(this).data('updated'));
-            $('.investment-name').html($(this).data('name'));
-            
-            $("#physicalExecutionNumber").val($(this).data('progress'));
-            $("#physicalExecutionRange").val($(this).data('progress'));
-            
-            $("#estimated-cost").val($(this).data('estimated-cost'));
-            $("#real-cost").val($(this).data('real-cost'));
-            
-            $("#project-latitude").val($(this).data('latitude'));
-            $("#project-longitude").val($(this).data('longitude'));
-            
+            var $badge = $(this);
+            $('#investment-hidden').val($badge.attr('data-investment'));
+            $('#project-status').val($badge.attr('data-status')).trigger("change");
+            $('#lastUpdatedHelpTextId').html($badge.attr('data-updated'));
+            $('.investment-name').html($badge.attr('data-name'));
+
+            var progress = $badge.attr('data-progress') || 0;
+            $("#physicalExecutionNumber").val(progress);
+            $("#physicalExecutionRange").val(progress);
+
+            $("#estimated-cost").val($badge.attr('data-estimated-cost') || '');
+            $("#real-cost").val($badge.attr('data-real-cost') || '');
+
+            var lat = $badge.attr('data-latitude');
+            var lng = $badge.attr('data-longitude');
+            // Afficher la valeur uniquement si elle est définie et non vide
+            $("#project-latitude").val((lat !== undefined && lat !== 'None' && lat !== '') ? lat : '');
+            $("#project-longitude").val((lng !== undefined && lng !== 'None' && lng !== '') ? lng : '');
+
             $("#investmentUpdateModel").modal("show");
         });
         

@@ -59,13 +59,30 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
 
 
 class InvestmentModelViewSet(ModelViewSet):
-    queryset = Investment.objects.filter(
-        investment_status=Investment.PRIORITY,
-        funded_by__isnull=True,
-    ).exclude(
-        id__in=PackageFundedInvestment.objects.values_list("investment_id", flat=True)
-    )
+    # Investissements prioritaires non encore financés, hors paquets actifs (en attente ou approuvés).
+    # Les investissements rejetés (tous leurs items dans un paquet sont REJECTED) sont réintégrés
+    # afin qu'un autre partenaire puisse les sélectionner.
+    queryset = Investment.objects.none()  # Requis par DRF ; surchargé par get_queryset()
     serializer_class = InvestmentSerializer
+
+    def get_base_queryset(self):
+        rejected_investment_ids = PackageFundedInvestment.objects.filter(
+            status=PackageFundedInvestment.REJECTED
+        ).values_list("investment_id", flat=True)
+
+        active_investment_ids = PackageFundedInvestment.objects.filter(
+            status__in=[PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED]
+        ).values_list("investment_id", flat=True)
+
+        return Investment.objects.filter(
+            investment_status=Investment.PRIORITY,
+        ).filter(
+            # funded_by nul (jamais soumis) OU tous les items du paquet ont été rejetés
+            Q(funded_by__isnull=True) | Q(id__in=rejected_investment_ids)
+        ).exclude(
+            # Exclure les items actuellement en attente ou approuvés dans un paquet actif
+            id__in=active_investment_ids
+        )
 
     @action(detail=False, methods=['POST'], url_path='results', url_name='results')
     def selected_investments_data(self, request, *args, **kwargs):
@@ -134,7 +151,8 @@ class InvestmentModelViewSet(ModelViewSet):
         return context
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = self.get_base_queryset()
+
         if "region-filter" in self.request.GET and self.request.GET[
             "region-filter"
         ] not in ["", None]:
@@ -397,23 +415,23 @@ class StatisticsView(View):
             images_extensions_query |= Q(url__icontains=ext)
 
         for subproject in filtered_subprojects:
-            attachments = list(
-                Attachment.objects.filter(
-                    investment__id=subproject['id'],
-                    process_moment=Attachment.COMPLETED_INFRASTRUCTURE
-                ).filter(images_extensions_query)
-                # .annotate(
-                #     process_order=Case(
-                #         When(process_moment=Attachment.COMPLETED_INFRASTRUCTURE, then=Value(1)),
-                #         When(process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS, then=Value(2)),
-                #         When(process_moment=Attachment.COMMUNITY_PROCESS, then=Value(3)),
-                #         default=Value(4),
-                #         output_field=IntegerField(),
-                #     )
-                # ).order_by("process_order")
-                .values_list('url', flat=True)[:3]
-            )
-            # attachments = list(Attachment.objects.filter(investment__id=subproject['id']).values_list('url', flat=True)[:3])
+            # Chercher des photos dans les moments du processus,
+            # en priorisant : Achevé > En cours
+            attachments = []
+            for moment in [
+                Attachment.COMPLETED_INFRASTRUCTURE,
+                Attachment.INFRASTRUCTURE_IN_PROGRESS,
+            ]:
+                attachments = list(
+                    Attachment.objects.filter(
+                        investment__id=subproject['id'],
+                        process_moment=moment,
+                    ).filter(images_extensions_query)
+                    .values_list('url', flat=True)[:3]
+                )
+                if attachments:
+                    break  # On a trouvé des photos, inutile de chercher plus loin
+
             if attachments:
                 subproject['attachments'] = attachments
 

@@ -17,6 +17,17 @@ window.setTimeout(function () {
     $(".modal-success").modal("hide");
 }, 4000);
 
+/**
+ * Fix accessibility warning: "Blocked aria-hidden on an element because its descendant retained focus."
+ * Before Bootstrap hides any modal, blur the currently focused element if it is inside the modal.
+ */
+$(document).on('hide.bs.modal', '.modal', function () {
+    var $focused = $(document.activeElement);
+    if ($focused.length && $.contains(this, $focused[0])) {
+        $focused.trigger('blur');
+    }
+});
+
 // It is used to show the alerts from an ajax call
 function showPopupMessage(content) {
     if (content) {

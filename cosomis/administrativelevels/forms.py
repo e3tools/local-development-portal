@@ -17,6 +17,19 @@ class UpdateInvestmentForm(forms.ModelForm):
         model = Investment
         fields = ['physical_execution_rate', 'real_cost', 'estimated_cost', 'project_status', 'latitude', 'longitude']
 
+    def clean_latitude(self):
+        value = self.cleaned_data.get('latitude')
+        # Si vide et qu'une valeur existe déjà, on la conserve
+        if value is None and self.instance and self.instance.pk and self.instance.latitude is not None:
+            return self.instance.latitude
+        return value
+
+    def clean_longitude(self):
+        value = self.cleaned_data.get('longitude')
+        if value is None and self.instance and self.instance.pk and self.instance.longitude is not None:
+            return self.instance.longitude
+        return value
+
 
 class ProjectForm(forms.ModelForm):
 

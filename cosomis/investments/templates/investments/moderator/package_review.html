@@ -389,7 +389,7 @@
             <div class="card-body">
                 <form action="" method="POST" id="investment-form" name="investments-form">
                     {% csrf_token %}
-                    {% if investments.count == 0 %}
+                    {% if not package_investments %}
                         {% translate 'You have no investments' %}
                     {% else %}
                         <table class="table table-bordered table-striped">
@@ -403,8 +403,7 @@
                                 <th data-priority="7" class="align-middle">{% translate 'Prefecture' %}</th>
                                 <th data-priority="8" class="align-middle">{% translate 'Region' %}</th>
                                 <th data-priority="11" class="align-middle">{% translate 'Status' %}</th>
-{#                                <th data-priority="12" class="align-middle">{% translate 'Reason' %}</th>#}
-                                <th data-priority="13" class="align-middle"></th>
+                                <th data-priority="13" class="align-middle">{% translate 'Actions' %}</th>
                             </thead>
                         <tbody>
                         {% for package_investment in package_investments %}
@@ -412,7 +411,18 @@
                             <td>
                                 <input class="project-table-check" id="checkbox-{{ package_investment.investment.id }}" value="{{ package_investment.investment.id }}" type="checkbox" checked>
                             </td>
-                            <td>{{ package_investment.investment.title }}</td>
+                            <td>
+                                {% if package_investment.investment.description %}
+                                <span data-container="body" data-toggle="popover" data-placement="top"
+                                      data-trigger="hover" data-content="{{ package_investment.investment.description }}"
+                                      style="cursor:pointer;">
+                                    <strong>{{ package_investment.investment.title }}</strong>
+                                    <br><small class="text-muted">[{{ package_investment.investment.description|truncatechars:60 }}]</small>
+                                </span>
+                                {% else %}
+                                {{ package_investment.investment.title }}
+                                {% endif %}
+                            </td>
                             <td>
                                 {{ package_investment.investment.administrative_level.type }}
                                 <br />
@@ -427,45 +437,31 @@
                             <td>{{ package_investment.investment.administrative_level.parent.parent.name }}</td>
                             <td>{{ package_investment.investment.administrative_level.parent.parent.parent.name }}</td>
                             <td>{{ package_investment.investment.administrative_level.parent.parent.parent.parent.name }}</td>
-{#                            <td>{{ package_investment.investment.ranking }}</td>#}
-{#                            <td>#}
-{#                                {% if package_investment.investment.endorsed_by_youth %}#}
-{#                                    J{% if package_investment.investment.endorsed_by_women or package_investment.investment.endorsed_by_agriculturist or package_investment.investment.endorsed_by_pastoralist %},{% endif %}#}
-{#                                {% endif %}#}
-{#                                {% if package_investment.investment.endorsed_by_women %}#}
-{#                                    F{% if package_investment.investment.endorsed_by_agriculturist or package_investment.investment.endorsed_by_pastoralist %},{% endif %}#}
-{#                                {% endif %}#}
-{#                                {% if package_investment.investment.endorsed_by_agriculturist %}#}
-{#                                    AG{% if package_investment.investment.endorsed_by_pastoralist %},{% endif %}#}
-{#                                {% endif %}#}
-{#                                {% if package_investment.investment.endorsed_by_pastoralist %}#}
-{#                                    ME#}
-{#                                {% endif %}#}
-{#                            </td>#}
                             <td>
                                 {% if package_investment.status == package_investment.PENDING_APPROVAL %}
-                                    {% translate 'Pending Approval' %}
+                                    <span class="badge badge-warning">{% translate 'Pending Approval' %}</span>
                                 {% elif package_investment.status == package_investment.APPROVED %}
-                                    {% translate 'Approved' %}
+                                    <span class="badge badge-success">{% translate 'Approved' %}</span>
                                 {% elif package_investment.status == package_investment.REJECTED %}
-                                    {% translate 'Rejected' %}
+                                    <span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+                                          data-reason="{% if package_investment.rejection_reason %}{{ package_investment.rejection_reason }}{% else %}{% translate 'No reason provided' %}{% endif %}">
+                                        {% translate 'Rejected' %} <i class="fas fa-info-circle"></i>
+                                    </span>
                                 {% endif %}
                             </td>
-{#                            <td>#}
-{#                                {% if package_investment.rejection_reason is not None %}#}
-{#                                    {{ package_investment.rejection_reason }}#}
-{#                                {% endif %}#}
-{#                            </td>#}
                             <td>
                                 {% if package_investment.status == package_investment.PENDING_APPROVAL %}
-                                    <form action="" method="post" name="approve-package-item-form" id="approve-package-item-form-id-{{ package_investment.id }}">
+                                    <form method="post" style="margin-bottom:4px;">
                                         {% csrf_token %}
-                                        <input type="hidden" id="approve-package-item-input-form-{{ package_investment.id }}" value="{{ package_investment.id }}" name="package-item">
-                                        <input type="hidden" id="action-input-form-{{ package_investment.id }}" value="" name="action">
+                                        <input type="hidden" name="package-item" value="{{ package_investment.id }}">
+                                        <input type="hidden" name="action" value="approve">
+                                        <button type="submit" class="btn btn-xs btn-primary btn-block">{% translate 'Approve' %}</button>
                                     </form>
-                                    <button class="col-12 mb-2 btn btn-xs btn-primary approve-package-item-action" name="{{ package_investment.id }}" id="approve-{{ package_investment.id }}">{% translate 'Approve' %}</button>
-
-                                    <button class="col-12 btn btn-xs btn-default approve-package-item-action" name="{{ package_investment.id }}" id="reject-{{ package_investment.id }}">{% translate 'Reject' %}</button>
+                                    <button type="button"
+                                            class="btn btn-xs btn-default btn-block open-reject-item-modal"
+                                            data-item-id="{{ package_investment.id }}">
+                                        {% translate 'Reject' %}
+                                    </button>
                                 {% endif %}
                             </td>
                         </tr>
@@ -483,6 +479,29 @@
 {% endblock %}
 
 {% block modals %}
+{# Modal affichant la raison de rejet au clic sur le badge "Rejeté" #}
+<div class="modal fade" id="rejectionReasonModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-times-circle mr-2"></i>{% translate 'Rejection reason' %}
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="rejection-reason-text" class="mb-0" style="white-space: pre-wrap;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Modal de rejet global du paquet #}
 <div aria-hidden="true" aria-labelledby="rejectModalLabel" class="modal fade" id="rejectModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -508,6 +527,43 @@
     </div>
 </div>
 
+{# Modal de rejet individuel d'un élément du paquet #}
+<div aria-hidden="true" aria-labelledby="rejectItemModalLabel" class="modal fade" id="rejectItemModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" id="reject-item-form">
+                {% csrf_token %}
+                <input type="hidden" name="package-item" id="reject-item-id-input" value="">
+                <input type="hidden" name="action" value="reject">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectItemModalLabel">{% translate 'Reject this investment' %}</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="rejection-reason-textarea">
+                            {% translate 'Rejection reason' %} <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="rejection_reason"
+                                  class="form-control"
+                                  id="rejection-reason-textarea"
+                                  rows="4"
+                                  placeholder="{% translate 'Please explain why this investment is being rejected...' %}"></textarea>
+                        <small class="form-text text-muted">
+                            {% translate 'This reason will be visible to the submitter.' %}
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">{% translate 'Cancel' %}</button>
+                    <button type="button" class="btn btn-danger" id="confirm-reject-item-btn">{% translate 'Confirm Rejection' %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
@@ -516,6 +572,9 @@
 <script type="text/javascript">
     $( document ).ready(function() {
         var table = $(".table").DataTable({{ datatable_config | safe }});
+
+        // Initialiser les popovers Bootstrap
+        $('[data-toggle="popover"]').not('[data-target]').popover();
 
         sum_subprojects();
 
@@ -532,11 +591,7 @@
         });
 
         $('.column-switch').on('change', function (e) {
-
-            // Get the column API object
             var column = table.column($(this).attr('data-column'));
-
-            // Toggle the visibility
             column.visible(!column.visible());
         });
 
@@ -668,24 +723,49 @@
             }
         };
 
-        // Get the 'Add to Cart' button by ID
+        // Approve global button
         var addToCartBtn = document.getElementById('investments-submit');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', function () {
+                document.getElementById('investment-form').submit();
+            });
+        }
 
-        // When the 'Add to Cart' button is clicked
-        addToCartBtn.addEventListener('click', function () {
-            // Submit the form with the ID 'investment-form'
-            document.getElementById('investment-form').submit();
+        // ----- Afficher la raison de rejet au clic sur le badge "Rejeté" -----
+        $(document).on('click', '.show-rejection-reason', function(){
+            var reason = $(this).data('reason');
+            $('#rejection-reason-text').text(reason);
+            $('#rejectionReasonModal').modal('show');
         });
 
-        $('.approve-package-item-action').on('click', function(){
+        // ----- Reject per-item modal -----
+        $(document).on('click', '.open-reject-item-modal', function(){
+            var itemId = $(this).data('item-id');
+            $('#reject-item-id-input').val(itemId);
+            $('#rejection-reason-textarea').val('');
+            $('#rejectItemModal').modal('show');
+        });
 
-            let package_name = $(this).attr('name');
-            let action = $(this).attr('id').split('-')[0];
+        // Confirm rejection: validate then submit
+        $('#confirm-reject-item-btn').on('click', function(){
+            var reason = $('#rejection-reason-textarea').val().trim();
+            if (reason === '') {
+                $('#rejection-reason-textarea').addClass('is-invalid');
+                if ($('#reject-reason-error').length === 0) {
+                    $('#rejection-reason-textarea').after(
+                        '<div id="reject-reason-error" class="invalid-feedback d-block">{% translate "Please provide a rejection reason." %}</div>'
+                    );
+                }
+                return;
+            }
+            $('#rejection-reason-textarea').removeClass('is-invalid');
+            $('#reject-reason-error').remove();
+            $('#reject-item-form').submit();
+        });
 
-            $('#action-input-form-' + package_name).attr('value', action);
-
-            $('#approve-package-item-id-' + package_name).submit();
-
+        $('#rejectItemModal').on('hidden.bs.modal', function(){
+            $('#rejection-reason-textarea').removeClass('is-invalid');
+            $('#reject-reason-error').remove();
         });
     });
 </script>

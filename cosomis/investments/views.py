@@ -18,6 +18,7 @@ from usermanager.permissions import IsInvestorMixin, IsModeratorMixin
 from .forms import InvestmentsForm, PackageApprovalForm, UserApprovalForm
 from .models import Investment, Package, PackageFundedInvestment
 from utils.mixpanel.utils import track_user_activity
+from static.config.datatable import get_datatable_config
 
 
 
@@ -463,13 +464,37 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
 
     def post(self, request, *args, **kwargs):
         package = Package.objects.get_active_cart(user=self.request.user)
+
+        def _already_committed(project, exclude_package):
+            """Montant total déjà engagé sur ce projet (paquets en attente ou approuvés, hors paquet actuel)."""
+            return PackageFundedInvestment.objects.filter(
+                package__project=project,
+                status__in=[PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED],
+            ).exclude(
+                package=exclude_package,
+            ).aggregate(total=Sum('investment__estimated_cost'))['total'] or 0
+
+        def _budget_error_msg(project, already_committed, current_total):
+            grand_total = already_committed + current_total
+            return _(
+                "Budget du projet dépassé. Budget : {budget:,} FCFA — "
+                "Déjà engagé (autres paquets) : {committed:,} FCFA — "
+                "Ce paquet : {current:,} FCFA — "
+                "Total : {total:,} FCFA."
+            ).format(
+                budget=project.total_amount,
+                committed=already_committed,
+                current=current_total,
+                total=grand_total,
+            )
+
         if not package.project:
             project = Project.objects.get(id=request.POST["project"], organization=request.user.organization)
-            total_investment = 0
-            for inv in package.funded_investments.all():
-                total_investment = total_investment + inv.estimated_cost
-            if total_investment > project.total_amount:
-                raise Exception("Not enough funds")
+            total_investment = package.funded_investments.aggregate(total=Sum('estimated_cost'))['total'] or 0
+            already_committed = _already_committed(project, package)
+            if already_committed + total_investment > project.total_amount:
+                messages.add_message(request, messages.ERROR, _budget_error_msg(project, already_committed, total_investment))
+                return redirect(reverse('investments:cart'))
             package.project = project
             package.save()
             return redirect(reverse('investments:cart'))
@@ -488,11 +513,10 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
                 track_user_activity(request, 'RemoveAllInvestmentsInPackage')
             else:
                 project = package.project
-                total_investment = 0
-                for inv in package.funded_investments.all():
-                    total_investment = total_investment + inv.estimated_cost
-                if total_investment > project.total_amount:
-                    messages.add_message(request, messages.ERROR, _("Not enough funds"))
+                total_investment = package.funded_investments.aggregate(total=Sum('estimated_cost'))['total'] or 0
+                already_committed = _already_committed(project, package)
+                if already_committed + total_investment > project.total_amount:
+                    messages.add_message(request, messages.ERROR, _budget_error_msg(project, already_committed, total_investment))
                     return redirect(reverse('investments:cart'))
                 obj.status = Package.PENDING_APPROVAL
                 obj.save()
@@ -726,10 +750,11 @@ class ModeratorPackageReviewView(
             package_item = PackageFundedInvestment.objects.filter(id=self.request.POST['package-item']).first()
             if request.POST['action'] == 'approve':
                 package_item.approve()
-                track_user_activity(request, "PackageApproved")
+                track_user_activity(request, "PackageItemApproved")
             elif request.POST['action'] == 'reject':
-                package_item.reject()
-                track_user_activity(request, "PackageRejected")
+                reason = request.POST.get('rejection_reason', '').strip()
+                package_item.reject(reason=reason if reason else None)
+                track_user_activity(request, "PackageItemRejected")
 
         url = reverse(
             "investments:package_review", kwargs={"package": self.get_object().id}
@@ -772,6 +797,11 @@ class ModeratorPackageReviewView(
         context.update(kwargs)
         context.update(self.get_filters_context())
         context.update(self.get_investment_list())
+        # DataTables config (client-side, no server-side processing needed here)
+        dt_config = get_datatable_config()
+        dt_config["responsive"] = "true"
+        dt_config["order"] = [3, "asc"]
+        context["datatable_config"] = dt_config
         return super().get_context_data(**context)
 
     def get_form_kwargs(self):
@@ -961,3 +991,30 @@ class ModeratorPackageReviewView(
         )
         track_user_activity(self.request, "PackageApproved")
         return reverse("investments:notifications")
+
+
+class InvestorPackageReviewView(IsInvestorMixin, PageMixin, generic.DetailView):
+    """Read-only view for investors/partners to consult per-item statuses and rejection reasons."""
+    template_name = "investments/investor/package_review.html"
+    queryset = Package.objects.all()
+    pk_url_kwarg = "package"
+    title = _("Investment Package Review")
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["package_investments"] = (
+            PackageFundedInvestment.objects
+            .select_related('investment', 'investment__administrative_level',
+                            'investment__administrative_level__parent',
+                            'investment__administrative_level__parent__parent',
+                            'investment__administrative_level__parent__parent__parent',
+                            'investment__administrative_level__parent__parent__parent__parent')
+            .filter(package_id=self.object.id)
+        )
+        context["title"] = _("Investment Package Review")
+        return context
+
+

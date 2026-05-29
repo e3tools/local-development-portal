@@ -39,7 +39,7 @@ from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin, GRMMixi
 from cosomis.utils_functions import get_api_datas
 from investments.domain.investment_criteria import InvestmentCriteria
 from investments.infrastructure.repositories.db_investment_repository import DbInvestmentRepository
-from investments.models import Attachment, Investment, Package
+from investments.models import Attachment, Investment, Package, PackageFundedInvestment
 from static.config.datatable import get_datatable_config
 from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixin
 from utils.mixpanel.utils import track_user_activity
@@ -1356,17 +1356,27 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         self.object = self.get_object()
 
         if 'image_input' in request.FILES:
-            investment = Investment.objects.filter(
-                funded_by__id=self.object.id,
-            ).exclude(project_status=Investment.NOT_FUNDED).get(id=request.POST['investment'])
-            succeeded, new_attachment = Attachment.investment_upload(investment=investment,
-                                                                     image=request.FILES.get('image_input'))
-            if succeeded:
-                messages.add_message(request, messages.SUCCESS, _("Investment updated."))
-                track_user_activity(request, 'UploadInvestmentFile')
-            else:
+            try:
+                investment = Investment.objects.filter(
+                    funded_by__id=self.object.id,
+                ).get(id=request.POST['investment'])
+                succeeded, new_attachment = Attachment.investment_upload(
+                    investment=investment,
+                    image=request.FILES.get('image_input')
+                )
+                if succeeded:
+                    messages.add_message(request, messages.SUCCESS, _("Investment updated."))
+                    track_user_activity(request, 'UploadInvestmentFile')
+                else:
+                    import logging
+                    logging.getLogger(__name__).error(
+                        "investment_upload returned False: %s", new_attachment
+                    )
+                    messages.add_message(request, messages.ERROR, _("Investment could not be updated."))
+            except Exception as exc:
+                import logging
+                logging.getLogger(__name__).exception("Image upload error: %s", exc)
                 messages.add_message(request, messages.ERROR, _("Investment could not be updated."))
-                raise Exception(new_attachment)
             return super().get(request, *args, **kwargs)
 
         if 'investment' in request.POST:
@@ -1402,6 +1412,9 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
                     status__in=[Package.PENDING_SUBMISSION]
                 ).values_list("id")
             )
+        ).exclude(
+            # Exclure les investissements individuellement rejetés dans un paquet
+            packagefundedinvestment__status=PackageFundedInvestment.REJECTED
         )
         context["project_status"] = Investment.PROJECT_STATUS_CHOICES
         context["organization"] = project.owner.organization
@@ -1448,6 +1461,27 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             {"responsivePriority": 3, "targets": 2},
             {"responsivePriority": 4, "targets": 3},
         ]
+
+        # Carte Mapbox : coordonnées des investissements du projet
+        import json as _json
+        try:
+            from cosomis.settings import MAPBOX_ACCESS_TOKEN as _MAPBOX_TOKEN
+        except Exception:
+            _MAPBOX_TOKEN = ""
+        context["mapbox_access_token"] = _MAPBOX_TOKEN or ""
+        investments_with_coords = list(
+            context["investments"].filter(
+                latitude__isnull=False,
+                longitude__isnull=False,
+            ).values(
+                'id', 'title', 'latitude', 'longitude',
+                'sector__name', 'sector__category__name',
+                'physical_execution_rate', 'project_status',
+                'description',
+            )
+        )
+        context["investments_map_data"] = _json.dumps(investments_with_coords, default=str)
+
         return context
 
     def form_valid(self, form):

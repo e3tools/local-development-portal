@@ -1,6 +1,9 @@
 from boto3.session import Session
 from botocore.exceptions import NoCredentialsError, ClientError
+import os
 from django.conf import settings
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from django.db import models, transaction
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
@@ -187,10 +190,16 @@ class PackageFundedInvestment(BaseModel):
             self.save()
             self.update_package_status()
 
-    def reject(self):
+    def reject(self, reason=None):
         with transaction.atomic():
             self.status = self.REJECTED
+            if reason:
+                self.rejection_reason = reason
             self.save()
+            # Remettre funded_by à None pour que l'investissement rejeté
+            # redevienne disponible sur la page "Financer un projet"
+            self.investment.funded_by = None
+            self.investment.save(update_fields=["funded_by"])
             self.update_package_status()
 
     def update_package_status(self):
@@ -262,29 +271,90 @@ class Attachment(BaseModel):
 
     @classmethod
     def investment_upload(cls, investment, image, object_name=None):
-        s3_client = Session(aws_access_key_id=cls.AWS_ACCESS_KEY_ID, aws_secret_access_key=cls.AWS_SECRET_ACCESS_KEY).client("s3")
+        import logging
+        logger = logging.getLogger(__name__)
 
+        if image is None:
+            return False, "No image provided"
+
+        if object_name is None:
+            object_name = os.path.basename(image.name)
+
+        # Accès sécurisé à l'administrative_level
         try:
-            if object_name is None:
-                object_name = image.name
+            adm = investment.administrative_level
+        except Exception:
+            adm = None
 
-            response = s3_client.upload_fileobj(
-                image, cls.AWS_STORAGE_BUCKET_NAME, object_name
+        # --- Tentative d'upload S3 (ignorée si DEBUG=True) ---
+        if not settings.DEBUG:
+            try:
+                from botocore.config import Config as BotoConfig
+                s3_client = Session(
+                    aws_access_key_id=cls.AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=cls.AWS_SECRET_ACCESS_KEY
+                ).client("s3", config=BotoConfig(connect_timeout=5, read_timeout=10))
+                image.seek(0)
+                s3_client.upload_fileobj(image, cls.AWS_STORAGE_BUCKET_NAME, object_name)
+                file_url = f"https://{cls.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{object_name}"
+
+                new_attachment = cls.objects.create(
+                    name=object_name,
+                    type=cls.PHOTO,
+                    process_moment=cls.COMPLETED_INFRASTRUCTURE,
+                    investment=investment,
+                    adm=adm,
+                    url=file_url,
+                )
+                return True, new_attachment
+
+            except Exception as s3_err:
+                logger.warning(
+                    "S3 upload failed for investment %s (%s: %s) — falling back to local storage.",
+                    investment.id, type(s3_err).__name__, s3_err
+                )
+        else:
+            logger.info(
+                "DEBUG mode: skipping S3 for investment %s, using local storage directly.",
+                investment.id
             )
-            file_url = f"https://{cls.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{object_name}"
+
+        # --- Stockage local dans media/ (utilise FileSystemStorage explicitement) ---
+        try:
+            from django.core.files.storage import FileSystemStorage
+            safe_name = os.path.basename(object_name)
+            rel_path = '/'.join(['attachments', 'investments', str(investment.id), safe_name])
+
+            # Créer le répertoire cible explicitement
+            target_dir = os.path.join(
+                settings.MEDIA_ROOT, 'attachments', 'investments', str(investment.id)
+            )
+            os.makedirs(target_dir, exist_ok=True)
+
+            # Utiliser FileSystemStorage directement (pas default_storage = S3)
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT, base_url=settings.MEDIA_URL)
+            image.seek(0)
+            saved_path = fs.save(rel_path, ContentFile(image.read()))
+            # Normaliser les séparateurs en forward-slash pour l'URL (Windows)
+            saved_path_url = saved_path.replace(os.sep, '/')
+            file_url = settings.MEDIA_URL.rstrip('/') + '/' + saved_path_url
 
             new_attachment = cls.objects.create(
-                name=object_name,
+                name=safe_name,
                 type=cls.PHOTO,
+                process_moment=cls.COMPLETED_INFRASTRUCTURE,
                 investment=investment,
-                adm=investment.administrative_level,
-                url=file_url
+                adm=adm,
+                url=file_url,
+                source='local',
             )
-
+            logger.info(
+                "Investment %s: image saved locally at %s", investment.id, file_url
+            )
             return True, new_attachment
-
-        except NoCredentialsError:
-            return False, "Credentials not available"
-
-        except ClientError as e:
-            return False, f"Failed to upload file: {e}"
+        except Exception as local_err:
+            logger.error(
+                "Local storage failed for investment %s: %s",
+                investment.id, local_err, exc_info=True
+            )
+            return False, str(local_err)

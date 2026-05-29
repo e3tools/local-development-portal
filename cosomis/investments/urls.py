@@ -4,7 +4,8 @@ from rest_framework import routers
 from .views import (
     IndexListView, CartView,
     ProfileTemplateView, ModeratorApprovalsListView,
-    ModeratorPackageReviewView, PackageDetailView, InvestorApprovesListView
+    ModeratorPackageReviewView, PackageDetailView, InvestorApprovesListView,
+    InvestorPackageReviewView,
 )
 from .ajax_views import FillAdmLevelsSelectFilters, FillSectorsSelectFilters, InvestmentModelViewSet
 
@@ -23,7 +24,7 @@ urlpatterns = [
     ])),
     path('investor/', include([
         path('notifications', InvestorApprovesListView.as_view(), name='investor_notifications'),
-        path('review/<int:package>', ModeratorPackageReviewView.as_view(), name='package_review'),
+        path('review/<int:package>', InvestorPackageReviewView.as_view(), name='investor_package_review'),
     ])),
     path('ajax/', include([
         path('adm-levels', FillAdmLevelsSelectFilters.as_view()),
