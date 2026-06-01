@@ -87,7 +87,7 @@
                 </li>
                 {% endif %}
 
-                {% if request.user.is_staff %}
+                {% comment %} {% if request.user.is_staff %} {% endcomment %}
                  <li class="nav-item">
                     <a href="{% url 'cdd_funnel:main_funnel' %}"
                        class="nav-link {% if url_name == 'main_funnel' %}active{% endif %}">
@@ -95,7 +95,7 @@
                         <p>{% translate "CDD Funnel" %}</p>
                     </a>
                 </li>
-                {% endif %}
+                {% comment %} {% endif %} {% endcomment %}
             </ul>
             {% endwith %}
         </nav>

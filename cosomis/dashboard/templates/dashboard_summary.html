@@ -499,7 +499,7 @@
                     if (subproject.attachments){
                         subproject.attachments.forEach((imgSrc, idx) => {
                             carousel_images_html += '<div class="carousel-item' + (idx === 0 ? ' active' : '') + '">' +
-                                '<img class="d-block w-100" src="' + imgSrc + '" style="max-height:130px;object-fit:cover;"></div>'
+                                '<img class="d-block w-100" src="' + (imgSrc ? imgSrc.split('?')[0] : '') + '" style="max-height:130px;object-fit:cover;"></div>' 
                         })
                         carousel_html = '<div id="pc-' + subproject.id + '" class="carousel slide mt-2" data-ride="carousel">' +
                             '<div class="carousel-inner">' + carousel_images_html + '</div>' +
