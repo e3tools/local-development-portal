@@ -1,0 +1,197 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n humanize %}
+
+{% block extracss %}
+    {{ block.super }}
+    <style>
+        .status-badge { font-size: 0.85em; }
+        .table th { vertical-align: middle; }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+
+        {# ── Résumé du paquet ── #}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">{% translate 'Investment Package' %} #{{ package.id }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="text-sm">{% translate '# Sub-projects' %}
+                            <b class="d-block">{{ package_investments|length }}</b>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-sm">{% translate 'Total funding' %}
+                            <b class="d-block">{{ package.estimated_final_cost|intcomma }} FCFA</b>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-sm">{% translate 'Submitted on' %}
+                            <b class="d-block">{{ package.created_date|date:"d/m/Y" }}</b>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-sm">{% translate 'Status' %}
+                            <b class="d-block">
+                                {% if package.status == package.PENDING_SUBMISSION %}
+                                    <span class="badge badge-secondary">{% translate 'Pending Submission' %}</span>
+                                {% elif package.status == package.PENDING_APPROVAL %}
+                                    <span class="badge badge-warning">{% translate 'Pending Approval' %}</span>
+                                {% elif package.status == package.APPROVED %}
+                                    <span class="badge badge-success">{% translate 'Approved' %}</span>
+                                {% elif package.status == package.REJECTED %}
+                                    <span class="badge badge-danger">{% translate 'Rejected' %}</span>
+                                {% elif package.status == package.UNDER_EXECUTION %}
+                                    <span class="badge badge-primary">{% translate 'Under Execution' %}</span>
+                                {% elif package.status == package.PARTIALLY_APPROVED %}
+                                    <span class="badge badge-info">{% translate 'Partially Approved' %}</span>
+                                {% endif %}
+                            </b>
+                        </p>
+                    </div>
+                </div>
+
+                {% if package.rejection_reason %}
+                <div class="alert alert-danger mt-2">
+                    <strong>{% translate 'Package rejection reason' %} :</strong> {{ package.rejection_reason }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ── Tableau des investissements ── #}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">{% translate 'Investment details' %}</h5>
+            </div>
+            <div class="card-body">
+                {% if not package_investments %}
+                    <p class="text-muted">{% translate 'No investments in this package.' %}</p>
+                {% else %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="package-review-table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>{% translate 'Name' %}</th>
+                                <th>{% translate 'Subproject type' %}</th>
+                                <th>{% translate 'Estimated cost' %}</th>
+                                <th>{% translate 'Village' %}</th>
+                                <th>{% translate 'Commune' %}</th>
+                                <th>{% translate 'Prefecture' %}</th>
+                                <th>{% translate 'Region' %}</th>
+                                <th>{% translate 'Status' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in package_investments %}
+                            <tr>
+                                <td>
+                                    {% if item.investment.description %}
+                                    <span data-container="body" data-toggle="popover" data-placement="top"
+                                          data-trigger="hover" data-content="{{ item.investment.description }}"
+                                          style="cursor:pointer;">
+                                        <strong>{{ item.investment.title }}</strong>
+                                        <br><small class="text-muted">[{{ item.investment.description|truncatechars:60 }}]</small>
+                                    </span>
+                                    {% else %}
+                                    <strong>{{ item.investment.title }}</strong>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ item.investment.administrative_level.type }}
+                                    {% with item.investment.get_projects_priority_came_from as src %}
+                                        {% if src %}<br><small class="text-muted">({{ src }})</small>{% endif %}
+                                    {% endwith %}
+                                </td>
+                                <td class="text-right text-nowrap">{{ item.investment.estimated_cost|intcomma }} FCFA</td>
+                                <td>{{ item.investment.administrative_level.name }}</td>
+                                <td>{{ item.investment.administrative_level.parent.parent.name }}</td>
+                                <td>{{ item.investment.administrative_level.parent.parent.parent.name }}</td>
+                                <td>{{ item.investment.administrative_level.parent.parent.parent.parent.name }}</td>
+                                <td class="text-center">
+                                    {% if item.status == item.PENDING_APPROVAL %}
+                                        <span class="badge badge-warning status-badge">{% translate 'Pending Approval' %}</span>
+                                    {% elif item.status == item.APPROVED %}
+                                        <span class="badge badge-success status-badge">{% translate 'Approved' %}</span>
+                                    {% elif item.status == item.REJECTED %}
+                                        <span class="badge badge-danger status-badge show-rejection-reason" style="cursor:pointer;"
+                                              data-reason="{% if item.rejection_reason %}{{ item.rejection_reason }}{% else %}{% translate 'No reason provided' %}{% endif %}">
+                                            {% translate 'Rejected' %} <i class="fas fa-info-circle"></i>
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer text-right">
+                <a href="{% url 'investments:investor_notifications' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> {% translate 'Back to my packages' %}
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#package-review-table').DataTable({
+            "responsive": true,
+            "order": [[2, "desc"]],
+            "language": {
+                "search": "{% translate 'Search' %}:",
+                "lengthMenu": "{% translate 'Show' %} _MENU_ {% translate 'entries' %}",
+            }
+        });
+
+        // Initialiser les popovers Bootstrap pour les descriptions
+        $('[data-toggle="popover"]').not('[data-target]').popover();
+
+        // Afficher la raison de rejet en popup au clic sur le badge "Rejeté"
+        $(document).on('click', '.show-rejection-reason', function(){
+            var reason = $(this).data('reason');
+            $('#rejection-reason-text').text(reason);
+            $('#rejectionReasonModal').modal('show');
+        });
+    });
+</script>
+{% endblock %}
+
+{% block modals %}
+<div class="modal fade" id="rejectionReasonModal" tabindex="-1" role="dialog" aria-labelledby="rejectionReasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="rejectionReasonModalLabel">
+                    <i class="fas fa-times-circle mr-2"></i>{% translate 'Rejection reason' %}
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="rejection-reason-text" class="mb-0" style="white-space: pre-wrap;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+

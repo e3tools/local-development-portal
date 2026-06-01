@@ -63,7 +63,7 @@
                                     <th>{% translate 'Total amount' %}</th>
                                     <th>{% translate 'Organization' %}</th>
                                     <th>{% translate 'Status' %}</th>
-                                    <th>{% translate 'Reject reason' %}</th>
+                                    <th>{% translate 'Actions' %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,26 +76,31 @@
                                     <td>{{ package.user.organization }}</td>
                                     <td>
                                         {% if package.status == package.PENDING_SUBMISSION %}
-                                        {% translate 'Pending Submission' %}
+                                        <span class="badge badge-secondary">{% translate 'Pending Submission' %}</span>
                                         {% elif package.status == package.PENDING_APPROVAL %}
-                                        {% translate 'Pending Approval' %}
+                                        <span class="badge badge-warning">{% translate 'Pending Approval' %}</span>
                                         {% elif package.status == package.APPROVED %}
-                                        {% translate 'Approved' %}
+                                        <span class="badge badge-success">{% translate 'Approved' %}</span>
                                         {% elif package.status == package.REJECTED %}
-                                        {% translate 'Rejected' %}
+                                        <span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+                                              data-reason="{% if package.rejection_reason %}{{ package.rejection_reason }}{% else %}{% translate 'No reason provided' %}{% endif %}">
+                                            {% translate 'Rejected' %} <i class="fas fa-info-circle"></i>
+                                        </span>
                                         {% elif package.status == package.UNDER_EXECUTION %}
-                                        {% translate 'Under Execution' %}
+                                        <span class="badge badge-primary">{% translate 'Under Execution' %}</span>
                                         {% elif package.status == package.PARTIALLY_APPROVED %}
-                                        {% translate 'Partially Approve' %}
+                                        <span class="badge badge-info show-rejection-reason" style="cursor:pointer;"
+                                              data-reason="{% translate 'Some items were rejected. Click View details to see individual reasons.' %}">
+                                            {% translate 'Partially Approved' %} <i class="fas fa-info-circle"></i>
+                                        </span>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if package.status != package.PENDING_APPROVAL and package.status != package.PENDING_SUBMISSION %}
-                                            {% if package.status == package.REJECTED %}
-                                                <b>
-                                                    {% if package.rejection_reason is None %} {% translate 'No reason' %} {% else %} {{ package.rejection_reason }} {% endif %}
-                                                </b>
-                                            {% endif %}
+                                        {% if package.status != package.PENDING_SUBMISSION %}
+                                        <a href="{% url 'investments:investor_package_review' package=package.id %}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> {% translate 'View details' %}
+                                        </a>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -133,6 +138,28 @@
         </div>
     </div>
 </div>
+
+{# Modal affichant la raison de rejet au clic sur le badge "Rejeté" #}
+<div class="modal fade" id="rejectionReasonModal" tabindex="-1" role="dialog" aria-labelledby="rejectionReasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="rejectionReasonModalLabel">
+                    <i class="fas fa-times-circle mr-2"></i>{% translate 'Rejection reason' %}
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="rejection-reason-text" class="mb-0" style="white-space: pre-wrap;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 
@@ -142,14 +169,17 @@
     $( document ).ready(function() {
 
         $('.user-form-action').on('click', function(){
-
             let user_id = $(this).attr('name');
             let action = $(this).attr('id').split('-')[0];
-
             $('#action-input-form-' + user_id).attr('value', action);
-
             $('#approve-user-form-id-' + user_id).submit();
+        });
 
+        // Afficher la raison de rejet dans un popup au clic sur le badge
+        $(document).on('click', '.show-rejection-reason', function(){
+            var reason = $(this).data('reason');
+            $('#rejection-reason-text').text(reason);
+            $('#rejectionReasonModal').modal('show');
         });
 
     });

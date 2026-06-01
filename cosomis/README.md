@@ -1,105 +1,42 @@
-# COSOMIS — Local Development Portal
+# COSOMIS
 
-Django application for managing community-driven development data (administrative levels, investments, planning cycles) across multiple country datasets (Togo, Benin, …).
+## Getting started
 
-## Quick start
+To make it easy for you to get started with GitLab, here's a list of recommended next steps.
 
-### 1. Install dependencies
+Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
-The pinned versions (`Django 4.1.1`, `numpy==1.23.3`, `pandas==1.5.0`, etc.) only have wheels for **Python 3.11**. Newer interpreters fail to build numpy from source.
+## Add your files
 
-```bash
-/opt/homebrew/opt/python@3.11/bin/python3.11 -m venv venv
-./venv/bin/pip install --upgrade pip
-./venv/bin/pip install -r requirements.txt
-```
-
-### 2. Configure environment
-
-Create `cosomis/.env` (lives next to `settings.py`; `django-environ` looks there) — start from [`env.example`](./env.example) and set at minimum:
+- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
+- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
 
 ```
-env=local
-SECRET_KEY=local-dev-secret
-DEBUG=True
-ALLOWED_HOSTS=*
-DATABASE_URL=postgres://admin:admin@localhost:5434/ldpdb
-LEGACY_DATABASE_URL=postgres://admin:admin@localhost:5434/ldpdb
-EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
-FRONTEND_URL_ROOT=http://127.0.0.1:8000
+cd existing_repo
+git remote add origin https://gitlab.com/coso-mis/cosomis.git
+git branch -M main
+git push -uf origin main
 ```
 
-(Set `env=dev` to fall back to the bundled SQLite file instead of Postgres.)
+## Integrate with your tools
 
-### 3. Bring up Postgres + restore a dump
+- [ ] [Set up project integrations](https://gitlab.com/coso-mis/cosomis/-/settings/integrations)
 
-The project targets PostgreSQL 16. An isolated Docker container keeps it out of the way of any other Postgres you have running locally.
+## Collaborate with your team
 
-```bash
-docker run -d \
-  --name ldp-postgres \
-  -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=ldpdb \
-  -p 5434:5432 \
-  -v ldp-postgres-data:/var/lib/postgresql/data \
-  postgres:16
+- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
+- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
+- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
+- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
+- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
 
-# Restore a custom-format dump (e.g. ldpdb11052026.dump)
-docker exec -i ldp-postgres pg_restore \
-  -U admin -d ldpdb \
-  --no-owner --no-privileges --clean --if-exists \
-  < ~/Downloads/ldpdb11052026.dump
-```
+## Test and Deploy
 
-### 4. Apply pending migrations and run the server
+Use the built-in continuous integration in GitLab.
 
-```bash
-./venv/bin/python manage.py migrate
-./venv/bin/python manage.py runserver
-# or equivalently:
-make server
-```
+- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
+- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
+- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
+- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
+- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
 
-Open <http://127.0.0.1:8000/>. The site uses `django-modeltranslation`-style URLs prefixed with `/en/` or `/fr/`.
-
-### 5. Create a local superuser
-
-The custom user model uses `email` as `USERNAME_FIELD`:
-
-```bash
-./venv/bin/python manage.py shell -c "
-from usermanager.models import User
-u = User.objects.create_superuser(email='you@local.dev', username='you', password='change-me')
-print(u)
-"
-```
-
-## Common commands
-
-| Task | Command |
-| --- | --- |
-| Run the dev server (migrate first) | `make server` |
-| Update Python deps | `make pip-install` |
-| Regenerate `.po`/`.mo` files | `make generate-translations` |
-| Format Python with Black | `make black` |
-
-## Project layout
-
-```
-cosomis/                  # Django project root (manage.py lives here)
-├── administrativelevels/ # Country/region/village hierarchy, search, profiles, maps
-├── authentication/       # Auth flows
-├── cdd_funnel/           # Community-Driven Development funnel views
-├── cosomis/              # Project settings, root URLs, shared mixins/services
-├── dashboard/            # Dashboard views
-├── investments/          # Investments, packages, cart, moderator/investor flows
-├── usermanager/          # Custom User + Organization
-├── utils/                # Cross-app utilities
-├── static/               # AdminLTE + project static assets
-├── locale/               # i18n catalogs (en/fr)
-└── requirements.txt
-```
-
-## Notes
-
-- Administrative-level type strings are **dataset-specific** (`Village/Canton/Commune/Prefecture/Region` on the Togo seed; `village/arrondissement/commune/département/country` on the Benin dump). Code must go through `AdministrativeLevel.matches_type()`, `type_filter_q()`, or position-based logic (depth in the hierarchy) — never hard-code a type literal. See [`CLAUDE.md`](./CLAUDE.md) for the full guidance.
-- See [`CHANGELOG.md`](./CHANGELOG.md) for the change history.

@@ -37,7 +37,10 @@
         .card-map { min-height: 800px; min-width: 350px; overflow: hidden; position: relative; border-radius: 6px; background: #f9fafb; }
         #map { position: absolute; top: 0; left: 0; right: 0; height: 100%; width: 100%; }
         .marker { display: block; border: none; border-radius: 50%; cursor: pointer; width: 20px; height: 20px; transform: translate(-50%, -50%); }
-        .mapboxgl-popup-content { min-width: 200px; min-height: 100px; }
+        .mapboxgl-popup-content { min-width: 0 !important; max-height: 420px; overflow-y: auto; padding: 0 !important; border-radius: 8px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important; }
+        .mapboxgl-popup-content::-webkit-scrollbar { width: 4px; }
+        .mapboxgl-popup-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+        .mapboxgl-popup-close-button { z-index: 10; background: rgba(255,255,255,0.85); border-radius: 50%; width: 20px; height: 20px; line-height: 20px; top: 4px; right: 4px; font-size: 14px; }
 
         /* Stat cards */
         .stat-card { transition: box-shadow .15s ease-in-out, transform .15s ease-in-out; }
@@ -494,48 +497,80 @@
                     let carousel_images_html = ""
                     let carousel_html = ""
                     if (subproject.attachments){
-                        subproject.attachments.forEach((attachment, index) => {
-                            if ( index === 0 ){
-                                carousel_images_html += '<div class="carousel-item active">' +
-                                '<img class="d-block w-100" src="' + attachment.split('?')[0] + '" alt="First slide">' +
-                                '</div>'
-                            }else{
-                                carousel_images_html += '<div class="carousel-item">' +
-                                '<img class="d-block w-100" src="' + attachment.split('?')[0] + '" alt="First slide">' +
-                                '</div>'
-                            }
-
+                        subproject.attachments.forEach((imgSrc, idx) => {
+                            carousel_images_html += '<div class="carousel-item' + (idx === 0 ? ' active' : '') + '">' +
+                                '<img class="d-block w-100" src="' + imgSrc + '" style="max-height:130px;object-fit:cover;"></div>'
                         })
-
-                        carousel_html = '<div id="carouselExampleControls" class="carousel slide" ' +
-                         'data-ride="carousel"><div class="carousel-inner">' +
-                            carousel_images_html +
-                            '<a class="carousel-control-prev" href="#carouselExampleControls" role="button" ' +
-                             'data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
-                                '<span class="sr-only">Previous</span>' +
-                              '</a>' +
-                              '<a class="carousel-control-next" href="#carouselExampleControls" role="button" ' +
-                               'data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span>' +
-                                '<span class="sr-only">Next</span>' +
-                              '</a>' +
-                          '</div>' +
-                        '</div>'
+                        carousel_html = '<div id="pc-' + subproject.id + '" class="carousel slide mt-2" data-ride="carousel">' +
+                            '<div class="carousel-inner">' + carousel_images_html + '</div>' +
+                            '<a class="carousel-control-prev" href="#pc-' + subproject.id + '" role="button" data-slide="prev"><span class="carousel-control-prev-icon"></span></a>' +
+                            '<a class="carousel-control-next" href="#pc-' + subproject.id + '" role="button" data-slide="next"><span class="carousel-control-next-icon"></span></a>' +
+                            '</div>'
                     }
 
-                    const popover_html = '<h3 class="popover-header">'+
-                                '<a href="{% url 'administrativelevels:village_detail' 0 %}"'.replace(
-                                    0, subproject.administrative_level__id) +
-                                    'target="_blank">' +
-                                subproject.administrative_level__name +
-                                '</a>' +
-                            '</h3>' +
-                            '<div class="popover-body">' +
-                               '<h6> <strong> {% translate 'Type of subproject' %}</strong> : ' +
-                               subproject.sector__name + '</h6>' +
-                               '<h6> <strong> {% translate 'Physical rate' %}</strong> : ' +
-                               subproject.physical_execution_rate + '</h6>' +
-                                carousel_html +
-                            '</div>'
+                    // Breadcrumb hiérarchie
+                    const levelLabels = ['RÉG.','PRÉF.','COM.','CANT.','VIL.'];
+                    const rawParts = [
+                        subproject['administrative_level__parent__parent__parent__parent__name'],
+                        subproject['administrative_level__parent__parent__parent__name'],
+                        subproject['administrative_level__parent__parent__name'],
+                        subproject['administrative_level__parent__name'],
+                        subproject['administrative_level__name']
+                    ];
+                    const villageLinkBase = "{% url 'administrativelevels:village_detail' 0 %}";
+                    const villageId = subproject['administrative_level__id'];
+                    // Dernier index valide = niveau de la localité cliquable
+                    let lastValidIdx = -1;
+                    rawParts.forEach((v, i) => { if (v && v !== 'null' && v !== 'None') lastValidIdx = i; });
+                    let breadcrumb = '';
+                    rawParts.forEach((v, i) => {
+                        if (v && v !== 'null' && v !== 'None') {
+                            if (breadcrumb) breadcrumb += ' <span style="color:#aaa;">›</span> ';
+                            let nameHtml;
+                            if (i === lastValidIdx && villageId) {
+                                const villageUrl = villageLinkBase.replace('/0/', '/' + villageId + '/');
+                                nameHtml = '<a href="' + villageUrl + '" style="font-weight:700;color:#1a1a1a;text-decoration:underline;" target="_blank">' + v + '</a>';
+                            } else {
+                                nameHtml = '<span style="font-weight:700;">' + v + '</span>';
+                            }
+                            breadcrumb += '<span style="font-size:9px;color:#888;font-weight:600;">' + levelLabels[i] + '</span> ' + nameHtml;
+                        }
+                    });
+
+                    const sectorLabel = subproject.sector__name || subproject.sector__category__name || '—';
+                    const statusLabels = {'NF':'{% translate "Not funded" %}','P':'{% translate "In progress" %}','A':'{% translate "Approved" %}','C':'{% translate "Completed" %}'};
+                    const statusDisplay = statusLabels[subproject.project_status] || subproject.project_status || '—';
+                    const rate = subproject.physical_execution_rate || 0;
+
+                    const popover_html =
+                        // Breadcrumb compact
+                        '<div style="background:#f8f9fa;border-bottom:1px solid #dee2e6;padding:5px 10px;font-size:10px;line-height:1.6;word-break:break-word;">' +
+                            breadcrumb +
+                        '</div>' +
+                        '<div style="padding:8px 10px;">' +
+                            // Titre [Description]
+                            '<div style="font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.4;">' +
+                                (subproject.title || '') +
+                                (subproject.description ? ' <span style="font-weight:400;color:#6c757d;font-size:11px;">[' + subproject.description + ']</span>' : '') +
+                            '</div>' +
+                            // Tableau infos compact
+                            '<table style="width:100%;font-size:11px;border-collapse:collapse;">' +
+                                '<tr><td style="padding:2px 0;color:#6c757d;width:45%;">{% translate "Sector" %}</td>' +
+                                    '<td style="padding:2px 0;font-weight:600;">' + sectorLabel + '</td></tr>' +
+                                '<tr><td style="padding:2px 0;color:#6c757d;">{% translate "Status" %}</td>' +
+                                    '<td style="padding:2px 0;font-weight:600;">' + statusDisplay + '</td></tr>' +
+                                '<tr><td style="padding:2px 0;color:#6c757d;">{% translate "Physical rate" %}</td>' +
+                                    '<td style="padding:2px 0;">' +
+                                        '<div style="display:flex;align-items:center;gap:4px;">' +
+                                            '<div style="flex:1;background:#e9ecef;border-radius:4px;height:5px;">' +
+                                                '<div style="width:' + rate + '%;background:#3b82f6;height:5px;border-radius:4px;"></div>' +
+                                            '</div>' +
+                                            '<span style="font-weight:600;white-space:nowrap;font-size:11px;">' + rate + ' %</span>' +
+                                        '</div>' +
+                                    '</td></tr>' +
+                            '</table>' +
+                            carousel_html +
+                        '</div>'
                     const offset = calculateOffset(index);
                     const marker = new mapboxgl.Marker({
                         color: sectorColor,
@@ -543,7 +578,7 @@
                         offset: [offset.x, offset.y]
                     })
                     .setLngLat([subproject.longitude, subproject.latitude])
-                    .setPopup(new mapboxgl.Popup({ offset: 20 }).setHTML(popover_html));
+                    .setPopup(new mapboxgl.Popup({ offset: 20, maxWidth: '260px' }).setHTML(popover_html));
 
                     marker.addTo(map);
                     markers.push(marker);
