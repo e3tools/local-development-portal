@@ -1380,9 +1380,6 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             return super().get(request, *args, **kwargs)
 
         if 'investment' in request.POST:
-            print('----')
-            print(request.POST['investment'])
-            print('----')
             investment = Investment.objects.get(id=request.POST['investment'])
             investment_form = self.investment_form_class(
                 instance=investment, data=request.POST, files=request.FILES
@@ -1478,8 +1475,27 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
                 'sector__name', 'sector__category__name',
                 'physical_execution_rate', 'project_status',
                 'description',
+                'administrative_level__id',
+                'administrative_level__name',
+                'administrative_level__parent__name',
+                'administrative_level__parent__parent__name',
+                'administrative_level__parent__parent__parent__name',
+                'administrative_level__parent__parent__parent__parent__name',
             )
         )
+        # Ajouter les URLs d'images pour chaque investissement
+        from investments.models import Attachment as _Attachment
+        _inv_ids = [i['id'] for i in investments_with_coords]
+        _photos = (
+            _Attachment.objects
+            .filter(investment_id__in=_inv_ids, type=_Attachment.PHOTO)
+            .values('investment_id', 'url')
+        )
+        _photos_map = {}
+        for _p in _photos:
+            _photos_map.setdefault(_p['investment_id'], []).append(_p['url'])
+        for _inv in investments_with_coords:
+            _inv['attachments'] = _photos_map.get(_inv['id'], [])
         context["investments_map_data"] = _json.dumps(investments_with_coords, default=str)
 
         return context

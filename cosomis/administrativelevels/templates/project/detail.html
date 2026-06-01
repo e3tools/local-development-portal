@@ -130,7 +130,15 @@
                                     <tbody>
                                     {% for investment in investments.all %}
                                     <tr>
-                                        <td>{{ investment.title }}</td>
+                                        <td>
+                                            {% if investment.description %}
+                                            <span data-toggle="tooltip" data-placement="right" title="{{ investment.description }}" style="cursor:help;">
+                                                {{ investment.title }} <span class="text-muted" style="font-size:0.85em;">[{{ investment.description }}]</span>
+                                            </span>
+                                            {% else %}
+                                            {{ investment.title }}
+                                            {% endif %}
+                                        </td>
                                     {% if investment.estimated_cost < 1000000 %}
                                         <td data-order="0" data-search="0">
                                             {% translate 'Not available' %}
@@ -401,16 +409,86 @@
                 const lngLat = [parseFloat(inv.longitude), parseFloat(inv.latitude)];
                 bounds.extend(lngLat);
 
+                var sectorLabel = inv.sector__name || inv.sector__category__name || '—';
+                var statusLabels = {'NF':'{% translate "Not funded" %}','P':'{% translate "In progress" %}','A':'{% translate "Approved" %}','C':'{% translate "Completed" %}'};
+                var statusDisplay = statusLabels[inv.project_status] || inv.project_status || '—';
+                var rate = inv.physical_execution_rate || 0;
+
+                // Breadcrumb hiérarchie
+                var levelLabels = ['RÉG.','PRÉF.','COM.','CANT.','VIL.'];
+                var rawParts = [
+                    inv['administrative_level__parent__parent__parent__parent__name'],
+                    inv['administrative_level__parent__parent__parent__name'],
+                    inv['administrative_level__parent__parent__name'],
+                    inv['administrative_level__parent__name'],
+                    inv['administrative_level__name']
+                ];
+                var villageLinkBase = "{% url 'administrativelevels:village_detail' 0 %}";
+                var villageId = inv['administrative_level__id'];
+                // Dernier index valide = niveau de la localité cliquable
+                var lastValidIdx = -1;
+                rawParts.forEach(function(v, i) { if (v && v !== 'null' && v !== 'None') lastValidIdx = i; });
+                var breadcrumb = '';
+                rawParts.forEach(function(v, i) {
+                    if (v && v !== 'null' && v !== 'None') {
+                        if (breadcrumb) breadcrumb += ' <span style="color:#aaa;">›</span> ';
+                        var nameHtml;
+                        if (i === lastValidIdx && villageId) {
+                            var villageUrl = villageLinkBase.replace('/0/', '/' + villageId + '/');
+                            nameHtml = '<a href="' + villageUrl + '" style="font-weight:700;color:#1a1a1a;text-decoration:underline;" target="_blank">' + v + '</a>';
+                        } else {
+                            nameHtml = '<span style="font-weight:700;">' + v + '</span>';
+                        }
+                        breadcrumb += '<span style="font-size:9px;color:#888;font-weight:600;">' + levelLabels[i] + '</span> ' + nameHtml;
+                    }
+                });
+
+                // Carousel
+                var carousel_html = '';
+                if (inv.attachments && inv.attachments.length > 0) {
+                    var imgs = '';
+                    inv.attachments.forEach(function(src, idx) {
+                        imgs += '<div class="carousel-item' + (idx === 0 ? ' active' : '') + '">' +
+                            '<img class="d-block w-100" src="' + src + '" style="max-height:180px;object-fit:cover;"></div>';
+                    });
+                    carousel_html =
+                        '<div id="pc-' + inv.id + '" class="carousel slide mt-2" data-ride="carousel">' +
+                        '<div class="carousel-inner">' + imgs + '</div>' +
+                        '<a class="carousel-control-prev" href="#pc-' + inv.id + '" role="button" data-slide="prev"><span class="carousel-control-prev-icon"></span></a>' +
+                        '<a class="carousel-control-next" href="#pc-' + inv.id + '" role="button" data-slide="next"><span class="carousel-control-next-icon"></span></a>' +
+                        '</div>';
+                }
+
                 const popupHtml =
-                    '<strong>' + (inv.title || '') + '</strong>' +
-                    (inv.description ? '<br><em>' + inv.description + '</em>' : '') +
-                    '<br><b>{% translate "Sector" %}:</b> ' + (inv.sector__name || inv.sector__category__name || '—') +
-                    '<br><b>{% translate "Physical rate" %}:</b> ' + (inv.physical_execution_rate || 0) + ' %' +
-                    '<br><b>{% translate "Status" %}:</b> ' + (inv.project_status || '—');
+                    '<div style="background:#f8f9fa;border-bottom:1px solid #dee2e6;padding:6px 12px;font-size:11px;line-height:1.8;">' +
+                        breadcrumb +
+                    '</div>' +
+                    '<div style="padding:10px 14px;min-width:260px;">' +
+                        '<div style="font-size:14px;font-weight:700;margin-bottom:6px;line-height:1.4;">' +
+                            (inv.title || '') +
+                            (inv.description ? ' <span style="font-weight:400;color:#6c757d;font-size:12px;">[' + inv.description + ']</span>' : '') +
+                        '</div>' +
+                        '<table style="width:100%;font-size:12px;border-collapse:collapse;">' +
+                            '<tr><td style="padding:3px 0;color:#6c757d;width:42%;">{% translate "Sector" %}</td>' +
+                                '<td style="padding:3px 0;font-weight:600;">' + sectorLabel + '</td></tr>' +
+                            '<tr><td style="padding:3px 0;color:#6c757d;">{% translate "Status" %}</td>' +
+                                '<td style="padding:3px 0;font-weight:600;">' + statusDisplay + '</td></tr>' +
+                            '<tr><td style="padding:3px 0;color:#6c757d;">{% translate "Physical rate" %}</td>' +
+                                '<td style="padding:3px 0;">' +
+                                    '<div style="display:flex;align-items:center;gap:6px;">' +
+                                        '<div style="flex:1;background:#e9ecef;border-radius:4px;height:6px;">' +
+                                            '<div style="width:' + rate + '%;background:#3b82f6;height:6px;border-radius:4px;"></div>' +
+                                        '</div>' +
+                                        '<span style="font-weight:600;white-space:nowrap;">' + rate + ' %</span>' +
+                                    '</div>' +
+                                '</td></tr>' +
+                        '</table>' +
+                        carousel_html +
+                    '</div>';
 
                 new mapboxgl.Marker({ color: '#3b82f6' })
                     .setLngLat(lngLat)
-                    .setPopup(new mapboxgl.Popup({ offset: 20 }).setHTML(popupHtml))
+                    .setPopup(new mapboxgl.Popup({ offset: 20, maxWidth: '320px' }).setHTML(popupHtml))
                     .addTo(map);
             });
 
@@ -432,37 +510,63 @@
 
     $( document ).ready(function() {
 
+        // Activer les tooltips Bootstrap
+        $('[data-toggle="tooltip"]').tooltip();
+
+        // Cacher les données depuis le DOM AVANT que DataTables ne touche quoi que ce soit
+        var INVESTMENT_DATA = {};
+        $('.investment-update-badge').each(function() {
+            var id = $(this).attr('data-investment');
+            if (id) {
+                INVESTMENT_DATA[id] = {
+                    name:          $(this).attr('data-name')          || '',
+                    status:        $(this).attr('data-status')        || '',
+                    progress:      $(this).attr('data-progress')      || '0',
+                    estimatedCost: $(this).attr('data-estimated-cost')|| '',
+                    realCost:      $(this).attr('data-real-cost')     || '',
+                    latitude:      $(this).attr('data-latitude')      || '',
+                    longitude:     $(this).attr('data-longitude')     || '',
+                    updated:       $(this).attr('data-updated')       || ''
+                };
+            }
+        });
+
         $(".investments-datatable").DataTable({{ investments_datatable_config | safe }});
         $(".packages-datatable").DataTable({{ packages_datatable_config | safe }});
 
-        $('.investment-update-badge').on('click', function (){
-            var $badge = $(this);
-            $('#investment-hidden').val($badge.attr('data-investment'));
-            $('#project-status').val($badge.attr('data-status')).trigger("change");
-            $('#lastUpdatedHelpTextId').html($badge.attr('data-updated'));
-            $('.investment-name').html($badge.attr('data-name'));
+        $(document).on('click', '.investment-update-badge', function (e){
+            e.stopPropagation();
+            var investmentId = String($(this).attr('data-investment'));
+            var d = INVESTMENT_DATA[investmentId];
+            if (!d) return;
 
-            var progress = $badge.attr('data-progress') || 0;
+            $('#investment-hidden').val(investmentId);
+            $('#project-status').val(d.status).trigger("change");
+            $('#lastUpdatedHelpTextId').html(d.updated);
+            $('.investment-name').html(d.name);
+
+            var progress = d.progress !== '' ? parseFloat(d.progress) : 0;
             $("#physicalExecutionNumber").val(progress);
             $("#physicalExecutionRange").val(progress);
 
-            $("#estimated-cost").val($badge.attr('data-estimated-cost') || '');
-            $("#real-cost").val($badge.attr('data-real-cost') || '');
+            $("#estimated-cost").val(d.estimatedCost || '');
+            $("#real-cost").val(d.realCost || '');
 
-            var lat = $badge.attr('data-latitude');
-            var lng = $badge.attr('data-longitude');
-            // Afficher la valeur uniquement si elle est définie et non vide
-            $("#project-latitude").val((lat !== undefined && lat !== 'None' && lat !== '') ? lat : '');
-            $("#project-longitude").val((lng !== undefined && lng !== 'None' && lng !== '') ? lng : '');
+            // Coordonnées : remplacer virgule par point (locale FR) avant parseFloat
+            var latRaw = d.latitude.replace(',', '.');
+            var lngRaw = d.longitude.replace(',', '.');
+            var lat = (latRaw !== '' && latRaw !== 'None' && latRaw !== 'null') ? parseFloat(latRaw) : '';
+            var lng = (lngRaw !== '' && lngRaw !== 'None' && lngRaw !== 'null') ? parseFloat(lngRaw) : '';
+            $("#project-latitude").val(lat);
+            $("#project-longitude").val(lng);
 
             $("#investmentUpdateModel").modal("show");
         });
-        
-        $('.image-update-badge').on('click', function (){
-            
+
+        $(document).on('click', '.image-update-badge', function (){
             let carousel_images_html = "";
             let carousel_html = "";
-            let urls = $(this).data('images').split(',');
+            let urls = ($(this).attr('data-images') || '').split(',');
             if (urls){
                 urls.forEach((attachment, index) => {
                     if ( index === 0 ){
@@ -474,7 +578,7 @@
                         '<img class="d-block w-100" src="' + attachment + '" alt="First slide">' +
                         '</div>'
                     }
-                })
+                });
 
                 carousel_html = '<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">' +
                   '<div class="carousel-inner">' +
@@ -490,11 +594,9 @@
                   '</div>' +
                 '</div>'
             }
-            
             $('#attachments-carousel').html(carousel_html);
-            $('#investment-image-hidden').val($(this).data('investment'));
-            $('.investment-name').html($(this).data('name'));
-            
+            $('#investment-image-hidden').val($(this).attr('data-investment'));
+            $('.investment-name').html($(this).attr('data-name'));
             $("#imageUpdateModel").modal("show");
         });
 
