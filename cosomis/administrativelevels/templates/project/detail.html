@@ -449,7 +449,7 @@
                     var imgs = '';
                     inv.attachments.forEach(function(src, idx) {
                         imgs += '<div class="carousel-item' + (idx === 0 ? ' active' : '') + '">' +
-                            '<img class="d-block w-100" src="' + src + '" style="max-height:180px;object-fit:cover;"></div>';
+                            '<img class="d-block w-100" src="' + (src ? src.split('?')[0] : '') + '" style="max-height:180px;object-fit:cover;"></div>';
                     });
                     carousel_html =
                         '<div id="pc-' + inv.id + '" class="carousel slide mt-2" data-ride="carousel">' +
@@ -571,11 +571,11 @@
                 urls.forEach((attachment, index) => {
                     if ( index === 0 ){
                         carousel_images_html += '<div class="carousel-item active">' +
-                        '<img class="d-block w-100" src="' + attachment + '" alt="First slide">' +
+                        '<img class="d-block w-100" src="' + (attachment ? attachment.split('?')[0] : '') + '" alt="First slide">' +
                         '</div>'
                     }else{
                         carousel_images_html += '<div class="carousel-item">' +
-                        '<img class="d-block w-100" src="' + attachment + '" alt="First slide">' +
+                        '<img class="d-block w-100" src="' + (attachment ? attachment.split('?')[0] : '') + '" alt="First slide">' +
                         '</div>'
                     }
                 });
