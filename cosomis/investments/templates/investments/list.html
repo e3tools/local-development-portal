@@ -1445,7 +1445,7 @@
                 ]);
             },
             success: function(response) {
-                $('.total-selected-funding-display').html(numeral(response.total_funding_display).format('0,0') + ' FCFA');
+                $('.total-selected-funding-display').html(numeral(response.total_funding_display).format('0,0')); // + ' FCFA'
                 $('.total-selected-villages-display').html(numeral(response.total_villages_display).format('0,0'));
                 $('.total-selected-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
             },

@@ -159,8 +159,10 @@
 			<div class="card stat-card">
 				<div class="card-body text-center">
 					<div class="stat-value h2 font-weight-bold">
-						{% if population.total_estimated_cost >= 1000000000 %}
-							{{ population.total_estimated_cost|divide:1000000000|floatformat:1 }}B
+						{% if population.total_estimated_cost >= 1000000000000 %}
+							{{ population.total_estimated_cost|divide:1000000000000|floatformat:1 }}B
+						{% elif population.total_estimated_cost >= 1000000000 %}
+							{{ population.total_estimated_cost|divide:1000000000|floatformat:1 }}Mds
 						{% elif population.total_estimated_cost >= 1000000 %}
 							{{ population.total_estimated_cost|divide:1000000|floatformat:1 }}M
 						{% else %}
