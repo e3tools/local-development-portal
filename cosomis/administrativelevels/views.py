@@ -1651,7 +1651,7 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
             if single_region
             else AdministrativeLevel.objects.none()
         )
-        context['phases'] = Phase.objects.all().values_list('name', flat=True).distinct()
+        context['phases'] = Phase.objects.all().values_list('name', flat=True).distinct().order_by('order')
 
         # Use the dataset's own level names so the modal/chip labels read
         # "Country / Département / ... / Village" on Benin instead of the
