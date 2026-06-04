@@ -2168,6 +2168,10 @@ msgstr "Aucun sous‑niveau sous ce niveau administratif."
 msgid "You have no complaints"
 msgstr "Vous n'avez aucune plainte"
 
+#: administrativelevels/templates/shared/grm_table.html:3
+msgid "There are no complaints"
+msgstr "Il n'y a aucune plainte"
+
 #: administrativelevels/templates/shared/grm_table.html:12
 msgid "Date of complaint"
 msgstr "Date de la plainte"
