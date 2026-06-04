@@ -795,40 +795,43 @@
                 let other_selects = context_inputs.slice(base_index + 2);
 
                 let selected_value = select_input.find(":selected").val();
-
-                if (selected_value !== '') {
-                    let base_url = "{% url 'administrativelevels:utils:attachment_filter' %}";
-                    $.ajax({
-                        type: "POST",
-                        url: base_url,
-                        data: {
-                            type: select_input.attr('name'),
-                            value: selected_value,
-                            csrfmiddlewaretoken: '{{ csrf_token }}',
-                        },
-                        success: function (response) {
-                            select_to_fill.empty();
-                            select_to_fill.append(empty_option);
-                            response.values.forEach((element) => {
-                                if (['task', 'activity', 'phase'].includes(select_input.attr('name'))) {
-                                    select_to_fill.append(new Option(element.name, element.name, false, false));
-                                } else {
-                                    select_to_fill.append(new Option(element.name, element.id, false, false));
-                                }
-                            });
-                        }
-                    });
-                    select_to_fill.prop('disabled', false);
-                } else {
-                    select_to_fill.prop('disabled', 'disabled');
-                    select_to_fill.empty();
-                    select_to_fill.append(empty_option);
+                if(select_to_fill){
+                    if (selected_value !== '') {
+                        let base_url = "{% url 'administrativelevels:utils:attachment_filter' %}";
+                        $.ajax({
+                            type: "POST",
+                            url: base_url,
+                            data: {
+                                type: select_input.attr('name'),
+                                value: selected_value,
+                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                            },
+                            success: function (response) {
+                                select_to_fill.empty();
+                                select_to_fill.append(empty_option);
+                                response.values.forEach((element) => {
+                                    if (['task', 'activity', 'phase'].includes(select_input.attr('name'))) {
+                                        select_to_fill.append(new Option(element.name, element.name, false, false));
+                                    } else {
+                                        select_to_fill.append(new Option(element.name, element.id, false, false));
+                                    }
+                                });
+                            }
+                        });
+                        select_to_fill.prop('disabled', false);
+                    } else {
+                        select_to_fill.prop('disabled', 'disabled');
+                        select_to_fill.empty();
+                        select_to_fill.append(empty_option);
+                    }
                 }
-                other_selects.forEach((select) => {
-                    select.prop('disabled', 'disabled');
-                    select.empty();
-                    select.append(empty_option);
-                });
+                if(other_selects){
+                    other_selects.forEach((select) => {
+                        select.prop('disabled', 'disabled');
+                        select.empty();
+                        select.append(empty_option);
+                    });
+                }
             }
 
             function init_change_filters_selects(base_index) {

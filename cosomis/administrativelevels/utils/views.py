@@ -11,6 +11,8 @@ from django.http import HttpResponse, Http404
 from django.template.loader import render_to_string
 from openpyxl import Workbook
 from rest_framework import generics, response
+from django.db import connection
+from django.db.models import Min
 
 from cosomis.mixins import AJAXRequestMixin, JSONResponseMixin, LoginRequiredApproveRequiredMixin
 from administrativelevels.models import AdministrativeLevel, Phase, Activity, Task, Sector, GeoSegment
@@ -267,9 +269,30 @@ class FillAttachmentSelectFilters(generics.GenericAPIView):
         elif select_type == 'phase':
             # parent_obj = Phase.objects.filter(id=request.POST['value'])
             child_qs = Activity.objects.filter(phase__name=request.POST['value'])
+            if connection.vendor == 'postgresql':
+                child_qs = child_qs.values('id', 'phase__name', 'name').distinct('phase__name', 'name')
+            else:
+                # Code de repli pour MySQL, SQLite, MariaDB, etc.
+                id_uniques = (
+                    child_qs.values('phase__name', 'name')
+                    .annotate(min_id=Min('id'))
+                    .values_list('min_id', flat=True)
+                )
+                child_qs = child_qs.filter(id__in=id_uniques)
+
         elif select_type == 'activity':
             # parent_obj = Activity.objects.get(id=request.POST['value'])
             child_qs = Task.objects.filter(activity__name=request.POST['value'])
+            if connection.vendor == 'postgresql':
+                child_qs = child_qs.values('id', 'activity__name', 'name').distinct('activity__name', 'name')
+            else:
+                # Code de repli pour MySQL, SQLite, MariaDB, etc.
+                id_uniques = (
+                    child_qs.values('activity__name', 'name')
+                    .annotate(min_id=Min('id'))
+                    .values_list('min_id', flat=True)
+                )
+                child_qs = child_qs.filter(id__in=id_uniques)
 
         return response.Response({
             'values': [{'id': child.id, 'name': child.name} for child in child_qs]
