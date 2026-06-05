@@ -160,11 +160,11 @@
 				<div class="card-body text-center">
 					<div class="stat-value h2 font-weight-bold">
 						{% if population.total_estimated_cost >= 1000000000000 %}
-							{{ population.total_estimated_cost|divide:1000000000000|floatformat:1 }}B
+							{{ population.total_estimated_cost|divide:1000000000000|floatformat:1 }}{% translate "T" %}
 						{% elif population.total_estimated_cost >= 1000000000 %}
-							{{ population.total_estimated_cost|divide:1000000000|floatformat:1 }}Mds
+							{{ population.total_estimated_cost|divide:1000000000|floatformat:1 }}{% translate "B" %}
 						{% elif population.total_estimated_cost >= 1000000 %}
-							{{ population.total_estimated_cost|divide:1000000|floatformat:1 }}M
+							{{ population.total_estimated_cost|divide:1000000|floatformat:1 }}{% translate "M" %}
 						{% else %}
 							{{ population.total_estimated_cost|intcomma }}
 						{% endif %}

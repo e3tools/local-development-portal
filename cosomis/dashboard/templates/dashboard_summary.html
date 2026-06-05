@@ -1007,10 +1007,10 @@
                 const n = Number(value) || 0;
                 const abs = Math.abs(n);
                 const trim = (x) => x.toFixed(1).replace(/\.0$/, '');
-                if (abs >= 1e12) return `${trim(n / 1e12)}<span class="funding-value-suffix">B</span>`;
-                if (abs >= 1e9)  return `${trim(n / 1e9)}<span class="funding-value-suffix">Mds</span>`;
-                if (abs >= 1e6)  return `${trim(n / 1e6)}<span class="funding-value-suffix">M</span>`;
-                if (abs >= 1e3)  return `${trim(n / 1e3)}<span class="funding-value-suffix">K</span>`;
+                if (abs >= 1e12) return `${trim(n / 1e12)}<span class="funding-value-suffix">{% translate "T" %}</span>`;
+                if (abs >= 1e9)  return `${trim(n / 1e9)}<span class="funding-value-suffix">{% translate "B" %}</span>`;
+                if (abs >= 1e6)  return `${trim(n / 1e6)}<span class="funding-value-suffix">{% translate "M" %}</span>`;
+                if (abs >= 1e3)  return `${trim(n / 1e3)}<span class="funding-value-suffix">{% translate "K" %}</span>`;
                 return String(Math.round(n));
             }
 
