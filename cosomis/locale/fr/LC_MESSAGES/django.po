@@ -4185,3 +4185,19 @@ msgstr "Le mot de passe actuel ne correspond pas."
 #: usermanager/views_change_password.py:121
 msgid "The password has been successfully changed."
 msgstr "Le mot de passe a été changé avec succès."
+
+#: investments - numbers
+msgid "T"
+msgstr "B"
+
+#: investments - numbers
+msgid "B"
+msgstr "Mds"
+
+#: investments - numbers
+msgid "M"
+msgstr "M"
+
+#: investments - numbers
+msgid "K"
+msgstr "K"
