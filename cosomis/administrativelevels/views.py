@@ -1714,6 +1714,9 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
                 # task = Task.objects.get(id=int(get_value))
                 resp[current_filter_level] = get_value
                 resp[next_filter_level] = self.request.GET[next_filter_level]
+                next_filter_level = self.filter_hierarchy[index + 2] if index + 2 < len(self.filter_hierarchy) else None
+                if next_filter_level in self.request.GET:
+                    resp[next_filter_level] = self.request.GET[next_filter_level]
             if current_filter_level == "activity":
                 # activity = Activity.objects.get(id=int(get_value))
                 resp[current_filter_level] = get_value
@@ -1813,11 +1816,16 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
             value = query_params.get(key)
             if not value:
                 continue
-            try:
-                instance = model.objects.get(id=int(value))
+
+            instance = model.objects.filter(Q(name__icontains=str(value))).first()
+            if instance:
                 name = instance.name
-            except (model.DoesNotExist, ValueError, TypeError):
-                continue
+            else:
+                try:
+                    instance = model.objects.get(Q(id=int(value)))
+                    name = instance.name
+                except (model.DoesNotExist, ValueError, TypeError):
+                    continue
             chips.append({
                 "key": key,
                 "label": "{}: {}".format(prefix, name),
@@ -1846,6 +1854,14 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         elif "activities" in request_get and request_get["activities"] not in empty_list:
             queryset = queryset.filter(
                 task__activity__id=request_get["activities"]
+            )
+        elif "task" in request_get and request_get["task"] not in empty_list:
+            queryset = queryset.filter(
+                task__name=request_get["task"]
+            )
+        elif "activity" in request_get and request_get["activity"] not in empty_list:
+            queryset = queryset.filter(
+                task__activity__name=request_get["activity"]
             )
         elif "phase" in request_get and request_get["phase"] not in empty_list:
             queryset = queryset.filter(
