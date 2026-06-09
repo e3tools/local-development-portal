@@ -46,6 +46,26 @@ class Investment(BaseModel): # Investment module
         (PRIORITY, _("Priority")),
         (SUBPROJECT, _("SubProject")),
     )
+
+    SUB_COMPONENT_11 = "1.1"
+    SUB_COMPONENT_12A = "1.2a"
+    SUB_COMPONENT_12B = "1.2b"
+    SUB_COMPONENT_13 = "1.3"
+    SUB_COMPONENT_CHOICES = (
+        (SUB_COMPONENT_11, _("1.1")),
+        (SUB_COMPONENT_12A, _("1.2a")),
+        (SUB_COMPONENT_12B, _("1.2b")),
+        (SUB_COMPONENT_13, _("1.3")),
+    )
+
+    sub_component = models.CharField(
+        max_length=10,
+        choices=SUB_COMPONENT_CHOICES,
+        null=True,
+        blank=True,
+        verbose_name=_("Sub Component")
+    )
+
     ranking = models.PositiveIntegerField(null=True, blank=True)
     title = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -116,7 +136,7 @@ class Investment(BaseModel): # Investment module
             "chiefs": "chefferie" in description,
             "women": "femmes" in description,
             "minorities": "minorités ethniques" in description,
-            "farmers": "agriculteurs éleveurs" in description,
+            "farmers": "éleveurs et agriculteurs" in description,
         }
         
     def __str__(self):

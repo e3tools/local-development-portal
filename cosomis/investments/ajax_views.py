@@ -340,12 +340,19 @@ class StatisticsView(View):
         ).aggregate(total_unfunding=Sum('estimated_cost'))['total_unfunding'] or 0
 
         # Subprojects by sector and minority groups
-        minority_groups = [
-            'endorsed_by_youth',
-            'endorsed_by_women',
-            'endorsed_by_agriculturist',
-            'endorsed_by_pastoralist'
-        ]
+        # minority_groups = [
+        #     'endorsed_by_youth',
+        #     'endorsed_by_women',
+        #     'endorsed_by_agriculturist',
+        #     'endorsed_by_pastoralist'
+        # ]
+        minority_groups = {
+            'youth':      Q(description__icontains='jeunes'),
+            'women':      Q(description__icontains='femmes'),
+            'farmers':    Q(description__icontains='éleveurs et agriculteurs'),
+            'minorities': Q(description__icontains='minorités ethniques'),
+            'chiefs':     Q(description__icontains='chefferie'),
+        }
 
         # Sector priorities
         if sector_filter_active:
@@ -353,20 +360,33 @@ class StatisticsView(View):
                 sector__category__name=F('sector__name'),  # Rename the key here
                 total=Count('sector__name')
             )
+            # subprojects_by_sector_and_group = {
+            #     group: investments.filter(**{group: True}).values('sector__name').annotate(
+            #         sector__category__name=F('sector__name'),  # Rename the key here
+            #         total=Count('sector__name')
+            #     )
+            #     for group in minority_groups
+            # }
             subprojects_by_sector_and_group = {
-                group: investments.filter(**{group: True}).values('sector__name').annotate(
-                    sector__category__name=F('sector__name'),  # Rename the key here
+                group: investments.filter(q).values('sector__name').annotate(
+                    sector__category__name=F('sector__name'),
                     total=Count('sector__name')
                 )
-                for group in minority_groups
+                for group, q in minority_groups.items()
             }
         else:
             sector_priorities = investments.values('sector__category__name').annotate(
                 total=Count('sector__category__name'))
+            # subprojects_by_sector_and_group = {
+            #     group: investments.filter(**{group: True}).values('sector__category__name').annotate(
+            #         total=Count('sector__category__name'))
+            #     for group in minority_groups
+            # }
             subprojects_by_sector_and_group = {
-                group: investments.filter(**{group: True}).values('sector__category__name').annotate(
-                    total=Count('sector__category__name'))
-                for group in minority_groups
+                group: investments.filter(q).values('sector__category__name').annotate(
+                    total=Count('sector__category__name')
+                )
+                for group, q in minority_groups.items()
             }
 
 
@@ -425,7 +445,7 @@ class StatisticsView(View):
             'sector_priorities': list(sector_priorities),
             'sector_types': sector_type_list,
             'subprojects_by_sector_and_group': {
-                group: list(subprojects_by_sector_and_group[group]) for group in minority_groups
+                group: list(subprojects_by_sector_and_group[group]) for group in minority_groups.keys()
             },
             'subprojects': filtered_subprojects,  # Use the filtered subprojects without NaN
             'total_funded_priorities': total_funded_priorities,

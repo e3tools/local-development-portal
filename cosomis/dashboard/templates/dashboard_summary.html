@@ -315,7 +315,7 @@
                                 	{% translate 'Number of infrastructures by minority group' %}
                                 </h6>
                             </div>
-                            <ul class="nav nav-pills mb-3 col-12" id="pills-tab" role="tablist">
+                            <!-- <ul class="nav nav-pills mb-3 col-12" id="pills-tab" role="tablist">
                                 <li class="nav-item mr-2 mb-2" role="presentation">
                                     <button class="nav-link active bg-primary" id="pills-agriculturist-tab"
                                     	data-toggle="pill" data-target="#pills-agriculturist" type="button" role="tab"
@@ -344,8 +344,46 @@
                                     	{% translate 'ethnic minorities' %}
                                     </button>
                                 </li>
+                            </ul> -->
+                            <!-- BJ -->
+                            <ul class="nav nav-pills mb-3 col-12" id="pills-tab" role="tablist">
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link active bg-primary" id="pills-farmers-tab"
+                                        data-toggle="pill" data-target="#pills-farmers" type="button" role="tab"
+                                        aria-controls="pills-farmers" aria-selected="true">
+                                        {% translate 'farmers' %}
+                                    </button>
+                                </li>
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link bg-primary" id="pills-women-tab" data-toggle="pill"
+                                        data-target="#pills-women" type="button" role="tab" aria-controls="pills-women"
+                                        aria-selected="false">
+                                        {% translate 'women' %}
+                                    </button>
+                                </li>
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link bg-primary" id="pills-youth-tab"
+                                        data-toggle="pill" data-target="#pills-youth" type="button" role="tab"
+                                        aria-controls="pills-youth" aria-selected="false">
+                                        {% translate 'youth' %}
+                                    </button>
+                                </li>
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link bg-primary" id="pills-minorities-tab"
+                                        data-toggle="pill" data-target="#pills-minorities" type="button" role="tab"
+                                        aria-controls="pills-minorities" aria-selected="false">
+                                        {% translate 'ethnic minorities' %}
+                                    </button>
+                                </li>
+                                <li class="nav-item mr-2 mb-2" role="presentation">
+                                    <button class="nav-link bg-primary" id="pills-chiefs-tab"
+                                        data-toggle="pill" data-target="#pills-chiefs" type="button" role="tab"
+                                        aria-controls="pills-chiefs" aria-selected="false">
+                                        {% translate 'chiefs' %}
+                                    </button>
+                                </li>
                             </ul>
-                            <div class="tab-content col-12" id="pills-tabContent">
+                            <!-- <div class="tab-content col-12" id="pills-tabContent">
                                 <div class="tab-pane fade show active" id="pills-agriculturist" role="tabpanel"
                                 	aria-labelledby="pills-agriculturist-tab">
                                     <p id="noDataMessageAgriculturist" class="text-center" style="display: none; font-size: 16px;">
@@ -385,6 +423,59 @@
                                         <canvas id="ethnicMinoritiesChart" class="pie-chart"></canvas>
                                     </div>
                                     <ul id="ethnicMinoritiesLegend" class="legend"></ul>
+                                </div>
+                            </div> -->
+                            <!-- Par ceci : -->
+                            <div class="tab-content col-12" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-farmers" role="tabpanel"
+                                    aria-labelledby="pills-farmers-tab">
+                                    <p id="noDataMessageFarmers" class="text-center" style="display: none; font-size: 16px;">
+                                        {% translate 'No sub-projects for farmers yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="farmersChart" class="pie-chart"></canvas>
+                                    </div>
+                                    <ul id="farmersLegend" class="legend"></ul>
+                                </div>
+                                <div class="tab-pane fade" id="pills-women" role="tabpanel"
+                                    aria-labelledby="pills-women-tab">
+                                    <p id="noDataMessageWomen" class="text-center" style="display: none; font-size: 16px;">
+                                        {% translate 'No sub-projects for womens yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="womenChart" class="pie-chart"></canvas>
+                                    </div>
+                                    <ul id="womenLegend" class="legend"></ul>
+                                </div>
+                                <div class="tab-pane fade" id="pills-youth" role="tabpanel"
+                                    aria-labelledby="pills-youth-tab">
+                                    <p id="noDataMessageYouth" class="text-center" style="display: none; font-size: 16px;">
+                                        {% translate 'No sub-projects for youth yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="youthChart" class="pie-chart"></canvas>
+                                    </div>
+                                    <ul id="youthLegend" class="legend"></ul>
+                                </div>
+                                <div class="tab-pane fade" id="pills-minorities" role="tabpanel"
+                                    aria-labelledby="pills-minorities-tab">
+                                    <p id="noDataMessageMinorities" class="text-center" style="display: none; font-size: 16px;">
+                                        {% translate 'No sub-projects for ethnic minorities yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="minoritiesChart" class="pie-chart"></canvas>
+                                    </div>
+                                    <ul id="minoritiesLegend" class="legend"></ul>
+                                </div>
+                                <div class="tab-pane fade" id="pills-chiefs" role="tabpanel"
+                                    aria-labelledby="pills-chiefs-tab">
+                                    <p id="noDataMessageChiefs" class="text-center" style="display: none; font-size: 16px;">
+                                        {% translate 'No sub-projects for chiefs yet' %}
+                                    </p>
+                                    <div class="chart-wrap">
+                                        <canvas id="chiefsChart" class="pie-chart"></canvas>
+                                    </div>
+                                    <ul id="chiefsLegend" class="legend"></ul>
                                 </div>
                             </div>
                         </div>
@@ -800,11 +891,19 @@
                 this.totalCompletedInfrastructureElement = $('#total-completed-infrastructure');
                 this.typeSelect = $('#type-select-id');
                 this.prioritiesChart = null;
+                // this.minorityCharts = {
+                //     'endorsed_by_agriculturist': {chart: null, legendId: 'agriculturistLegend', canvasId: 'agriculturistChart', noDataMessageId: 'noDataMessageAgriculturist'},
+                //     'endorsed_by_women': {chart: null, legendId: 'womenLegend', canvasId: 'womenChart', noDataMessageId: 'noDataMessageWomen'},
+                //     'endorsed_by_youth': {chart: null, legendId: 'youthLegend', canvasId: 'youthChart', noDataMessageId: 'noDataMessageYouth'},
+                //     'endorsed_by_pastoralist': {chart: null, legendId: 'ethnicMinoritiesLegend', canvasId: 'ethnicMinoritiesChart', noDataMessageId: 'noDataMessageEthnicMinorities'}
+                // };
+                // BJ :
                 this.minorityCharts = {
-                    'endorsed_by_agriculturist': {chart: null, legendId: 'agriculturistLegend', canvasId: 'agriculturistChart', noDataMessageId: 'noDataMessageAgriculturist'},
-                    'endorsed_by_women': {chart: null, legendId: 'womenLegend', canvasId: 'womenChart', noDataMessageId: 'noDataMessageWomen'},
-                    'endorsed_by_youth': {chart: null, legendId: 'youthLegend', canvasId: 'youthChart', noDataMessageId: 'noDataMessageYouth'},
-                    'endorsed_by_pastoralist': {chart: null, legendId: 'ethnicMinoritiesLegend', canvasId: 'ethnicMinoritiesChart', noDataMessageId: 'noDataMessageEthnicMinorities'}
+                    'farmers':    {chart: null, legendId: 'farmersLegend',    canvasId: 'farmersChart',    noDataMessageId: 'noDataMessageFarmers'},
+                    'women':      {chart: null, legendId: 'womenLegend',      canvasId: 'womenChart',      noDataMessageId: 'noDataMessageWomen'},
+                    'youth':      {chart: null, legendId: 'youthLegend',      canvasId: 'youthChart',      noDataMessageId: 'noDataMessageYouth'},
+                    'minorities': {chart: null, legendId: 'minoritiesLegend', canvasId: 'minoritiesChart', noDataMessageId: 'noDataMessageMinorities'},
+                    'chiefs':     {chart: null, legendId: 'chiefsLegend',     canvasId: 'chiefsChart',     noDataMessageId: 'noDataMessageChiefs'},
                 };
                 this.fundedPrioritiesChart = null;
             }
