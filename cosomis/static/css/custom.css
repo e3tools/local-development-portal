@@ -1356,3 +1356,183 @@ blockquote.quote-blue h6 {
     font-weight: 500;
     color: #196A62;
 }
+
+/* =========================================================================
+   Enhanced Alert System - Alertes assorties au design du projet
+   ========================================================================= */
+
+/* Base alert styles */
+.alert {
+    border-radius: 8px;
+    border-left-width: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    padding: 14px 18px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.alert .icon {
+    margin-right: 12px;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.alert strong {
+    font-weight: 600;
+}
+
+.alert-dismissible .close {
+    padding: 14px 18px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.alert-dismissible .close:hover {
+    opacity: 1;
+}
+
+/* Success Alert - Green */
+.alert-success {
+    background-color: #f0fdf4;
+    border-color: #86efac;
+    border-left-color: #22c55e;
+    color: #166534;
+}
+
+.alert-success .icon {
+    color: #22c55e;
+}
+
+.alert-success .close {
+    color: #166534;
+}
+
+/* Info Alert - Blue */
+.alert-info {
+    background-color: #eff6ff;
+    border-color: #93c5fd;
+    border-left-color: #3b82f6;
+    color: #1e40af;
+}
+
+.alert-info .icon {
+    color: #3b82f6;
+}
+
+.alert-info .close {
+    color: #1e40af;
+}
+
+/* Warning Alert - Orange/Yellow */
+.alert-warning {
+    background-color: #fffbeb;
+    border-color: #fde047;
+    border-left-color: #f59e0b;
+    color: #92400e;
+}
+
+.alert-warning .icon {
+    color: #f59e0b;
+}
+
+.alert-warning .close {
+    color: #92400e;
+}
+
+.alert-warning ul {
+    margin-top: 8px;
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.alert-warning li {
+    margin-bottom: 4px;
+}
+
+/* Danger/Error Alert - Red */
+.alert-danger {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    border-left-color: #ef4444;
+    color: #991b1b;
+}
+
+.alert-danger .icon {
+    color: #ef4444;
+}
+
+.alert-danger .close {
+    color: #991b1b;
+}
+
+/* Callout enhancements */
+.callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    border-left-width: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.callout h5 {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.callout h5 i {
+    margin-right: 8px;
+}
+
+.callout.callout-info {
+    border-left-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.callout.callout-warning {
+    border-left-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+.callout.callout-success {
+    border-left-color: #22c55e;
+    background-color: #f0fdf4;
+}
+
+.callout.callout-danger {
+    border-left-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+/* Alert animations */
+@keyframes alertFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert.fade.show {
+    animation: alertFadeIn 0.3s ease-out;
+}
+
+/* Alert container */
+.alert-div-content {
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .alert {
+        font-size: 13px;
+        padding: 12px 14px;
+    }
+
+    .alert .icon {
+        font-size: 16px;
+        margin-right: 8px;
+    }
+}
