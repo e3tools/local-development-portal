@@ -1974,3 +1974,34 @@ def attachment_download_zip(self, adm_id: int):
     response["Content-Disposition"] = "attachment; filename=attachments.zip"
 
     return response
+
+
+@login_required
+def gloval_attachment_download_zip(request):
+    ids = request.GET.get("ids").split(",")
+
+    buffer = BytesIO()
+    zip_file = zipfile.ZipFile(buffer, "w")
+    for id in ids:
+        url = Attachment.objects.get(id=int(id)).url.split("?")[0]
+        response = requests.get(url)
+        if response.status_code == 200:
+            content_disposition = response.headers.get("content-disposition")
+            filename = url.split("/")[-1]
+            if content_disposition is not None:
+                try:
+                    fname = re.findall('filename="(.+)"', content_disposition)
+
+                    if len(fname) != 0:
+                        filename = fname[0]
+                except:
+                    pass
+        zip_file.writestr(filename, response.content)
+
+    zip_file.close()
+
+    response = HttpResponse(buffer.getvalue())
+    response["Content-Type"] = "application/x-zip-compressed"
+    response["Content-Disposition"] = "attachment; filename=attachments.zip"
+
+    return response

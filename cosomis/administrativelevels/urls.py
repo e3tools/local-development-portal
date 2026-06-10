@@ -17,6 +17,8 @@ urlpatterns = [
          name='attachment_download'),
     path('detail/<int:adm_id>/attachments/download-zip/', views.attachment_download_zip,
          name='attachment_download_zip'),
+    path('attachments/download-zip/', views.gloval_attachment_download_zip,
+         name='gloval_attachment_download_zip'),
     path('attachments/<int:pk>/download/', views.attachment_download_by_id,
          name='attachment_download_by_id'),
 
