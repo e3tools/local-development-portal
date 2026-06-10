@@ -196,7 +196,17 @@ class IndexListView(
             [key + '=' + value for key, value in kwargs["query_strings_raw"].items()])
 
         if self.request.user.organization is not None:
-            kwargs["projects"] = self.request.user.organization.projects.all()
+            projects = self.request.user.organization.projects.all()
+            # Calculer les fonds disponibles pour chaque projet
+            for project in projects:
+                # Montant déjà engagé = somme des coûts des investissements dans les packages approuvés ou en attente
+                already_committed = PackageFundedInvestment.objects.filter(
+                    package__project=project,
+                    status__in=[PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED],
+                ).aggregate(total=Sum('investment__estimated_cost'))['total'] or 0
+                # Fonds disponibles = budget total - fonds engagés
+                project.available_funds = project.total_amount - already_committed
+            kwargs["projects"] = projects
             kwargs['cart_project'] = Package.objects.get_active_cart(user=self.request.user).project
 
         kwargs.setdefault("view", self)
@@ -477,9 +487,9 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
         def _budget_error_msg(project, already_committed, current_total):
             grand_total = already_committed + current_total
             return _(
-                "Budget du projet dépassé. Budget : {budget:,} FCFA — "
-                "Déjà engagé (autres paquets) : {committed:,} FCFA — "
-                "Ce paquet : {current:,} FCFA — "
+                "Budget du projet dépassé. Budget : {budget:,} FCFA - "
+                "Déjà engagé (autres paquets) : {committed:,} FCFA - "
+                "Ce paquet : {current:,} FCFA - "
                 "Total : {total:,} FCFA."
             ).format(
                 budget=project.total_amount,

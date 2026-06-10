@@ -1,13 +1,35 @@
+{% load i18n %}
+
 {% if messages %}
     {% if messages|length > 1 %}
         {% for message in messages %}
             <div class="row">
-                <div class="col-md-12 text-center">
-                    <div class="alert alert-{{ message.extra_tags }}">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
+                <div class="col-md-12">
+                    <div class="alert alert-{{ message.extra_tags }} alert-dismissible fade show" role="alert">
+                        {% if message.extra_tags == 'success' %}
+                            <i class="icon fas fa-check-circle"></i>
+                        {% elif message.extra_tags == 'danger' %}
+                            <i class="icon fas fa-exclamation-triangle"></i>
+                        {% elif message.extra_tags == 'warning' %}
+                            <i class="icon fas fa-exclamation-circle"></i>
+                        {% elif message.extra_tags == 'info' %}
+                            <i class="icon fas fa-info-circle"></i>
+                        {% endif %}
+                        <strong>
+                            {% if message.extra_tags == 'success' %}
+                                {% translate 'Succès' %} :
+                            {% elif message.extra_tags == 'danger' %}
+                                {% translate 'Erreur' %} :
+                            {% elif message.extra_tags == 'warning' %}
+                                {% translate 'Avertissement' %} :
+                            {% elif message.extra_tags == 'info' %}
+                                {% translate 'Information' %} :
+                            {% endif %}
+                        </strong>
                         {{ message | safe }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -16,8 +38,14 @@
         {% for message in messages %}
             {% if message.extra_tags == 'danger' %}
                 <div class="row">
-                    <div class="col-md-12 text-center">
-                        <div class="alert alert-{{ message.extra_tags }}">{{ message | safe }}</div>
+                    <div class="col-md-12">
+                        <div class="alert alert-{{ message.extra_tags }} alert-dismissible fade show" role="alert">
+                            <i class="icon fas fa-exclamation-triangle"></i>
+                            <strong>{% translate 'Erreur' %} :</strong> {{ message | safe }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             {% else %}
@@ -25,6 +53,13 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body alert-{{ message.extra_tags }}">
+                                {% if message.extra_tags == 'success' %}
+                                    <i class="icon fas fa-check-circle"></i>
+                                {% elif message.extra_tags == 'warning' %}
+                                    <i class="icon fas fa-exclamation-circle"></i>
+                                {% elif message.extra_tags == 'info' %}
+                                    <i class="icon fas fa-info-circle"></i>
+                                {% endif %}
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>

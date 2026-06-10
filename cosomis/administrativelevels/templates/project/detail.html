@@ -46,12 +46,34 @@
             </div>
 
             <div class="col-lg-3 col-6">
-
-                <div class="small-box bg-success">
+                <div class="small-box bg-primary">
                     <div class="inner">
                         <h5>{{ object.total_amount|intcomma }} FCFA</h5>
-                        <p>
-                        <p>{% translate "Total Investments Amount" %}</p></p>
+                        <p>{% translate "Project Budget" %}</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-solid fa-wallet"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h5>{{ already_committed|intcomma }} FCFA</h5>
+                        <p>{% translate "Already Committed" %}</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-solid fa-lock"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h5>{{ available_funds|intcomma }} FCFA</h5>
+                        <p>{% translate "Available Funds" %}</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-solid fa-money-bill"></i>
@@ -60,12 +82,10 @@
             </div>
 
             <div class="col-lg-3 col-6">
-
                 <div class="small-box">
                     <div class="inner">
                         <h5>{{ project.updated_date|date }}</h5>
-                        <p>
-                        <p>{% translate "Last update" %}</p></p>
+                        <p>{% translate "Last update" %}</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-solid fa-calendar"></i>

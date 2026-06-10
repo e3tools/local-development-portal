@@ -1,0 +1,99 @@
+{% load i18n %}
+
+{# Template de composants d'alertes réutilisables #}
+
+{# Alerte de Succès #}
+{% comment %}
+Usage:
+{% include 'common/alerts.html' with alert_type='success' alert_message='Votre opération a réussi' %}
+{% endcomment %}
+
+{% if alert_type == 'success' %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="icon fas fa-check-circle"></i>
+    <strong>{% translate 'Succès' %} :</strong> {{ alert_message | default:"L'opération a été effectuée avec succès." }}
+    {% if alert_dismissible|default:True %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+
+{# Alerte d'Information #}
+{% if alert_type == 'info' %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <i class="icon fas fa-info-circle"></i>
+    <strong>{% translate 'Information' %} :</strong> {{ alert_message | default:"Voici une information importante." }}
+    {% if alert_dismissible|default:True %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+
+{# Alerte d'Avertissement #}
+{% if alert_type == 'warning' %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <i class="icon fas fa-exclamation-circle"></i>
+    <strong>{% translate 'Avertissement' %} :</strong> {{ alert_message | default:"Attention, veuillez vérifier les informations." }}
+    {% if alert_dismissible|default:True %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+
+{# Alerte de Danger/Erreur #}
+{% if alert_type == 'danger' %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="icon fas fa-exclamation-triangle"></i>
+    <strong>{% translate 'Erreur' %} :</strong> {{ alert_message | default:"Une erreur s'est produite." }}
+    {% if alert_dismissible|default:True %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+
+{# Alerte avec liste de détails #}
+{% if alert_type == 'warning' and alert_details %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <i class="icon fas fa-exclamation-circle"></i>
+    <strong>{% translate 'Avertissement' %} :</strong> {{ alert_message }}
+    {% if alert_details %}
+    <ul style="margin-top: 10px; margin-bottom: 0;">
+        {% for detail in alert_details %}
+        <li>{{ detail }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if alert_dismissible|default:True %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+
+{# Alerte personnalisée avec style avancé #}
+{% if alert_type == 'custom' %}
+<div class="alert alert-{{ alert_style|default:'info' }} alert-dismissible fade show" role="alert" style="{{ alert_custom_style }}">
+    {% if alert_icon %}
+    <i class="icon fas fa-{{ alert_icon }}"></i>
+    {% endif %}
+    {% if alert_title %}
+    <strong>{{ alert_title }} :</strong>
+    {% endif %}
+    {{ alert_message }}
+    {% if alert_dismissible|default:True %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {% endif %}
+</div>
+{% endif %}
+

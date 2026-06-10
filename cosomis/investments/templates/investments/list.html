@@ -1143,13 +1143,13 @@
                             <select class="form-control results-project-select" name="project" id="project-select-id" required>
                                 <option selected value="">{% translate 'project' %}</option>
                                 {% for project in projects %}
-                                    <option value="{{ project.id }}" data-budget="{{ project.total_amount|intcomma }}" {% if forloop.first %}selected{% endif %}>{{ project.name }}</option>
+                                    <option value="{{ project.id }}" data-budget="{{ project.available_funds|intcomma }}" {% if forloop.first %}selected{% endif %}>{{ project.name }}</option>
                                 {% endfor %}
                             </select>
                             <div class="results-funds-meta">
                                 <span class="results-funds-label">{% translate 'Available' %}</span>
                                 <span class="results-funds-value">
-                                    <b class="project-total-funds-display">{% if cart_project %}{% for project in projects %}{% if cart_project.id == project.id %}{{ project.total_amount|intcomma }}{% endif %}{% endfor %}{% else %}{{ projects.0.total_amount|intcomma }}{% endif %}</b>
+                                    <b class="project-total-funds-display">{% if cart_project %}{% for project in projects %}{% if cart_project.id == project.id %}{{ project.available_funds|intcomma }}{% endif %}{% endfor %}{% else %}{{ projects.0.available_funds|intcomma }}{% endif %}</b>
                                     <span class="results-funds-currency">FCFA</span>
                                 </span>
                             </div>
@@ -1357,6 +1357,55 @@
     </div>
 </div>
 
+<!-- Modal d'alerte de dépassement de budget -->
+<div class="modal fade" id="budgetExceededModal" tabindex="-1" role="dialog" aria-labelledby="budgetExceededModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border: none; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+            <div class="modal-header" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; border-radius: 12px 12px 0 0; border: none; padding: 24px;">
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <div style="background: rgba(255,255,255,0.2); border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; margin-right: 16px;">
+                        <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <h5 class="modal-title" id="budgetExceededModalLabel" style="margin: 0; font-size: 1.5rem; font-weight: 600;">{% translate 'Budget exceeded!' %}</h5>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% translate 'Close' %}" style="color: white; opacity: 0.9; margin: 0; padding: 0; font-size: 2rem; font-weight: 300; line-height: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 32px 24px;">
+                <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 16px; border-radius: 6px; margin-bottom: 24px;">
+                    <p style="margin: 0; color: #991b1b; font-size: 0.95rem; line-height: 1.6;">
+                        {% translate 'The selected funding exceeds the available funds for this project. Please deselect some investments or choose another project.' %}
+                    </p>
+                </div>
+                <div style="background: #f9fafb; border-radius: 8px; padding: 20px;">
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px;">
+                        <tr>
+                            <td style="padding: 0; color: #6b7280; font-size: 0.9rem; font-weight: 500;">{% translate 'Available funds' %} :</td>
+                            <td style="padding: 0; text-align: right; color: #10b981; font-size: 1.1rem; font-weight: 700;" id="modal-available-funds">0 FCFA</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0; color: #6b7280; font-size: 0.9rem; font-weight: 500;">{% translate 'Selected funding' %} :</td>
+                            <td style="padding: 0; text-align: right; color: #dc2626; font-size: 1.1rem; font-weight: 700;" id="modal-selected-funding">0 FCFA</td>
+                        </tr>
+                        <tr style="border-top: 2px solid #e5e7eb;">
+                            <td style="padding-top: 12px; color: #111827; font-size: 0.95rem; font-weight: 600;">{% translate 'Overage' %} :</td>
+                            <td style="padding-top: 12px; text-align: right; color: #dc2626; font-size: 1.25rem; font-weight: 800;" id="modal-deficit">0 FCFA</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="border: none; padding: 16px 24px 24px; background: #fff; border-radius: 0 0 12px 12px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background: #e5e7eb; color: #374151; border: none; padding: 10px 24px; font-weight: 600; border-radius: 6px; transition: all 0.2s;">
+                    {% translate 'Close' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascript %}
@@ -1448,6 +1497,23 @@
                 $('.total-selected-funding-display').html(numeral(response.total_funding_display).format('0,0')); // + ' FCFA'
                 $('.total-selected-villages-display').html(numeral(response.total_villages_display).format('0,0'));
                 $('.total-selected-subprojects-display').html(numeral(response.total_subprojects_display).format('0,0'));
+
+                let selectedFunding = parseFloat(response.total_funding_display) || 0;
+                let availableFundsText = $('.project-total-funds-display').text().replace(/[^0-9]/g, '');
+                let availableFunds = parseFloat(availableFundsText) || 0;
+
+                if (selectedFunding > availableFunds) {
+                    let deficit = selectedFunding - availableFunds;
+
+                    $('#modal-available-funds').text(numeral(availableFunds).format('0,0') + ' FCFA');
+                    $('#modal-selected-funding').text(numeral(selectedFunding).format('0,0') + ' FCFA');
+                    $('#modal-deficit').text(numeral(deficit).format('0,0') + ' FCFA');
+
+                    $('#budgetExceededModal').modal('show');
+                    $('.total-selected-funding-display').css('color', '#dc2626');
+                } else {
+                    $('.total-selected-funding-display').css('color', '');
+                }
             },
             error: function() {
                 $('.total-selected-villages-display, .total-selected-subprojects-display').text('—');

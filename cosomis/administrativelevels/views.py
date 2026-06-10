@@ -1416,6 +1416,15 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
         context["project_status"] = Investment.PROJECT_STATUS_CHOICES
         context["organization"] = project.owner.organization
         context["project"] = project
+        
+        # Calculer les fonds déjà consommés et disponibles
+        already_committed = PackageFundedInvestment.objects.filter(
+            package__project=project,
+            status__in=[PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED],
+        ).aggregate(total=Sum('investment__estimated_cost'))['total'] or 0
+        
+        context["already_committed"] = already_committed
+        context["available_funds"] = project.total_amount - already_committed
 
         if context["organization"] is not None:
             user_qs = context["organization"].users.all().values_list("id")

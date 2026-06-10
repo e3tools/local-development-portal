@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.translation import get_language
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
@@ -42,6 +43,24 @@ def set_language(request):
         except Exception as exc:
             pass
     return response
+
+
+@login_required
+def alert_examples(request):
+    """
+    Vue pour afficher les exemples d'alertes
+    """
+    # Ajouter quelques messages de test
+    if request.GET.get('test') == 'messages':
+        messages.success(request, _('Exemple d\'alerte de succès via le système de messages Django'))
+        messages.info(request, _('Exemple d\'alerte d\'information via le système de messages Django'))
+        messages.warning(request, _('Exemple d\'alerte d\'avertissement via le système de messages Django'))
+        messages.error(request, _('Exemple d\'alerte d\'erreur via le système de messages Django'))
+
+    context = {
+        'title': _('Exemples d\'Alertes'),
+    }
+    return render(request, 'common/alert_examples.html', context)
 
 
 #Delete
