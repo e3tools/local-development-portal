@@ -59,11 +59,24 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
 
 
 class InvestmentModelViewSet(ModelViewSet):
+    # queryset = Investment.objects.filter(
+    #     investment_status=Investment.PRIORITY,
+    #     funded_by__isnull=True,
+    # ).exclude(
+    #     id__in=PackageFundedInvestment.objects.values_list("investment_id", flat=True)
+    # )
     queryset = Investment.objects.filter(
         investment_status=Investment.PRIORITY,
         funded_by__isnull=True,
     ).exclude(
         id__in=PackageFundedInvestment.objects.values_list("investment_id", flat=True)
+    ).select_related(
+        'administrative_level',
+        'administrative_level__parent',
+        'administrative_level__parent__parent',
+        'administrative_level__parent__parent__parent',
+    ).prefetch_related(
+        'came_from',
     )
     serializer_class = InvestmentSerializer
 

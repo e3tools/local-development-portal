@@ -111,8 +111,20 @@ class Command(BaseCommand):
                     skipped_db += 1
                     continue
 
-                extracted_attachments = get_attachments_from_database(task_documents)
+                extracted_attachments, skipped_local_files = \
+                    get_attachments_from_database(task_documents)
 
+                self.stdout.write(
+                    f"  -> Found {len(extracted_attachments)} valid attachment(s)."
+                )
+
+                if skipped_local_files:
+                    self.stdout.write(
+                        self.style.WARNING(
+                            f"  -> Ignored {skipped_local_files} local file(s) "
+                            f"(never uploaded from device)."
+                        )
+                    )
                 attachment_count = len(extracted_attachments)
 
                 self.stdout.write(
@@ -179,6 +191,7 @@ def get_attachments_from_database(task_documents):
     with SQL Task information when available.
     """
     extracted_attachments = []
+    skipped_local_files = 0
 
     for document in task_documents:
 
@@ -189,6 +202,11 @@ def get_attachments_from_database(task_documents):
                 attachment_data.get("uri", "")
                 if attachment_data else ""
             )
+            # Skip local files that were never uploaded to MinIO.
+            # These URIs point to the Android device filesystem and cannot be served by the application.
+            if attachment_uri.startswith("file://"):
+                skipped_local_files += 1
+                continue
 
             try:
                 task = Task.objects.get(
@@ -225,7 +243,7 @@ def get_attachments_from_database(task_documents):
                     "task_order": task_order
                 })
 
-    return extracted_attachments
+    return extracted_attachments, skipped_local_files
 
 
 def save_attachments_to_purs_test(
