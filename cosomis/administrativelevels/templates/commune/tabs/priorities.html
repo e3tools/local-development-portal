@@ -144,7 +144,9 @@
 		<div class="tab-pane fade {% if active_tab != 'villages' %}show active{% endif %}"
 			 id="priorities-investments-type-tab" role="tabpanel" aria-labelledby="priorities-investments-type-tab">
 			{% if investments.count == 0 %}
-				<h5>{% translate 'You have no priorities' %}</h5>
+				{% translate 'No priorities yet' as empty_title %}
+				{% translate 'No investment priorities have been recorded here yet.' as empty_message %}
+				{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-list-ul' %}
 			{% else %}
 				<table class="table datatable table-bordered" style="width: 100%">
 					<thead>
@@ -217,7 +219,9 @@
 		<div class="tab-pane fade {% if active_tab == 'villages' %}show active{% endif %}" id="priorities-villages-tab"
 			 role="tabpanel" aria-labelledby="priorities-villages-tab">
 			{% if investments.count == 0 %}
-				<h5>{% translate 'You have no priorities' %}</h5>
+				{% translate 'No priorities yet' as empty_title %}
+				{% translate 'No investment priorities have been recorded here yet.' as empty_message %}
+				{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-list-ul' %}
 			{% else %}
 				<table class="table datatable table-bordered" style="width: 100%">
 					<thead>

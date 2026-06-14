@@ -189,6 +189,7 @@
             <div class="card-body">
                 <form action="" method="POST" name="investments-form" id="investment-form">
                     {% csrf_token %}
+                    {% if object.funded_investments.all %}
                     <table class="table datatable display" style="width: 100%;">
                         <thead>
                         <th>{% translate 'Name' %}</th>
@@ -244,6 +245,11 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                    {% else %}
+                        {% translate 'Your cart is empty' as empty_title %}
+                        {% translate 'Add investments to your cart to build a funding package.' as empty_message %}
+                        {% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-shopping-cart' %}
+                    {% endif %}
                     <input type="hidden" id="investments-input-id" value="" name="investments">
                 </form>
             </div>

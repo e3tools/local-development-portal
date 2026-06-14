@@ -26,6 +26,10 @@ function showPopupMessage(content) {
         let messages = $('#popup-messages-content');
         if (messages.length && content) {
             messages.html(content);
+            // Route any non-danger server messages just injected here to toasts (S7).
+            if (window.renderServerToasts) {
+                window.renderServerToasts(messages[0]);
+            }
         }
         $(".alert-div-content").fadeIn();
         window.setTimeout(function () {

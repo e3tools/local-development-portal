@@ -408,6 +408,15 @@ msgstr "Téléchargez tout"
 msgid "More filters"
 msgstr "Choisir les filtres"
 
+msgid "Loading more attachments…"
+msgstr "Chargement d'autres pièces jointes…"
+
+msgid "Could not load more attachments. Check your connection and try again."
+msgstr "Impossible de charger d'autres pièces jointes. Vérifiez votre connexion et réessayez."
+
+msgid "Retry"
+msgstr "Réessayer"
+
 msgid "Choose attachments to view"
 msgstr "Choisir les documents à visualiser"
 
@@ -623,8 +632,11 @@ msgstr "Oui"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-msgid "You have no priorities"
-msgstr "Priorités identifiées"
+msgid "No priorities yet"
+msgstr "Aucune priorité pour le moment"
+
+msgid "No investment priorities have been recorded here yet."
+msgstr "Aucune priorité d'investissement n'a encore été enregistrée ici."
 
 msgid "Add to cart"
 msgstr "Ajouter au panier"
@@ -1187,6 +1199,9 @@ msgstr "Date de la plainte"
 msgid "Report date"
 msgstr "Date du rapport"
 
+msgid "You have no priorities"
+msgstr "Priorités identifiées"
+
 msgid "Not Funded"
 msgstr "Non financé"
 
@@ -1440,6 +1455,12 @@ msgstr ""
 msgid "View villages"
 msgstr "villages"
 
+msgid "No stages configured"
+msgstr "Aucune étape configurée"
+
+msgid "The funnel has no stages to display for this dataset yet."
+msgstr "L'entonnoir n'a encore aucune étape à afficher pour ce jeu de données."
+
 #, fuzzy
 #| msgid "# Villages selected"
 msgid "Villages at the selected stage"
@@ -1629,6 +1650,24 @@ msgstr ""
 "Nous suivons ces erreurs automatiquement, mais si le problème persiste, "
 "n'hésitez pas à nous contacter. En attendant, essayez de rafraîchir la page."
 
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Network error — please check your connection and try again."
+msgstr "Erreur réseau — veuillez vérifier votre connexion et réessayer."
+
+msgid "Your session has expired. Please reload the page and sign in again."
+msgstr "Votre session a expiré. Veuillez recharger la page et vous reconnecter."
+
+msgid "Some information is invalid. Please review the form and try again."
+msgstr "Certaines informations sont invalides. Veuillez vérifier le formulaire et réessayer."
+
+msgid "The server ran into a problem. Please try again in a moment."
+msgstr "Le serveur a rencontré un problème. Veuillez réessayer dans un instant."
+
+msgid "Something went wrong."
+msgstr "Une erreur s'est produite."
+
 msgid "Veuillez aller changer votre mot de passe dans la session Utilisateur."
 msgstr "Veuillez aller changer votre mot de passe dans la session Utilisateur."
 
@@ -1679,6 +1718,16 @@ msgstr "Une erreur est survenue..."
 
 msgid "The Step was successfully removed."
 msgstr "L'étape a été supprimée avec succès."
+
+msgid "No data to display"
+msgstr "Aucune donnée à afficher"
+
+msgid ""
+"No results match the selected administrative level. Try a different "
+"selection."
+msgstr ""
+"Aucun résultat ne correspond au niveau administratif sélectionné. Essayez une "
+"autre sélection."
 
 msgid "Clear all filters"
 msgstr "Supprimer les filtres"
@@ -2043,6 +2092,12 @@ msgstr "Type de sous-projet"
 msgid "Population priority"
 msgstr "Priorité de la population"
 
+msgid "Your cart is empty"
+msgstr "Votre panier est vide"
+
+msgid "Add investments to your cart to build a funding package."
+msgstr "Ajoutez des investissements à votre panier pour constituer un colis de financement."
+
 msgid "Are you sure do you want to clear the package?"
 msgstr "Êtes-vous sûr de vouloir déballer le colis?"
 
@@ -2096,9 +2151,6 @@ msgstr "Aucune raison"
 
 msgid "Choose filters"
 msgstr "Choisir les filtres"
-
-msgid "Choose a Sector first to enable this filter."
-msgstr "Choisissez d'abord un secteur pour activer ce filtre."
 
 msgid "Funding Status"
 msgstr "État Du Financement"
