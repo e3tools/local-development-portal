@@ -81,12 +81,23 @@ Plan to ~75% — leave room for review churn and dataset-specific surprises
 
 | ID | Session (chunk) | Covers | Est | Pri | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| S13 | **Accessibility baseline sweep** — `aria-label` on icon-only logout & back-chevron; visible focus outlines (not box-shadow only); non-empty descriptive `alt` on carousel images; `aria-live` on spinners. | §6.2, 6.5, 6.10, 3.4 | M | P1 | — |
-| S14 | **Mobile / responsive nav + sidebar** — real mobile collapse pattern for navbar/sidebar; add breakpoints beyond the single `575.98px` query; hamburger expanded/collapsed feedback. | §6.1, 6.12 | L | P1 | — |
-| S15 | **i18n cleanup** — route hardcoded JS strings (`foot.html` push notification, `notifications.js`) through `{% translate %}`/`gettext`; replace `print()` debug strings; run `make generate-translations`. | §6.8, 6.9, 3.13 | M | P2 | — |
-| S16 | **Navigation context** — breadcrumbs on deep pages; fix sidebar active-link detection (query params / partial matches). | §6.7, 6.6 | M | P2 | — |
-| S17 | **Commune/canton filter UX** — debounce filter redirects + loading indicator; paginate village/investment lists; inline per-field validation on the create view. | §3.10, 3.11 | M | P2 | S6, S7 |
-| S18 | **Security & cleanup pass** — audit CSRF tokens in dynamically generated POST forms; remove commented-out `get_queryset()` dead code; fix `email_confirmed_successfully.html` button outside `<body>`; minor funnel polish (legend hint, updated-at fallback, friendly stage-404). | §3.12, 5.6, 6.11, 4.3–4.5 | M | P2 | — |
+| ✅ S13 | **Accessibility baseline sweep** — `aria-label` on icon-only logout & back-chevron; visible focus outlines (not box-shadow only); non-empty descriptive `alt` on carousel images; `aria-live` on spinners. | §6.2, 6.5, 6.10, 3.4 | M | P1 | — |
+| ✅ S14 | **Mobile / responsive nav + sidebar** — real mobile collapse pattern for navbar/sidebar; add breakpoints beyond the single `575.98px` query; hamburger expanded/collapsed feedback. | §6.1, 6.12 | L | P1 | — |
+| ✅ S15 | **i18n cleanup** — route hardcoded JS strings (`foot.html` push notification, `notifications.js`) through `{% translate %}`/`gettext`; replace `print()` debug strings; run `make generate-translations`. | §6.8, 6.9, 3.13 | M | P2 | — |
+| ✅ S16 | **Navigation context** — breadcrumbs on deep pages; fix sidebar active-link detection (query params / partial matches). | §6.7, 6.6 | M | P2 | — |
+| ✅ S17 | **Commune/canton filter UX** — debounce filter redirects + loading indicator; paginate village/investment lists; inline per-field validation on the create view. | §3.10, 3.11 | M | P2 | S6, S7 |
+| ✅ S18 | **Security & cleanup pass** — audit CSRF tokens in dynamically generated POST forms; remove commented-out `get_queryset()` dead code; fix `email_confirmed_successfully.html` button outside `<body>`; minor funnel polish (legend hint, updated-at fallback, friendly stage-404). | §3.12, 5.6, 6.11, 4.3–4.5 | M | P2 | — |
+
+> **Sprint 3 delivery notes.**
+> - **S15:** `foot.html`'s push-notification string and all of `notifications.js`
+>   were already routed through i18n in S7, so S15 only needed the `print()` →
+>   `logger.debug()` cleanup plus the catalog regen.
+> - **S17:** village/investment priority lists already paginate client-side via
+>   DataTables, so no server-side pagination was added (it would conflict);
+>   the filter uses an explicit Apply button (no on-change redirect), so a
+>   loading state was added rather than debounce.
+> - **S18:** the §3.12 CSRF audit found the `priorities_table.html` POST form
+>   already carries `{% csrf_token %}` — verified, no change required.
 
 ---
 
