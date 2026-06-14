@@ -5,18 +5,40 @@
    ========================================================================= */
 
 :root {
-    /* Brand — Benin green (canonical identity, matches logo + login). */
+    /* ---------------------------------------------------------------------
+       Green design system — primary / secondary / accent.
+       Identity is green; secondary is a deeper forest green for emphasis and
+       headers; accent is an earthy terracotta for highlights and categorical
+       pops. NOTHING decorative should be blue or purple — those clash with the
+       brand and were removed system-wide. Status colors (below) stay distinct
+       so "state" never reads as "identity".
+       --------------------------------------------------------------------- */
+    /* Primary — Benin green (canonical identity, matches logo + login). */
     --brand-primary: #009639;        /* logo green / primary CTA */
+    --brand-primary-light: #00a651;  /* lighter green for gradients / accents */
     --brand-primary-dark: #007a2e;   /* hover / active */
     --brand-primary-darker: #00562f; /* green text on white (AA contrast) */
     --brand-primary-soft: #eaf4ec;   /* tints / hover backgrounds */
+    --brand-primary-soft-2: #d6ecdc; /* slightly stronger green tint */
+    --brand-primary-border: #a7d7b6; /* green hairline / hover borders */
+
+    /* Secondary — deep forest green for emphasis, headers, dark surfaces. */
+    --brand-secondary: #00562f;
+    --brand-secondary-dark: #00331c;
+    --brand-secondary-soft: #d6ecdc;
+
+    /* Accent — earthy terracotta for highlights and categorical contrast. */
+    --brand-accent: #c2410c;
+    --brand-accent-dark: #9a3412;
+    --brand-accent-soft: #fbe4d5;
+
     --brand-text: #111827;
     --brand-muted: #6b7280;
     /* Semantic — kept distinct from brand green so status != identity. */
     --color-success: #2e7d32;
     --color-danger: #dc3545;
     --color-warning: #f59e0b;
-    --color-info: #0073e6;
+    --color-info: #00562f;
     --brand-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
                   'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
 }
@@ -404,16 +426,19 @@ a {
     background-color: var(--brand-primary);
 }
 
+/* Legacy navbar color utilities — recolored from blue/purple/plum into the
+   green design system so no off-brand hues remain (kept in case referenced
+   dynamically; class names retained for backwards compatibility). */
 .navbar-mediumslateblue {
-    background-color: #74a1f5;
+    background-color: var(--brand-primary-light);
 }
 
 .navbar-mediumpurple {
-    background-color: #7276d1;
+    background-color: var(--brand-primary);
 }
 
 .navbar-plum {
-    background-color: #d078bb;
+    background-color: var(--brand-accent);
 }
 
 .navbar-lightgray {
@@ -767,6 +792,65 @@ blockquote.quote-blue h6 {
     border-color: var(--brand-primary);
 }
 
+/* =========================================================================
+   Neutralize AdminLTE's hardcoded blue (#007bff) so the brand green wins.
+   AdminLTE compiles its own $primary into the vendored CSS, which is why the
+   active sidebar link, .bg-primary chips and .text-primary text still showed
+   blue even though our tokens are green. These rules route every "primary"
+   surface through the green design system.
+   ========================================================================= */
+/* Active sidebar item — was AdminLTE blue, now brand green. */
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.nav-sidebar > .nav-item > .nav-link.active,
+.nav-sidebar .nav-treeview > .nav-item > .nav-link.active {
+    background-color: var(--brand-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 1px 4px rgba(0, 150, 57, 0.25);
+}
+/* Sidebar hover — subtle green tint instead of the default gray/blue. */
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link:not(.active):hover {
+    background-color: var(--brand-primary-soft);
+    color: var(--brand-primary-darker);
+}
+/* AdminLTE primary utilities → green. */
+.bg-primary,
+.badge-primary,
+.btn-primary {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+}
+.text-primary { color: var(--brand-primary) !important; }
+.border-primary { border-color: var(--brand-primary) !important; }
+a:not(.btn):not(.nav-link):not(.dropdown-item):not(.page-link):not(.brand-link).text-primary:hover {
+    color: var(--brand-primary-dark) !important;
+}
+
+/* AdminLTE's "info" was teal (#17a2b8) — route it through the green system so
+   category/sector chips (badge-info) and any bg/btn/border-info read green.
+   Uses the deep-green --color-info so it stays distinct from primary CTAs. */
+.badge-info,
+.bg-info,
+.btn-info {
+    background-color: var(--color-info) !important;
+    border-color: var(--color-info) !important;
+    color: #ffffff !important;
+}
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:not(:disabled):not(.disabled):active {
+    background-color: var(--brand-secondary-dark) !important;
+    border-color: var(--brand-secondary-dark) !important;
+    color: #ffffff !important;
+}
+.text-info { color: var(--color-info) !important; }
+.border-info { border-color: var(--color-info) !important; }
+.alert-info {
+    background-color: var(--brand-primary-soft) !important;
+    border-color: var(--brand-primary-border) !important;
+    color: var(--brand-secondary-dark) !important;
+}
+
 /*# sourceMappingURL=../AdminLTE/dist/css/adminlte.css.map */
 .main-title {
     font-size: 22px;
@@ -949,7 +1033,7 @@ blockquote.quote-blue h6 {
 
 .chevron-circle {
     margin: 15px 15px 15px 0;
-    background-color: #21487994;
+    background-color: rgba(0, 86, 47, 0.58);
 }
 
 .nav-profile-buttons a {

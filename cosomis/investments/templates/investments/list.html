@@ -43,8 +43,8 @@
             padding: 0 !important;
             line-height: 1 !important;
             border: 1.5px solid #ffffff !important;
-            background-color: #4f46e5 !important;
-            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25) !important;
+            background-color: #009639 !important;
+            box-shadow: 0 2px 4px rgba(0, 150, 57, 0.25) !important;
             font-size: 13px !important;
             font-weight: 700 !important;
             color: #ffffff !important;
@@ -68,7 +68,7 @@
             width: 15px;
             height: 15px;
             border: 3px solid #e3e3e3;
-            border-bottom-color: #3498db;
+            border-bottom-color: #009639;
             border-radius: 50%;
             box-sizing: border-box;
             animation: rotation 1s linear infinite;
@@ -181,21 +181,21 @@
             align-items: center;
             gap: 8px;
             padding: 4px 10px;
-            background: #eef5ff;
-            color: #1c64f2;
+            background: #eaf4ec;
+            color: #009639;
             font-size: 11px;
             font-weight: 600;
             border-radius: 999px;
             letter-spacing: .03em;
             text-transform: uppercase;
-            box-shadow: 0 1px 2px rgba(28, 100, 242, 0.10);
+            box-shadow: 0 1px 2px rgba(0, 150, 57, 0.10);
         }
         .skeleton-status-pill::before {
             content: "";
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: #1c64f2;
+            background: #009639;
             animation: skeleton-pulse 1.05s ease-in-out infinite;
         }
         @keyframes skeleton-pulse {
@@ -229,28 +229,28 @@
         .results-project-select { width: 100%; max-width: 100%; }
         .results-funds-meta { display: flex; align-items: baseline; gap: 6px; margin-top: 2px; font-size: 12px; }
         .results-funds-label { color: #6b7280; font-weight: 500; }
-        .results-funds-value { color: #4338ca; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .results-funds-value { color: #007a2e; font-weight: 700; font-variant-numeric: tabular-nums; }
         .results-funds-value b { font-weight: 700; }
         .results-funds-currency { color: #6b7280; font-weight: 500; font-size: 11px; margin-left: 2px; }
 
         /* Add-to-cart button: vertically centered against the project picker */
         .results-action-wrap { display: flex; align-items: center; align-self: center; }
         .results-submit {
-            background: #4f46e5;
-            border-color: #4f46e5;
+            background: #009639;
+            border-color: #009639;
             padding: 10px 22px;
             font-weight: 600;
             font-size: 13px;
             border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(79, 70, 229, 0.15);
+            box-shadow: 0 1px 2px rgba(0, 150, 57, 0.15);
             transition: transform .12s ease, background-color .12s ease, box-shadow .12s ease;
             color: #ffffff;
         }
         .results-submit:hover, .results-submit:focus {
-            background: #4338ca;
-            border-color: #4338ca;
+            background: #007a2e;
+            border-color: #007a2e;
             transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+            box-shadow: 0 4px 10px rgba(0, 150, 57, 0.25);
             color: #ffffff;
         }
 
@@ -274,7 +274,7 @@
             background: #ffffff;
             transition: border-color .12s ease, box-shadow .12s ease;
         }
-        .results-stat-card:hover { border-color: #c7d2fe; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.05); }
+        .results-stat-card:hover { border-color: #a7d7b6; box-shadow: 0 2px 8px rgba(0, 150, 57, 0.05); }
         .results-stat-icon {
             flex-shrink: 0;
             width: 36px;
@@ -286,9 +286,9 @@
         }
         .results-stat-icon svg { width: 18px; height: 18px; }
         /* Stat icons all share the indigo brand palette */
-        .results-stat-icon--villages    { background: #eef2ff; color: #4f46e5; }
-        .results-stat-icon--subprojects { background: #e0e7ff; color: #4338ca; }
-        .results-stat-icon--funding     { background: #c7d2fe; color: #3730a3; }
+        .results-stat-icon--villages    { background: #eaf4ec; color: #009639; }
+        .results-stat-icon--subprojects { background: #d6ecdc; color: #007a2e; }
+        .results-stat-icon--funding     { background: #a7d7b6; color: #00562f; }
         .results-stat-body { flex: 1; min-width: 0; }
         .results-stat-label {
             font-size: 11px;
@@ -331,14 +331,14 @@
             display: flex;
             align-items: flex-start;
             gap: 14px;
-            background: linear-gradient(180deg, #eef2ff 0%, #f5f3ff 100%);
-            border: 1px solid #c7d2fe;
-            border-left: 4px solid #4f46e5;
-            color: #1e1b4b;
+            background: linear-gradient(180deg, #eaf4ec 0%, #f0f8f2 100%);
+            border: 1px solid #a7d7b6;
+            border-left: 4px solid #009639;
+            color: #00331c;
             border-radius: 10px;
             padding: 14px 18px 14px 16px;
             margin-bottom: 18px;
-            box-shadow: 0 1px 2px rgba(79, 70, 229, 0.05);
+            box-shadow: 0 1px 2px rgba(0, 150, 57, 0.05);
             position: relative;
         }
         .alert-instructions-icon {
@@ -346,8 +346,8 @@
             width: 34px;
             height: 34px;
             border-radius: 9px;
-            background: rgba(79, 70, 229, 0.12);
-            color: #4f46e5;
+            background: rgba(0, 150, 57, 0.12);
+            color: #009639;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -357,14 +357,14 @@
         .alert-instructions-title {
             font-size: 13px;
             font-weight: 700;
-            color: #312e81;
+            color: #00562f;
             margin: 2px 0 6px;
             letter-spacing: .01em;
         }
         .alert-instructions-list {
             margin: 0;
             padding-left: 18px;
-            color: #3730a3;
+            color: #00562f;
             font-size: 12.5px;
             line-height: 1.55;
         }
@@ -374,7 +374,7 @@
             position: absolute;
             top: 8px;
             right: 12px;
-            color: #4338ca;
+            color: #007a2e;
             opacity: .6;
             font-size: 20px;
             font-weight: 500;
@@ -383,7 +383,7 @@
             transition: opacity .12s ease;
         }
         .alert-instructions-close:hover,
-        .alert-instructions-close:focus { opacity: 1; color: #312e81; }
+        .alert-instructions-close:focus { opacity: 1; color: #00562f; }
 
         /* ------------------------------------------------------------- */
         /* Modern investments table look                                 */
@@ -457,8 +457,8 @@
             position: relative;
             box-sizing: border-box;
         }
-        .inv-checkbox:hover span { border-color: #4f46e5; }
-        .inv-checkbox input:checked + span { background: #4f46e5; border-color: #4f46e5; }
+        .inv-checkbox:hover span { border-color: #009639; }
+        .inv-checkbox input:checked + span { background: #009639; border-color: #009639; }
         .inv-checkbox input:checked + span::after {
             content: ""; position: absolute;
             top: 2px; left: 5px; width: 5px; height: 9px;
@@ -480,7 +480,7 @@
         }
         .inv-title-extra { color: #6b7280; font-weight: 400; }
         .inv-title-link { text-decoration: none !important; color: inherit !important; }
-        .inv-title-link:hover .inv-title { color: #4f46e5; }
+        .inv-title-link:hover .inv-title { color: #009639; }
 
         /* Source / type pill + priority caption */
         .inv-source-pill {
@@ -488,8 +488,8 @@
             align-items: center;
             padding: 3px 10px;
             border-radius: 999px;
-            background: #eef2ff;
-            color: #4338ca;
+            background: #eaf4ec;
+            color: #007a2e;
             font-size: 11px;
             font-weight: 600;
             letter-spacing: .02em;
@@ -550,23 +550,25 @@
             border-radius: 6px; font-size: 11px; font-weight: 700;
             letter-spacing: .03em; line-height: 1;
         }
-        .inv-endorse-J  { background: #dbeafe; color: #1d4ed8; }
-        .inv-endorse-F  { background: #fce7f3; color: #be185d; }
-        .inv-endorse-AG { background: #d1fae5; color: #047857; }
-        .inv-endorse-ME { background: #fef3c7; color: #92400e; }
+        /* Categorical chips — green / terracotta / sand / deep-green family
+           (no blue or magenta), kept distinguishable by hue + lightness. */
+        .inv-endorse-J  { background: #d1fae5; color: #047857; }  /* green     */
+        .inv-endorse-F  { background: #fbe4d5; color: #9a3412; }  /* terracotta */
+        .inv-endorse-AG { background: #fdf0cf; color: #92400e; }  /* sand/gold  */
+        .inv-endorse-ME { background: #d6ecdc; color: #00562f; }  /* deep green */
 
         /* Generic in-row links keep the indigo/violet brand */
         .investments-table-stage table.table tbody tr td a.inv-link,
         .investments-table-stage table.table tbody tr td a.inv-link:link,
         .investments-table-stage table.table tbody tr td a.inv-link:visited {
-            color: #4f46e5 !important;
+            color: #009639 !important;
             text-decoration: none !important;
             font-weight: 500;
             cursor: pointer;
         }
         .investments-table-stage table.table tbody tr td a.inv-link:hover,
         .investments-table-stage table.table tbody tr td a.inv-link:focus {
-            color: #4338ca !important;
+            color: #007a2e !important;
             text-decoration: underline !important;
         }
 
@@ -592,7 +594,7 @@
             background-repeat: no-repeat;
             background-position: right 8px center;
         }
-        .dataTables_wrapper .dataTables_length select:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.15); }
+        .dataTables_wrapper .dataTables_length select:focus { outline: none; border-color: #009639; box-shadow: 0 0 0 3px rgba(0, 150, 57,0.15); }
         .dataTables_wrapper .dataTables_filter input { border: 1px solid #d1d5db; border-radius: 6px; padding: 4px 10px; font-size: 13px; margin-left: 8px; }
         .dataTables_wrapper .dataTables_info { color: #6b7280; font-size: 12px; }
         .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -603,20 +605,34 @@
             font-size: 12px;
         }
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background: #eef2ff !important;
-            border-color: #c7d2fe !important;
-            color: #4338ca !important;
+            background: #eaf4ec !important;
+            border-color: #a7d7b6 !important;
+            color: #007a2e !important;
         }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current,
         .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-            background: #4f46e5 !important;
-            border-color: #4f46e5 !important;
+            background: #009639 !important;
+            border-color: #009639 !important;
             color: #ffffff !important;
         }
 
         /* Legacy/fallback: any other plain <a> inside the table keeps a sensible color */
-        .investments-table-stage table tbody tr td a:not(.inv-link):not(.inv-title-link) { color: #4f46e5; }
-        .investments-table-stage table tbody tr td a:not(.inv-link):not(.inv-title-link):hover { color: #4338ca; text-decoration: underline; }
+        .investments-table-stage table tbody tr td a:not(.inv-link):not(.inv-title-link) { color: #009639; }
+        .investments-table-stage table tbody tr td a:not(.inv-link):not(.inv-title-link):hover { color: #007a2e; text-decoration: underline; }
+
+        /* Column-visibility toggles: recolor the stock Bootstrap switches from the
+           framework-default green to the page's indigo brand so they stop looking
+           like a different design system from the cards/buttons around them. */
+        .column-switch:checked ~ .custom-control-label::before {
+            background-color: #009639 !important;
+            border-color: #009639 !important;
+        }
+        .column-switch:focus ~ .custom-control-label::before {
+            box-shadow: 0 0 0 3px rgba(0, 150, 57, 0.15) !important;
+        }
+        .column-switch:focus:not(:checked) ~ .custom-control-label::before {
+            border-color: #a7d7b6 !important;
+        }
     </style>
 {% endblock %}
 

@@ -26,17 +26,19 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Color palette — assigned round-robin to category names as encountered.
 # ---------------------------------------------------------------------------
+# Green / earth categorical palette — no blue, purple, cyan, teal or pink, so
+# map categories stay on-brand while remaining mutually distinguishable.
 _PALETTE: list[str] = [
-    "#3B82F6",  # blue
+    "#009639",  # green (brand)
     "#EF4444",  # red
-    "#06B6D4",  # cyan
+    "#C2410C",  # terracotta
     "#84CC16",  # lime-green
     "#F59E0B",  # amber
-    "#8B5CF6",  # violet
+    "#00562F",  # deep green
     "#10B981",  # emerald
     "#F97316",  # orange
-    "#EC4899",  # pink
-    "#14B8A6",  # teal
+    "#B45309",  # bronze
+    "#CA8A04",  # mustard/gold
 ]
 
 NO_PRIORITY_COLOR = "#9CA3AF"  # light grey — village without a priority

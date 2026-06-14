@@ -58,7 +58,7 @@ def adm_breadcrumb(adm_level):
             parts.append(f'<span class="font-weight-bold">{item.name}</span>')
         elif url_name:
             url = reverse(url_name, args=[item.id])
-            parts.append(f'<a href="{url}" style="color: #3498db;">{item.name}</a>')
+            parts.append(f'<a href="{url}" style="color: #009639;">{item.name}</a>')
         else:
             parts.append(f'<span>{item.name}</span>')
 

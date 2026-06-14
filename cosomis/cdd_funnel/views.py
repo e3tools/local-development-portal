@@ -37,7 +37,7 @@ INVESTMENT_STATUS_LABELS = {
 
 INVESTMENT_STATUS_COLORS = {
     Investment.NOT_FUNDED: "#cbd5e1",
-    Investment.FUNDED: "#6366f1",
+    Investment.FUNDED: "#009639",
     Investment.IN_PROGRESS: "#f59e0b",
     Investment.COMPLETED: "#10b981",
     Investment.PAUSED: "#9ca3af",
