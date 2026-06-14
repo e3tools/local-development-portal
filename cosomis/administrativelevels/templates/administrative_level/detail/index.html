@@ -326,7 +326,7 @@
                             <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
                                 <img class="d-block w-100" src="{{ image.url|imgAWSS3Filter }}"
                                 style="height: 500px !important;"
-                                alt="{{ image.task }}"
+                                alt="{% blocktranslate with name=object.name %}Photo of {{ name }}{% endblocktranslate %}{% if image.task %} — {{ image.task }}{% endif %}"
                                 onerror="this.onerror=null;this.src='{% static 'images/village-image.jpg' %}';this.alt='{% translate "Image unavailable" %}';">
                             </a>
                         </div>
@@ -345,7 +345,7 @@
         {% else %}
         <a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
                     <img class="card-img rounded" src="{% static 'images/village-image.jpg' %}"
-        alt="Card image">
+        alt="{% blocktranslate with name=object.name %}No photo available for {{ name }}{% endblocktranslate %}">
         </a>
     
         {% endif %}

@@ -1,7 +1,6 @@
 import json
 
 from django.core.paginator import Paginator
-from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
@@ -118,7 +117,19 @@ class StageDrilldownView(generic.TemplateView):
         service = CountryCddFunnelService()
         stage_label = service.stage_label(stage_key)
         if not stage_label:
-            raise Http404("Unknown stage")
+            # The stage was renamed or removed. Render a friendly inline notice
+            # in the drilldown panel instead of raising a raw Http404, which the
+            # HTMX panel would surface as an opaque error toast.
+            ctx.update(
+                {
+                    "stage_key": stage_key,
+                    "stage_label": None,
+                    "unknown_stage": True,
+                    "page_obj": None,
+                    "total": 0,
+                }
+            )
+            return ctx
 
         villages_qs = service.get_villages_at_stage(stage_key)
         paginator = Paginator(villages_qs, self.paginate_by)

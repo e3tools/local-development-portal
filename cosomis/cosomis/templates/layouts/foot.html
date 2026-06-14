@@ -74,8 +74,38 @@
                 }
             }); // addEventListener
         }) // forEach
-    }); 
+    });
     // DOMContentLoaded  end
+</script>
+
+<!-- S14: keep the hamburger toggle's aria-expanded in sync with the sidebar
+     state so the expanded/collapsed feedback is exposed to assistive tech. -->
+<script>
+    (function () {
+        function pushmenuToggles() {
+            return document.querySelectorAll('.main-header [data-widget="pushmenu"]');
+        }
+        function setExpanded(isOpen) {
+            pushmenuToggles().forEach(function (el) {
+                el.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+        }
+        function syncFromBody() {
+            // Off-canvas (mobile) → open state is body.sidebar-open.
+            // Desktop → collapsed state is body.sidebar-collapse.
+            var body = document.body;
+            if (body.classList.contains('sidebar-open')) { setExpanded(true); return; }
+            if (window.innerWidth < 992) { setExpanded(false); return; }
+            setExpanded(!body.classList.contains('sidebar-collapse'));
+        }
+        document.addEventListener('DOMContentLoaded', syncFromBody);
+        // AdminLTE fires these on the document when the menu toggles.
+        $(document).on('collapsed.lte.pushmenu shown.lte.pushmenu', function () {
+            // Defer so AdminLTE has finished mutating the body classes.
+            setTimeout(syncFromBody, 0);
+        });
+        window.addEventListener('resize', syncFromBody);
+    })();
 </script>
 
 

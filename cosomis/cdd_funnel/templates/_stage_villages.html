@@ -1,4 +1,9 @@
 {% load i18n humanize %}
+{% if unknown_stage %}
+    <div class="drilldown-empty">
+        <p>{% translate 'This stage no longer exists. It may have been renamed or removed — please reload the funnel.' %}</p>
+    </div>
+{% else %}
 <div class="drilldown-header">
     <div>
         <h3 class="panel-title">{{ stage_label }}</h3>
@@ -53,6 +58,7 @@
     <div class="drilldown-empty">
         <p>{% translate 'No villages at this stage yet.' %}</p>
     </div>
+{% endif %}
 {% endif %}
 
 <style>

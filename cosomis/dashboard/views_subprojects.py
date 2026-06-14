@@ -35,105 +35,12 @@ class DashboardSubprojectsMixin:
         ctx.setdefault('table_class_style', self.table_class_style)
         ctx.setdefault('table_thead_class_style', self.table_thead_class_style)
         return ctx
-    
-    # def get_queryset(self):
-    #     administrative_level_ids_get = self.request.GET.getlist('administrative_level_id[]', None)
-    #     administrative_level_type = self.request.GET.get('administrative_level_type', 'All').title()
-    #
-    #     administrative_level_type = "All" if administrative_level_type in ("", "null", "undefined") else administrative_level_type
-    #
-    #     ald_filter_ids = []
-    #     administrative_levels_ids = []
-    #     if not administrative_level_ids_get:
-    #         administrative_level_ids_get.append("")
-    #     for ald_id in administrative_level_ids_get:
-    #         ald_id = 0 if ald_id in ("", "null", "undefined", "All") else ald_id
-    #         administrative_levels_ids += get_administrative_level_ids_descendants(
-    #             ald_id, administrative_level_type, []
-    #         )
-    #         if ald_id:
-    #             ald_filter_ids.append(ald_id)
-    #
-    #     administrative_levels_ids = list(set(administrative_levels_ids))
-    #     administrative_levels = AdministrativeLevel.objects.filter(id__in=administrative_levels_ids)
-    #     if administrative_level_type == "All":
-    #         administrative_levels = AdministrativeLevel.objects.filter(type="Region")
-    #     elif ald_filter_ids and administrative_level_type != "All":
-    #         administrative_levels = AdministrativeLevel.objects.filter(parent__id__in=ald_filter_ids)
-    #     elif administrative_level_type:
-    #         administrative_levels = AdministrativeLevel.objects.filter(parent__type=administrative_level_type)
-    #
-    #     if not administrative_levels:
-    #         administrative_levels = AdministrativeLevel.objects.filter(id__in=ald_filter_ids)
-    #
-    #     subprojects = Subproject.objects.filter()
-    #
-    #     sectors = sorted(list(set(list(subprojects.values_list('subproject_sector')))))
-    #
-    #     if not ald_filter_ids:
-    #         pass
-    #     else:
-    #         subprojects = Subproject.objects.filter(
-    #             Q(location_subproject_realized__id__in=administrative_levels_ids) |
-    #             Q(canton__id__in=administrative_levels_ids)
-    #         )
-    #     administrative_level = administrative_levels.first()
-    #
-    #
-    #     return {
-    #         'subprojects': subprojects,
-    #         'sectors': [s[0] for s in sectors],
-    #         'administrative_level_type': administrative_level.type if administrative_level else "",
-    #         'columns_tuples': list(administrative_levels.filter(Q(type=administrative_level.type)if administrative_level else Q()).order_by('name').values_list('id', 'name')),
-    #         'ald_filter_ids': ald_filter_ids,
-    #         'administrative_levels_ids': administrative_levels_ids
-    #     }
-    
+
 
 class DashboardSubprojectsListView(DashboardSubprojectsMixin, AJAXRequestMixin, LoginRequiredApproveRequiredMixin, generic.ListView):
     template_name = 'tracking.html'
     context_object_name = 'queryset_results'
 
-    # def get_queryset(self):
-    #     administrative_level_id = self.request.GET.get('administrative_level_id', None)
-    #     administrative_level_type = self.request.GET.get('administrative_level_type', 'All').title()
-
-    #     administrative_level_id = 0 if administrative_level_id in ("", "null", "undefined") else administrative_level_id
-    #     administrative_level_type = "All" if administrative_level_type in ("", "null", "undefined") else administrative_level_type
-    
-    #     administrative_levels_ids = get_administrative_level_ids_descendants(
-    #         administrative_level_id, administrative_level_type, []
-    #     )
-        
-    #     if administrative_level_type == "All":
-    #         administrative_levels = AdministrativeLevel.objects.filter(type="Region")
-    #     elif administrative_level_id and administrative_level_id != "All":
-    #         administrative_levels = AdministrativeLevel.objects.filter(id=administrative_level_id).first().children
-    #     elif administrative_level_type:
-    #         administrative_levels = AdministrativeLevel.objects.filter(parent__type=administrative_level_type)
-        
-    #     if not administrative_levels and administrative_level_id:
-    #         administrative_levels = AdministrativeLevel.objects.filter(id=administrative_level_id)
-
-    #     subprojects = Subproject.objects.filter()
-
-    #     sectors = sorted(list(set(list(subprojects.values_list('subproject_sector')))))
-        
-    #     if not administrative_level_id:
-    #         pass
-    #     else:
-    #         subprojects = Subproject.objects.filter(
-    #             Q(location_subproject_realized__id__in=administrative_levels_ids) | 
-    #             Q(canton__id__in=administrative_levels_ids)
-    #         )
-    #     administrative_level = administrative_levels.first()
-    #     return {
-    #         'subprojects': subprojects,
-    #         'sectors': [s[0] for s in sectors],
-    #         'administrative_level_type': administrative_level.type if administrative_level else "",
-    #         'columns_tuples': list(administrative_levels.order_by('name').values_list('id', 'name'))
-    #     }
-    
     def summary_subprojects_by_sectors_1(self, columns_listes, sectors, all_subprojects, characters_length):
         datas = {
             _("Sectors"): {},
