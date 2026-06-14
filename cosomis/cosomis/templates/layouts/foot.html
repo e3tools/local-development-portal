@@ -32,6 +32,18 @@
 <script src="{% static 'AdminLTE/plugins/inputmask/jquery.inputmask.min.js' %}"></script>
 <!-- dropzonejs -->
 <script src="{% static 'AdminLTE/plugins/dropzone/min/dropzone.min.js' %}"></script>
+<!-- i18n strings for the JS toast/error layer (S7) -->
+<script>
+    window.APP_I18N = Object.assign(window.APP_I18N || {}, {
+        notifications: "{% translate 'Notifications' %}",
+        close: "{% translate 'Close' %}",
+        errNetwork: "{% translate 'Network error — please check your connection and try again.' %}",
+        errSession: "{% translate 'Your session has expired. Please reload the page and sign in again.' %}",
+        errValidation: "{% translate 'Some information is invalid. Please review the form and try again.' %}",
+        errServer: "{% translate 'The server ran into a problem. Please try again in a moment.' %}",
+        errGeneric: "{% translate 'Something went wrong.' %}"
+    });
+</script>
 <!-- Custom javascript -->
 <script src="{% static 'js/grm.js' %}"></script>
 <script src="{% static 'js/disableOnSubmit.js' %}"></script>
