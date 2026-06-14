@@ -74,7 +74,21 @@ h1, h2, h3, h4, h5, h6,
 .btn:focus,
 .btn.focus {
     box-shadow: 0 0 0 3px rgba(0, 150, 57, 0.18);
-    outline: none;
+}
+
+/* Visible keyboard focus — a real outline, not box-shadow alone, so focus
+   stays perceptible against any background and in forced-colors/high-contrast
+   mode. :focus-visible keeps it keyboard-only (no ring on mouse click). */
+.btn:focus-visible,
+a:focus-visible,
+.nav-link:focus-visible,
+.page-link:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+.form-control:focus-visible,
+.custom-select:focus-visible {
+    outline: 2px solid var(--brand-primary-darker, #00562f);
+    outline-offset: 2px;
 }
 
 .btn-sm, .btn-group-sm > .btn {
