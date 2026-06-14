@@ -1260,29 +1260,33 @@ class ProjectListView(PageMixin, IsInvestorMixin, ListView):
     template_name = 'project/list.html'
     context_object_name = "projects"
     title = _("Projects")
+    paginate_by = 25
     breadcrumb = [
         {"url": "", "title": title},
     ]
 
     def get_context_data(self, *args, object_list=None, **kwargs):
-        queryset = object_list if object_list is not None else self.object_list
-
-        context = super().get_context_data(object_list=queryset, **kwargs)
-
-        object_name = self.get_context_object_name(queryset)
-        if object_name in context:
-            context[object_name] = context[object_name].annotate(
-                investments_count=Count('packages__funded_investments'))
-            context[object_name] = context[object_name].annotate(
-                investments_total=Sum('packages__funded_investments__estimated_cost'))
-            context['total_mount_invested'] = context[object_name].aggregate(Sum('investments_total'))[
-                                                  'investments_total__sum'] or 0
-
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        # Grand total across the whole (filtered) result set, not just this page —
+        # the annotation lives in get_queryset() so it survives pagination slicing.
+        context['total_mount_invested'] = self.get_queryset().aggregate(
+            total=Sum('investments_total'))['total'] or 0
+        context['search'] = self.request.GET.get('search', '')
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(organization=self.request.user.organization)
+        # Wire the search box (it previously submitted nowhere useful — §3.6).
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+        # Annotate before any pagination slice; chained to preserve the prior
+        # aggregation behaviour.
+        queryset = queryset.annotate(
+            investments_count=Count('packages__funded_investments'))
+        queryset = queryset.annotate(
+            investments_total=Sum('packages__funded_investments__estimated_cost'))
         return queryset
 
 
@@ -1509,7 +1513,13 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
     template_name = "attachments/attachments.html"
     context_object_name = "attachments"
     title = _("Gallery")
-    paginate_by = 10
+    # Grid page size — kept in one place so the ListView's page_obj (which drives
+    # the HTMX infinite-scroll `has_next`/`number`) stays in lockstep with the
+    # __build_db_filter paginator that actually renders the cards. A mismatch here
+    # (was 10 vs 36) made page_obj claim more pages than the grid had, firing
+    # empty HTMX fetches past the real end (§3.3).
+    GALLERY_PAGE_SIZE = 36
+    paginate_by = GALLERY_PAGE_SIZE
     model = Attachment
 
     filter_hierarchy = [
@@ -1543,6 +1553,26 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
         if final_querystring:
             url = "{}?{}".format(url, urlencode(final_querystring))
         return redirect(url)
+
+    def paginate_queryset(self, queryset, page_size):
+        # Clamp a bad or out-of-range ?page= to the nearest valid page instead of
+        # raising Http404 — a stray page number should never 404 or blank the
+        # gallery, it should just show the closest real page (§3.3).
+        paginator = self.get_paginator(
+            queryset,
+            page_size,
+            orphans=self.get_paginate_orphans(),
+            allow_empty_first_page=self.get_allow_empty(),
+        )
+        page_kwarg = self.page_kwarg
+        raw = self.kwargs.get(page_kwarg) or self.request.GET.get(page_kwarg) or 1
+        try:
+            page_number = int(raw)
+        except (TypeError, ValueError):
+            page_number = 1
+        page_number = min(max(page_number, 1), paginator.num_pages)
+        page = paginator.page(page_number)
+        return (paginator, page, page.object_list, page.has_other_pages())
 
     def get_context_data(self, **kwargs):
         context = super(AttachmentListView, self).get_context_data(**kwargs)
@@ -1589,8 +1619,22 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
 
         context["no_results"] = paginator.count == 0
         context["current_language"] = translation.get_language()
-        page_number = int(query_params.get("page", 1))
-        context["attachments"] = paginator.get_page(page_number) if page_number <= paginator.num_pages else []
+        # Parse the page safely: a non-numeric or out-of-range ?page= must never
+        # 500 or leave a blank grid (§3.3). For a direct full-page load we clamp to
+        # the last valid page so the user always sees content; for the HTMX
+        # infinite-scroll fetch we still return an empty fragment past the last
+        # page so the `revealed` loop terminates instead of repeating the last page.
+        try:
+            page_number = int(query_params.get("page", 1))
+        except (TypeError, ValueError):
+            page_number = 1
+        page_number = max(page_number, 1)
+        if page_number <= paginator.num_pages:
+            context["attachments"] = paginator.get_page(page_number)
+        elif not self.request.htmx:
+            context["attachments"] = paginator.get_page(paginator.num_pages)
+        else:
+            context["attachments"] = []
         context["form"] = form
         return context
 
@@ -1612,7 +1656,7 @@ class AttachmentListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView)
                 output_field=IntegerField(),
             )
         ).order_by("process_order")
-        paginator = Paginator(query, 36)
+        paginator = Paginator(query, self.GALLERY_PAGE_SIZE)
 
         return paginator
 

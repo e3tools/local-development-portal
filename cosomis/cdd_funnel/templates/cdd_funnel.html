@@ -199,6 +199,7 @@
                 </div>
             </div>
 
+            {% if stages %}
             <div class="funnel-grid">
                 <div class="funnel-svg-wrap">
                     {% if first_stage.count %}
@@ -272,6 +273,11 @@
                     {% endfor %}
                 </div>
             </div>
+            {% else %}
+                {% translate 'No stages configured' as empty_title %}
+                {% translate 'The funnel has no stages to display for this dataset yet.' as empty_message %}
+                {% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-filter' %}
+            {% endif %}
 
             <div class="drilldown-section">
                 <div class="drilldown-section-head">

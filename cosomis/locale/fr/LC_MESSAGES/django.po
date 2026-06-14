@@ -303,6 +303,9 @@ msgstr "N'a pas"
 msgid "Search a level"
 msgstr "Rechercher un niveau"
 
+msgid "Loading the next level…"
+msgstr "Chargement du niveau suivant…"
+
 #, fuzzy, python-format
 #| msgid "Choice the village in canton"
 msgid "Choice the %(leaf)s in %(parent)s"
@@ -432,6 +435,15 @@ msgstr "Téléchargez tout"
 #| msgid "Choose filters"
 msgid "More filters"
 msgstr "Choisir les filtres"
+
+msgid "Loading more attachments…"
+msgstr "Chargement d'autres pièces jointes…"
+
+msgid "Could not load more attachments. Check your connection and try again."
+msgstr "Impossible de charger d'autres pièces jointes. Vérifiez votre connexion et réessayez."
+
+msgid "Retry"
+msgstr "Réessayer"
 
 msgid "Choose attachments to view"
 msgstr "Choisir les documents à visualiser"
@@ -648,8 +660,11 @@ msgstr "Oui"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-msgid "You have no priorities"
-msgstr "Priorités identifiées"
+msgid "No priorities yet"
+msgstr "Aucune priorité pour le moment"
+
+msgid "No investment priorities have been recorded here yet."
+msgstr "Aucune priorité d'investissement n'a encore été enregistrée ici."
 
 msgid "Add to cart"
 msgstr "Ajouter au panier"
@@ -1208,6 +1223,13 @@ msgstr "Nombre d'investissements"
 msgid "Total Funds"
 msgstr "Total des fonds"
 
+msgid "Project list pages"
+msgstr "Pages de la liste des projets"
+
+#, python-format
+msgid "Page %(num)s of %(total)s"
+msgstr "Page %(num)s sur %(total)s"
+
 msgid "No projects found"
 msgstr "Aucun projet trouvé"
 
@@ -1241,6 +1263,9 @@ msgstr "Date de la plainte"
 
 msgid "Report date"
 msgstr "Date du rapport"
+
+msgid "You have no priorities"
+msgstr "Priorités identifiées"
 
 msgid "Not Funded"
 msgstr "Non financé"
@@ -1510,6 +1535,12 @@ msgstr ""
 msgid "View villages"
 msgstr "villages"
 
+msgid "No stages configured"
+msgstr "Aucune étape configurée"
+
+msgid "The funnel has no stages to display for this dataset yet."
+msgstr "L'entonnoir n'a encore aucune étape à afficher pour ce jeu de données."
+
 #, fuzzy
 #| msgid "# Villages selected"
 msgid "Villages at the selected stage"
@@ -1772,6 +1803,16 @@ msgstr "Une erreur est survenue..."
 msgid "The Step was successfully removed."
 msgstr "L'étape a été supprimée avec succès."
 
+msgid "No data to display"
+msgstr "Aucune donnée à afficher"
+
+msgid ""
+"No results match the selected administrative level. Try a different "
+"selection."
+msgstr ""
+"Aucun résultat ne correspond au niveau administratif sélectionné. Essayez une "
+"autre sélection."
+
 msgid "Clear all filters"
 msgstr "Supprimer les filtres"
 
@@ -1804,6 +1845,10 @@ msgstr "Sousprojets par étape en cours"
 
 msgid "Number of sub-projects by administrative level, sector and step"
 msgstr "Montant de sous-projets par niveau administratif, secteur et étape"
+
+#, python-format
+msgid "Choose a %(level)s first to enable this filter."
+msgstr "Choisissez d'abord un %(level)s pour activer ce filtre."
 
 msgid "Sub-Project Status"
 msgstr "Statut du sous-projet"
@@ -2130,6 +2175,12 @@ msgstr "Type de sous-projet"
 
 msgid "Population priority"
 msgstr "Priorité de la population"
+
+msgid "Your cart is empty"
+msgstr "Votre panier est vide"
+
+msgid "Add investments to your cart to build a funding package."
+msgstr "Ajoutez des investissements à votre panier pour constituer un colis de financement."
 
 msgid "Are you sure do you want to clear the package?"
 msgstr "Êtes-vous sûr de vouloir déballer le colis?"
