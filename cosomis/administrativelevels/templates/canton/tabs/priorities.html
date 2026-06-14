@@ -1,6 +1,11 @@
 {% load static i18n humanize custom_tags %}
 
 {% with active_tab=request.GET.active_tab|default:"types" %}
+	<div id="priorities-spinner" class="htmx-indicator text-center py-2" style="display:none;">
+		<i class="fas fa-spinner fa-spin fa-lg text-primary"></i>
+		<span class="ml-1 text-muted small">{% translate 'Loading…' %}</span>
+	</div>
+
 	<ul class="nav nav-pills my-3" id="pills-tab" role="tablist">
 		<li class="nav-item" role="presentation">
 			<button class="nav-link {% if active_tab != 'villages' %}active{% endif %}"
@@ -21,8 +26,8 @@
 		</li>
 	</ul>
 
-	<form action="" method="POST" id="filter-form">
-		{% csrf_token %}
+	<form id="filter-form" data-partial-url="{{ priorities_partial_url }}" data-post-url="{{ canton_post_url }}"
+		  onsubmit="return false;">
 		<div class="row">
 
 			<div class="col-2">
@@ -32,15 +37,10 @@
 							empty-option="{% translate 'Category' %}" style="width: 100%;">
 						<option selected value="">{% translate 'Sector' %}</option>
 						{% for category in categories %}
-							{% if 'category-filter' in query_strings_raw %}
-								{% if query_strings_raw|get_item:'category-filter' == category.id %}
-									<option value="{{ category.id }}" selected>{{ category.name }}</option>
-								{% else %}
-									<option value="{{ category.id }}">{{ category.name }}</option>
-								{% endif %}
-							{% else %}
-								<option value="{{ category.id }}">{{ category.name }}</option>
-							{% endif %}
+							<option value="{{ category.id }}"
+									{% if query_strings_raw|get_item:'category-filter'|stringformat:"s" == category.id|stringformat:"s" %}selected{% endif %}>
+								{{ category.name }}
+							</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -51,18 +51,13 @@
 					<label for="sector-select-id">{% translate 'Type' %}</label>
 					<select class="form-control" name="sector-filter" id="sector-select-id"
 							empty-option="{% translate 'Sector' %}" style="width: 100%;"
-							{% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
+							{% if not query_strings_raw|get_item:'category-filter' %}disabled{% endif %}>
 						<option selected value="">{% translate 'Type' %}</option>
 						{% for sector in sectors %}
-							{% if 'sector-filter' in query_strings_raw %}
-								{% if query_strings_raw|get_item:'sector-filter' == sector.id %}
-									<option value="{{ sector.id }}" selected>{{ sector.name }}</option>
-								{% else %}
-									<option value="{{ sector.id }}">{{ sector.name }}</option>
-								{% endif %}
-							{% else %}
-								<option value="{{ sector.id }}">{{ sector.name }}</option>
-							{% endif %}
+							<option value="{{ sector.id }}"
+									{% if query_strings_raw|get_item:'sector-filter'|stringformat:"s" == sector.id|stringformat:"s" %}selected{% endif %}>
+								{{ sector.name }}
+							</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -75,15 +70,10 @@
 							style="width: 100%;">
 						<option value="">{% translate "Endorsed by" %}</option>
 						{% for subpopulation in subpopulations %}
-							{% if 'subpopulation-filter' in query_strings_raw %}
-								{% if query_strings_raw|get_item:'subpopulation-filter' == subpopulation.id %}
-									<option value="{{ subpopulation.id }}" selected>{{ subpopulation.name }}</option>
-								{% else %}
-									<option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
-								{% endif %}
-							{% else %}
-								<option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
-							{% endif %}
+							<option value="{{ subpopulation.id }}"
+									{% if query_strings_raw|get_item:'subpopulation-filter'|stringformat:"s" == subpopulation.id|stringformat:"s" %}selected{% endif %}>
+								{{ subpopulation.name }}
+							</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -94,21 +84,15 @@
 					<label for="climate-contribution-select-id">{% translate 'Climate contribution' %}</label>
 					<select class="form-control" name="climate-contribution-filter" id="climate-contribution-select-id"
 							empty-option="{% translate 'Climate contribution' %}" style="width: 100%;">
-						{% if 'climate-contribution-filter' in query_strings_raw %}
-							{% if query_strings_raw|get_item:'climate-contribution-filter' == 'True' %}
-								<option selected value="">{% translate 'Climate contribution' %}</option>
-								<option value="True" selected>{% translate 'Yes' %}</option>
-								<option value="False">{% translate 'No' %}</option>
-							{% else %}
-								<option selected value="">{% translate 'Climate contribution' %}</option>
-								<option value="True">{% translate 'Yes' %}</option>
-								<option value="False" selected>{% translate 'No' %}</option>
-							{% endif %}
-						{% else %}
-							<option selected value="">{% translate 'Climate contribution' %}</option>
-							<option value="True">{% translate 'Yes' %}</option>
-							<option value="False">{% translate 'No' %}</option>
-						{% endif %}
+						<option value="" {% if not query_strings_raw|get_item:'climate-contribution-filter' %}selected{% endif %}>
+							{% translate 'Climate contribution' %}
+						</option>
+						<option value="True" {% if query_strings_raw|get_item:'climate-contribution-filter' == 'True' %}selected{% endif %}>
+							{% translate 'Yes' %}
+						</option>
+						<option value="False" {% if query_strings_raw|get_item:'climate-contribution-filter' == 'False' %}selected{% endif %}>
+							{% translate 'No' %}
+						</option>
 					</select>
 				</div>
 			</div>
@@ -120,35 +104,153 @@
 							empty-option="{% translate 'Priorities' %}" style="width: 100%;">
 						<option value="">{% translate "Priorities" %}</option>
 						{% for priority in priorities %}
-							{% if 'priorities-filter' in query_strings_raw %}
-								{% if query_strings_raw|get_item:'priorities-filter' == priority.id %}
-									<option value="{{ priority.id }}" selected>{{ priority.name }}</option>
-								{% else %}
-									<option value="{{ priority.id }}">{{ priority.name }}</option>
-								{% endif %}
-							{% else %}
-								<option value="{{ priority.id }}">{{ priority.name }}</option>
-							{% endif %}
+							<option value="{{ priority.id }}"
+									{% if query_strings_raw|get_item:'priorities-filter'|stringformat:"s" == priority.id|stringformat:"s" %}selected{% endif %}>
+								{{ priority.name }}
+							</option>
 						{% endfor %}
 					</select>
 				</div>
 			</div>
 
 			<div class="col-2 mt-4 text-right">
-				<input type="submit" class="btn btn-primary" value="{% translate 'Apply' %}"
-					   style="margin-bottom: 3px;">
-				<input type="button" class="btn btn-primary submit-reset" value="{% translate 'Reset' %}"
-					   style="margin-bottom: 3px;"/>
-				<input type="hidden" id="reset-hidden-id" name="reset-hidden" value="">
+                <button type="button" id="priorities-apply-btn" class="btn btn-primary btn-sm">
+                    {% translate 'Apply' %}
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="priorities-reset-btn">
+                    {% translate 'Reset' %}
+                </button>
 			</div>
 
 		</div>
 	</form>
 
+<<<<<<< HEAD
 	<div id="priorities-loading" class="htmx-indicator text-center py-2" role="status" aria-live="polite">
 		<span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
 		<span class="text-muted small">{% translate 'Loading…' %}</span>
 	</div>
+=======
+    <script>
+        (function () {
+            "use strict";
+
+            var form = document.getElementById("filter-form");
+            var partialUrl = form ? form.dataset.partialUrl : null;
+
+            if (!partialUrl) {
+                console.warn("[priorities] data-partial-url no encontrado en #filter-form");
+                return;
+            }
+
+            function serializeSelects() {
+                var parts = [];
+                form.querySelectorAll("select[name]").forEach(function (sel) {
+                    if (sel.value !== "") {
+                        parts.push(
+                            encodeURIComponent(sel.name) + "=" + encodeURIComponent(sel.value)
+                        );
+                    }
+                });
+                return parts.join("&");
+            }
+
+            function loadPartial(queryString) {
+                var activeBtn = document.querySelector("#pills-tab .nav-link.active");
+                var activeTab = "types";
+                if (activeBtn) {
+                    localStorage.setItem("activePriorityTab", activeBtn.id);
+                    if (activeBtn.id === "button-priorities-villages-tab") {
+                        activeTab = "villages";
+                    }
+                }
+                
+                if (queryString) {
+                    queryString += "&active_tab=" + activeTab;
+                } else {
+                    queryString = "active_tab=" + activeTab;
+                }
+
+                document.querySelectorAll("#priorities .canton-priorities-dt").forEach(function (tbl) {
+                    if ($.fn.DataTable.isDataTable(tbl)) {
+                        $(tbl).DataTable().destroy();
+                    }
+                });
+                var url = partialUrl + (queryString ? "?" + queryString : "");
+                htmx.ajax("GET", url, {
+                    target: "#priorities",
+                    swap: "innerHTML",
+                    indicator: "#priorities-spinner"
+                });
+            }
+
+            // ── Apply ──────────────────────────────────────────────────────────────
+            document.getElementById("priorities-apply-btn")
+                .addEventListener("click", function () {
+                    loadPartial(serializeSelects());
+                });
+
+            // ── Reset ─────────────────────────────────────────────────────────────
+            document.getElementById("priorities-reset-btn")
+                .addEventListener("click", function () {
+                    form.querySelectorAll("select").forEach(function (sel) {
+                        sel.value = "";
+                    });
+                    var typeSel = document.getElementById("sector-select-id");
+                    if (typeSel) {
+                        typeSel.disabled = true;
+                    }
+                    loadPartial("");
+                });
+
+            var categorySel = document.getElementById("category-select-id");
+            var typeSel = document.getElementById("sector-select-id");
+
+            function updateSectors(categoryId, selectedSectorId) {
+                console.log("[canton priorities] updateSectors:", categoryId, selectedSectorId);
+                if (!categoryId) {
+                    typeSel.innerHTML = "<option value=''>{% translate 'Type' %}</option>";
+                    typeSel.disabled = true;
+                    return;
+                }
+                var ajaxUrl = "{% url 'investments:home_investments' %}ajax/sectors";
+                var csrf = document.querySelector("[name=csrfmiddlewaretoken]");
+                $.ajax({
+                    type: "POST",
+                    url: ajaxUrl,
+                    data: {value: categoryId, csrfmiddlewaretoken: csrf ? csrf.value : ""},
+                    success: function (resp) {
+                        var html = "<option value=''>{% translate 'Type' %}</option>";
+                        resp.values.forEach(function (el) {
+                            var selected = (selectedSectorId && el.id.toString() === selectedSectorId.toString()) ? " selected" : "";
+                            html += "<option value='" + el.id + "'" + selected + ">" + el.name + "</option>";
+                        });
+                        typeSel.innerHTML = html;
+                        typeSel.disabled = false;
+                        console.log("[canton priorities] Sectors updated, enabling typeSel");
+                    }
+                });
+            }
+
+            if (categorySel && typeSel) {
+                categorySel.addEventListener("change", function () {
+                    updateSectors(categorySel.value);
+                });
+                
+                var initialCategory = categorySel.value;
+                var initialSector = "";
+                {% if query_strings_raw %}
+                    initialSector = "{{ query_strings_raw|get_item:'sector-filter'|default_if_none:'' }}";
+                {% endif %}
+                
+                if (initialCategory) {
+                    console.log("[canton priorities] initialCategory found:", initialCategory);
+                    updateSectors(initialCategory, initialSector);
+                }
+            }
+        }());
+    </script>
+>>>>>>> origin/develop2
 
 	<div class="tab-content" id="priorityTabsContent">
 
@@ -223,9 +325,14 @@
 								</td>
 								<td>
 									{% if investment.project_status == investment.NOT_FUNDED %}
-										<form hx-post="{{ request.path }}?{{ request.GET.urlencode }}&active_tab=types"
+										<form hx-post="{{ canton_post_url }}?active_tab=types"
 											  hx-target="#priorities" hx-select="#priorities" hx-swap="innerHTML"
+<<<<<<< HEAD
 											  hx-indicator="#priorities-loading" hx-disabled-elt="find input[type=submit]"
+=======
+											  hx-include="#filter-form"
+											  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'
+>>>>>>> origin/develop2
 											  class="m-0 p-0">
 											{% csrf_token %}
 											{% if investment.id not in cart_items_id %}
@@ -299,7 +406,7 @@
 									</a>
 								</td>
 								<td>{{ investment.title }}</td>
-								<td>{{ investment.sector }}</td>
+								<td>{{ investment.sector.category.name }}</td>
 								<td class="text-center">{% if investment.endorsed_by_youth %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_women %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
@@ -321,9 +428,14 @@
 								</td>
 								<td>
 									{% if investment.project_status == investment.NOT_FUNDED %}
-										<form hx-post="{{ request.path }}?{{ request.GET.urlencode }}&active_tab=villages"
+										<form hx-post="{{ canton_post_url }}?active_tab=villages"
 											  hx-target="#priorities" hx-select="#priorities" hx-swap="innerHTML"
+<<<<<<< HEAD
 											  hx-indicator="#priorities-loading" hx-disabled-elt="find input[type=submit]"
+=======
+											  hx-include="#filter-form"
+											  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'
+>>>>>>> origin/develop2
 											  class="m-0 p-0">
 											{% csrf_token %}
 											{% if investment.id not in cart_items_id %}
