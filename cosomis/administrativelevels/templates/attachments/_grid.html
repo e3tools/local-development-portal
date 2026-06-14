@@ -63,10 +63,10 @@
     {% endfor %}
 
     {% if no_results and page_obj.number == 1 %}
-        <div class="gallery-empty" style="grid-column: 1 / -1;">
-            <i class="fas fa-images"></i>
-            <h4>{% translate 'No attachments match your filters' %}</h4>
-            <p>{% translate 'Try clearing a filter or selecting a different type.' %}</p>
+        <div style="grid-column: 1 / -1;">
+            {% translate 'No attachments match your filters' as empty_title %}
+            {% translate 'Try clearing a filter or selecting a different type.' as empty_message %}
+            {% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-images' %}
         </div>
     {% endif %}
 </div>
