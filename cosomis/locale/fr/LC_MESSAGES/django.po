@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 14:50+0000\n"
+"POT-Creation-Date: 2026-06-14 15:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -204,6 +204,14 @@ msgstr "Niveaux administratifs"
 
 msgid "Submit"
 msgstr "Soumettre"
+
+msgid "Some information is invalid. Please review the form and try again."
+msgstr "Certaines informations sont invalides. Veuillez vérifier le formulaire et réessayer."
+"Certaines informations sont invalides. Veuillez vérifier le formulaire et "
+"réessayer."
+
+msgid "Something went wrong."
+msgstr "Une erreur s'est produite."
 
 msgid "Loading images…"
 msgstr "Chargement des images…"
@@ -669,6 +677,9 @@ msgstr "Oui"
 
 msgid "Reset"
 msgstr "Réinitialiser"
+
+msgid "Loading…"
+msgstr "Chargement…"
 
 msgid "No priorities yet"
 msgstr "Aucune priorité pour le moment"
@@ -1470,6 +1481,11 @@ msgstr "Villages avec des tâches inachevées"
 msgid "Unspecified"
 msgstr "Aucune priorité identifiée"
 
+msgid ""
+"This stage no longer exists. It may have been renamed or removed — please "
+"reload the funnel."
+msgstr ""
+
 #, python-format
 msgid "%(counter)s village currently at this stage"
 msgid_plural "%(counter|intcomma)s villages currently at this stage"
@@ -1498,6 +1514,9 @@ msgid ""
 "from initial engagement to delivered infrastructure. Click any stage to "
 "drill into the villages."
 msgstr ""
+
+msgid "recently"
+msgstr "récemment"
 
 #, fuzzy
 #| msgid "Update"
@@ -1549,6 +1568,10 @@ msgstr ""
 #| msgid "CDD Funnel"
 msgid "CDD funnel"
 msgstr "Processus DCC"
+
+#, python-format
+msgid "View villages at stage: %(name)s"
+msgstr "Voir les villages à l'étape : %(name)s"
 
 #, fuzzy
 #| msgid "No villages found for this canton."
@@ -1771,17 +1794,9 @@ msgid "Your session has expired. Please reload the page and sign in again."
 msgstr ""
 "Votre session a expiré. Veuillez recharger la page et vous reconnecter."
 
-msgid "Some information is invalid. Please review the form and try again."
-msgstr ""
-"Certaines informations sont invalides. Veuillez vérifier le formulaire et "
-"réessayer."
-
 msgid "The server ran into a problem. Please try again in a moment."
 msgstr ""
 "Le serveur a rencontré un problème. Veuillez réessayer dans un instant."
-
-msgid "Something went wrong."
-msgstr "Une erreur s'est produite."
 
 msgid "Veuillez aller changer votre mot de passe dans la session Utilisateur."
 msgstr "Veuillez aller changer votre mot de passe dans la session Utilisateur."
@@ -2702,7 +2717,7 @@ msgstr "Page non trouvée"
 msgid "Registration confirmation - PURS"
 msgstr "Confirmation d'inscription - PURS"
 
-msgid "Your email was successfully confirm!"
+msgid "Your email was successfully confirmed!"
 msgstr "Votre email a été confirmé avec succès !"
 
 msgid "Take me home."

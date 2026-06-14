@@ -132,7 +132,8 @@
                 <p>{% translate 'How villages progress through the Community-Driven Development pipeline — from initial engagement to delivered infrastructure. Click any stage to drill into the villages.' %}</p>
             </div>
             <div class="text-right">
-                <span class="hero-stamp">{% translate 'Updated' %} <span id="hero-updated-at"></span></span>
+                {% translate 'recently' as updated_fallback %}
+                <span class="hero-stamp">{% translate 'Updated' %} <span id="hero-updated-at">{{ summary.generated_at|default:updated_fallback }}</span></span>
             </div>
         </div>
 
@@ -214,8 +215,11 @@
                         </defs>
                         {% for stage in stages %}
                         <g class="funnel-stage" data-stage="{{ stage.key }}" style="animation-delay: {{ forloop.counter0 }}00ms;"
+                           role="button" tabindex="0"
+                           aria-label="{% blocktranslate with name=stage.label %}View villages at stage: {{ name }}{% endblocktranslate %}"
                            hx-get="{% url 'cdd_funnel:stage_drilldown' stage.key %}"
                            hx-target="#drilldown" hx-swap="innerHTML"
+                           hx-trigger="click, keyup[key=='Enter']"
                            hx-indicator="#drilldown-indicator"
                            hx-on:click="document.querySelectorAll('.funnel-stage, .stage-row').forEach(el => el.classList.remove('active')); this.classList.add('active'); document.querySelector('.stage-row[data-stage=\'{{ stage.key }}\']')?.classList.add('active');">
                             <polygon points="{{ stage.polygon_points }}" fill="url(#grad-{{ stage.key }})"/>
@@ -241,8 +245,11 @@
                 <div class="stage-list">
                     {% for stage in stages %}
                     <div class="stage-row" data-stage="{{ stage.key }}"
+                         role="button" tabindex="0"
+                         aria-label="{% blocktranslate with name=stage.label %}View villages at stage: {{ name }}{% endblocktranslate %}"
                          hx-get="{% url 'cdd_funnel:stage_drilldown' stage.key %}"
                          hx-target="#drilldown" hx-swap="innerHTML"
+                         hx-trigger="click, keyup[key=='Enter']"
                          hx-indicator="#drilldown-indicator"
                          hx-on:click="document.querySelectorAll('.funnel-stage, .stage-row').forEach(el => el.classList.remove('active')); this.classList.add('active'); document.querySelector('.funnel-stage[data-stage=\'{{ stage.key }}\']')?.classList.add('active');">
                         <span class="stage-dot" style="background: {{ stage.color }};">{{ forloop.counter }}</span>
