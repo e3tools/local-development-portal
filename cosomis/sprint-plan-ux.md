@@ -43,7 +43,7 @@ Plan to ~75% — leave room for review churn and dataset-specific surprises
 | ID | Session (chunk) | Covers | Est | Pri | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | S1 | **Auth submit feedback + validation** — add disabled+spinner state to login & register submits; fix the `disableOnSubmit.js` ↔ missing `.submit-spin` markup mismatch; add HTML5 + inline validation (incl. `password2` mismatch). | §1.1–1.5, 1.9 | M | P0 | — |
-| S2 | **Moderator approve/reject confirmation** — confirmation modal before approve/reject; badge overdue packages in the main approvals table. | §2.1, 2.4 | M | P0 | — |
+| ✅ S2 | **Moderator approve/reject confirmation** — confirmation modal before approve/reject; badge overdue packages in the main approvals table. | §2.1, 2.4 | M | P0 | — |
 | S3 | **Investments budget-overflow + cart totals** — make "Not enough funds" unmissable (block submit + visible error); make `total-funding-display` update live in `sum_subprojects()`. | §2.2, 2.5 | M | P0 | — |
 | S4 | **Investments filter loading states** — extend the existing `beforeSend` skeleton pattern to filter-change AJAX so stat cards never show stale numbers. | §2.3 | S | P1 | — |
 | S5 | **Admin-levels detail: carousels + GRM errors** — error fallback for failed carousel image loads; surface GRM API failure with a message instead of an empty section; add `role="status"` to spinners. | §3.1, 3.2 | M | P0 | — |

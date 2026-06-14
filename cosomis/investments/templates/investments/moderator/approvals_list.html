@@ -70,7 +70,15 @@
                             <tbody>
                             {% for user in user_list %}
                                 <tr>
-                                    <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {{ user.date_joined|date:"d/m/Y" }}
+                                        {% if user.id in users_overdue_ids %}
+                                        <span class="badge badge-warning ml-1"
+                                              title="{% translate 'Awaiting review beyond the response deadline' %}">
+                                            {% translate 'Overdue' %}
+                                        </span>
+                                        {% endif %}
+                                    </td>
                                     <td>{{ user.email }}</td>
                                     <td>{{ user.organization.name }}</td>
                                     <td>
@@ -142,6 +150,12 @@
                                         {% translate 'Under Execution' %}
                                         {% elif package.status == package.PARTIALLY_APPROVED %}
                                         {% translate 'Partially Approve' %}
+                                        {% endif %}
+                                        {% if package.id in packages_overdue_ids %}
+                                        <span class="badge badge-warning ml-1"
+                                              title="{% translate 'Awaiting review beyond the response deadline' %}">
+                                            {% translate 'Overdue' %}
+                                        </span>
                                         {% endif %}
                                     </td>
                                     <td>

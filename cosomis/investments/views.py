@@ -665,14 +665,22 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
         overdue_date = datetime.now() - timedelta(days=settings.MAX_RESPONSE_DAYS)
         package_queryset = self.package_list
         user_queryset = self.user_list
+        packages_overdue = package_queryset.filter(updated_date__lt=overdue_date)
+        users_overdue = user_queryset.filter(date_joined__lt=overdue_date)
         context = {
             "paginator": None,
             "page_obj": None,
             "is_paginated": False,
             "package_list": package_queryset,
-            "packages_overdue": package_queryset.filter(updated_date__lt=overdue_date),
+            "packages_overdue": packages_overdue,
+            # Ids let the main table badge overdue rows inline instead of relying
+            # on a separate count the moderator has to cross-reference.
+            "packages_overdue_ids": set(
+                packages_overdue.values_list("id", flat=True)
+            ),
             "user_list": user_queryset,
-            "users_overdue": user_queryset.filter(date_joined__lt=overdue_date),
+            "users_overdue": users_overdue,
+            "users_overdue_ids": set(users_overdue.values_list("id", flat=True)),
         }
         context.update(kwargs)
 
