@@ -63,6 +63,7 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12">
+							{% if projects %}
 							<table class="table">
 								<thead>
 								<tr>
@@ -89,6 +90,19 @@
 									</tr>
 								</tfooter>
 							</table>
+							{% else %}
+								{% if request.GET.search %}
+									{% translate 'No projects found' as empty_title %}
+									{% translate 'No projects match your search. Try a different term.' as empty_message %}
+									{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-search' %}
+								{% else %}
+									{% translate 'No projects yet' as empty_title %}
+									{% translate 'Create your first project to get started.' as empty_message %}
+									{% translate 'Create Project' as empty_cta %}
+									{% url 'administrativelevels:project-create' as create_url %}
+									{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-folder-open' cta_url=create_url cta_label=empty_cta %}
+								{% endif %}
+							{% endif %}
 						</div>
 					</div>
 				</div>

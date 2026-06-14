@@ -175,6 +175,7 @@
                 </div>
             </div>
             <div class="card-body">
+                {% if object.funded_investments.all %}
                 <table class="table datatable display" style="width: 100%;">
                     <thead>
                     <th>{% translate 'Name' %}</th>
@@ -224,6 +225,11 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                {% else %}
+                    {% translate 'No investments added yet' as empty_title %}
+                    {% translate 'This package has no funded investments.' as empty_message %}
+                    {% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-folder-open' %}
+                {% endif %}
             </div>
         </div>
     </div>
