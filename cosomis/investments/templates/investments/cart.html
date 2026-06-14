@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n humanize custom_tags %}
+{% load static i18n humanize custom_tags l10n %}
 
 {% block extracss %}
     {{ block.super }}
@@ -133,10 +133,26 @@
                         </p>
                     </div>
                 </div>
+                {% if object.project %}
+                <div class="row">
+                    <div class="col-8">
+                        <p class="text-sm float-right">{% translate 'Project budget' %}:</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="text-sm">
+                            <b class="d-block project-budget-display">{{ object.project.total_amount|intcomma }}</b>
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
                 <hr>
+                <div class="alert alert-danger d-none" id="budget-overflow-alert" role="alert" aria-live="assertive">
+                    <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                    {% blocktranslate %}Not enough funds: the selected funding exceeds the project budget. Remove investments before submitting.{% endblocktranslate %}
+                </div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#submitPackageModal">
+                        <button type="button" id="open-submit-modal" class="btn btn-primary btn-block" data-toggle="modal" data-target="#submitPackageModal">
                             {% translate 'Submit For Approval' %}
                         </button>
                     </div>
@@ -343,6 +359,9 @@
 <script type="text/javascript">
     $( document ).ready(function() {
 
+        // Project budget rendered server-side; null when no project is linked yet.
+        const projectBudget = {% localize off %}{{ object.project.total_amount|default:"null" }}{% endlocalize %};
+
         if ('{{ cart_project }}' === 'None') {
             $('#investments-submit').attr('disabled','disabled');
             $('#nonProjectModal').modal('show');
@@ -382,31 +401,47 @@
         });
 
         function sum_subprojects() {
-            let villages = [];
+            let villages = new Set();
             let funding = 0;
             let subprojects = 0;
 
+            // Use the DataTables cell API (responsive-aware) so totals stay
+            // correct even when columns collapse into child rows.
             table.rows().every( function ( rowIdx ) {
-                let firstVal = $( this.node() ).first().val();
+                subprojects += 1;
 
-                if (firstVal != undefined) {
-                    let subproject_data = table.row( rowIdx ).data();
-                    subprojects += 1;
+                // Estimated cost lives in column 2 with a data-order attribute.
+                let cost = parseInt($(table.cell(rowIdx, 2).node()).attr('data-order'), 10);
+                if (!isNaN(cost)) {
+                    funding += cost;
+                }
 
-                    $('#investments-input-id').val($('#investments-input-id').val() + ',' + firstVal);
-
-                    funding = parseInt(funding) + parseInt(subproject_data[3]["@data-order"])
-
-                    if (!villages.includes(subproject_data[3])) {
-                        villages.push(subproject_data[3])
-                    }
+                // Village name lives in column 3; count distinct villages.
+                let village = $(table.cell(rowIdx, 3).node()).text().trim();
+                if (village) {
+                    villages.add(village);
                 }
             } );
 
-            $('.total-villages-display').html(numeral(villages.length).format('0,0'));
+            $('.total-funding-display').html(numeral(funding).format('0,0'));
+            $('.total-villages-display').html(numeral(villages.size).format('0,0'));
             $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
 
+            check_budget(funding);
         };
+
+        // Block submission and surface a persistent error when the selected
+        // funding exceeds the linked project's budget (mirrors the server-side
+        // "Not enough funds" guard in CartView.post).
+        function check_budget(funding) {
+            if (projectBudget === null) {
+                return;
+            }
+            let overBudget = funding > projectBudget;
+            $('#budget-overflow-alert').toggleClass('d-none', !overBudget);
+            $('#open-submit-modal').prop('disabled', overBudget);
+            $('#investments-submit').prop('disabled', overBudget);
+        }
 
         // Get the 'Check out' button by ID
         var checkOut = document.getElementById('investments-submit');

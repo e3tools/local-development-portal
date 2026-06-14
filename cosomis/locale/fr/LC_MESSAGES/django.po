@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 08:20+0000\n"
+"POT-Creation-Date: 2026-06-14 09:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1988,6 +1988,16 @@ msgstr "Résumé"
 msgid "# Subprojects"
 msgstr "# Sous-projets"
 
+msgid "Project budget"
+msgstr "Budget du projet"
+
+msgid ""
+"Not enough funds: the selected funding exceeds the project budget. Remove "
+"investments before submitting."
+msgstr ""
+"Fonds insuffisants : le financement sélectionné dépasse le budget du projet. "
+"Retirez des investissements avant de soumettre."
+
 msgid "Submit For Approval"
 msgstr "Soumettre à l'approbation"
 
@@ -2315,11 +2325,11 @@ msgstr "Investissements"
 msgid "Your package"
 msgstr "Votre paquet"
 
-msgid "Investment removed from cart."
-msgstr "Investissement retiré du panier."
-
 msgid "Not enough funds"
 msgstr "Pas assez de fonds"
+
+msgid "Investment removed from cart."
+msgstr "Investissement retiré du panier."
 
 msgid "Package submitted."
 msgstr "Paquet soumis."
