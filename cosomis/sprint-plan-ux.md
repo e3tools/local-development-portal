@@ -60,7 +60,7 @@ Plan to ~75% — leave room for review churn and dataset-specific surprises
 | ✅ S7 | **Shared toast/error layer** *(foundation)* — one accessible toast/inline-error mechanism; replace raw `alert(statusCode)` calls; distinguish network / validation / CSRF-session-expired; switch non-danger Django messages from modal to toast; add `extra_tags` fallback. | §6.3, 6.4, 2.10, 1.8 | L | P0 | — |
 | ✅ S8 | **Apply empty states across tables** — package/cart tables, dashboard subprojects & administrativelevels tables, commune/canton priorities, funnel-no-stages, gallery-no-results. | §2.6, 5.2, 4.1, §7 | M | P1 | S6 |
 | ✅ S9 | **Gallery HTMX loading + errors** — skeleton on HTMX grid pagination; add `htmx:responseError` handling; fix invalid-page empty grid. | §3.3 | M | P1 | — |
-| S10 | **Cascading-select loading feedback** — loading indicators between region→prefecture→commune→canton AJAX steps in admin-levels list and dashboard filters; `title`/`aria-label` on disabled selects. | §3.5, 5.5, 2.11 | M | P1 | — |
+| ✅ S10 | **Cascading-select loading feedback** — loading indicators between region→prefecture→commune→canton AJAX steps in admin-levels list and dashboard filters; `title`/`aria-label` on disabled selects. | §3.5, 5.5, 2.11 | M | P1 | — |
 | S11 | **Project list search + pagination** — fix search `type="button"` → submit (Enter works); add pagination to `ProjectListView`. | §3.6, 3.7 | S | P1 | S6 |
 | S12 | **Project detail + bulk-upload feedback** — spinner/toast on investment-update submit; clearer upload error causes; client-side file validation, progress indicator, and post-import summary for bulk upload. | §3.8, 3.9 | M | P1 | S7 |
 

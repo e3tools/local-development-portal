@@ -662,7 +662,7 @@
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label for="sector-select-id">{% translate 'Type' %}</label>
-                                            <select class="form-control" name="sector-filter" id="sector-select-id" empty-option="{% translate 'Sector' %}" style="width: 100%;" {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <select class="form-control" name="sector-filter" id="sector-select-id" data-disabled-hint="{% translate 'Choose a Sector first to enable this filter.' %}" empty-option="{% translate 'Sector' %}" style="width: 100%;" {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
                                                 <option selected value="">{% translate 'Type' %}</option>
                                                 {% for sector in sectors %}
                                                     {% if 'sector-filter' in query_strings_raw %}
@@ -805,7 +805,7 @@
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label for="prefecture-select-id">{{ adm_labels.prefecture }}</label>
-                                            <select class="form-control" name="prefecture-filter" id="prefecture-select-id" empty-option="{{ adm_labels.prefecture }}" style="width: 100%;" {% if not single_region and not 'region-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <select class="form-control" name="prefecture-filter" id="prefecture-select-id" data-disabled-hint="{% blocktranslate with level=adm_labels.region %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}" empty-option="{{ adm_labels.prefecture }}" style="width: 100%;" {% if not single_region and not 'region-filter' in query_strings_raw %}disabled{% endif %}>
                                                 <option selected value="">{{ adm_labels.prefecture }}</option>
                                                 {% for prefecture in prefectures %}
                                                     {% if 'prefecture-filter' in query_strings_raw %}
@@ -824,7 +824,7 @@
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label for="commune-select-id">{{ adm_labels.commune }}</label>
-                                            <select class="form-control" name="commune-filter" id="commune-select-id" empty-option="{{ adm_labels.commune }}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <select class="form-control" name="commune-filter" id="commune-select-id" data-disabled-hint="{% blocktranslate with level=adm_labels.prefecture %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}" empty-option="{{ adm_labels.commune }}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
                                                 <option selected value="">{{ adm_labels.commune }}</option>
                                                 {% for commune in communes %}
                                                     {% if 'commune-filter' in query_strings_raw %}
@@ -845,7 +845,7 @@
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label for="canton-select-id">{{ adm_labels.canton }}</label>
-                                            <select class="form-control" name="canton-filter" id="canton-select-id" empty-option="{{ adm_labels.canton }}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <select class="form-control" name="canton-filter" id="canton-select-id" data-disabled-hint="{% blocktranslate with level=adm_labels.commune %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}" empty-option="{{ adm_labels.canton }}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                                 <option selected value="">{{ adm_labels.canton }}</option>
                                                 {% for canton in cantons %}
                                                     {% if 'canton-filter' in query_strings_raw %}
@@ -864,7 +864,7 @@
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label for="village-select-id">{{ adm_labels.village }}</label>
-                                            <select class="form-control" name="village-filter" id="village-select-id" empty-option="{{ adm_labels.village }}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
+                                            <select class="form-control" name="village-filter" id="village-select-id" data-disabled-hint="{% blocktranslate with level=adm_labels.canton %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}" empty-option="{{ adm_labels.village }}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
                                                 <option selected value="">{{ adm_labels.village }}</option>
                                                 {% for village in villages %}
                                                     {% if 'village-filter' in query_strings_raw %}
@@ -1368,6 +1368,7 @@
 {% block javascript %}
 {{ block.super }}
 <script src="{% static 'js/numeral.min.js' %}"></script>
+<script src="{% static 'js/select-disabled-hint.js' %}"></script>
 <script type="text/javascript">
 
     let investments_list = [];
