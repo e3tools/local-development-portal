@@ -5,7 +5,7 @@ from django.forms import RadioSelect, Select
 
 from investments.models import Attachment, Package, Investment
 from .models import AdministrativeLevel, Project, Sector
-from django.core.exceptions import NON_FIELD_ERRORS
+from django.core.exceptions import NON_FIELD_ERRORS, ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from openpyxl import load_workbook
 from django.core.exceptions import ValidationError
@@ -57,7 +57,10 @@ class ProjectForm(forms.ModelForm):
 
 
 class BulkUploadInvestmentsForm(forms.Form):
-    xlsx_file = forms.FileField(label="XLSX File")
+    xlsx_file = forms.FileField(
+        label=_("XLSX File"),
+        widget=forms.ClearableFileInput(attrs={"accept": ".xlsx"}),
+    )
     headers = [
         'village_id',
         'ranking',
@@ -83,8 +86,11 @@ class BulkUploadInvestmentsForm(forms.Form):
             wb = load_workbook(uploaded_file)
             sheet = wb.active
             headers = [cell.value for cell in sheet[1]]  # Read the first row for headers
-        except Exception as e:
-            raise ValidationError(f"Invalid XLSX file: {e}")
+        except Exception:
+            raise ValidationError(_(
+                "This file could not be read as an Excel (.xlsx) workbook. "
+                "Make sure you upload the .xlsx template — not a CSV or an older .xls file."
+            ))
         return uploaded_file
 
     def save(self):
@@ -113,7 +119,10 @@ class BulkUploadInvestmentsForm(forms.Form):
                         init_headers.remove(normalized_header)
 
                 if init_headers:
-                    raise ValidationError(f"Missing required headers: {', '.join(init_headers)}")
+                    raise ValidationError(_(
+                        "The file is missing required column(s): %(cols)s. "
+                        "Please use the provided template and keep its header row unchanged."
+                    ) % {"cols": ", ".join(init_headers)})
 
             else:
                 try:
@@ -129,14 +138,21 @@ class BulkUploadInvestmentsForm(forms.Form):
                         project_status=row[headers_dict['project_status']],
                         delays_consumed=0
                     ))
-                except (KeyError, IndexError, ValueError) as e:
-                    raise ValidationError(f"Error processing row {idx}: {e}")
+                except (KeyError, IndexError, ValueError, ObjectDoesNotExist) as e:
+                    raise ValidationError(_(
+                        "There was a problem with row %(row)s: check that the village ID and "
+                        "sector ID exist and that the cost, dates and rates are valid numbers. "
+                        "(Technical detail: %(err)s)"
+                    ) % {"row": idx, "err": e})
 
         # Bulk create all investments
         Investment.objects.bulk_create(investments)
 
         # Add the investments to the package's funded investments
         package.funded_investments.add(*investments)
+
+        # Expose how many rows were imported so the view can confirm it (§3.9).
+        self.imported_count = len(investments)
 
         return project
 

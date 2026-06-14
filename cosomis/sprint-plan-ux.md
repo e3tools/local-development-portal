@@ -62,7 +62,7 @@ Plan to ~75% — leave room for review churn and dataset-specific surprises
 | S9 | **Gallery HTMX loading + errors** — skeleton on HTMX grid pagination; add `htmx:responseError` handling; fix invalid-page empty grid. | §3.3 | M | P1 | — |
 | S10 | **Cascading-select loading feedback** — loading indicators between region→prefecture→commune→canton AJAX steps in admin-levels list and dashboard filters; `title`/`aria-label` on disabled selects. | §3.5, 5.5, 2.11 | M | P1 | — |
 | S11 | **Project list search + pagination** — fix search `type="button"` → submit (Enter works); add pagination to `ProjectListView`. | §3.6, 3.7 | S | P1 | S6 |
-| S12 | **Project detail + bulk-upload feedback** — spinner/toast on investment-update submit; clearer upload error causes; client-side file validation, progress indicator, and post-import summary for bulk upload. | §3.8, 3.9 | M | P1 | S7 |
+| ✅ S12 | **Project detail + bulk-upload feedback** — spinner/toast on investment-update submit; clearer upload error causes; client-side file validation, progress indicator, and post-import summary for bulk upload. | §3.8, 3.9 | M | P1 | S7 |
 
 > **S7 follow-up (long-tail `alert()` migration).** S7 shipped the mechanism and
 > migrated the noisiest call site (profile.html change-password). The global
