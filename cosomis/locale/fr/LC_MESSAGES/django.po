@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 09:21+0000\n"
+"POT-Creation-Date: 2026-06-14 09:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,6 +177,9 @@ msgstr "Niveaux administratifs"
 msgid "Submit"
 msgstr "Soumettre"
 
+msgid "Loading images…"
+msgstr "Chargement des images…"
+
 msgid "Population"
 msgstr "Population"
 
@@ -247,6 +250,9 @@ msgid ""
 "We're building the Infrastructure and Services view for this village. Check "
 "back shortly."
 msgstr ""
+
+msgid "Image unavailable"
+msgstr "Image indisponible"
 
 msgid "Phases"
 msgstr "Phases"
@@ -1151,6 +1157,9 @@ msgstr "Vue d'ensemble du canton"
 #| msgid "Choose the Administrative level"
 msgid "No sub-levels under this administrative level."
 msgstr "Choisissez les niveaux administratifs"
+
+msgid "Complaints could not be loaded right now. Please try again later."
+msgstr "Les plaintes n'ont pas pu être chargées pour le moment. Veuillez réessayer plus tard."
 
 msgid "You have no complaints"
 msgstr "Vous n'avez aucune plainte"
@@ -3880,9 +3889,6 @@ msgstr ""
 
 msgid "A short UUID field."
 msgstr ""
-
-#~ msgid "Total funds available"
-#~ msgstr "Fonds totaux disponibles"
 
 #~ msgid "Total sub-projects available"
 #~ msgstr "Total priorités sous-projets communautaires"
