@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 11:22+0000\n"
+"POT-Creation-Date: 2026-06-14 14:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -279,8 +279,16 @@ msgid ""
 "back shortly."
 msgstr ""
 
+#, python-format
+msgid "Photo of %(name)s"
+msgstr "Photo de %(name)s"
+
 msgid "Image unavailable"
 msgstr "Image indisponible"
+
+#, python-format
+msgid "No photo available for %(name)s"
+msgstr "Aucune photo disponible pour %(name)s"
 
 msgid "Phases"
 msgstr "Phases"
@@ -440,7 +448,9 @@ msgid "Loading more attachments…"
 msgstr "Chargement d'autres pièces jointes…"
 
 msgid "Could not load more attachments. Check your connection and try again."
-msgstr "Impossible de charger d'autres pièces jointes. Vérifiez votre connexion et réessayez."
+msgstr ""
+"Impossible de charger d'autres pièces jointes. Vérifiez votre connexion et "
+"réessayez."
 
 msgid "Retry"
 msgstr "Réessayer"
@@ -1106,8 +1116,8 @@ msgstr "Importation… cela peut prendre un instant"
 msgid ""
 "Excel .xlsx only, up to 5 MB. Large files may take a few seconds to import."
 msgstr ""
-"Excel .xlsx uniquement, jusqu'à 5 Mo. Les fichiers volumineux peuvent prendre "
-"quelques secondes à importer."
+"Excel .xlsx uniquement, jusqu'à 5 Mo. Les fichiers volumineux peuvent "
+"prendre quelques secondes à importer."
 
 msgid "Please choose an Excel .xlsx file (not a CSV or .xls)."
 msgstr "Veuillez choisir un fichier Excel .xlsx (et non un CSV ou un .xls)."
@@ -1767,11 +1777,20 @@ msgstr "Version"
 msgid "Close this tab?"
 msgstr "Fermer cet onglet ?"
 
+msgid "Back"
+msgstr "Retour"
+
 msgid "Project Cycle"
 msgstr "Cycle du projet"
 
+msgid "Toggle navigation menu"
+msgstr "Afficher/masquer le menu de navigation"
+
 msgid "Welcome"
 msgstr "Bienvenu(e)"
+
+msgid "Cart"
+msgstr "Panier"
 
 msgid "Fund a project"
 msgstr "Financer un projet"
@@ -1810,8 +1829,8 @@ msgid ""
 "No results match the selected administrative level. Try a different "
 "selection."
 msgstr ""
-"Aucun résultat ne correspond au niveau administratif sélectionné. Essayez une "
-"autre sélection."
+"Aucun résultat ne correspond au niveau administratif sélectionné. Essayez "
+"une autre sélection."
 
 msgid "Clear all filters"
 msgstr "Supprimer les filtres"
@@ -2180,7 +2199,9 @@ msgid "Your cart is empty"
 msgstr "Votre panier est vide"
 
 msgid "Add investments to your cart to build a funding package."
-msgstr "Ajoutez des investissements à votre panier pour constituer un colis de financement."
+msgstr ""
+"Ajoutez des investissements à votre panier pour constituer un colis de "
+"financement."
 
 msgid "Are you sure do you want to clear the package?"
 msgstr "Êtes-vous sûr de vouloir déballer le colis?"
@@ -2235,6 +2256,9 @@ msgstr "Aucune raison"
 
 msgid "Choose filters"
 msgstr "Choisir les filtres"
+
+msgid "Choose a Sector first to enable this filter."
+msgstr "Choisissez d'abord un secteur pour activer ce filtre."
 
 msgid "Funding Status"
 msgstr "État Du Financement"

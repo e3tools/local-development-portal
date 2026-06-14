@@ -507,9 +507,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
                             total_ids = [child.id]
                 else:
                     final_total_ids += [child.id]
-                    print('###')
-                    print("Village without infrastructure: ", child.id)
-                    print('###')
+                    logger.debug("Village without infrastructure: %s", child.id)
 
             if base_resp is not None:
                 for key, value in base_resp.items():
@@ -1322,9 +1320,7 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             return super().get(request, *args, **kwargs)
 
         if 'investment' in request.POST:
-            print('----')
-            print(request.POST['investment'])
-            print('----')
+            logger.debug("Updating investment id=%s", request.POST['investment'])
             investment = Investment.objects.get(id=request.POST['investment'])
             investment_form = self.investment_form_class(
                 instance=investment, data=request.POST, files=request.FILES
