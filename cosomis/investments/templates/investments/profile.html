@@ -414,7 +414,7 @@
                 },
                 error: function (data) {
                     $('#spin-modify-password').hide();
-                    alert(error_server_message + "Error " + data.status);
+                    notifyAjaxError(data);
                 }
             });
 
@@ -478,7 +478,7 @@
                     },
                     error: function (data) {
                         $('#spin-modify-password').hide();
-                        alert(error_server_message + "Error " + data.status);
+                        notifyAjaxError(data);
 
                         $("#btn-save-password").html("{% translate 'Save' %}");
                         $("#btn-save-password").prop('disabled', false);
@@ -487,8 +487,6 @@
                 });
 
             }else{
-                alert("{% translate 'You have to fill all the fields' %}");
-                
                 global_label_error.text("{% translate 'You have to fill all the fields' %}");
                 global_label_error.show();
             }
