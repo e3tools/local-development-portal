@@ -60,8 +60,10 @@
                 <div class="row">
                     <!-- /.col -->
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-block">
-                            {% translate "Sign up" %}
+                        <button type="submit" class="btn btn-primary btn-block"
+                                data-loading-text="{% translate 'Signing up…' %}">
+                            <span class="submit-spin spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" style="display: none;"></span>
+                            <span class="submit-label">{% translate "Sign up" %}</span>
                         </button>
                     </div>
                     <!-- /.col -->
@@ -84,6 +86,8 @@
 <script src="{% static 'AdminLTE/dist/js/adminlte.js' %}"></script>
 <!-- Django Translation -->
 <script src="{% static 'js/setLanguajeDjangoTranslation.js' %}"></script>
+<!-- Submit feedback (spinner + disabled state) -->
+<script src="{% static 'js/disableOnSubmit.js' %}"></script>
 <!-- Select2 -->
 <script src="{% static 'AdminLTE/plugins/select2/js/select2.full.min.js' %}"></script>
 <script type="text/javascript">
@@ -97,6 +101,44 @@
             '<i class="fas fa-chevron-circle-down text-primary" style="margin-top:12px;"></i>');
 
     </script>
+<!-- Inline validation: live password-match feedback -->
+<script>
+    (function () {
+        var form = document.querySelector("form");
+        var p1 = document.getElementById("id_password1");
+        var p2 = document.getElementById("id_password2");
+        if (!p1 || !p2) { return; }
+
+        var mismatchMsg = "{% translate 'The two password fields didn’t match.' %}";
+
+        var feedback = document.createElement("div");
+        feedback.className = "text-danger small mt-1";
+        feedback.setAttribute("role", "alert");
+        feedback.style.display = "none";
+        (p2.closest(".form-group") || p2.parentNode).appendChild(feedback);
+
+        function checkMatch() {
+            if (p2.value && p1.value !== p2.value) {
+                p2.setCustomValidity(mismatchMsg);
+                feedback.textContent = mismatchMsg;
+                feedback.style.display = "";
+            } else {
+                p2.setCustomValidity("");
+                feedback.style.display = "none";
+            }
+        }
+
+        p1.addEventListener("input", checkMatch);
+        p2.addEventListener("input", checkMatch);
+
+        if (form) {
+            form.addEventListener("submit", function () {
+                checkMatch();
+                form.classList.add("was-validated");
+            }, false);
+        }
+    })();
+</script>
 
 </body>
 </html>
