@@ -153,7 +153,9 @@
 			 aria-labelledby="button-priorities-investments-type-tab">
 
 			{% if not all_canton_priorities %}
-				<h5 class="mt-3">{% translate 'You have no priorities' %}</h5>
+				{% translate 'No priorities yet' as empty_title %}
+				{% translate 'No investment priorities have been recorded here yet.' as empty_message %}
+				{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-list-ul' %}
 			{% else %}
 				<div class="table-responsive mt-2">
 					<table class="table table-bordered canton-priorities-dt" style="width: 100%">
@@ -246,7 +248,9 @@
 			 role="tabpanel" aria-labelledby="button-priorities-villages-tab">
 
 			{% if not all_canton_priorities %}
-				<h5 class="mt-3">{% translate 'You have no priorities' %}</h5>
+				{% translate 'No priorities yet' as empty_title %}
+				{% translate 'No investment priorities have been recorded here yet.' as empty_message %}
+				{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-list-ul' %}
 			{% else %}
 				<div class="table-responsive mt-2">
 					<table class="table table-bordered canton-priorities-dt" style="width: 100%">
