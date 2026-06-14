@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 10:28+0000\n"
+"POT-Creation-Date: 2026-06-14 11:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,6 +50,34 @@ msgstr "Source de financement"
 
 msgid "Collaborators"
 msgstr "Collaborateurs"
+
+msgid "XLSX File"
+msgstr "Fichier XLSX"
+
+msgid ""
+"This file could not be read as an Excel (.xlsx) workbook. Make sure you "
+"upload the .xlsx template — not a CSV or an older .xls file."
+msgstr ""
+"Ce fichier n'a pas pu être lu comme un classeur Excel (.xlsx). Assurez-vous "
+"de téléverser le modèle .xlsx — et non un CSV ou un ancien fichier .xls."
+
+#, python-format
+msgid ""
+"The file is missing required column(s): %(cols)s. Please use the provided "
+"template and keep its header row unchanged."
+msgstr ""
+"Le fichier ne contient pas la ou les colonnes requises : %(cols)s. Veuillez "
+"utiliser le modèle fourni et conserver sa ligne d'en-tête inchangée."
+
+#, python-format
+msgid ""
+"There was a problem with row %(row)s: check that the village ID and sector "
+"ID exist and that the cost, dates and rates are valid numbers. (Technical "
+"detail: %(err)s)"
+msgstr ""
+"Un problème est survenu à la ligne %(row)s : vérifiez que l'ID du village et "
+"l'ID du secteur existent et que le coût, les dates et les taux sont des "
+"nombres valides. (Détail technique : %(err)s)"
 
 msgid "All regions"
 msgstr "Toutes les régions"
@@ -1057,6 +1085,21 @@ msgstr "Pour des instructions supplémentaires, veuillez télécharger le manuel
 msgid "here"
 msgstr "ici"
 
+msgid "Importing… this can take a moment"
+msgstr "Importation… cela peut prendre un instant"
+
+msgid ""
+"Excel .xlsx only, up to 5 MB. Large files may take a few seconds to import."
+msgstr ""
+"Excel .xlsx uniquement, jusqu'à 5 Mo. Les fichiers volumineux peuvent prendre "
+"quelques secondes à importer."
+
+msgid "Please choose an Excel .xlsx file (not a CSV or .xls)."
+msgstr "Veuillez choisir un fichier Excel .xlsx (et non un CSV ou un .xls)."
+
+msgid "This file is larger than 5 MB. Please split it or compress it."
+msgstr "Ce fichier dépasse 5 Mo. Veuillez le diviser ou le compresser."
+
 msgid "Create Project"
 msgstr "Créer un projet"
 
@@ -1129,11 +1172,26 @@ msgstr "Coût réel estimé"
 msgid "Actual Cost Spent"
 msgstr "Coût réel dépensé"
 
+msgid "Saving…"
+msgstr "Enregistrement…"
+
 msgid "Image"
 msgstr "Image"
 
 msgid "Choose image"
 msgstr "Choisir une image"
+
+msgid "JPG or PNG, up to 5 MB."
+msgstr "JPG ou PNG, jusqu'à 5 Mo."
+
+msgid "Uploading…"
+msgstr "Téléversement…"
+
+msgid "Please choose a JPG or PNG image."
+msgstr "Veuillez choisir une image JPG ou PNG."
+
+msgid "This image is larger than 5 MB. Please choose a smaller file."
+msgstr "Cette image dépasse 5 Mo. Veuillez choisir un fichier plus petit."
 
 msgid "Check"
 msgstr "Voir"
@@ -1259,6 +1317,17 @@ msgstr "Toutes les priorités"
 msgid "Projects"
 msgstr "Projets"
 
+msgid "Investment image uploaded."
+msgstr "Image de l'investissement téléversée."
+
+#, python-format
+msgid ""
+"The image could not be uploaded. Please use a JPG or PNG under 5 MB and try "
+"again. (Technical detail: %(reason)s)"
+msgstr ""
+"L'image n'a pas pu être téléversée. Veuillez utiliser un JPG ou un PNG de "
+"moins de 5 Mo et réessayer. (Détail technique : %(reason)s)"
+
 msgid "Investment updated."
 msgstr "Investissement mis à jour."
 
@@ -1267,6 +1336,10 @@ msgstr "L'investissement n'a pas pu être mis à jour."
 
 msgid "Project updated."
 msgstr "Projet mis à jour."
+
+#, python-format
+msgid "Successfully imported %(count)s investment(s) into the project."
+msgstr "%(count)s investissement(s) importé(s) avec succès dans le projet."
 
 msgid "Gallery"
 msgstr "Galerie"
@@ -1633,13 +1706,17 @@ msgid "Network error — please check your connection and try again."
 msgstr "Erreur réseau — veuillez vérifier votre connexion et réessayer."
 
 msgid "Your session has expired. Please reload the page and sign in again."
-msgstr "Votre session a expiré. Veuillez recharger la page et vous reconnecter."
+msgstr ""
+"Votre session a expiré. Veuillez recharger la page et vous reconnecter."
 
 msgid "Some information is invalid. Please review the form and try again."
-msgstr "Certaines informations sont invalides. Veuillez vérifier le formulaire et réessayer."
+msgstr ""
+"Certaines informations sont invalides. Veuillez vérifier le formulaire et "
+"réessayer."
 
 msgid "The server ran into a problem. Please try again in a moment."
-msgstr "Le serveur a rencontré un problème. Veuillez réessayer dans un instant."
+msgstr ""
+"Le serveur a rencontré un problème. Veuillez réessayer dans un instant."
 
 msgid "Something went wrong."
 msgstr "Une erreur s'est produite."
