@@ -1431,6 +1431,24 @@
         });
     }
 
+    // Paint skeletons over every stat card (both the selected numerators and the
+    // available denominators) and re-arm the table loading overlay. Used on the
+    // filter path: applying or resetting a filter triggers a full-page reload, so
+    // we swap the now-stale numbers for the loading state the moment the user
+    // submits instead of leaving the previous filter's totals on screen.
+    function paint_all_stat_skeletons() {
+        paint_skeletons([
+            ['.total-selected-villages-display', false],
+            ['.total-selected-subprojects-display', false],
+            ['.total-selected-funding-display', true],
+            ['.total-villages-display', false],
+            ['.total-subprojects-display', false],
+            ['.total-funding-display', true],
+        ]);
+        $('#investments-table-overlay').addClass('is-active');
+        if (typeof alignInvestmentsOverlay === 'function') { alignInvestmentsOverlay(); }
+    }
+
     function sum_subprojects() {
         let base_url = window.location.href.split('?')[0]
 
@@ -1505,6 +1523,15 @@
 
             // Toggle the visibility
             column.visible(!column.visible());
+        });
+
+        // Filter / admin-level / climate forms all submit via a full-page POST
+        // reload. Show the loading state on submit so the stat cards never linger
+        // on the previous filter's (now stale) numbers while the page reloads.
+        // Matches the duplicate id="filter-form" forms (sector + climate) and the
+        // admin-level form. Programmatic .submit() below also fires this handler.
+        $('form[id="filter-form"], #adm-filter-form').on('submit', function() {
+            paint_all_stat_skeletons();
         });
 
         $('.submit-reset').on('click', function() {
