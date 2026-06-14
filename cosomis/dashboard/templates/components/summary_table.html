@@ -106,9 +106,9 @@
     </div>
 </div>
 {% else %}
-<div class="font-weight-bold d-flex justify-content-center text-danger" >
-    <p>{% translate 'Empty!' %}</p>
-</div>
+{% translate 'No data to display' as empty_title %}
+{% translate 'No results match the selected administrative level. Try a different selection.' as empty_message %}
+{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-chart-bar' %}
 {% endif %}
 
 <a id="downloard_a"></a>
