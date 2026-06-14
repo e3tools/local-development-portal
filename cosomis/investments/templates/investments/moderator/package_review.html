@@ -536,7 +536,9 @@
 <script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        var table = $(".table").DataTable({{ datatable_config | safe }});
+        var dtConfig = {{ datatable_config|default:"{}"|safe }};
+        dtConfig.scrollX = true;  // keep wide table (incl. action column) from overflowing the card
+        var table = $(".table").DataTable(dtConfig);
 
         sum_subprojects();
 
