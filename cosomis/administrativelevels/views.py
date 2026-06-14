@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import re
 import zipfile
@@ -43,6 +44,8 @@ from investments.models import Attachment, Investment, Package
 from static.config.datatable import get_datatable_config
 from usermanager.permissions import AdminPermissionRequiredMixin, IsInvestorMixin
 from utils.mixpanel.utils import track_user_activity
+
+logger = logging.getLogger(__name__)
 
 
 class AdministrativeLevelsListView(PageMixin, LoginRequiredApproveRequiredMixin, ListView):
@@ -402,6 +405,7 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
 
         # GRM Call
         complaints = []
+        complaints_error = False
         try:
             GRM_SECRET_KEY_GENRATE = settings.GRM_SECRET_KEY_GENRATE
             GRM_URL = settings.GRM_URL
@@ -412,9 +416,11 @@ class AdministrativeLevelDetailView(PageMixin, LoginRequiredApproveRequiredMixin
             }
             complaints, links_error = get_api_datas(f"{GRM_URL}/api/issue/get-issues/", payload)
         except Exception as e:
-            print(f"Error fetching data from GRM API: {str(e)}")
+            complaints_error = True
+            logger.warning("Error fetching data from GRM API: %s", e)
 
         context["complaints"] = complaints
+        context["complaints_error"] = complaints_error
         # End GRM Call
 
         return context
