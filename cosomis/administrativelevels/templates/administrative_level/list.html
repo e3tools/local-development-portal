@@ -47,6 +47,18 @@
             animation: adm-rot .8s linear infinite;
             margin: 0 auto 14px;
         }
+        /* Loading row shown while the next cascading level is being fetched (S10 §3.5). */
+        .adl-filter-loading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 2px 2px;
+            color: var(--brand-muted, #6c757d);
+            font-size: 14px;
+        }
+        .adl-filter-loading[hidden] {
+            display: none;
+        }
         @keyframes adm-rot {
             to { transform: rotate(360deg); }
         }
@@ -153,6 +165,11 @@
                         {% endfor %}
                     </div>
 
+                    <div id="adl-filter-loading" class="adl-filter-loading" role="status" aria-live="polite" hidden>
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        <span>{% translate 'Loading the next level…' %}</span>
+                    </div>
+
                     <strong id="villages_title" class="d-block mt-3">
                         {% blocktranslate with leaf=leaf_label parent=parent_of_leaf_label %}Choice the {{ leaf }} in {{ parent }}{% endblocktranslate %} :
                     </strong>
@@ -255,6 +272,9 @@
                         // Update the right-hand summary card with whatever was just selected.
                         loadAdmSummary($(this).val());
 
+                        // Loading feedback while the next level's options are fetched (§3.5).
+                        $('#adl-filter-loading').prop('hidden', false);
+
                         $.ajax({
                             type: 'GET',
                             url: "{% url 'administrativelevels:utils:get_choices_for_next_administrative_level_no_condition' %}",
@@ -330,7 +350,8 @@
                                 alert(error_server_message + "Error " + data.status);
                                 $(`#${elt_id}`).attr('disabled', false);
                             }
-                        }).done(function () {
+                        }).always(function () {
+                            $('#adl-filter-loading').prop('hidden', true);
                             $(`#${elt_id}`).attr('disabled', false);
                         });
                     } else {

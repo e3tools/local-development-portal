@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 10:02+0000\n"
+"POT-Creation-Date: 2026-06-14 11:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -274,6 +274,9 @@ msgstr "N'a pas"
 
 msgid "Search a level"
 msgstr "Rechercher un niveau"
+
+msgid "Loading the next level…"
+msgstr "Chargement du niveau suivant…"
 
 #, fuzzy, python-format
 #| msgid "Choice the village in canton"
@@ -1710,6 +1713,10 @@ msgstr "Sousprojets par étape en cours"
 msgid "Number of sub-projects by administrative level, sector and step"
 msgstr "Montant de sous-projets par niveau administratif, secteur et étape"
 
+#, python-format
+msgid "Choose a %(level)s first to enable this filter."
+msgstr "Choisissez d'abord un %(level)s pour activer ce filtre."
+
 msgid "Sub-Project Status"
 msgstr "Statut du sous-projet"
 
@@ -2089,6 +2096,9 @@ msgstr "Aucune raison"
 
 msgid "Choose filters"
 msgstr "Choisir les filtres"
+
+msgid "Choose a Sector first to enable this filter."
+msgstr "Choisissez d'abord un secteur pour activer ce filtre."
 
 msgid "Funding Status"
 msgstr "État Du Financement"

@@ -138,6 +138,7 @@
                                     <div class="form-group">
                                         <label for="prefecture-select-id">{{ adm_labels.prefecture }}</label>
                                         <select class="form-control" name="prefecture-filter" id="prefecture-select-id"
+                                        	data-disabled-hint="{% blocktranslate with level=adm_labels.region %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}"
                                         	empty-option="{{ adm_labels.prefecture }}" style="width: 100%;" {% if not single_region and not 'region-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{{ adm_labels.prefecture }}</option>
                                             {% for prefecture in prefectures %}
@@ -148,6 +149,7 @@
                                     <div class="form-group">
                                         <label for="commune-select-id">{{ adm_labels.commune }}</label>
                                         <select class="form-control" name="commune-filter" id="commune-select-id"
+                                        	data-disabled-hint="{% blocktranslate with level=adm_labels.prefecture %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}"
                                         	empty-option="{{ adm_labels.commune }}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{{ adm_labels.commune }}</option>
                                             {% for commune in communes %}
@@ -158,6 +160,7 @@
                                     <div class="form-group">
                                         <label for="canton-select-id">{{ adm_labels.canton }}</label>
                                         <select class="form-control" name="canton-filter" id="canton-select-id"
+                                        	data-disabled-hint="{% blocktranslate with level=adm_labels.commune %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}"
                                         	empty-option="{{ adm_labels.canton }}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{{ adm_labels.canton }}</option>
                                             {% for canton in cantons %}
@@ -168,6 +171,7 @@
                                     <div class="form-group">
                                         <label for="village-select-id">{{ adm_labels.village }}</label>
                                         <select class="form-control" name="village-filter" id="village-select-id"
+                                        	data-disabled-hint="{% blocktranslate with level=adm_labels.canton %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}"
                                         	empty-option="{{ adm_labels.village }}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{{ adm_labels.village }}</option>
                                             {% for village in villages %}
@@ -175,6 +179,11 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+                                </div>
+                                <div id="adm-filter-loading" class="adm-filter-loading" role="status" aria-live="polite"
+                                     style="align-items:center; gap:8px; padding:4px 2px; color:var(--brand-muted,#6c757d); font-size:13px;" hidden>
+                                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                    <span>{% translate 'Loading the next level…' %}</span>
                                 </div>
                                 <div class="horizontal-form">
                                     <div class="form-group">
@@ -409,6 +418,7 @@
     {{ block.super }}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.js' %}"></script>
+    <script src="{% static 'js/select-disabled-hint.js' %}"></script>
     <script type="text/javascript">
         let markers = [];
         let filter_values = {}
@@ -725,6 +735,8 @@
 
                 if (selectedValue) {
                     const baseUrl = window.location.href.split('?')[0];
+                    // Loading feedback while the next level's options are fetched (§3.5).
+                    $('#adm-filter-loading').prop('hidden', false);
                     $.ajax({
                         type: "POST",
                         url: `${baseUrl}ajax/adm-levels`,
@@ -737,6 +749,9 @@
                         },
                         error: function() {
                             alert('Failed to fetch administrative levels. Please try again.');
+                        },
+                        complete: function() {
+                            $('#adm-filter-loading').prop('hidden', true);
                         }
                     });
                     selectToFill.prop('disabled', false);
