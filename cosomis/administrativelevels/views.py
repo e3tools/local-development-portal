@@ -1259,29 +1259,33 @@ class ProjectListView(PageMixin, IsInvestorMixin, ListView):
     template_name = 'project/list.html'
     context_object_name = "projects"
     title = _("Projects")
+    paginate_by = 25
     breadcrumb = [
         {"url": "", "title": title},
     ]
 
     def get_context_data(self, *args, object_list=None, **kwargs):
-        queryset = object_list if object_list is not None else self.object_list
-
-        context = super().get_context_data(object_list=queryset, **kwargs)
-
-        object_name = self.get_context_object_name(queryset)
-        if object_name in context:
-            context[object_name] = context[object_name].annotate(
-                investments_count=Count('packages__funded_investments'))
-            context[object_name] = context[object_name].annotate(
-                investments_total=Sum('packages__funded_investments__estimated_cost'))
-            context['total_mount_invested'] = context[object_name].aggregate(Sum('investments_total'))[
-                                                  'investments_total__sum'] or 0
-
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        # Grand total across the whole (filtered) result set, not just this page —
+        # the annotation lives in get_queryset() so it survives pagination slicing.
+        context['total_mount_invested'] = self.get_queryset().aggregate(
+            total=Sum('investments_total'))['total'] or 0
+        context['search'] = self.request.GET.get('search', '')
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(organization=self.request.user.organization)
+        # Wire the search box (it previously submitted nowhere useful — §3.6).
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+        # Annotate before any pagination slice; chained to preserve the prior
+        # aggregation behaviour.
+        queryset = queryset.annotate(
+            investments_count=Count('packages__funded_investments'))
+        queryset = queryset.annotate(
+            investments_total=Sum('packages__funded_investments__estimated_cost'))
         return queryset
 
 
