@@ -170,6 +170,85 @@ per-page patches.
   controls, non-empty descriptive `alt`, `role="status"`/`aria-live` on spinners.
 - **i18n compliance** — no hardcoded strings in JS/templates; route everything
   through `{% translate %}` / `gettext`, then `make generate-translations`.
+- **Brand color tokenization** *(foundation — see §8)* — make Benin green the
+  canonical `--brand-primary`, replace the ~89 hard-coded indigo literals with
+  tokens, and remove the inline login override so identity is consistent
+  everywhere.
+
+---
+
+## 8. Color consistency & brand palette
+
+This was audited as a dedicated pass. The headline finding: **the app has no
+single source of truth for its brand color, and the token that claims to be it is
+the wrong color.**
+
+### 8.1 The core problem — three competing "primary" colors
+
+| Family | Representative hexes | Where it's used | Should it be primary? |
+| --- | --- | --- | --- |
+| **Benin green** (the real brand) | `#009639`, `#007a2e` (hover), `#00562f` (dark text) | `login.html`, favicon `msapplication-TileColor` in both `login.html` and `head.html`, `administrative_level/detail/index.html` | **Yes** — this is the logo + brand identity shown to users |
+| **Indigo** (the declared token) | `#4f46e5`, `#4338ca`, `#eef2ff`, plus `#6366f1`/`#c7d2fe` | `custom.css` `--brand-primary` and **~89 hard-coded literals** | No — accidental holdover |
+| **Blue** (stray accent) | `#0073e6` (22×), `#005bb5` (7×), `#3498db` (5×) | scattered across templates | No — undefined third accent |
+
+The result users actually see: the **login page is green**, but once logged in the
+**entire app chrome (buttons, links, active nav, tabs, badges) is indigo**, with
+blue accents mixed in. Same `.btn-primary` component renders green on login and
+indigo everywhere else.
+
+| # | Location | Problem | Severity |
+| --- | --- | --- | --- |
+| 8.1 | `static/css/custom.css:8` | `--brand-primary: #4f46e5` (indigo) contradicts the green brand in the logo/login. The design token is simply the wrong color. | high |
+| 8.2 | `usermanager/templates/login.html:54` | Login overrides `.btn-primary` to green inline, so the same component is green here and indigo app-wide — the most visible inconsistency. | high |
+| 8.3 | `static/css/custom.css` | The brand variables exist but are bypassed: **~89 hard-coded `#4f46e5`/`#4338ca`/`#eef2ff` literals** vs only ~15 `var(--brand-*)` references. Re-theming is currently a find-and-replace, not a token change. | high |
+| 8.4 | templates app-wide | A third accent family (`#0073e6`/`#005bb5`/`#3498db`) appears ~34× with no token and no clear semantic role. | medium |
+| 8.5 | `administrative_level/detail/index.html:34,39` | Green hard-coded here while the rest of the app is indigo — proves the brand color is applied ad hoc, page by page. | medium |
+| 8.6 | `custom.css` greys | Inconsistent neutral ramp: `#6b7280`, `#9ca3af`, `#b5b5b5`, `#707070`, `#dedede`, `#d1d5db`, `#e5e7eb` all used as "grey" with no scale. | low |
+| 8.7 | semantic colors | Success/danger/warning rely on raw Bootstrap defaults (`#28a745`, `#f59e0b`, etc.) with no check that "success green" is distinct from the new brand green — risks brand green reading as a status color. | medium |
+
+### 8.2 Proposed green palette (the standard to adopt)
+
+Make the **Benin green** the canonical `--brand-primary` and route everything
+through tokens. Derived from the values already in the logo and login screen:
+
+```css
+:root {
+  /* Brand — Benin green (canonical) */
+  --brand-primary:        #009639;  /* logo green / login button */
+  --brand-primary-dark:   #007a2e;  /* hover / active (already used on login) */
+  --brand-primary-darker: #00562f;  /* headings / high-contrast text */
+  --brand-primary-soft:   #eaf4ec;  /* tints / hover backgrounds (login gradient) */
+
+  /* Neutrals — single ramp, replaces the 7 ad-hoc greys */
+  --brand-text:  #111827;
+  --brand-muted: #6b7280;
+  --brand-border:#e5e7eb;
+  --brand-bg:    #f7f9f7;
+
+  /* Semantic — keep distinct from brand green */
+  --color-success: #2e7d32;  /* deliberately darker/bluer than brand to avoid clash */
+  --color-danger:  #dc3545;
+  --color-warning: #f59e0b;
+  --color-info:    #0073e6;  /* fold the stray blue here, or drop it */
+}
+```
+
+### 8.3 Recommended fix (one session)
+
+1. Repoint the four `--brand-primary*` tokens to the green values above.
+2. Replace the ~89 indigo literals in `custom.css` with `var(--brand-*)`.
+3. Remove the inline green override block in `login.html` — it becomes redundant
+   once the token is green, and removing it restores login ↔ app consistency.
+4. Fold the stray blue into `--color-info` (or remove it); replace the ad-hoc
+   greys with the neutral ramp.
+5. Confirm `--color-success` stays visually distinct from brand green so status
+   ≠ identity.
+6. **Verify contrast:** white-on-`#009639` is ~3.9:1 — passes WCAG AA for large
+   text / UI components but **fails AA for normal body text**. Use
+   `--brand-primary-darker` (`#00562f`) for green text on white.
+
+> One token change then re-themes the whole app — which is exactly why §8.3 is
+> worth doing as a foundation, not piecemeal.
 
 ---
 
@@ -177,9 +256,13 @@ per-page patches.
 
 | Severity | Count |
 | --- | --- |
-| High | 17 |
-| Medium | 30+ |
-| Low | 13 |
+| High | 20 |
+| Medium | 34+ |
+| Low | 14 |
+
+§8 (color consistency) added three high-severity items: the brand token is the
+wrong color, the login override splits the identity, and the palette is hard-coded
+rather than tokenized.
 
 The high-severity cluster is dominated by **missing submit/AJAX feedback**,
 **silent failures**, and **accessibility/mobile** gaps — exactly the

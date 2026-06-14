@@ -2496,6 +2496,9 @@ msgstr "Aller à la page d'accueil"
 msgid "Log in to start your session"
 msgstr "Connectez-vous pour démarrer votre session"
 
+msgid "Logging in…"
+msgstr "Connexion…"
+
 msgid "I forgot my password"
 msgstr "J’ai oublié mon mot de passe"
 
@@ -2553,6 +2556,9 @@ msgstr ""
 "Si vous ne recevez pas d'e-mail, veuillez vérifier que vous avez bien saisi "
 "l'adresse avec laquelle vous vous êtes inscrit et consultez votre dossier de "
 "courriers indésirables."
+
+msgid "Signing up…"
+msgstr "Inscription…"
 
 msgid "Sign up"
 msgstr "Inscrivez-vous"

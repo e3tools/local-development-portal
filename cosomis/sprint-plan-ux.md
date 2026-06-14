@@ -19,9 +19,10 @@ them. Do them before the sessions that depend on them.
 
 ## Sprint Goal
 
-> Close the high-severity feedback, silent-failure, and accessibility gaps, and
-> establish the three shared conventions (loading skeletons, empty states, toast
-> errors) that the rest of the backlog reuses.
+> Close the high-severity feedback, silent-failure, and accessibility gaps;
+> unify the brand identity on Benin green; and establish the shared conventions
+> (loading skeletons, empty states, toast errors, color tokens) that the rest of
+> the backlog reuses.
 
 ---
 
@@ -32,7 +33,7 @@ Plan to ~75% — leave room for review churn and dataset-specific surprises
 
 | Sprint | Theme | Sessions | Load |
 | --- | --- | --- | --- |
-| Sprint 1 | High-severity feedback + foundations | S1–S6 | P0-heavy |
+| Sprint 1 | High-severity feedback + foundations | S1–S6, S19 | P0-heavy |
 | Sprint 2 | Apply foundations + admin-levels gaps | S7–S12 | P1-heavy |
 | Sprint 3 | Polish: a11y, mobile, i18n, cleanup | S13–S18 | P2-heavy |
 
@@ -42,12 +43,13 @@ Plan to ~75% — leave room for review churn and dataset-specific surprises
 
 | ID | Session (chunk) | Covers | Est | Pri | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| S1 | **Auth submit feedback + validation** — add disabled+spinner state to login & register submits; fix the `disableOnSubmit.js` ↔ missing `.submit-spin` markup mismatch; add HTML5 + inline validation (incl. `password2` mismatch). | §1.1–1.5, 1.9 | M | P0 | — |
+| ✅ S1 | **Auth submit feedback + validation** — add disabled+spinner state to login & register submits; fix the `disableOnSubmit.js` ↔ missing `.submit-spin` markup mismatch; add HTML5 + inline validation (incl. `password2` mismatch). | §1.1–1.5, 1.9 | M | P0 | — |
 | ✅ S2 | **Moderator approve/reject confirmation** — confirmation modal before approve/reject; badge overdue packages in the main approvals table. | §2.1, 2.4 | M | P0 | — |
 | S3 | **Investments budget-overflow + cart totals** — make "Not enough funds" unmissable (block submit + visible error); make `total-funding-display` update live in `sum_subprojects()`. | §2.2, 2.5 | M | P0 | — |
 | S4 | **Investments filter loading states** — extend the existing `beforeSend` skeleton pattern to filter-change AJAX so stat cards never show stale numbers. | §2.3 | S | P1 | — |
 | S5 | **Admin-levels detail: carousels + GRM errors** — error fallback for failed carousel image loads; surface GRM API failure with a message instead of an empty section; add `role="status"` to spinners. | §3.1, 3.2 | M | P0 | — |
 | S6 | **Shared empty-state component** *(foundation)* — build one reusable include (icon + message + optional CTA); apply to project list and one investments table as the reference implementation. | §7, §2.8, §3.7 | M | P0 | — |
+| ✅ S19 | **Brand color tokenization → Benin green** *(foundation)* — repoint `--brand-primary*` to the green palette (§8.2); replace the ~89 hard-coded indigo literals with `var(--brand-*)`; remove the inline green override in `login.html`; fold stray blue into `--color-info`; keep `--color-success` distinct from brand green; use `#00562f` for green-on-white text (AA contrast). | §8 | M | P0 | — |
 
 ---
 
