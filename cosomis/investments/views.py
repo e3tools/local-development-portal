@@ -469,7 +469,8 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
             for inv in package.funded_investments.all():
                 total_investment = total_investment + inv.estimated_cost
             if total_investment > project.total_amount:
-                raise Exception("Not enough funds")
+                messages.add_message(request, messages.ERROR, _("Not enough funds"))
+                return redirect(reverse('investments:cart'))
             package.project = project
             package.save()
             return redirect(reverse('investments:cart'))
