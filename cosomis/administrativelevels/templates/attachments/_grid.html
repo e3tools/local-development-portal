@@ -5,6 +5,7 @@
      hx-trigger="revealed"
      hx-get="{% url 'administrativelevels:attachments' %}?page={{ page_obj.number|add:1 }}{{ babylong_query_params }}"
      hx-swap="afterend"
+     hx-indicator="#gallery-loading"
      {% endif %}>
     {% for attachment in attachments %}
         {% if attachment.url|not_local %}
