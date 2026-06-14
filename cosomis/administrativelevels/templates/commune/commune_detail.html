@@ -26,115 +26,10 @@
 		<div class="col-md-8 col-12">
 			<div class="clearfix" id="attachments_images">
 
-<<<<<<< HEAD
-            </div>
-            <div class="overlay" id="spin-attachments-images" role="status" aria-live="polite">
-                <i class="fas fa-2x fa-sync-alt fa-spin" aria-hidden="true"></i>
-                <span class="sr-only">{% translate 'Loading images…' %}</span>
-            </div>
-        </div>
-        <div class="col-md-4 col-12 mt-4 mt-md-0">
-            <div class="card col-12">
-                <div class="card-header">
-                    <h5 class="font-weight-bold mb-0">{% translate "Population" %}</h5>
-                    <small class="text-muted">
-                        {% translate "Aggregated from" %} {{ population.village_count }} {% translate "villages" %}
-                        ({{ population.canton_count }} {% translate "cantons" %})
-                    </small>
-                </div>
-                <div class="card-body p-2">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.total|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.men|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.women|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.young|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.elder|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.handicap|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agriculture" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.agriculturist|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.pastoralist|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.minorities|intcomma }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card col-12">
-                <div class="card-header">
-                    <h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
-                </div>
-                <div class="card-body p-2">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task.name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified }}</td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">
-                                {% if development_plan %}
-                                <a href="{{ development_plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
-                                {% else %}
-                                -
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ planning_status.facilitator }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-=======
 			</div>
-			<div class="overlay" id="spin-attachments-images">
-				<i class="fas fa-2x fa-sync-alt fa-spin"></i>
+			<div class="overlay" id="spin-attachments-images" role="status" aria-live="polite">
+				<i class="fas fa-2x fa-sync-alt fa-spin" aria-hidden="true"></i>
+				<span class="sr-only">{% translate 'Loading images…' %}</span>
 			</div>
 		</div>
 		<div class="col-md-4 col-12 mt-4 mt-md-0">
@@ -235,8 +130,6 @@
 			</div>
 		</div>
 	</div>
->>>>>>> origin/develop2
-
 	<div class="row mb-4">
 		<div class="col-md-3 col-6">
 			<div class="card stat-card">
@@ -631,51 +524,6 @@
             $(document).on('shown.bs.tab', '#priorities button[data-toggle="pill"]', function (e) {
                 localStorage.setItem('activePriorityTab', e.target.id);
             });
-<<<<<<< HEAD
-    
-            $('.submit-reset').on('click', function() {
-                $('#reset-hidden-id').attr('value', 'true');
-                $('#filter-form').submit();
-            });
-
-            // Loading feedback while the filter triggers a full-page reload (S17).
-            $(document).on('submit', '#filter-form', function() {
-                $('#priorities-loading').css('opacity', 1);
-                $('#filter-form').find('input[type="submit"], .submit-reset').prop('disabled', true);
-            });
-    
-            $('#category-select-id').on('change', function(){
-                change_sectors_selects($(this), $('#sector-select-id'), [])
-            });
-    
-            function change_sectors_selects(select_input, select_to_fill){
-                let selected_value = select_input.find(":selected").val();
-    
-                if (selected_value != '') {
-                    let base_url = "{% url 'investments:home_investments' %}";
-                    $.ajax({
-                        type : "POST",
-                        url: base_url + "ajax/sectors",
-                        data: {
-                          value: selected_value,
-                          csrfmiddlewaretoken: '{{ csrf_token }}',
-                        },
-                        success: function(response){
-                            select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
-                            response.values.forEach((element) => {
-                                select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
-                            })
-                        }
-                    });
-                    select_to_fill.prop('disabled', false);
-                }
-                else {
-                    select_to_fill.prop('disabled', 'disabled');
-                    select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
-                }
-            };
-=======
->>>>>>> origin/develop2
         });
 	</script>
 {% endblock %}

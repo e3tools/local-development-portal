@@ -163,16 +163,9 @@
 		<div class="tab-pane fade {% if active_tab != 'villages' %}show active{% endif %}"
 			 id="priorities-investments-type-tab" role="tabpanel" aria-labelledby="priorities-investments-type-tab">
 			{% if investments.count == 0 %}
-<<<<<<< HEAD
-				{% translate 'No priorities yet' as empty_title %}
-				{% translate 'No investment priorities have been recorded here yet.' as empty_message %}
-				{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-list-ul' %}
-=======
 				<div class="callout callout-info mt-2">
 					<h5>{% translate 'No priorities match the selected filters.' %}</h5>
-				</div>
->>>>>>> origin/develop2
-			{% else %}
+				</div>			{% else %}
 				<table class="table commune-priorities-dt table-bordered table-sm" style="width: 100%">
 					<thead>
 					<tr>
@@ -220,13 +213,8 @@
 								{% if investment.project_status == investment.NOT_FUNDED %}
 									<form hx-post="{{ commune_post_url }}?active_tab=types"
 										  hx-target="#priorities" hx-select="#priorities" hx-swap="innerHTML"
-<<<<<<< HEAD
-											  hx-indicator="#priorities-loading" hx-disabled-elt="find input[type=submit]"
-=======
 										  hx-include="#filter-form"
-										  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'
->>>>>>> origin/develop2
-										  class="m-0 p-0">
+										  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'										  class="m-0 p-0">
 										{% csrf_token %}
 										{% if investment.id not in cart_items_id %}
 											<input type="submit" class="btn btn-xs btn-outline-primary"
@@ -250,16 +238,9 @@
 		<div class="tab-pane fade {% if active_tab == 'villages' %}show active{% endif %}" id="priorities-villages-tab"
 			 role="tabpanel" aria-labelledby="priorities-villages-tab">
 			{% if investments.count == 0 %}
-<<<<<<< HEAD
-				{% translate 'No priorities yet' as empty_title %}
-				{% translate 'No investment priorities have been recorded here yet.' as empty_message %}
-				{% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-list-ul' %}
-=======
 				<div class="callout callout-info mt-2">
 					<h5>{% translate 'No priorities match the selected filters.' %}</h5>
-				</div>
->>>>>>> origin/develop2
-			{% else %}
+				</div>			{% else %}
 				<table class="table commune-priorities-dt table-bordered table-sm" style="width: 100%">
 					<thead>
 					<tr>
@@ -306,13 +287,8 @@
 								{% if investment.project_status == investment.NOT_FUNDED %}
 									<form hx-post="{{ commune_post_url }}?active_tab=villages"
 										  hx-target="#priorities" hx-select="#priorities" hx-swap="innerHTML"
-<<<<<<< HEAD
-											  hx-indicator="#priorities-loading" hx-disabled-elt="find input[type=submit]"
-=======
 										  hx-include="#filter-form"
-										  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'
->>>>>>> origin/develop2
-										  class="m-0 p-0">
+										  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'										  class="m-0 p-0">
 										{% csrf_token %}
 										{% if investment.id not in cart_items_id %}
 											<input type="submit" class="btn btn-xs btn-outline-primary"
