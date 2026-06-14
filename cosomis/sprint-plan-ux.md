@@ -48,7 +48,7 @@ Plan to ~75% — leave room for review churn and dataset-specific surprises
 | ✅ S3 | **Investments budget-overflow + cart totals** — make "Not enough funds" unmissable (block submit + visible error); make `total-funding-display` update live in `sum_subprojects()`. | §2.2, 2.5 | M | P0 | — |
 | ✅ S4 | **Investments filter loading states** — extend the existing `beforeSend` skeleton pattern to filter-change AJAX so stat cards never show stale numbers. | §2.3 | S | P1 | — |
 | ✅ S5 | **Admin-levels detail: carousels + GRM errors** — error fallback for failed carousel image loads; surface GRM API failure with a message instead of an empty section; add `role="status"` to spinners. | §3.1, 3.2 | M | P0 | — |
-| S6 | **Shared empty-state component** *(foundation)* — build one reusable include (icon + message + optional CTA); apply to project list and one investments table as the reference implementation. | §7, §2.8, §3.7 | M | P0 | — |
+| ✅ S6 | **Shared empty-state component** *(foundation)* — build one reusable include (icon + message + optional CTA); apply to project list and one investments table as the reference implementation. | §7, §2.8, §3.7 | M | P0 | — |
 | ✅ S19 | **Brand color tokenization → Benin green** *(foundation)* — repoint `--brand-primary*` to the green palette (§8.2); replace the ~89 hard-coded indigo literals with `var(--brand-*)`; remove the inline green override in `login.html`; fold stray blue into `--color-info`; keep `--color-success` distinct from brand green; use `#00562f` for green-on-white text (AA contrast). | §8 | M | P0 | — |
 
 ---

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 09:40+0000\n"
+"POT-Creation-Date: 2026-06-14 10:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1150,6 +1150,18 @@ msgstr "Nombre d'investissements"
 msgid "Total Funds"
 msgstr "Total des fonds"
 
+msgid "No projects found"
+msgstr "Aucun projet trouvé"
+
+msgid "No projects match your search. Try a different term."
+msgstr "Aucun projet ne correspond à votre recherche. Essayez un autre terme."
+
+msgid "No projects yet"
+msgstr "Aucun projet pour le moment"
+
+msgid "Create your first project to get started."
+msgstr "Créez votre premier projet pour commencer."
+
 msgid "Region Overview"
 msgstr "Vue d'ensemble du canton"
 
@@ -1159,7 +1171,9 @@ msgid "No sub-levels under this administrative level."
 msgstr "Choisissez les niveaux administratifs"
 
 msgid "Complaints could not be loaded right now. Please try again later."
-msgstr "Les plaintes n'ont pas pu être chargées pour le moment. Veuillez réessayer plus tard."
+msgstr ""
+"Les plaintes n'ont pas pu être chargées pour le moment. Veuillez réessayer "
+"plus tard."
 
 msgid "You have no complaints"
 msgstr "Vous n'avez aucune plainte"
@@ -2251,6 +2265,12 @@ msgstr "Approuver cet investissement ?"
 
 msgid "Reject this investment?"
 msgstr "Rejeter cet investissement ?"
+
+msgid "No investments added yet"
+msgstr "Aucun investissement ajouté pour le moment"
+
+msgid "This package has no funded investments."
+msgstr "Ce package ne contient aucun investissement financé."
 
 msgid "Total investments"
 msgstr "Investissements"

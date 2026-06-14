@@ -1,0 +1,29 @@
+{% comment %}
+Reusable empty-state component (UX sprint S6, foundation).
+
+Renders a centered icon + message + optional call-to-action for "no data yet"
+situations, so an empty table/list is never an unexplained blank header.
+
+Usage — pass already-translated strings from the calling template:
+
+    {% translate 'No projects yet' as empty_title %}
+    {% translate 'Create your first project to get started.' as empty_message %}
+    {% include 'common/empty_state.html' with title=empty_title message=empty_message icon='fas fa-folder-open' cta_url=create_url cta_label=create_label %}
+
+Parameters:
+    title     (required) — short heading, already translated.
+    message   (optional) — supporting line, already translated.
+    icon      (optional) — Font Awesome classes; defaults to 'fas fa-inbox'.
+    cta_url   (optional) — href for the action button.
+    cta_label (optional) — button text, already translated. Requires cta_url.
+{% endcomment %}
+<div class="empty-state" role="status">
+    <i class="empty-state__icon {{ icon|default:'fas fa-inbox' }}" aria-hidden="true"></i>
+    <p class="empty-state__title">{{ title }}</p>
+    {% if message %}
+        <p class="empty-state__message">{{ message }}</p>
+    {% endif %}
+    {% if cta_url and cta_label %}
+        <a href="{{ cta_url }}" class="btn btn-primary empty-state__cta">{{ cta_label }}</a>
+    {% endif %}
+</div>
