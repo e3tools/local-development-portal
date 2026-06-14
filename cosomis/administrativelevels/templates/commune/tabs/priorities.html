@@ -140,6 +140,11 @@
 		</div>
 	</form>
 
+	<div id="priorities-loading" class="htmx-indicator text-center py-2" role="status" aria-live="polite">
+		<span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+		<span class="text-muted small">{% translate 'Loading…' %}</span>
+	</div>
+
 	<div class="tab-content" id="priorityTabsContent">
 		<div class="tab-pane fade {% if active_tab != 'villages' %}show active{% endif %}"
 			 id="priorities-investments-type-tab" role="tabpanel" aria-labelledby="priorities-investments-type-tab">
@@ -197,6 +202,7 @@
 								{% if investment.project_status == investment.NOT_FUNDED %}
 									<form hx-post="{{ request.path }}?{{ request.GET.urlencode }}&active_tab=types"
 										  hx-target="#priorities" hx-select="#priorities" hx-swap="innerHTML"
+											  hx-indicator="#priorities-loading" hx-disabled-elt="find input[type=submit]"
 										  class="m-0 p-0">
 										{% csrf_token %}
 										{% if investment.id not in cart_items_id %}
@@ -275,6 +281,7 @@
 								{% if investment.project_status == investment.NOT_FUNDED %}
 									<form hx-post="{{ request.path }}?{{ request.GET.urlencode }}&active_tab=villages"
 										  hx-target="#priorities" hx-select="#priorities" hx-swap="innerHTML"
+											  hx-indicator="#priorities-loading" hx-disabled-elt="find input[type=submit]"
 										  class="m-0 p-0">
 										{% csrf_token %}
 										{% if investment.id not in cart_items_id %}

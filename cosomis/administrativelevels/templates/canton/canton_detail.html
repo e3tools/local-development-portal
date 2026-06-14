@@ -492,6 +492,12 @@
                 $('#filter-form').submit();
             });
 
+            // Loading feedback while the filter triggers a full-page reload (S17).
+            $(document).on('submit', '#filter-form', function () {
+                $('#priorities-loading').css('opacity', 1);
+                $('#filter-form').find('input[type="submit"], .submit-reset').prop('disabled', true);
+            });
+
             $('#category-select-id').on('change', function () {
                 change_sectors_selects($(this), $('#sector-select-id'), [])
             });
