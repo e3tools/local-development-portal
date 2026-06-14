@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 14:46+0000\n"
+"POT-Creation-Date: 2026-06-14 14:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1283,6 +1283,30 @@ msgstr "Non financé"
 msgid "Is funded"
 msgstr "Est financé"
 
+msgid "Fund a project"
+msgstr "Financer un projet"
+
+msgid "Locality profile"
+msgstr "Profil localité"
+
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Project create"
+msgstr "Creation de projet"
+
+msgid "Project tracking"
+msgstr "Suivi des projets"
+
+msgid "Gallery"
+msgstr "Galerie"
+
+msgid "User"
+msgstr "Utilisateur"
+
+msgid "CDD Funnel"
+msgstr "Processus DCC"
+
 msgid "Principal Administrator"
 msgstr "Administrateur principal"
 
@@ -1318,9 +1342,6 @@ msgstr "Ministre"
 
 msgid "Infra"
 msgstr "Infrastructure"
-
-msgid "User"
-msgstr "Utilisateur"
 
 msgid "and"
 msgstr "et"
@@ -1375,9 +1396,6 @@ msgstr "Projet mis à jour."
 #, python-format
 msgid "Successfully imported %(count)s investment(s) into the project."
 msgstr "%(count)s investissement(s) importé(s) avec succès dans le projet."
-
-msgid "Gallery"
-msgstr "Galerie"
 
 msgid "username"
 msgstr "Nom d'utilisateur"
@@ -1644,9 +1662,6 @@ msgstr "Non financé"
 msgid "Paused"
 msgstr "En suspens"
 
-msgid "CDD Funnel"
-msgstr "Processus DCC"
-
 msgid "Identified"
 msgstr "Identifié"
 
@@ -1743,6 +1758,12 @@ msgstr ""
 msgid "Notifications"
 msgstr "Notifications"
 
+msgid "Breadcrumb"
+msgstr "Fil d'Ariane"
+
+msgid "Home"
+msgstr "Accueil"
+
 msgid "Network error — please check your connection and try again."
 msgstr "Erreur réseau — veuillez vérifier votre connexion et réessayer."
 
@@ -1791,21 +1812,6 @@ msgstr "Bienvenu(e)"
 
 msgid "Cart"
 msgstr "Panier"
-
-msgid "Fund a project"
-msgstr "Financer un projet"
-
-msgid "Locality profile"
-msgstr "Profil localité"
-
-msgid "Dashboard"
-msgstr "Tableau de bord"
-
-msgid "Project create"
-msgstr "Creation de projet"
-
-msgid "Project tracking"
-msgstr "Suivi des projets"
 
 msgid "Toggle Sidebar"
 msgstr "Basculer la barre latérale"

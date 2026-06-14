@@ -20,6 +20,7 @@
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
+                {% block breadcrumb %}{% include 'layouts/breadcrumb.html' %}{% endblock %}
                 <div class="row mb-2">
 
                     {% block custom_title %}

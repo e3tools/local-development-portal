@@ -88,6 +88,105 @@ def adm_detail_url(level):
     return reverse('administrativelevels:detail', args=[level.id])
 
 
+# --- S16: navigation context (active sidebar item + section breadcrumb) -----
+# A "section" is a top-level sidebar destination plus the set of fully-qualified
+# view names ("app:name") whose pages belong to it. Matching on the namespaced
+# view_name (not the bare url_name) avoids cross-app collisions — both the
+# investments and administrativelevels apps expose a 'detail'/'profile' name —
+# and lets detail / sub-pages keep their section highlighted (the §6.6 bug:
+# active detection compared url_name only and broke on partial matches).
+_NAV_SECTIONS = [
+    {
+        'label': gettext_lazy('Fund a project'),
+        'url': 'investments:home_investments',
+        'match': ('investments:home_investments',),
+    },
+    {
+        'label': gettext_lazy('Locality profile'),
+        'url': 'administrativelevels:search',
+        'match': (
+            'administrativelevels:search', 'administrativelevels:list',
+            'administrativelevels:detail', 'administrativelevels:region_detail',
+            'administrativelevels:prefecture_detail', 'administrativelevels:commune_detail',
+            'administrativelevels:canton_detail', 'administrativelevels:village_detail',
+            'administrativelevels:canton_planning_summary', 'administrativelevels:canton_map',
+            'administrativelevels:infrastructure',
+        ),
+    },
+    {
+        'label': gettext_lazy('Dashboard'),
+        'url': 'dashboard:dashboard_summary',
+        'match': (
+            'dashboard:dashboard_summary', 'dashboard:dashboard_subprojects',
+            'dashboard:dashboard_administrativelevels', 'dashboard:dashboard_indicators',
+        ),
+    },
+    {
+        'label': gettext_lazy('Project create'),
+        'url': 'administrativelevels:project-create',
+        'match': ('administrativelevels:project-create',),
+    },
+    {
+        'label': gettext_lazy('Project tracking'),
+        'url': 'administrativelevels:projects',
+        'match': (
+            'administrativelevels:projects', 'administrativelevels:project-detail',
+            'administrativelevels:project-upload-investments',
+            'administrativelevels:download-manual',
+        ),
+    },
+    {
+        'label': gettext_lazy('Gallery'),
+        'url': 'administrativelevels:attachments',
+        'match': ('administrativelevels:attachments',),
+    },
+    {
+        'label': gettext_lazy('User'),
+        'url': 'investments:profile',
+        'match': ('investments:profile',),
+    },
+    {
+        'label': gettext_lazy('CDD Funnel'),
+        'url': 'cdd_funnel:main_funnel',
+        'match': ('cdd_funnel:main_funnel',),
+    },
+]
+
+
+def _current_view_name(context):
+    request = context.get('request')
+    match = getattr(request, 'resolver_match', None)
+    return match.view_name if match else None
+
+
+@register.simple_tag(takes_context=True)
+def nav_active(context, section_url_name):
+    """Return 'active' when the current page belongs to the given sidebar
+    section. `section_url_name` is the section's landing route ('app:name');
+    the whole section's match-set is consulted so detail/sub-pages stay lit.
+    Falls back to an exact view-name compare for non-section routes."""
+    current = _current_view_name(context)
+    if not current:
+        return ''
+    for section in _NAV_SECTIONS:
+        if section['url'] == section_url_name:
+            return 'active' if current in section['match'] else ''
+    return 'active' if current == section_url_name else ''
+
+
+@register.simple_tag(takes_context=True)
+def current_section(context):
+    """Return {'label', 'url'} for the section the current page belongs to (for
+    the breadcrumb), or None on pages outside the section map."""
+    current = _current_view_name(context)
+    if not current:
+        return None
+    for section in _NAV_SECTIONS:
+        if current in section['match']:
+            return {'label': section['label'], 'url': reverse(section['url'])}
+    return None
+
+
 @register.filter(name="humanize_snakecase")
 def humanize_snakecase(value):
     resp = value.split('_')
