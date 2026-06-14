@@ -10,6 +10,7 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import QuerySet, Sum, Count, Subquery, Q, Case, When, F, IntegerField, Value, Prefetch
 from django.db.models.functions import Coalesce
@@ -1306,11 +1307,18 @@ class ProjectDetailView(PageMixin, IsInvestorMixin, BaseFormView, DetailView):
             succeeded, new_attachment = Attachment.investment_upload(investment=investment,
                                                                      image=request.FILES.get('image_input'))
             if succeeded:
-                messages.add_message(request, messages.SUCCESS, _("Investment updated."))
+                messages.add_message(request, messages.SUCCESS, _("Investment image uploaded."), extra_tags='success')
                 track_user_activity(request, 'UploadInvestmentFile')
             else:
-                messages.add_message(request, messages.ERROR, _("Investment could not be updated."))
-                raise Exception(new_attachment)
+                # Don't 500 on an upload failure — surface a clear, actionable
+                # message instead (§3.8). `new_attachment` holds the technical cause.
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    _("The image could not be uploaded. Please use a JPG or PNG under 5 MB and "
+                      "try again. (Technical detail: %(reason)s)") % {'reason': new_attachment},
+                    extra_tags='danger',
+                )
             return super().get(request, *args, **kwargs)
 
         if 'investment' in request.POST:
@@ -1438,7 +1446,21 @@ class BulkUploadInvestmentsView(PageMixin, AdminPermissionRequiredMixin, SingleO
     object = None
 
     def form_valid(self, form):
-        self.object = form.save()
+        # save() parses the workbook row-by-row and may raise ValidationError for a
+        # missing column or a bad row. Catch it so the user gets a friendly error on
+        # the form instead of a 500 (§3.9).
+        try:
+            self.object = form.save()
+        except ValidationError as exc:
+            form.add_error('xlsx_file', exc)
+            return self.form_invalid(form)
+        imported = getattr(form, 'imported_count', 0)
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            _("Successfully imported %(count)s investment(s) into the project.") % {'count': imported},
+            extra_tags='success',
+        )
         return super().form_valid(form)
 
     def get_form_kwargs(self):
