@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-14 08:13+0000\n"
+"POT-Creation-Date: 2026-06-14 08:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2182,6 +2182,12 @@ msgstr "Source"
 msgid "User approval requests"
 msgstr "Demandes d’approbations de comptes utilisateurs"
 
+msgid "Awaiting review beyond the response deadline"
+msgstr "En attente de revue au-delà du délai de réponse"
+
+msgid "Overdue"
+msgstr "En retard"
+
 msgid "Approve"
 msgstr "Approuver"
 
@@ -2205,6 +2211,27 @@ msgstr "Approbation Partielle"
 
 msgid "Request resubmission of package"
 msgstr "Demande de nouvelle soumission du colis"
+
+msgid "Confirm action"
+msgstr "Confirmer l’action"
+
+msgid "This action cannot be undone."
+msgstr "Cette action est irréversible."
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Approve this package?"
+msgstr "Approuver ce paquet ?"
+
+msgid "All selected investments in this package will be approved."
+msgstr "Tous les investissements sélectionnés de ce paquet seront approuvés."
+
+msgid "Approve this investment?"
+msgstr "Approuver cet investissement ?"
+
+msgid "Reject this investment?"
+msgstr "Rejeter cet investissement ?"
 
 msgid "Total investments"
 msgstr "Investissements"
