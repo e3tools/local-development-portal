@@ -318,8 +318,11 @@ def get_step_color(key):
 @register.filter
 def get_item(dictionary, key):
     try:
-        return int(dictionary.get(key))
-    except ValueError:
+        value = dictionary.get(key)
+        if value is None:
+            return None
+        return int(value)
+    except (ValueError, TypeError):
         return dictionary.get(key)
 
 
@@ -531,6 +534,14 @@ def display_update_investment_button(investment):
 @register.filter(name="attachments_urls_list")
 def attachments_urls_list(investment):
     return ",".join([attachment.url for attachment in investment.attachments.all()])
+
+
+@register.filter
+def divide(value, arg):
+    try:
+        return float(value) / float(arg)
+    except (ValueError, ZeroDivisionError, TypeError):
+        return 0
 
 
 @register.filter(expects_localtime=True)
