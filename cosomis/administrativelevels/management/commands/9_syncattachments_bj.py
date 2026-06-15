@@ -1,4 +1,6 @@
+import os
 from django.core.management.base import BaseCommand
+from urllib.parse import urlparse
 from no_sql_client import NoSQLClient
 from administrativelevels.models import AdministrativeLevel, Task
 from investments.models import Attachment
@@ -221,17 +223,34 @@ def get_attachments_from_database(task_documents):
                 task_order = 0
 
             if attachment_uri:
+                parsed_uri = urlparse(attachment_uri)
+                extension = os.path.splitext(parsed_uri.path)[1].lower()
 
-                attachment_type = "document"
+                IMAGE_EXTENSIONS = {
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".gif",
+                    ".webp",
+                    ".bmp",
+                    ".tiff",
+                }
 
-                lowered_uri = attachment_uri.lower()
+                attachment_type = (
+                    "photo"
+                    if extension in IMAGE_EXTENSIONS
+                    else "document"
+                )
+                # attachment_type = "document"
 
-                if (
-                    lowered_uri.endswith(".jpg")
-                    or lowered_uri.endswith(".jpeg")
-                    or lowered_uri.endswith(".png")
-                ):
-                    attachment_type = "photo"
+                # lowered_uri = attachment_uri.lower()
+
+                # if (
+                #     lowered_uri.endswith(".jpg")
+                #     or lowered_uri.endswith(".jpeg")
+                #     or lowered_uri.endswith(".png")
+                # ):
+                #     attachment_type = "photo"
 
                 extracted_attachments.append({
                     "type": attachment_type,

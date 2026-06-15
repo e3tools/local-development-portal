@@ -246,7 +246,7 @@
                                     <tbody>
                                     {% for subproject in subprojects %}
                                         <tr>
-                                            <td>{{ subproject.ranking }}</td>
+                                            <td>{{ subproject.ranking }}{% if subproject.sub_component %} (SC{{ subproject.sub_component }}){% endif %}</td>
                                             {% if subproject.title == "Autre" %}
                                             <td class="border-sides--light">
                                                 <a 

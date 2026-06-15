@@ -143,7 +143,7 @@
                                         <td>{{ investment.administrative_level.parent.name }}</td>
                                         <td>{{ investment.administrative_level.parent.parent.name }}</td>
                                         <td>{{ investment.administrative_level.parent.parent.parent.name }}</td>
-                                        <td>{{ investment.ranking }}</td>
+                                        <td>{{ investment.ranking }}{% if investment.sub_component %} (SC{{ investment.sub_component }}){% endif %}</td>
                                         <td>
                                             {% for i_package in investment.packages.all %}
                                                 {{ i_package.get_status_display }} 

@@ -196,7 +196,7 @@
 						<tbody>
 						{% for investment in all_canton_priorities %}
 							<tr>
-								<td>{{ investment.ranking }}</td>
+								<td>{{ investment.ranking }}{% if investment.sub_component %} (SC{{ investment.sub_component }}){% endif %}</td>
 								<td>{{ investment.sector.category.name }}</td>
 								<td>
 									<a href="{% url 'administrativelevels:detail' investment.administrative_level.id %}">
@@ -304,7 +304,7 @@
 								<td class="text-center">{% if investment.endorsed_groups.women %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_groups.minorities %}✓{% endif %}</td>
 								<td class="text-center">{% if investment.endorsed_groups.farmers %}✓{% endif %}</td>
-								<td>{{ investment.ranking }}</td>
+								<td>{{ investment.ranking }}{% if investment.sub_component %} (SC{{ investment.sub_component }}){% endif %}</td>
 								<td>
 									{% if investment.project_status == investment.NOT_FUNDED %}
 										{{ investment.estimated_cost|intcomma }}

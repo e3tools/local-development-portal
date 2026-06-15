@@ -277,7 +277,7 @@
 								{% if investment.endorsed_groups.minorities %}✓{% endif %}</td>
 							<td>
 								{% if investment.endorsed_groups.farmers %}✓{% endif %}</td>
-							<td>{{ investment.ranking }}</td>
+							<td>{{ investment.ranking }}{% if investment.sub_component %} (SC{{ investment.sub_component }}){% endif %}</td>
 							<td>{{ investment.estimated_cost|intcomma }}</td>
 							<td>
 								{% if investment.project_status == investment.NOT_FUNDED %}

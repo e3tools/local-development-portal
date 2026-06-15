@@ -46,7 +46,7 @@
         <tr>
             <td>
                 {% if investment.ranking %}
-                    {{ investment.ranking }}
+                    {{ investment.ranking }}{% if investment.sub_component %} (SC{{ investment.sub_component }}){% endif %}
                 {% else %}
                     -
                 {% endif %}
