@@ -1,57 +1,476 @@
 {% load static i18n humanize custom_tags %}
 
-<div class="row">
-    <div class="col-4">
-        <h6>{% translate "Phases" %}</h6>
-        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            {% for phase in phases %}
-            <button
-                    class="pc-btn btn {% if phase.status == 'completed' %}btn-primary {% else %}btn-outline-primary {% endif %}  btn-block{% if phase.status == 'in progress' or phase.status == 'error' %} active{% endif %}"
-                    id="v-pills-phase-{{ phase.id }}-tab" data-toggle="pill" data-target="#phase-{{ phase.id }}-content" type="button" role="tab"
-                    aria-controls="v-pills-phase-{{ phase.id }}" aria-selected="{% if phase.status == 'in progress' or phase.status == 'error' %}true{% else %}false{% endif %}">
-                <span style="" class="{% if phase.status == 'not started' or phase.status == 'error' %}text-muted{% endif %}" title="{{ phase.name }}">{{ phase.order }}. {{ phase.name|truncatechars:25 }}</span>{% if phase.status == 'completed' %}<i class="nav-icon fa fa-check-circle pull-right"></i>{% elif phase.status == 'error' %}<i class="nav-icon fa fa-exclamation-circle pull-right text-danger"></i>{% endif %}
-            </button>
-            {% endfor %}
+{% comment %}
+    CDD planning-cycle (redesigned). Three nested levels of work — Phases >
+    Activities > Tasks — surfaced as a progress-aware journey:
+      • an overview header with an overall completion ring + roll-up counts,
+      • a horizontal phase stepper you click to move through the cycle,
+      • per-phase activity accordions whose tasks open the existing detail modal.
+    Status strings come from Task.STATUS: 'not started' / 'in progress' /
+    'completed' / 'error'. `|slugify` turns them into the is-* state classes.
+    Task buttons keep the id `v-pills-task-<id>-tab` + data-toggle/target the
+    parent index.html JS relies on to load the task modal.
+{% endcomment %}
+
+<style>
+    .cdd-cycle {
+        --cdd-done: var(--brand-primary, #009639);
+        --cdd-done-soft: var(--brand-primary-soft, #eaf4ec);
+        --cdd-progress: #f59e0b;
+        --cdd-progress-soft: #fef3e2;
+        --cdd-idle: #adb5bd;
+        --cdd-idle-soft: #f1f3f5;
+        --cdd-error: #dc3545;
+        --cdd-error-soft: #fdecee;
+        --cdd-line: #e6e9ec;
+        color: #3a4750;
+    }
+
+    /* ---------- Overview header ---------- */
+    .cdd-overview {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.75rem;
+        padding: 1.5rem 1.75rem;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #ffffff 0%, var(--cdd-done-soft) 100%);
+        border: 1px solid var(--brand-primary-border, #a7d7b6);
+        box-shadow: 0 10px 28px rgba(0, 86, 47, .08);
+        margin-bottom: 1.75rem;
+    }
+    .cdd-ring {
+        --pct: 0;
+        flex: 0 0 auto;
+        width: 116px;
+        height: 116px;
+        border-radius: 50%;
+        background: conic-gradient(var(--cdd-done) calc(var(--pct) * 1%), #e9edf0 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background .6s ease;
+    }
+    .cdd-ring-inner {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,.03);
+    }
+    .cdd-ring-pct { font-size: 1.65rem; font-weight: 700; line-height: 1; color: var(--brand-primary-darker, #00562f); }
+    .cdd-ring-cap { font-size: .62rem; text-transform: uppercase; letter-spacing: .8px; color: #8a97a0; margin-top: 3px; }
+
+    .cdd-overview-body { flex: 1 1 320px; min-width: 260px; }
+    .cdd-overview-title { font-weight: 700; font-size: 1.05rem; color: var(--brand-primary-darker, #00562f); margin: 0 0 .9rem; }
+    .cdd-stats { display: flex; flex-wrap: wrap; gap: .75rem; }
+    .cdd-stat {
+        flex: 1 1 130px;
+        background: #fff;
+        border: 1px solid #eef1f3;
+        border-radius: 12px;
+        padding: .7rem .9rem;
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+    }
+    .cdd-stat-ic {
+        width: 38px; height: 38px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem; color: #fff; flex: 0 0 auto;
+    }
+    .cdd-stat-ic.phases { background: linear-gradient(135deg,#00a651,#007a2e); }
+    .cdd-stat-ic.activities { background: linear-gradient(135deg,#22b8cf,#1098ad); }
+    .cdd-stat-ic.tasks { background: linear-gradient(135deg,#f59e0b,#d97706); }
+    .cdd-stat-val { font-size: 1.1rem; font-weight: 700; color: #2b343b; line-height: 1.1; }
+    .cdd-stat-val small { font-weight: 500; color: #9aa5ac; font-size: .8rem; }
+    .cdd-stat-lbl { font-size: .72rem; text-transform: uppercase; letter-spacing: .5px; color: #8a97a0; }
+
+    /* ---------- Legend ---------- */
+    .cdd-legend { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0 0 1.25rem; font-size: .78rem; color: #6c757d; }
+    .cdd-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+    .cdd-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .cdd-dot.done { background: var(--cdd-done); }
+    .cdd-dot.progress { background: var(--cdd-progress); }
+    .cdd-dot.idle { background: var(--cdd-idle); }
+    .cdd-dot.error { background: var(--cdd-error); }
+
+    /* ---------- Phase stepper ---------- */
+    .cdd-stepper {
+        display: flex;
+        gap: 0;
+        overflow-x: auto;
+        padding: .5rem .25rem 1.25rem;
+        margin-bottom: 1.5rem;
+        scrollbar-width: thin;
+    }
+    .cdd-step {
+        flex: 1 0 150px;
+        position: relative;
+        background: transparent;
+        border: 0;
+        padding: 0 .35rem;
+        text-align: center;
+        cursor: pointer;
+        outline: none;
+    }
+    /* connector line behind the dots */
+    .cdd-step::before, .cdd-step::after {
+        content: "";
+        position: absolute;
+        top: 23px;
+        height: 3px;
+        background: var(--cdd-line);
+        width: 50%;
+        z-index: 0;
+    }
+    .cdd-step::before { left: 0; }
+    .cdd-step::after { right: 0; }
+    .cdd-step:first-child::before { display: none; }
+    .cdd-step:last-child::after { display: none; }
+    .cdd-step.is-completed::before, .cdd-step.is-completed::after { background: var(--cdd-done); }
+
+    .cdd-step-dot {
+        position: relative;
+        z-index: 1;
+        width: 48px; height: 48px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid var(--cdd-line);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 1rem; color: #97a2aa;
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .cdd-step.is-completed .cdd-step-dot { border-color: var(--cdd-done); background: var(--cdd-done); color: #fff; }
+    .cdd-step.is-in-progress .cdd-step-dot { border-color: var(--cdd-progress); color: var(--cdd-progress); background: var(--cdd-progress-soft); }
+    .cdd-step.is-error .cdd-step-dot { border-color: var(--cdd-error); color: var(--cdd-error); background: var(--cdd-error-soft); }
+
+    .cdd-step.is-active .cdd-step-dot { transform: scale(1.12); box-shadow: 0 0 0 5px rgba(0,150,57,.12); }
+    .cdd-step:hover .cdd-step-dot { transform: scale(1.08); }
+
+    .cdd-step-name {
+        display: block;
+        margin-top: .55rem;
+        font-size: .82rem;
+        font-weight: 600;
+        color: #5a6671;
+        line-height: 1.25;
+    }
+    .cdd-step.is-active .cdd-step-name { color: var(--brand-primary-darker, #00562f); }
+    .cdd-step-meta { display: block; font-size: .7rem; color: #9aa5ac; margin-top: .15rem; }
+    .cdd-step-bar { height: 4px; border-radius: 4px; background: var(--cdd-idle-soft); margin: .4rem .5rem 0; overflow: hidden; }
+    .cdd-step-bar > i { display: block; height: 100%; border-radius: 4px; background: var(--cdd-done); transition: width .5s ease; }
+
+    /* ---------- Phase panel ---------- */
+    .cdd-panel { display: none; animation: cddFade .25s ease; }
+    .cdd-panel.is-active { display: block; }
+    @keyframes cddFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .cdd-panel-head {
+        display: flex; align-items: center; flex-wrap: wrap; gap: .75rem;
+        padding: 1rem 1.25rem;
+        border-radius: 14px 14px 0 0;
+        background: var(--brand-primary-darker, #00562f);
+        color: #fff;
+    }
+    .cdd-panel-head h5 { margin: 0; font-weight: 700; font-size: 1.05rem; }
+    .cdd-panel-badge { margin-left: auto; font-size: .8rem; opacity: .92; }
+    .cdd-panel-bar { flex: 1 1 100%; height: 6px; border-radius: 6px; background: rgba(255,255,255,.22); overflow: hidden; }
+    .cdd-panel-bar > i { display: block; height: 100%; background: #9be7b6; border-radius: 6px; transition: width .5s ease; }
+
+    .cdd-activities {
+        border: 1px solid #eef1f3;
+        border-top: 0;
+        border-radius: 0 0 14px 14px;
+        background: #fbfcfc;
+        padding: .85rem;
+    }
+
+    /* ---------- Activity (accordion) ---------- */
+    .cdd-activity {
+        background: #fff;
+        border: 1px solid #eef1f3;
+        border-left: 4px solid var(--cdd-idle);
+        border-radius: 10px;
+        margin-bottom: .75rem;
+        overflow: hidden;
+        transition: box-shadow .2s ease;
+    }
+    .cdd-activity:last-child { margin-bottom: 0; }
+    .cdd-activity:hover { box-shadow: 0 6px 18px rgba(0,0,0,.05); }
+    .cdd-activity.is-completed { border-left-color: var(--cdd-done); }
+    .cdd-activity.is-in-progress { border-left-color: var(--cdd-progress); }
+    .cdd-activity.is-error { border-left-color: var(--cdd-error); }
+
+    .cdd-activity-head {
+        display: flex; align-items: center; gap: .85rem;
+        width: 100%; border: 0; background: transparent;
+        padding: .85rem 1rem; cursor: pointer; text-align: left;
+    }
+    .cdd-status-ic {
+        flex: 0 0 auto;
+        width: 30px; height: 30px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: .8rem;
+    }
+    .is-completed > .cdd-activity-head .cdd-status-ic,
+    .cdd-task.is-completed .cdd-status-ic { background: var(--cdd-done-soft); color: var(--cdd-done); }
+    .is-in-progress > .cdd-activity-head .cdd-status-ic,
+    .cdd-task.is-in-progress .cdd-status-ic { background: var(--cdd-progress-soft); color: var(--cdd-progress); }
+    .is-error > .cdd-activity-head .cdd-status-ic,
+    .cdd-task.is-error .cdd-status-ic { background: var(--cdd-error-soft); color: var(--cdd-error); }
+    .is-not-started > .cdd-activity-head .cdd-status-ic,
+    .cdd-task.is-not-started .cdd-status-ic { background: var(--cdd-idle-soft); color: var(--cdd-idle); }
+
+    .cdd-activity-title { flex: 1 1 auto; min-width: 0; }
+    .cdd-activity-title b { display: block; font-size: .92rem; font-weight: 600; color: #36424b; }
+    .cdd-activity-title .cdd-sub { font-size: .74rem; color: #9aa5ac; }
+    .cdd-mini-bar { width: 86px; height: 5px; border-radius: 5px; background: var(--cdd-idle-soft); overflow: hidden; flex: 0 0 auto; }
+    .cdd-mini-bar > i { display: block; height: 100%; background: var(--cdd-done); border-radius: 5px; }
+    .cdd-count-pill {
+        flex: 0 0 auto; font-size: .72rem; font-weight: 600; color: #6c757d;
+        background: #f1f3f5; border-radius: 20px; padding: .15rem .6rem;
+    }
+    .cdd-chevron { flex: 0 0 auto; color: #b4bdc4; transition: transform .25s ease; }
+    .cdd-activity.is-open .cdd-chevron { transform: rotate(90deg); }
+
+    .cdd-activity-body { display: none; padding: 0 1rem 1rem 1rem; }
+    .cdd-activity.is-open .cdd-activity-body { display: block; }
+    .cdd-tasks { display: flex; flex-direction: column; gap: .5rem; padding-left: 3rem; }
+
+    /* ---------- Task chips ---------- */
+    .cdd-task {
+        display: flex; align-items: center; gap: .7rem;
+        width: 100%; text-align: left;
+        border: 1px solid #eef1f3; background: #fff;
+        border-radius: 9px; padding: .55rem .8rem;
+        cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .1s ease;
+    }
+    .cdd-task:hover { border-color: var(--brand-primary-border, #a7d7b6); background: var(--cdd-done-soft); transform: translateX(2px); }
+    .cdd-task .cdd-status-ic { width: 26px; height: 26px; font-size: .72rem; }
+    .cdd-task-name { flex: 1 1 auto; font-size: .85rem; color: #46525b; }
+    .cdd-task.is-not-started .cdd-task-name { color: #9aa5ac; }
+    .cdd-task-state {
+        flex: 0 0 auto; font-size: .68rem; text-transform: uppercase; letter-spacing: .4px;
+        font-weight: 600; padding: .12rem .5rem; border-radius: 20px;
+    }
+    .cdd-task.is-completed .cdd-task-state { background: var(--cdd-done-soft); color: var(--cdd-done); }
+    .cdd-task.is-in-progress .cdd-task-state { background: var(--cdd-progress-soft); color: #b5750a; }
+    .cdd-task.is-error .cdd-task-state { background: var(--cdd-error-soft); color: var(--cdd-error); }
+    .cdd-task.is-not-started .cdd-task-state { background: var(--cdd-idle-soft); color: #8a97a0; }
+
+    .cdd-empty { text-align: center; padding: 3rem 1rem; color: #9aa5ac; }
+    .cdd-empty i { font-size: 2.5rem; margin-bottom: .75rem; color: var(--brand-primary-border, #a7d7b6); }
+
+    @media (max-width: 575.98px) {
+        .cdd-overview { padding: 1.1rem; gap: 1.1rem; }
+        .cdd-tasks { padding-left: 0; }
+        .cdd-mini-bar, .cdd-step-meta { display: none; }
+    }
+</style>
+
+{% cdd_overview phases as cdd %}
+
+<div class="cdd-cycle">
+    {% if phases %}
+    <!-- Overview header -->
+    <div class="cdd-overview">
+        <div class="cdd-ring" style="--pct: {{ cdd.percent }};">
+            <div class="cdd-ring-inner">
+                <span class="cdd-ring-pct">{{ cdd.percent }}%</span>
+                <span class="cdd-ring-cap">{% translate "Complete" %}</span>
+            </div>
         </div>
-    </div>
-    <div class="col-4">
-        <h6>{% translate "Activities" %}</h6>
-        <div class="tab-content">
-            {% for phase in phases %}
-            <div id="phase-{{ phase.id }}-content" role="tabpanel" class="tab-pane fade{% if phase.status == 'in progress' or phase.status == 'error' %} show active{% endif %}">
-                <div class="nav flex-column nav-pills" id="v-phase-{{ phase.id }}-pills-tab" role="tablist" aria-orientation="vertical">
-                {% for activity in phase.activities %}
-                    <button
-                            class="btn {% if activity.status == 'completed' %}btn-primary {% else %}btn-outline-primary {% endif %} btn-block{% if activity.status == 'in progress' or activity.status == 'error' %} active{% endif %}"
-                            id="v-pills-activity-{{ activity.id }}-tab" data-toggle="pill" data-target="#activity-{{ activity.id }}-content" type="button" role="tab" aria-controls="v-pills-activity-{{ activity.id }}"
-                            aria-selected="{% if activity.status == 'in progress' or activity.status == 'error' %}true{% else %}false{% endif %}">
-                        <span class="{% if activity.status == 'not started' or activity.status == 'error' %}text-muted{% endif %}" title="{{ activity.name }}">{{ activity.order }}. {{ activity.name|truncatechars:25 }}</span>{% if activity.status == 'completed' %}<i class="nav-icon fa fa-check-circle pull-right"></i>{% elif activity.status == 'error' %}<i class="nav-icon fa fa-exclamation-circle pull-right text-danger"></i>{% endif %}
-                    </button>
-                {% endfor %}
+        <div class="cdd-overview-body">
+            <p class="cdd-overview-title">{% translate "CDD cycle progress" %}</p>
+            <div class="cdd-stats">
+                <div class="cdd-stat">
+                    <span class="cdd-stat-ic phases"><i class="fas fa-layer-group"></i></span>
+                    <span>
+                        <span class="cdd-stat-val">{{ cdd.phases_done }}<small>/{{ cdd.phases_total }}</small></span>
+                        <span class="cdd-stat-lbl d-block">{% translate "Phases" %}</span>
+                    </span>
+                </div>
+                <div class="cdd-stat">
+                    <span class="cdd-stat-ic activities"><i class="fas fa-tasks"></i></span>
+                    <span>
+                        <span class="cdd-stat-val">{{ cdd.activities_done }}<small>/{{ cdd.activities_total }}</small></span>
+                        <span class="cdd-stat-lbl d-block">{% translate "Activities" %}</span>
+                    </span>
+                </div>
+                <div class="cdd-stat">
+                    <span class="cdd-stat-ic tasks"><i class="fas fa-check-double"></i></span>
+                    <span>
+                        <span class="cdd-stat-val">{{ cdd.tasks_done }}<small>/{{ cdd.tasks_total }}</small></span>
+                        <span class="cdd-stat-lbl d-block">{% translate "Tasks" %}</span>
+                    </span>
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
-    <div class="col-4">
-        <h6>{% translate "Tasks" %}</h6>
-        <div class="tab-content">
-            {% for phase in phases %}
-                {% for activity in phase.activities %}
-                <div id="activity-{{ activity.id }}-content" role="tabpanel" class="tasks-pane tab-pane fade{% if activity.status == 'in progress' or activity.status == 'error' %} show active{% endif %}">
-                    {% for task in activity.tasks %}
-                    <button
-                            class="btn {% if task.status == 'completed' %}btn-primary {% else %}btn-outline-primary {% endif %} btn-block"
-                            id="v-pills-task-{{ task.id }}-tab" type="button" role="tab" aria-controls="v-pills-activity-{{ task.id }}"
-                            data-toggle="modal" data-target="#taskModalLong"
-                            aria-selected="{% if task.status == 'in progress' or task.status == 'error' %}true{% else %}false{% endif %}"
-                    >
-                        <span class="{% if task.status == 'not started' or task.status == 'error' %}text-muted{% endif %}" title="{{ task.name }}">{{ task.order }}. {{ task.name|truncatechars:25 }}</span>{% if task.status == 'completed' %}<i class="nav-icon fa fa-check-circle pull-right"></i>{% elif task.status == 'error' %}<i class="nav-icon fa fa-exclamation-circle pull-right text-danger"></i>{% endif %}
-                    </button>
-                    {% endfor %}
+
+    <!-- Legend -->
+    <div class="cdd-legend">
+        <span><i class="cdd-dot done"></i>{% translate "Completed" %}</span>
+        <span><i class="cdd-dot progress"></i>{% translate "In progress" %}</span>
+        <span><i class="cdd-dot idle"></i>{% translate "Not started" %}</span>
+        <span><i class="cdd-dot error"></i>{% translate "Needs attention" %}</span>
+    </div>
+
+    <!-- Phase stepper -->
+    <div class="cdd-stepper" role="tablist" aria-label="{% translate 'Phases' %}">
+        {% for phase in phases %}
+        <button type="button"
+                class="cdd-step is-{{ phase.status|slugify }}"
+                data-cdd-step="{{ phase.id }}"
+                role="tab"
+                title="{{ phase.name }}">
+            <span class="cdd-step-dot">
+                {% if phase.status == 'completed' %}<i class="fas fa-check"></i>
+                {% elif phase.status == 'error' %}<i class="fas fa-exclamation"></i>
+                {% else %}{{ phase.order }}{% endif %}
+            </span>
+            <span class="cdd-step-name">{{ phase.name|truncatechars:30 }}</span>
+            <span class="cdd-step-meta">{{ phase|cdd_task_done }}/{{ phase|cdd_task_total }} {% translate "tasks" %}</span>
+            <span class="cdd-step-bar"><i style="width: {{ phase|cdd_percent }}%;"></i></span>
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Phase panels -->
+    {% for phase in phases %}
+    <div class="cdd-panel" data-cdd-panel="{{ phase.id }}">
+        <div class="cdd-panel-head">
+            <h5>{{ phase.order }}. {{ phase.name }}</h5>
+            <span class="cdd-panel-badge">{{ phase|cdd_task_done }} / {{ phase|cdd_task_total }} {% translate "tasks completed" %} · {{ phase|cdd_percent }}%</span>
+            <span class="cdd-panel-bar"><i style="width: {{ phase|cdd_percent }}%;"></i></span>
+        </div>
+        <div class="cdd-activities">
+            {% for activity in phase.activities %}
+            <div class="cdd-activity is-{{ activity.status|slugify }}" data-cdd-activity-status="{{ activity.status|slugify }}">
+                <button type="button" class="cdd-activity-head" data-cdd-activity-toggle>
+                    <span class="cdd-status-ic">
+                        {% if activity.status == 'completed' %}<i class="fas fa-check"></i>
+                        {% elif activity.status == 'in progress' %}<i class="fas fa-hourglass-half"></i>
+                        {% elif activity.status == 'error' %}<i class="fas fa-exclamation"></i>
+                        {% else %}<i class="far fa-circle"></i>{% endif %}
+                    </span>
+                    <span class="cdd-activity-title">
+                        <b>{{ activity.order }}. {{ activity.name }}</b>
+                        <span class="cdd-sub">{{ activity|cdd_task_done }}/{{ activity|cdd_task_total }} {% translate "tasks" %} · {{ activity|cdd_percent }}%</span>
+                    </span>
+                    <span class="cdd-mini-bar"><i style="width: {{ activity|cdd_percent }}%;"></i></span>
+                    <span class="cdd-count-pill">{{ activity.tasks|length }}</span>
+                    <i class="fas fa-chevron-right cdd-chevron"></i>
+                </button>
+                <div class="cdd-activity-body">
+                    <div class="cdd-tasks">
+                        {% for task in activity.tasks %}
+                        <button type="button"
+                                class="cdd-task is-{{ task.status|slugify }}"
+                                id="v-pills-task-{{ task.id }}-tab"
+                                data-toggle="modal" data-target="#taskModalLong">
+                            <span class="cdd-status-ic">
+                                {% if task.status == 'completed' %}<i class="fas fa-check"></i>
+                                {% elif task.status == 'in progress' %}<i class="fas fa-hourglass-half"></i>
+                                {% elif task.status == 'error' %}<i class="fas fa-exclamation"></i>
+                                {% else %}<i class="far fa-circle"></i>{% endif %}
+                            </span>
+                            <span class="cdd-task-name">{{ task.order }}. {{ task.name }}</span>
+                            <span class="cdd-task-state">
+                                {% if task.status == 'completed' %}{% translate "Done" %}
+                                {% elif task.status == 'in progress' %}{% translate "In progress" %}
+                                {% elif task.status == 'error' %}{% translate "Attention" %}
+                                {% else %}{% translate "To do" %}{% endif %}
+                            </span>
+                        </button>
+                        {% empty %}
+                        <p class="text-muted mb-0" style="font-size:.82rem;">{% translate "No tasks recorded for this activity." %}</p>
+                        {% endfor %}
+                    </div>
                 </div>
-                {% endfor %}
+            </div>
+            {% empty %}
+            <p class="text-muted mb-0 p-2">{% translate "No activities recorded for this phase." %}</p>
             {% endfor %}
         </div>
     </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="cdd-empty">
+        <div><i class="fas fa-stream"></i></div>
+        <h5 class="mb-1" style="color:#6c757d;">{% translate "No planning cycle yet" %}</h5>
+        <p class="mb-0">{% translate "Phases, activities and tasks for this village will appear here once the CDD cycle starts." %}</p>
+    </div>
+    {% endif %}
 </div>
+
+<script type="text/javascript">
+    (function () {
+        var root = document.currentScript.closest('.tab-pane') || document;
+
+        function initCddCycle() {
+            var cycle = root.querySelector('.cdd-cycle');
+            if (!cycle || cycle.dataset.cddReady) return;
+            cycle.dataset.cddReady = '1';
+
+            var steps = Array.prototype.slice.call(cycle.querySelectorAll('.cdd-step'));
+            var panels = Array.prototype.slice.call(cycle.querySelectorAll('.cdd-panel'));
+
+            function openActivity(activity) {
+                activity.classList.add('is-open');
+            }
+
+            function autoExpand(panel) {
+                if (!panel || panel.dataset.cddExpanded) return;
+                panel.dataset.cddExpanded = '1';
+                var activities = Array.prototype.slice.call(panel.querySelectorAll('.cdd-activity'));
+                if (!activities.length) return;
+                // Open the activity that needs attention first, else the one in
+                // progress, else the first — so the user lands on "what's next".
+                var focus = activities.filter(function (a) { return a.dataset.cddActivityStatus === 'error'; })[0]
+                    || activities.filter(function (a) { return a.dataset.cddActivityStatus === 'in-progress'; })[0]
+                    || activities[0];
+                openActivity(focus);
+            }
+
+            function selectStep(id) {
+                steps.forEach(function (s) { s.classList.toggle('is-active', s.dataset.cddStep === id); });
+                panels.forEach(function (p) { p.classList.toggle('is-active', p.dataset.cddPanel === id); });
+                var active = panels.filter(function (p) { return p.dataset.cddPanel === id; })[0];
+                autoExpand(active);
+            }
+
+            steps.forEach(function (step) {
+                step.addEventListener('click', function () { selectStep(step.dataset.cddStep); });
+            });
+
+            // Accordion toggling within a panel.
+            cycle.addEventListener('click', function (e) {
+                var head = e.target.closest('[data-cdd-activity-toggle]');
+                if (!head) return;
+                head.closest('.cdd-activity').classList.toggle('is-open');
+            });
+
+            // Land on the first phase that's in progress / needs attention.
+            if (steps.length) {
+                var initial = steps.filter(function (s) { return s.classList.contains('is-error'); })[0]
+                    || steps.filter(function (s) { return s.classList.contains('is-in-progress'); })[0]
+                    || steps[0];
+                selectStep(initial.dataset.cddStep);
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCddCycle);
+        } else {
+            initCddCycle();
+        }
+    })();
+</script>
