@@ -68,3 +68,8 @@ python_levenshtein==0.27.3
 mixpanel==5.0.0
 django-cors-headers==3.10.0
 djangorestframework-simplejwt==4.8.0
+
+# Geospatial import for `load_localities_geo` (pure-Python wheels, no system GDAL)
+pyshp==3.0.12
+pyproj==3.7.2
+shapely==2.1.2
