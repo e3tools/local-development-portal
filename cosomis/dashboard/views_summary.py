@@ -23,6 +23,14 @@ class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateVi
         context['country_iso_code'] = settings.DIAGNOSTIC_MAP_ISO_CODE
         context.update(self.get_filters_context())
         context['project_statuses'] = Investment.PROJECT_STATUS_CHOICES
+        # BJ context: 3-state funding filter replacing the old PROJECT_STATUS_CHOICES.
+        # BEFORE:
+        # context['project_statuses'] = Investment.PROJECT_STATUS_CHOICES
+        context['project_statuses'] = [
+            ('not_funded',  _('Unfunded needs')),
+            ('in_progress', _('Funded — in progress')),
+            ('completed',   _('Funded — completed')),
+]
         return context
 
     def get_filters_context(self):

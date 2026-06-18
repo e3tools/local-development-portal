@@ -720,7 +720,7 @@
                                         </div>
                                     </div>
                                     <div class="col-4">
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label for="funded-select-id">{% translate 'Funding Status' %}</label>
                                             <select class="form-control" name="is-funded-filter" id="funded-select-id" empty-option="{% translate 'Funding Status' %}" style="width: 100%;">
                                                 <option value=''>{% translate "Funding Status" %}</option>
@@ -735,6 +735,30 @@
                                                 {% else %}
                                                     <option value='true'>{% translate "Is funded" %}</option>
                                                     <option value='false'>{% translate "Is not funded" %}</option>
+                                                {% endif %}
+                                            </select>
+                                        </div> -->
+                                        <div class="form-group">
+                                            <label for="funded-select-id">{% translate 'Funding Status' %}</label>
+                                            <select class="form-control" name="is-funded-filter" id="funded-select-id" style="width: 100%;">
+                                                <option value=''>{% translate "Funding Status" %}</option>
+                                                {% if 'is-funded-filter' in query_strings_raw %}
+                                                    <option value='not_funded'
+                                                        {% if query_strings_raw|get_item:'is-funded-filter' == 'not_funded' %}selected{% endif %}>
+                                                        {% translate "Unfunded needs" %}
+                                                    </option>
+                                                    <option value='in_progress'
+                                                        {% if query_strings_raw|get_item:'is-funded-filter' == 'in_progress' %}selected{% endif %}>
+                                                        {% translate "Funded — in progress" %}
+                                                    </option>
+                                                    <option value='completed'
+                                                        {% if query_strings_raw|get_item:'is-funded-filter' == 'completed' %}selected{% endif %}>
+                                                        {% translate "Funded — completed" %}
+                                                    </option>
+                                                {% else %}
+                                                    <option value='not_funded'>{% translate "Unfunded needs" %}</option>
+                                                    <option value='in_progress'>{% translate "Funded — in progress" %}</option>
+                                                    <option value='completed'>{% translate "Funded — completed" %}</option>
                                                 {% endif %}
                                             </select>
                                         </div>

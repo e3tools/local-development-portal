@@ -66,10 +66,7 @@ class InvestmentModelViewSet(ModelViewSet):
     #     id__in=PackageFundedInvestment.objects.values_list("investment_id", flat=True)
     # )
     queryset = Investment.objects.filter(
-        investment_status=Investment.PRIORITY,
-        funded_by__isnull=True,
-    ).exclude(
-        id__in=PackageFundedInvestment.objects.values_list("investment_id", flat=True)
+        investment_status__in=[Investment.PRIORITY, Investment.SUBPROJECT]
     ).select_related(
         'administrative_level',
         'administrative_level__parent',
@@ -243,15 +240,26 @@ class InvestmentModelViewSet(ModelViewSet):
                 ranking__in=priorities
             )
 
-        if "is-funded-filter" in self.request.GET and self.request.GET[
-            "is-funded-filter"
-        ] not in ["", None]:
-            if self.request.GET["is-funded-filter"] == 'true':
-                queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
-            else:
-                queryset = queryset.exclude(
-                    project_status=Investment.FUNDED
-                )
+        # BJ context: 3-state funding filter replacing the old true/false binary.
+        # not_funded = unfunded needs, in_progress = funded and ongoing,
+        # completed = funded and done. Empty = show all.
+        # BEFORE:
+        # if "is-funded-filter" in self.request.GET and self.request.GET[
+        #     "is-funded-filter"
+        # ] not in ["", None]:
+        #     if self.request.GET["is-funded-filter"] == 'true':
+        #         queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
+        #     else:
+        #         queryset = queryset.exclude(
+        #             project_status=Investment.FUNDED
+        #         )
+        funded_filter = self.request.GET.get("is-funded-filter", "")
+        if funded_filter == "not_funded":
+            queryset = queryset.filter(project_status=Investment.NOT_FUNDED)
+        elif funded_filter == "in_progress":
+            queryset = queryset.filter(project_status=Investment.IN_PROGRESS)
+        elif funded_filter == "completed":
+            queryset = queryset.filter(project_status=Investment.COMPLETED)
 
         queryset = self._climate_filters(queryset)
 
@@ -298,6 +306,7 @@ class StatisticsView(View):
         canton_id = request.GET.get('canton_id', None)
         village_id = request.GET.get('village_id', None)
         project_status = request.GET.get('project-status-filter', None)
+
         organization = request.GET.get('organization', None)
         sector = request.GET.get('sector', None)
         sector_type = request.GET.get('type', None)
@@ -318,8 +327,18 @@ class StatisticsView(View):
         elif region_id and region_id is not None:
             filters &= Q(administrative_level__parent__parent__parent__parent__id=region_id)
 
-        if project_status and project_status is not None:
-            filters &= Q(project_status=project_status)
+        # BJ context: 3-state filter replacing the old single project_status value.
+        # BEFORE:
+        # if project_status and project_status is not None:
+        #     filters &= Q(project_status=project_status)
+        if project_status:
+            if project_status == 'not_funded':
+                filters &= Q(project_status=Investment.NOT_FUNDED)
+            elif project_status == 'in_progress':
+                filters &= Q(project_status=Investment.IN_PROGRESS)
+            elif project_status == 'completed':
+                filters &= Q(project_status=Investment.COMPLETED)
+
         if organization and organization is not None:
             filters &= Q(funded_by__organization__id=organization)
         if sector and sector is not None:
@@ -340,18 +359,25 @@ class StatisticsView(View):
         total_funded_priorities = investments.filter(investment_status=Investment.PRIORITY, funded_by__isnull=False).count()
         total_unfunded_priorities = investments.filter(investment_status=Investment.PRIORITY,funded_by__isnull=True).count()
 
-        # Calcul du montant total des priorités financées
+        # BJ context: funded = SUBPROJECT, unfunded = PRIORITY + NOT_FUNDED.
+        # BEFORE:
+        # total_amount_funding = investments.filter(
+        #     investment_status=Investment.PRIORITY,
+        #     funded_by__isnull=False
+        # ).aggregate(total_funding=Sum('estimated_cost'))['total_funding'] or 0
+        #
+        # total_amount_unfunding = investments.filter(
+        #     investment_status=Investment.PRIORITY,
+        #     funded_by__isnull=True
+        # ).aggregate(total_unfunding=Sum('estimated_cost'))['total_unfunding'] or 0
         total_amount_funding = investments.filter(
-            investment_status=Investment.PRIORITY,
-            funded_by__isnull=False
+            investment_status=Investment.SUBPROJECT
         ).aggregate(total_funding=Sum('estimated_cost'))['total_funding'] or 0
 
-        # Calcul du montant total des priorités non financées
         total_amount_unfunding = investments.filter(
             investment_status=Investment.PRIORITY,
-            funded_by__isnull=True
+            project_status=Investment.NOT_FUNDED
         ).aggregate(total_unfunding=Sum('estimated_cost'))['total_unfunding'] or 0
-
         # Subprojects by sector and minority groups
         # minority_groups = [
         #     'endorsed_by_youth',

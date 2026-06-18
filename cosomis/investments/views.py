@@ -63,9 +63,15 @@ class IndexListView(
     LoginRequiredApproveRequiredMixin, PageMixin, generic.edit.BaseFormView, generic.ListView
 ):
     template_name = "investments/list.html"
+    # BJ context: show all investments (needs + funded sub-projects) by default,
+    # filtering is handled per-request in get_queryset().
+    # BEFORE:
+    # queryset = Investment.objects.filter(
+    #     investment_status=Investment.PRIORITY,
+    #     project_status=Investment.NOT_FUNDED
+    # )
     queryset = Investment.objects.filter(
-        investment_status=Investment.PRIORITY,
-        project_status=Investment.NOT_FUNDED
+        investment_status__in=[Investment.PRIORITY, Investment.SUBPROJECT]
     )
     form_class = InvestmentsForm
     title = _("Investments")
@@ -170,14 +176,22 @@ class IndexListView(
                 category=self.request.GET["category-filter"]
             )
 
+        # kwargs["subpopulations"] = [
+        #     {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
+        #     {"id": "endorsed_by_women", "name": _("Endorsed by women")},
+        #     {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
+        #     {
+        #         "id": "endorsed_by_pastoralist",
+        #         "name": _("Endorsed by ethnic minorities"),
+        #     },
+        # ]
+        # BJ context: added endorsed_by_chiefs for Notables & Chefferie group.
         kwargs["subpopulations"] = [
-            {"id": "endorsed_by_youth", "name": _("Endorsed by youth")},
-            {"id": "endorsed_by_women", "name": _("Endorsed by women")},
+            {"id": "endorsed_by_youth",         "name": _("Endorsed by youth")},
+            {"id": "endorsed_by_women",         "name": _("Endorsed by women")},
             {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
-            {
-                "id": "endorsed_by_pastoralist",
-                "name": _("Endorsed by ethnic minorities"),
-            },
+            {"id": "endorsed_by_pastoralist",   "name": _("Endorsed by ethnic minorities")},
+            {"id": "endorsed_by_chiefs",        "name": _("Endorsed by chiefs")},
         ]
 
         kwargs["priorities"] = [
@@ -338,15 +352,24 @@ class IndexListView(
                 ranking__in=priorities
             )
 
-        if "is-funded-filter" in self.request.GET and self.request.GET[
-            "is-funded-filter"
-        ] not in ["", None]:
-            if self.request.GET["is-funded-filter"] == 'true':
-                queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
-            else:
-                queryset = queryset.exclude(
-                    project_status=Investment.FUNDED
-                )
+        # BJ context: 3-state funding filter replacing the old true/false binary.
+        # not_funded = unfunded needs, in_progress = funded and ongoing,
+        # completed = funded and done. Empty = show all.
+        # BEFORE:
+        # if "is-funded-filter" in self.request.GET and self.request.GET[
+        #     "is-funded-filter"
+        # ] not in ["", None]:
+        #     if self.request.GET["is-funded-filter"] == 'true':
+        #         queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
+        #     else:
+        #         queryset = queryset.exclude(project_status=Investment.FUNDED)
+        funded_filter = self.request.GET.get("is-funded-filter", "")
+        if funded_filter == "not_funded":
+            queryset = queryset.filter(project_status=Investment.NOT_FUNDED)
+        elif funded_filter == "in_progress":
+            queryset = queryset.filter(project_status=Investment.IN_PROGRESS)
+        elif funded_filter == "completed":
+            queryset = queryset.filter(project_status=Investment.COMPLETED)
 
         return queryset.none()
 
