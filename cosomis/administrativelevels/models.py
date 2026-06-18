@@ -236,6 +236,20 @@ class AdministrativeLevel(BaseModel):
                 coordinates += child.get_villages_coordinates()
         return coordinates
 
+class AdministrativeLevelAlias(models.Model):
+    administrative_level = models.ForeignKey(
+        AdministrativeLevel,
+        on_delete=models.CASCADE,
+        related_name='aliases'
+    )
+    name = models.CharField(max_length=255)  # le nom alternatif
+    source = models.CharField(max_length=100, blank=True)  # ex: "coso_import"
+
+    class Meta:
+        unique_together = ['name', 'administrative_level']
+
+    def __str__(self):
+        return f"{self.name} → {self.administrative_level.name}"
 
 class GeographicalUnit(BaseModel):
     canton = models.ForeignKey('AdministrativeLevel', null=True, blank=True, on_delete=models.CASCADE, verbose_name=_("Administrative level"))
