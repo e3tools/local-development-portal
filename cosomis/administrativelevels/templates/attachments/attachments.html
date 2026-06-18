@@ -209,6 +209,38 @@
             display: block;
         }
 
+        /* Infinite-scroll loading row — hidden until HTMX flags the request (S9). */
+        .gallery-loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 18px;
+            color: var(--brand-muted, #6c757d);
+        }
+
+        .gallery-loading.htmx-request {
+            display: flex;
+        }
+
+        .gallery-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 1px solid var(--color-danger, #dc3545);
+            border-radius: 8px;
+            background: #fdecea;
+            color: var(--color-danger, #dc3545);
+        }
+
+        .gallery-error[hidden] {
+            display: none;
+        }
+
         #attachmentModal .modal-header,
         #attachmentFilterModal .modal-header {
             border: 0;
@@ -403,6 +435,18 @@
 
     <div id="gallery-root">
         {% include 'attachments/_grid.html' with attachments=attachments %}
+    </div>
+
+    {% comment %} Infinite-scroll feedback (S9 §3.3): loading row while the next
+    HTMX page is in flight, and a retry-able error banner on failure. {% endcomment %}
+    <div id="gallery-loading" class="gallery-loading" role="status" aria-live="polite">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span>{% translate 'Loading more attachments…' %}</span>
+    </div>
+    <div id="gallery-error" class="gallery-error" role="alert" hidden>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+        <span>{% translate 'Could not load more attachments. Check your connection and try again.' %}</span>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="gallery-retry">{% translate 'Retry' %}</button>
     </div>
 {% endblock %}
 
@@ -828,6 +872,38 @@
                     select.prop('disabled', 'disabled');
                     select.empty();
                     select.append(empty_option);
+                });
+            }
+
+            // HTMX infinite-scroll resilience (S9 §3.3): surface load failures with
+            // a retry instead of stalling silently when a page fetch errors out.
+            const galleryError = document.getElementById('gallery-error');
+            const galleryRetry = document.getElementById('gallery-retry');
+            let lastFailedTrigger = null;
+
+            function inGallery(target) {
+                return target && target.closest && target.closest('#gallery-root');
+            }
+
+            document.body.addEventListener('htmx:beforeRequest', (e) => {
+                if (inGallery(e.target) && galleryError) galleryError.hidden = true;
+            });
+
+            ['htmx:responseError', 'htmx:sendError', 'htmx:timeout'].forEach((evt) => {
+                document.body.addEventListener(evt, (e) => {
+                    if (inGallery(e.target) && galleryError) {
+                        lastFailedTrigger = e.target;
+                        galleryError.hidden = false;
+                    }
+                });
+            });
+
+            if (galleryRetry) {
+                galleryRetry.addEventListener('click', () => {
+                    if (galleryError) galleryError.hidden = true;
+                    if (lastFailedTrigger && window.htmx) {
+                        window.htmx.trigger(lastFailedTrigger, 'revealed');
+                    }
                 });
             }
 

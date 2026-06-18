@@ -5,11 +5,40 @@
    ========================================================================= */
 
 :root {
-    --brand-primary: #4f46e5;       /* indigo-600 */
-    --brand-primary-dark: #4338ca;  /* indigo-700, used for hover/active */
-    --brand-primary-soft: #eef2ff;  /* indigo-50, used for tints */
+    /* ---------------------------------------------------------------------
+       Green design system — primary / secondary / accent.
+       Identity is green; secondary is a deeper forest green for emphasis and
+       headers; accent is an earthy terracotta for highlights and categorical
+       pops. NOTHING decorative should be blue or purple — those clash with the
+       brand and were removed system-wide. Status colors (below) stay distinct
+       so "state" never reads as "identity".
+       --------------------------------------------------------------------- */
+    /* Primary — Benin green (canonical identity, matches logo + login). */
+    --brand-primary: #009639;        /* logo green / primary CTA */
+    --brand-primary-light: #00a651;  /* lighter green for gradients / accents */
+    --brand-primary-dark: #007a2e;   /* hover / active */
+    --brand-primary-darker: #00562f; /* green text on white (AA contrast) */
+    --brand-primary-soft: #eaf4ec;   /* tints / hover backgrounds */
+    --brand-primary-soft-2: #d6ecdc; /* slightly stronger green tint */
+    --brand-primary-border: #a7d7b6; /* green hairline / hover borders */
+
+    /* Secondary — deep forest green for emphasis, headers, dark surfaces. */
+    --brand-secondary: #00562f;
+    --brand-secondary-dark: #00331c;
+    --brand-secondary-soft: #d6ecdc;
+
+    /* Accent — earthy terracotta for highlights and categorical contrast. */
+    --brand-accent: #c2410c;
+    --brand-accent-dark: #9a3412;
+    --brand-accent-soft: #fbe4d5;
+
     --brand-text: #111827;
     --brand-muted: #6b7280;
+    /* Semantic — kept distinct from brand green so status != identity. */
+    --color-success: #2e7d32;
+    --color-danger: #dc3545;
+    --color-warning: #f59e0b;
+    --color-info: #00562f;
     --brand-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
                   'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
 }
@@ -66,8 +95,22 @@ h1, h2, h3, h4, h5, h6,
 
 .btn:focus,
 .btn.focus {
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
-    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 150, 57, 0.18);
+}
+
+/* Visible keyboard focus — a real outline, not box-shadow alone, so focus
+   stays perceptible against any background and in forced-colors/high-contrast
+   mode. :focus-visible keeps it keyboard-only (no ring on mouse click). */
+.btn:focus-visible,
+a:focus-visible,
+.nav-link:focus-visible,
+.page-link:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+.form-control:focus-visible,
+.custom-select:focus-visible {
+    outline: 2px solid var(--brand-primary-darker, #00562f);
+    outline-offset: 2px;
 }
 
 .btn-sm, .btn-group-sm > .btn {
@@ -76,7 +119,7 @@ h1, h2, h3, h4, h5, h6,
     border-radius: 6px;
 }
 
-/* Indigo primary CTA — same exact treatment everywhere */
+/* Brand-green primary CTA — same exact treatment everywhere */
 .btn-primary,
 .btn-primary:visited {
     color: #ffffff !important;
@@ -91,7 +134,7 @@ h1, h2, h3, h4, h5, h6,
     color: #ffffff !important;
     opacity: 1;
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+    box-shadow: 0 4px 10px rgba(0, 150, 57, 0.25);
 }
 .btn-primary:disabled,
 .btn-primary.disabled {
@@ -121,7 +164,7 @@ h1, h2, h3, h4, h5, h6,
 .btn:hover { opacity: 1; }
 
 a {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .radio-button_search {
@@ -179,12 +222,12 @@ a {
 }
 
 .dropdown-item.active, .dropdown-item:active {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .custom-control-input:checked ~ .custom-control-label::before {
-    border-color: #4f46e5;
-    background-color: #4f46e5;
+    border-color: var(--brand-primary);
+    background-color: var(--brand-primary);
 }
 
 .custom-control-input[disabled] ~ .custom-control-label::before, .custom-control-input:disabled ~ .custom-control-label::before {
@@ -192,12 +235,12 @@ a {
 }
 
 .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {
-    border-color: #4f46e5;
-    background-color: #4f46e5;
+    border-color: var(--brand-primary);
+    background-color: var(--brand-primary);
 }
 
 .custom-range::-webkit-slider-thumb {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .custom-range::-webkit-slider-runnable-track {
@@ -205,7 +248,7 @@ a {
 }
 
 .custom-range::-moz-range-thumb {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .custom-range::-moz-range-track {
@@ -213,7 +256,7 @@ a {
 }
 
 .custom-range::-ms-thumb {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .custom-range::-ms-fill-lower {
@@ -247,20 +290,20 @@ a {
 }
 
 .page-link {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .page-link:hover {
-    color: #4338ca;
+    color: var(--brand-primary-dark);
 }
 
 .page-item.active .page-link {
-    background-color: #4f46e5;
-    border-color: #4f46e5;
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
 }
 
 .badge-primary {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .badge-yellow {
@@ -269,12 +312,12 @@ a {
 }
 
 .progress-bar {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .list-group-item.active {
-    background-color: #4f46e5;
-    border-color: #4f46e5;
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
 }
 
 .border {
@@ -298,7 +341,7 @@ a {
 }
 
 .border-primary {
-    border-color: #4f46e5 !important;
+    border-color: var(--brand-primary) !important;
 }
 
 .rounded-xl {
@@ -306,7 +349,7 @@ a {
 }
 
 .text-primary {
-    color: #4f46e5 !important;
+    color: var(--brand-primary) !important;
 }
 
 .main-header {
@@ -339,7 +382,7 @@ a {
 
 .user-panel .info a.name {
     font-size: 14px;
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .user-panel .info .email {
@@ -376,23 +419,26 @@ a {
 }
 
 .nav-pills .nav-link:not(.active):hover {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .navbar-primary {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
+/* Legacy navbar color utilities — recolored from blue/purple/plum into the
+   green design system so no off-brand hues remain (kept in case referenced
+   dynamically; class names retained for backwards compatibility). */
 .navbar-mediumslateblue {
-    background-color: #74a1f5;
+    background-color: var(--brand-primary-light);
 }
 
 .navbar-mediumpurple {
-    background-color: #7276d1;
+    background-color: var(--brand-primary);
 }
 
 .navbar-plum {
-    background-color: #d078bb;
+    background-color: var(--brand-accent);
 }
 
 .navbar-lightgray {
@@ -404,23 +450,23 @@ a {
 }
 
 .custom-range.custom-range-primary::-webkit-slider-thumb {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .custom-range.custom-range-primary::-moz-range-thumb {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .custom-range.custom-range-primary::-ms-thumb {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .card-primary:not(.card-outline) > .card-header {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .card-primary.card-outline {
-    border-top: 3px solid #4f46e5;
+    border-top: 3px solid var(--brand-primary);
 }
 
 .card-primary.card-outline-tabs > .card-header a:hover {
@@ -428,7 +474,7 @@ a {
 }
 
 .card-primary.card-outline-tabs > .card-header a.active {
-    border-top: 3px solid #4f46e5;
+    border-top: 3px solid var(--brand-primary);
 }
 
 .card-secondary.card-outline-tabs > .card-header a:hover {
@@ -532,7 +578,7 @@ a {
 }
 
 .todo-list .primary {
-    border-left-color: #4f46e5;
+    border-left-color: var(--brand-primary);
 }
 
 .btn-default:hover, .btn-default:active, .btn-default.hover {
@@ -552,12 +598,12 @@ a {
 }
 
 .direct-chat-primary .right > .direct-chat-text {
-    background: #4f46e5;
-    border-color: #4f46e5;
+    background: var(--brand-primary);
+    border-color: var(--brand-primary);
 }
 
 .direct-chat-primary .right > .direct-chat-text::after, .direct-chat-primary .right > .direct-chat-text::before {
-    border-left-color: #4f46e5;
+    border-left-color: var(--brand-primary);
 }
 
 .profile-user-img {
@@ -571,116 +617,116 @@ a {
 
 .select2-container--default .select2-primary .select2-results__option--highlighted,
 .select2-primary .select2-container--default .select2-results__option--highlighted {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .icheck-primary > input:first-child:not(:checked):not(:disabled):hover + label::before,
 .icheck-primary > input:first-child:not(:checked):not(:disabled):hover + input[type="hidden"] + label::before {
-    border-color: #4f46e5;
+    border-color: var(--brand-primary);
 }
 
 .icheck-primary > input:first-child:not(:checked):not(:disabled):focus + label::before,
 .icheck-primary > input:first-child:not(:checked):not(:disabled):focus + input[type="hidden"] + label::before {
-    border-color: #4f46e5;
+    border-color: var(--brand-primary);
 }
 
 .icheck-primary > input:first-child:checked + label::before,
 .icheck-primary > input:first-child:checked + input[type="hidden"] + label::before {
-    background-color: #4f46e5;
-    border-color: #4f46e5;
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
 }
 
 #toast-container .toast {
-    background-color: #4f46e5;
+    background-color: var(--brand-primary);
 }
 
 .pace-primary .pace .pace-progress {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 .pace-barber-shop-primary .pace .pace-progress {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 .pace-bounce-primary .pace .pace-activity {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 .pace-center-atom-primary .pace-progress::before {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 .pace-center-atom-primary .pace-activity {
-    border-color: #4f46e5;
+    border-color: var(--brand-primary);
 }
 
 .pace-center-atom-primary .pace-activity::after, .pace-center-atom-primary .pace-activity::before {
-    border-color: #4f46e5;
+    border-color: var(--brand-primary);
 }
 
 .pace-center-radar-primary .pace .pace-activity {
-    border-color: #4f46e5 transparent transparent;
+    border-color: var(--brand-primary) transparent transparent;
 }
 
 .pace-center-radar-primary .pace .pace-activity::before {
-    border-color: #4f46e5 transparent transparent;
+    border-color: var(--brand-primary) transparent transparent;
 }
 
 .pace-center-simple-primary .pace {
-    border-color: #4f46e5;
+    border-color: var(--brand-primary);
 }
 
 .pace-center-simple-primary .pace .pace-progress {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 .pace-material-primary .pace {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .pace-corner-indicator-primary .pace .pace-activity {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 .pace-flash-primary .pace .pace-progress {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 .pace-flash-primary .pace .pace-progress-inner {
-    box-shadow: 0 0 10px #4f46e5, 0 0 5px #4f46e5;
+    box-shadow: 0 0 10px var(--brand-primary), 0 0 5px var(--brand-primary);
 }
 
 .pace-flash-primary .pace .pace-activity {
-    border-top-color: #4f46e5;
-    border-left-color: #4f46e5;
+    border-top-color: var(--brand-primary);
+    border-left-color: var(--brand-primary);
 }
 
 .pace-loading-bar-primary .pace .pace-progress {
-    background: #4f46e5;
-    color: #4f46e5;
+    background: var(--brand-primary);
+    color: var(--brand-primary);
     box-shadow: 120px 0 #ffffff, 240px 0 #ffffff;
 }
 
 .pace-loading-bar-primary .pace .pace-activity {
-    box-shadow: inset 0 0 0 2px #4f46e5, inset 0 0 0 7px #ffffff;
+    box-shadow: inset 0 0 0 2px var(--brand-primary), inset 0 0 0 7px #ffffff;
 }
 
 .pace-mac-osx-primary .pace .pace-progress {
-    background-color: #4f46e5;
-    box-shadow: inset -1px 0 #4f46e5, inset 0 -1px #4f46e5, inset 0 2px rgba(255, 255, 255, 0.5), inset 0 6px rgba(255, 255, 255, 0.3);
+    background-color: var(--brand-primary);
+    box-shadow: inset -1px 0 var(--brand-primary), inset 0 -1px var(--brand-primary), inset 0 2px rgba(255, 255, 255, 0.5), inset 0 6px rgba(255, 255, 255, 0.3);
 }
 
 .pace-progress-color-primary .pace-progress {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary,
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 blockquote {
-    border-left: 0.7rem solid #4f46e5;
+    border-left: 0.7rem solid var(--brand-primary);
 }
 
 blockquote h1,
@@ -689,11 +735,11 @@ blockquote h3,
 blockquote h4,
 blockquote h5,
 blockquote h6 {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 blockquote.quote-primary {
-    border-color: #4f46e5;
+    border-color: var(--brand-primary);
 }
 
 blockquote.quote-primary h1,
@@ -702,11 +748,11 @@ blockquote.quote-primary h3,
 blockquote.quote-primary h4,
 blockquote.quote-primary h5,
 blockquote.quote-primary h6 {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 blockquote.quote-blue {
-    border-color: #4f46e5;
+    border-color: var(--brand-primary);
 }
 
 blockquote.quote-blue h1,
@@ -715,42 +761,101 @@ blockquote.quote-blue h3,
 blockquote.quote-blue h4,
 blockquote.quote-blue h5,
 blockquote.quote-blue h6 {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .bg-primary.btn:hover {
-    border-color: #4338ca;
+    border-color: var(--brand-primary-dark);
 }
 
 .bg-primary.btn:not(:disabled):not(.disabled):active, .bg-primary.btn:not(:disabled):not(.disabled).active, .bg-primary.btn:active, .bg-primary.btn.active {
-    background-color: #4338ca !important;
-    border-color: #4338ca;
+    background-color: var(--brand-primary-dark) !important;
+    border-color: var(--brand-primary-dark);
 }
 
 .accent-primary .btn-link,
 .accent-primary a:not(.dropdown-item):not(.btn-app):not(.nav-link):not(.brand-link):not(.page-link):not(.btn) {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .accent-primary .dropdown-item:active, .accent-primary .dropdown-item.active {
-    background: #4f46e5;
+    background: var(--brand-primary);
 }
 
 .accent-primary .page-item .page-link {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .accent-primary .page-item.active a,
 .accent-primary .page-item.active .page-link {
-    background-color: #4f46e5;
-    border-color: #4f46e5;
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+}
+
+/* =========================================================================
+   Neutralize AdminLTE's hardcoded blue (#007bff) so the brand green wins.
+   AdminLTE compiles its own $primary into the vendored CSS, which is why the
+   active sidebar link, .bg-primary chips and .text-primary text still showed
+   blue even though our tokens are green. These rules route every "primary"
+   surface through the green design system.
+   ========================================================================= */
+/* Active sidebar item — was AdminLTE blue, now brand green. */
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.nav-sidebar > .nav-item > .nav-link.active,
+.nav-sidebar .nav-treeview > .nav-item > .nav-link.active {
+    background-color: var(--brand-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 1px 4px rgba(0, 150, 57, 0.25);
+}
+/* Sidebar hover — subtle green tint instead of the default gray/blue. */
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link:not(.active):hover {
+    background-color: var(--brand-primary-soft);
+    color: var(--brand-primary-darker);
+}
+/* AdminLTE primary utilities → green. */
+.bg-primary,
+.badge-primary,
+.btn-primary {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+}
+.text-primary { color: var(--brand-primary) !important; }
+.border-primary { border-color: var(--brand-primary) !important; }
+a:not(.btn):not(.nav-link):not(.dropdown-item):not(.page-link):not(.brand-link).text-primary:hover {
+    color: var(--brand-primary-dark) !important;
+}
+
+/* AdminLTE's "info" was teal (#17a2b8) — route it through the green system so
+   category/sector chips (badge-info) and any bg/btn/border-info read green.
+   Uses the deep-green --color-info so it stays distinct from primary CTAs. */
+.badge-info,
+.bg-info,
+.btn-info {
+    background-color: var(--color-info) !important;
+    border-color: var(--color-info) !important;
+    color: #ffffff !important;
+}
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:not(:disabled):not(.disabled):active {
+    background-color: var(--brand-secondary-dark) !important;
+    border-color: var(--brand-secondary-dark) !important;
+    color: #ffffff !important;
+}
+.text-info { color: var(--color-info) !important; }
+.border-info { border-color: var(--color-info) !important; }
+.alert-info {
+    background-color: var(--brand-primary-soft) !important;
+    border-color: var(--brand-primary-border) !important;
+    color: var(--brand-secondary-dark) !important;
 }
 
 /*# sourceMappingURL=../AdminLTE/dist/css/adminlte.css.map */
 .main-title {
     font-size: 22px;
     line-height: 1.64;
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .toogle-sidebar-button {
@@ -928,7 +1033,7 @@ blockquote.quote-blue h6 {
 
 .chevron-circle {
     margin: 15px 15px 15px 0;
-    background-color: #21487994;
+    background-color: rgba(0, 86, 47, 0.58);
 }
 
 .nav-profile-buttons a {
@@ -984,7 +1089,7 @@ blockquote.quote-blue h6 {
 }
 
 .chevron-item {
-    color: #4f46e5;
+    color: var(--brand-primary);
     position: absolute;
     bottom: 1px;
     right: 9px;
@@ -1104,12 +1209,12 @@ blockquote.quote-blue h6 {
 }
 
 .link {
-    color: #4f46e5;
+    color: var(--brand-primary);
     cursor: pointer;
 }
 
 .link:hover {
-    color: #005cbf;
+    color: var(--brand-primary-dark);
 }
 
 .link-attachment {
@@ -1119,18 +1224,18 @@ blockquote.quote-blue h6 {
     height: 35px;
     padding: 10px;
     text-align: left;
-    color: #4f46e5;
+    color: var(--brand-primary);
     display: block;
     width: fit-content;
     background-color: #f7f7f7;
 }
 
 .btn-link-primary {
-    color: #4f46e5;
+    color: var(--brand-primary);
 }
 
 .btn-link-primary:hover {
-    color: #005cbf;
+    color: var(--brand-primary-dark);
 }
 
 .btn-link-primary.disabled, .btn-link-primary:disabled {
@@ -1207,7 +1312,7 @@ blockquote.quote-blue h6 {
 
 .ol-control button {
     margin-bottom: 10px !important;
-    color: #4f46e5 !important;
+    color: var(--brand-primary) !important;
     font-size: 22px !important;
     text-decoration: none !important;
     height: 35px !important;
@@ -1219,7 +1324,7 @@ blockquote.quote-blue h6 {
 
 .ol-control button:hover {
     color: #ffffff !important;
-    background-color: #4f46e5 !important;
+    background-color: var(--brand-primary) !important;
 }
 
 .modal-confirmation .modal-content {
@@ -1273,7 +1378,7 @@ blockquote.quote-blue h6 {
 
 .table thead.primary th {
     background-color: transparent;
-    color: #4f46e5;
+    color: var(--brand-primary);
     border-radius: 0;
 }
 
@@ -1330,7 +1435,7 @@ blockquote.quote-blue h6 {
 }
 
 .success-color {
-    color: #4f46e5;
+    color: var(--color-success);
 }
 
 .gray-color {
@@ -1351,8 +1456,213 @@ blockquote.quote-blue h6 {
     display: inline-flex;
 }
 
+/* Shared empty-state component (UX sprint S6) */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--brand-muted);
+}
+
+.empty-state__icon {
+    font-size: 2.75rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    color: var(--brand-primary);
+    opacity: 0.5;
+}
+
+.empty-state__title {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--brand-text);
+    margin: 0 0 0.25rem;
+}
+
+.empty-state__message {
+    font-size: 0.9375rem;
+    color: var(--brand-muted);
+    margin: 0 0 1rem;
+    max-width: 28rem;
+}
+
+.empty-state__cta {
+    margin-top: 0.25rem;
+}
+
 .structure_name {
     font-size: 22px; /* Taille de police plus grande */
     font-weight: 500;
-    color: #196A62;
+    color: var(--brand-primary-darker);
+}
+/* =========================================================================
+   Toast / error layer (UX S7). Single accessible feedback mechanism shared
+   by JS (window.toast / notifyAjaxError) and server messages (messages.html).
+   Colours come from the semantic tokens above so toasts stay on-brand.
+   ========================================================================= */
+#push-notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: min(360px, calc(100vw - 40px));
+    pointer-events: none; /* let clicks fall through the empty container */
+}
+
+.app-toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    color: #fff;
+    background: var(--color-info);
+    border-left: 4px solid rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateX(120%);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.app-toast--in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.app-toast--out {
+    opacity: 0;
+    transform: translateX(120%);
+}
+
+.app-toast--success { background: var(--color-success); }
+.app-toast--info { background: var(--color-info); }
+.app-toast--warning { background: var(--color-warning); color: #1f2937; }
+.app-toast--danger { background: var(--color-danger); }
+
+.app-toast__body {
+    flex: 1 1 auto;
+    word-break: break-word;
+}
+
+.app-toast__close {
+    flex: 0 0 auto;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.85;
+    padding: 0 2px;
+}
+
+.app-toast__close:hover { opacity: 1; }
+
+.app-toast__close:focus-visible,
+.app-toast__close:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-toast {
+        transition: opacity 0.2s ease;
+        transform: none;
+    }
+    .app-toast--out { transform: none; }
+}
+
+/* ==========================================================================
+   S14 — Responsive navbar & sidebar
+   The app previously had effectively one breakpoint (575.98px). AdminLTE
+   already collapses the sidebar off-canvas below 992px and renders its own
+   #sidebar-overlay; these rules add the missing breakpoints, make the tall
+   100px header adapt on small screens, and give the off-canvas overlay a
+   clearly visible dim backdrop.
+   ========================================================================== */
+
+/* Dim backdrop behind the off-canvas sidebar (AdminLTE injects #sidebar-overlay
+   on mobile when the menu is open). Without this it is fully transparent and
+   the open/closed state is ambiguous. */
+#sidebar-overlay {
+    background-color: rgba(15, 23, 42, 0.35);
+    transition: background-color .2s ease;
+}
+
+/* Tablet / small-desktop: sidebar is off-canvas here (AdminLTE < 992px). */
+@media (max-width: 991.98px) {
+    .main-header {
+        height: auto;
+        min-height: 64px;
+        font-size: 16px;
+    }
+    /* The bottom "Toggle Sidebar" affordance is a desktop collapse control;
+       on mobile the hamburger + overlay handle this, so hide it to avoid a
+       stray floating control over the off-canvas menu. */
+    .toogle-sidebar-button {
+        display: none !important;
+    }
+    .nav-greetings {
+        font-size: 14px;
+    }
+}
+
+/* Phones */
+@media (max-width: 767.98px) {
+    .main-header {
+        min-height: 56px;
+    }
+    .content-header {
+        padding: 10px 0.5rem;
+    }
+    .content-header .main-title,
+    .content-header h2 {
+        font-size: 1.15rem;
+        line-height: 1.3;
+    }
+    /* Stack the right-hand navbar icons tighter so they don't wrap awkwardly. */
+    .main-header .navbar-nav .nav-link {
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+    /* Let wide tables scroll instead of overflowing the viewport. */
+    .table-responsive-stack,
+    .card-body > .table:not(.dataTable) {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .content-header .main-title,
+    .content-header h2 {
+        font-size: 1.05rem;
+    }
+    /* Hide the long welcome greeting on the smallest screens — it pushes the
+       action icons off-screen. */
+    .nav-greetings {
+        display: none !important;
+    }
+}
+
+/* Hamburger visual feedback: rotate the bars slightly when the sidebar is open
+   so the toggle's expanded/collapsed state is perceivable, in addition to the
+   aria-expanded attribute synced in foot.html. */
+.main-header [data-widget="pushmenu"] .fa-bars {
+    transition: transform .2s ease;
+}
+.sidebar-open .main-header [data-widget="pushmenu"] .fa-bars,
+body:not(.sidebar-collapse) .main-header [data-widget="pushmenu"][aria-expanded="true"] .fa-bars {
+    transform: rotate(90deg);
 }

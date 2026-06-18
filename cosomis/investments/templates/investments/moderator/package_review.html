@@ -376,10 +376,10 @@
                         </div>
                         <br>
                         {% if package.status != package.PARTIALLY_APPROVED and package.status != package.APPROVE and package.status != package.REJECTED %}
-                        <form action="" method="POST">
+                        <form action="" method="POST" id="package-approve-form">
                             {% csrf_token %}
                             <input type="hidden" name="investments-from">
-                            <p><input type="submit" class="btn btn-primary btn-sm btn-block" value="{% translate 'Approve' %}" id="investments-submit"></p>
+                            <p><button type="button" class="btn btn-primary btn-sm btn-block" id="investments-submit">{% translate 'Approve' %}</button></p>
                         </form>
                         <p><a class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#rejectModal">{% translate 'Reject' %}</a></p>
                         {% endif %}
@@ -508,6 +508,27 @@
     </div>
 </div>
 
+<div aria-hidden="true" aria-labelledby="confirmReviewModalLabel" class="modal fade" id="confirmReviewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmReviewModalLabel">{% translate 'Confirm action' %}</h5>
+                <button aria-label="{% translate 'Close' %}" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmReviewModalBody" class="mb-1"></p>
+                <p class="text-muted small mb-0">{% translate 'This action cannot be undone.' %}</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">{% translate 'Cancel' %}</button>
+                <button class="btn btn-primary" type="button" id="confirmReviewModalConfirm">{% translate 'Confirm' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascript %}
@@ -515,7 +536,9 @@
 <script src="{% static 'js/numeral.min.js' %}"></script>
 <script type="text/javascript">
     $( document ).ready(function() {
-        var table = $(".table").DataTable({{ datatable_config | safe }});
+        var dtConfig = {{ datatable_config|default:"{}"|safe }};
+        dtConfig.scrollX = true;  // keep wide table (incl. action column) from overflowing the card
+        var table = $(".table").DataTable(dtConfig);
 
         sum_subprojects();
 
@@ -668,24 +691,64 @@
             }
         };
 
-        // Get the 'Add to Cart' button by ID
-        var addToCartBtn = document.getElementById('investments-submit');
+        // --- Confirmation modal for irreversible approve/reject actions ---
+        var reviewStrings = {
+            approvePackageTitle: "{% translate 'Approve this package?' %}",
+            approvePackageBody: "{% translate 'All selected investments in this package will be approved.' %}",
+            approveItemTitle: "{% translate 'Approve this investment?' %}",
+            rejectItemTitle: "{% translate 'Reject this investment?' %}",
+            approveConfirm: "{% translate 'Approve' %}",
+            rejectConfirm: "{% translate 'Reject' %}"
+        };
 
-        // When the 'Add to Cart' button is clicked
-        addToCartBtn.addEventListener('click', function () {
-            // Submit the form with the ID 'investment-form'
-            document.getElementById('investment-form').submit();
+        var pendingReview = null;  // { formId, actionInputId, action }
+
+        function openReviewConfirm(opts) {
+            pendingReview = opts;
+            $('#confirmReviewModalLabel').text(opts.title);
+            $('#confirmReviewModalBody').text(opts.body);
+            $('#confirmReviewModalConfirm')
+                .text(opts.confirmLabel)
+                .removeClass('btn-primary btn-danger')
+                .addClass(opts.action === 'reject' ? 'btn-danger' : 'btn-primary');
+            $('#confirmReviewModal').modal('show');
+        }
+
+        $('#confirmReviewModalConfirm').on('click', function() {
+            if (!pendingReview) { return; }
+            if (pendingReview.actionInputId) {
+                $('#' + pendingReview.actionInputId).val(pendingReview.action);
+            }
+            $('#confirmReviewModal').modal('hide');
+            var formEl = document.getElementById(pendingReview.formId);
+            if (formEl) { formEl.submit(); }
         });
 
-        $('.approve-package-item-action').on('click', function(){
+        // Package-level approve
+        $('#investments-submit').on('click', function() {
+            openReviewConfirm({
+                action: 'approve',
+                formId: 'package-approve-form',
+                actionInputId: null,
+                title: reviewStrings.approvePackageTitle,
+                body: reviewStrings.approvePackageBody,
+                confirmLabel: reviewStrings.approveConfirm
+            });
+        });
 
-            let package_name = $(this).attr('name');
-            let action = $(this).attr('id').split('-')[0];
-
-            $('#action-input-form-' + package_name).attr('value', action);
-
-            $('#approve-package-item-id-' + package_name).submit();
-
+        // Per-item approve / reject
+        $('.approve-package-item-action').on('click', function() {
+            var itemId = $(this).attr('name');
+            var action = $(this).attr('id').split('-')[0];  // 'approve' | 'reject'
+            var itemName = $(this).closest('tr').find('td').eq(1).text().trim();
+            openReviewConfirm({
+                action: action,
+                formId: 'approve-package-item-form-id-' + itemId,
+                actionInputId: 'action-input-form-' + itemId,
+                title: action === 'reject' ? reviewStrings.rejectItemTitle : reviewStrings.approveItemTitle,
+                body: itemName,
+                confirmLabel: action === 'reject' ? reviewStrings.rejectConfirm : reviewStrings.approveConfirm
+            });
         });
     });
 </script>

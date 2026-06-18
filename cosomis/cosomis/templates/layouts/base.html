@@ -20,6 +20,7 @@
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
+                {% block breadcrumb %}{% include 'layouts/breadcrumb.html' %}{% endblock %}
                 <div class="row mb-2">
 
                     {% block custom_title %}
@@ -71,8 +72,8 @@
 </div>
 <!-- ./wrapper -->
 
-<div id="push-notification-container" 
-    style="position: fixed; bottom: 20px; right: 20px; z-index: 99999;">
+<div id="push-notification-container" role="region" aria-live="polite"
+    aria-label="{% translate 'Notifications' %}">
 </div>
 
 {% block javascript %}

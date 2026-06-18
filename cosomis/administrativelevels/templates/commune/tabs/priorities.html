@@ -152,6 +152,11 @@
 		</div>
 	</form>
 
+	<div id="priorities-loading" class="htmx-indicator text-center py-2" role="status" aria-live="polite">
+		<span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+		<span class="text-muted small">{% translate 'Loading…' %}</span>
+	</div>
+
 	<div class="tab-content" id="priorityTabsContent">
 
 		{# Tab: Investment Types #}
@@ -160,8 +165,7 @@
 			{% if investments.count == 0 %}
 				<div class="callout callout-info mt-2">
 					<h5>{% translate 'No priorities match the selected filters.' %}</h5>
-				</div>
-			{% else %}
+				</div>			{% else %}
 				<table class="table commune-priorities-dt table-bordered table-sm" style="width: 100%">
 					<thead>
 					<tr>
@@ -210,8 +214,7 @@
 									<form hx-post="{{ commune_post_url }}?active_tab=types"
 										  hx-target="#priorities" hx-select="#priorities" hx-swap="innerHTML"
 										  hx-include="#filter-form"
-										  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'
-										  class="m-0 p-0">
+										  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'										  class="m-0 p-0">
 										{% csrf_token %}
 										{% if investment.id not in cart_items_id %}
 											<input type="submit" class="btn btn-xs btn-outline-primary"
@@ -237,8 +240,7 @@
 			{% if investments.count == 0 %}
 				<div class="callout callout-info mt-2">
 					<h5>{% translate 'No priorities match the selected filters.' %}</h5>
-				</div>
-			{% else %}
+				</div>			{% else %}
 				<table class="table commune-priorities-dt table-bordered table-sm" style="width: 100%">
 					<thead>
 					<tr>
@@ -286,8 +288,7 @@
 									<form hx-post="{{ commune_post_url }}?active_tab=villages"
 										  hx-target="#priorities" hx-select="#priorities" hx-swap="innerHTML"
 										  hx-include="#filter-form"
-										  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'
-										  class="m-0 p-0">
+										  hx-vals='js:{"active_tab": document.querySelector("#pills-tab .nav-link.active")?.id === "button-priorities-villages-tab" ? "villages" : "types"}'										  class="m-0 p-0">
 										{% csrf_token %}
 										{% if investment.id not in cart_items_id %}
 											<input type="submit" class="btn btn-xs btn-outline-primary"
