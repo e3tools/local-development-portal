@@ -75,8 +75,8 @@ msgid ""
 "ID exist and that the cost, dates and rates are valid numbers. (Technical "
 "detail: %(err)s)"
 msgstr ""
-"Un problème est survenu à la ligne %(row)s : vérifiez que l'ID du village et "
-"l'ID du secteur existent et que le coût, les dates et les taux sont des "
+"Un problème est survenu à la ligne %(row)s : vérifiez que l'ID du village et"
+" l'ID du secteur existent et que le coût, les dates et les taux sont des "
 "nombres valides. (Détail technique : %(err)s)"
 
 msgid "All regions"
@@ -206,9 +206,10 @@ msgid "Submit"
 msgstr "Soumettre"
 
 msgid "Some information is invalid. Please review the form and try again."
-msgstr "Certaines informations sont invalides. Veuillez vérifier le formulaire et réessayer."
+msgstr ""
 "Certaines informations sont invalides. Veuillez vérifier le formulaire et "
-"réessayer."
+"réessayer.Certaines informations sont invalides. Veuillez vérifier le "
+"formulaire et réessayer."
 
 msgid "Something went wrong."
 msgstr "Une erreur s'est produite."
@@ -779,11 +780,9 @@ msgstr "Aperçu climatique pour"
 #, python-format
 msgid ""
 "\n"
-"\t\tThis section describes the area centered on %(latitude)s / "
-"%(longitude)s,\n"
+"\t\tThis section describes the area centered on %(latitude)s / %(longitude)s,\n"
 "\t\twhich includes %(name)s. You can view other data in other areas by\n"
-"\t\tusing <u>Climate Cluster Vulnerability Tool</u> and you can download a "
-"summary of\n"
+"\t\tusing <u>Climate Cluster Vulnerability Tool</u> and you can download a summary of\n"
 "\t\t%(name)s in <u>PDF</u> or <u>MS-Word</u> format.\n"
 "\t"
 msgstr ""
@@ -810,8 +809,8 @@ msgid ""
 "This area is experiencing population growth at a rate [x5] higher than the "
 "regional average"
 msgstr ""
-"Cette zone connaît une croissance démographique à un rythme [x5] supérieur à "
-"la moyenne régionale"
+"Cette zone connaît une croissance démographique à un rythme [x5] supérieur à"
+" la moyenne régionale"
 
 msgid "Fluctuating/unreliable rainfall"
 msgstr "Pluviométrie fluctuante/peu fiable"
@@ -1590,7 +1589,8 @@ msgid "No stages configured"
 msgstr "Aucune étape configurée"
 
 msgid "The funnel has no stages to display for this dataset yet."
-msgstr "L'entonnoir n'a encore aucune étape à afficher pour ce jeu de données."
+msgstr ""
+"L'entonnoir n'a encore aucune étape à afficher pour ce jeu de données."
 
 #, fuzzy
 #| msgid "# Villages selected"
@@ -1606,7 +1606,6 @@ msgstr ""
 msgid "Across all CDD phases & activities"
 msgstr ""
 
-#, fuzzy
 #| msgid "Tasks"
 msgid "tasks"
 msgstr "Tâches"
@@ -1666,7 +1665,6 @@ msgstr "Êtes-vous sûr de vouloir supprimer le paquet ?"
 msgid "Remove"
 msgstr "Supprimer"
 
-#, fuzzy
 #| msgid "Not Started"
 msgid "Not started"
 msgstr "Non démarré"
@@ -1724,10 +1722,11 @@ msgstr "Remise de l'ouvrage à la communauté"
 msgid "Final reception"
 msgstr "Réception définitive"
 
-msgid "Please check this box and click the confirmation button for validation."
+msgid ""
+"Please check this box and click the confirmation button for validation."
 msgstr ""
-"Veuillez cocher cette câche et cliquez sur le bouton de confirmation pour la "
-"validation."
+"Veuillez cocher cette câche et cliquez sur le bouton de confirmation pour la"
+" validation."
 
 msgid "English"
 msgstr "Anglais"
@@ -1799,7 +1798,8 @@ msgstr ""
 "Le serveur a rencontré un problème. Veuillez réessayer dans un instant."
 
 msgid "Veuillez aller changer votre mot de passe dans la session Utilisateur."
-msgstr "Veuillez aller changer votre mot de passe dans la session Utilisateur."
+msgstr ""
+"Veuillez aller changer votre mot de passe dans la session Utilisateur."
 
 msgid "Copyright"
 msgstr "Droits d'auteur"
@@ -2112,8 +2112,8 @@ msgid ""
 "You are about to send this submission for revision. The submitter will see "
 "flagged investments. Please leave comments to help with re-submission."
 msgstr ""
-"Vous êtes sur le point d'envoyer cette demande pour révision. L'auteur de la "
-"demande verra les investissements signalés. Veuillez laisser des "
+"Vous êtes sur le point d'envoyer cette demande pour révision. L'auteur de la"
+" demande verra les investissements signalés. Veuillez laisser des "
 "commentaires pour faciliter la nouvelle soumission."
 
 msgid "SubProject"
@@ -2198,8 +2198,8 @@ msgid ""
 "Not enough funds: the selected funding exceeds the project budget. Remove "
 "investments before submitting."
 msgstr ""
-"Fonds insuffisants : le financement sélectionné dépasse le budget du projet. "
-"Retirez des investissements avant de soumettre."
+"Fonds insuffisants : le financement sélectionné dépasse le budget du projet."
+" Retirez des investissements avant de soumettre."
 
 msgid "Submit For Approval"
 msgstr "Soumettre à l'approbation"
@@ -2383,8 +2383,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"When you are happy with your selection, click the “Add to Cart” button above "
-"to fund the chosen investments."
+"When you are happy with your selection, click the “Add to Cart” button above"
+" to fund the chosen investments."
 msgstr ""
 
 msgid "You have no investments"
@@ -2500,8 +2500,8 @@ msgid "Enter your new password."
 msgstr "Entrez votre nouveau mot de passe."
 
 msgid ""
-"It must contain at least 8 characters, including at least one letter and one "
-"number."
+"It must contain at least 8 characters, including at least one letter and one"
+" number."
 msgstr ""
 "Il doit contenir au moins 8 caractères, dont au moins une lettre et un "
 "chiffre."
@@ -2661,7 +2661,8 @@ msgstr ""
 
 msgid ""
 "Raw passwords are not stored, so there is no way to see this user’s "
-"password, but you can change the password using <a href=\"{}\">this form</a>."
+"password, but you can change the password using <a href=\"{}\">this "
+"form</a>."
 msgstr ""
 "Les mots de passe bruts ne sont pas stockés, il n'y a donc aucun moyen de "
 "voir le mot de passe de cet utilisateur, mais vous pouvez le modifier en "
@@ -2745,8 +2746,8 @@ msgid ""
 "instructions for setting a new one."
 msgstr ""
 "Vous avez oublié votre mot de passe? Saisissez votre adresse courriel ci-"
-"dessous et nous vous enverrons par courriel les instructions pour en définir "
-"un nouveau."
+"dessous et nous vous enverrons par courriel les instructions pour en définir"
+" un nouveau."
 
 msgid "Please correct the error below."
 msgstr "Veuillez corriger l'erreur ci-dessous."
@@ -2765,8 +2766,8 @@ msgid ""
 "Please enter your new password twice so we can verify you typed it in "
 "correctly."
 msgstr ""
-"Veuillez saisir votre nouveau mot de passe deux fois afin que nous puissions "
-"vérifier que vous l'avez correctement saisi."
+"Veuillez saisir votre nouveau mot de passe deux fois afin que nous puissions"
+" vérifier que vous l'avez correctement saisi."
 
 msgid "Change my password"
 msgstr "Changer mon mot de passe"
@@ -2784,8 +2785,8 @@ msgid ""
 "you registered with, and check your spam folder."
 msgstr ""
 "Si vous ne recevez pas d'e-mail, veuillez vérifier que vous avez bien saisi "
-"l'adresse avec laquelle vous vous êtes inscrit et consultez votre dossier de "
-"courriers indésirables."
+"l'adresse avec laquelle vous vous êtes inscrit et consultez votre dossier de"
+" courriers indésirables."
 
 msgid "Signing up…"
 msgstr "Inscription…"
@@ -3133,8 +3134,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
-"hyphens."
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or"
+" hyphens."
 msgstr ""
 
 msgid "Enter a valid IPv4 address."
@@ -3291,8 +3292,8 @@ msgstr ""
 
 #, python-format
 msgid ""
-"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
-"[TZ]) but it is an invalid date/time."
+"“%(value)s” value has the correct format (YYYY-MM-DD "
+"HH:MM[:ss[.uuuuuu]][TZ]) but it is an invalid date/time."
 msgstr ""
 
 msgid "Date (with time)"
@@ -3440,7 +3441,8 @@ msgid "Many-to-many relationship"
 msgstr ""
 
 #. Translators: If found as last label character, these punctuation
-#. characters will prevent the default label_suffix to be appended to the label
+#. characters will prevent the default label_suffix to be appended to the
+#. label
 msgid ":?.!"
 msgstr ""
 
@@ -3480,7 +3482,8 @@ msgid "The submitted file is empty."
 msgstr ""
 
 #, python-format
-msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid ""
+"Ensure this filename has at most %(max)d character (it has %(length)d)."
 msgid_plural ""
 "Ensure this filename has at most %(max)d characters (it has %(length)d)."
 msgstr[0] ""
@@ -3565,7 +3568,8 @@ msgstr "Veuillez corriger les erreurs ci-dessous."
 msgid "The inline value did not match the parent instance."
 msgstr ""
 
-msgid "Select a valid choice. That choice is not one of the available choices."
+msgid ""
+"Select a valid choice. That choice is not one of the available choices."
 msgstr ""
 
 #, python-format
@@ -3955,10 +3959,10 @@ msgid ""
 msgstr ""
 
 msgid ""
-"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
-"including the “Referrer-Policy: no-referrer” header, please remove them. The "
-"CSRF protection requires the “Referer” header to do strict referer checking. "
-"If you’re concerned about privacy, use alternatives like <a "
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or"
+" including the “Referrer-Policy: no-referrer” header, please remove them. "
+"The CSRF protection requires the “Referer” header to do strict referer "
+"checking. If you’re concerned about privacy, use alternatives like <a "
 "rel=\"noreferrer\" …> for links to third-party sites."
 msgstr ""
 
@@ -4040,10 +4044,10 @@ msgstr ""
 
 #, python-format
 msgid ""
-"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
-"%(version)s/ref/settings/#debug\" target=\"_blank\" "
-"rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not "
-"configured any URLs."
+"You are seeing this page because <a "
+"href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" "
+"target=\"_blank\" rel=\"noopener\">DEBUG=True</a> is in your settings file "
+"and you have not configured any URLs."
 msgstr ""
 
 msgid "Django Documentation"
@@ -4078,8 +4082,7 @@ msgstr ""
 
 msgid ""
 "\n"
-"    OpenApi3 schema for this API. Format can be selected via content "
-"negotiation.\n"
+"    OpenApi3 schema for this API. Format can be selected via content negotiation.\n"
 "\n"
 "    - YAML: application/vnd.oai.openapi\n"
 "    - JSON: application/vnd.oai.openapi+json\n"
@@ -4100,18 +4103,6 @@ msgstr ""
 
 msgid "A short UUID field."
 msgstr ""
-
-#~ msgid "Total sub-projects available"
-#~ msgstr "Total priorités sous-projets communautaires"
-
-#~ msgid "Total funding required"
-#~ msgstr "Financement total requis"
-
-#~ msgid "# Sub-projects selected"
-#~ msgstr "# Sous-projets sélectionnés"
-
-#~ msgid "See village"
-#~ msgstr "Voir le village"
 
 #: administrativelevels/templates/commune/commune_detail.html:171
 msgid "Total Estimated Cost (FCFA)"
@@ -4147,3 +4138,49 @@ msgstr "Coût Estimé"
 #: usermanager/templates/email_confirmed_successfully.html:33
 msgid "Your email was successfully confirm!"
 msgstr "Votre email a été confirmé avec succès !"
+
+msgid "CDD cycle progress"
+msgstr "Progression du cycle CDD"
+
+msgid "Needs attention"
+msgstr "À traiter"
+
+msgid "Done"
+msgstr "Terminé"
+
+msgid "To do"
+msgstr "À faire"
+
+msgid "Attention"
+msgstr "Attention"
+
+msgid "tasks completed"
+msgstr "tâches terminées"
+
+msgid "No tasks recorded for this activity."
+msgstr "Aucune tâche enregistrée pour cette activité."
+
+msgid "No activities recorded for this phase."
+msgstr "Aucune activité enregistrée pour cette phase."
+
+msgid "No planning cycle yet"
+msgstr "Pas encore de cycle de planification"
+
+msgid ""
+"Phases, activities and tasks for this village will appear here once the CDD "
+"cycle starts."
+msgstr ""
+"Les phases, activités et tâches de ce village apparaîtront ici dès le début "
+"du cycle CDD."
+
+#~ msgid "Total sub-projects available"
+#~ msgstr "Total priorités sous-projets communautaires"
+
+#~ msgid "Total funding required"
+#~ msgstr "Financement total requis"
+
+#~ msgid "# Sub-projects selected"
+#~ msgstr "# Sous-projets sélectionnés"
+
+#~ msgid "See village"
+#~ msgstr "Voir le village"
