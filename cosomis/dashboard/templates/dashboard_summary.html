@@ -44,7 +44,7 @@
         .stat-card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
         .stat-card .card-body { padding: 16px 18px; }
         .stat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .stat-icon { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #eef2ff; color: #4f46e5; border-radius: 8px; flex-shrink: 0; }
+        .stat-icon { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #eaf4ec; color: #009639; border-radius: 8px; flex-shrink: 0; }
         .stat-icon svg { width: 18px; height: 18px; }
         .stat-title { font-size: 12px; font-weight: 600; color: #6b7280; margin: 0; text-transform: uppercase; letter-spacing: .04em; }
         .stat-value { font-size: 30px; font-weight: 700; color: #111827; line-height: 1.1; margin: 0; word-break: break-word; }
@@ -138,6 +138,7 @@
                                     <div class="form-group">
                                         <label for="prefecture-select-id">{{ adm_labels.prefecture }}</label>
                                         <select class="form-control" name="prefecture-filter" id="prefecture-select-id"
+                                        	data-disabled-hint="{% blocktranslate with level=adm_labels.region %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}"
                                         	empty-option="{{ adm_labels.prefecture }}" style="width: 100%;" {% if not single_region and not 'region-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{{ adm_labels.prefecture }}</option>
                                             {% for prefecture in prefectures %}
@@ -148,6 +149,7 @@
                                     <div class="form-group">
                                         <label for="commune-select-id">{{ adm_labels.commune }}</label>
                                         <select class="form-control" name="commune-filter" id="commune-select-id"
+                                        	data-disabled-hint="{% blocktranslate with level=adm_labels.prefecture %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}"
                                         	empty-option="{{ adm_labels.commune }}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{{ adm_labels.commune }}</option>
                                             {% for commune in communes %}
@@ -158,6 +160,7 @@
                                     <div class="form-group">
                                         <label for="canton-select-id">{{ adm_labels.canton }}</label>
                                         <select class="form-control" name="canton-filter" id="canton-select-id"
+                                        	data-disabled-hint="{% blocktranslate with level=adm_labels.commune %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}"
                                         	empty-option="{{ adm_labels.canton }}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{{ adm_labels.canton }}</option>
                                             {% for canton in cantons %}
@@ -168,6 +171,7 @@
                                     <div class="form-group">
                                         <label for="village-select-id">{{ adm_labels.village }}</label>
                                         <select class="form-control" name="village-filter" id="village-select-id"
+                                        	data-disabled-hint="{% blocktranslate with level=adm_labels.canton %}Choose a {{ level }} first to enable this filter.{% endblocktranslate %}"
                                         	empty-option="{{ adm_labels.village }}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
                                             <option selected value="">{{ adm_labels.village }}</option>
                                             {% for village in villages %}
@@ -175,6 +179,11 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+                                </div>
+                                <div id="adm-filter-loading" class="adm-filter-loading" role="status" aria-live="polite"
+                                     style="align-items:center; gap:8px; padding:4px 2px; color:var(--brand-muted,#6c757d); font-size:13px;" hidden>
+                                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                    <span>{% translate 'Loading the next level…' %}</span>
                                 </div>
                                 <div class="horizontal-form">
                                     <div class="form-group">
@@ -500,11 +509,17 @@
     {{ block.super }}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.js' %}"></script>
+    <script src="{% static 'js/select-disabled-hint.js' %}"></script>
     <script type="text/javascript">
         let markers = [];
         let filter_values = {}
         const sectorColors = {};
         let allSubprojects = [];
+        // Pins are rendered as a single clustered GeoJSON layer (GPU) instead of
+        // thousands of DOM markers — see initializeMap() / updateMap().
+        let subprojectsLayerReady = false;
+        let pendingSubprojectData = null;
+        let subprojectsById = {};
 
         function renderMapEmpty(message) {
             const mapContainer = document.getElementById('map');
@@ -554,7 +569,7 @@
                         'source-layer': 'country_boundaries',
                         'type': 'fill',
                         'paint': {
-                            'fill-color': '#00FFFF',
+                            'fill-color': '#009639',
                             'fill-opacity': 0.2,
                         },
                     },
@@ -566,6 +581,84 @@
                     "iso_3166_1_alpha_3",
                     '{{ country_iso_code }}',
                 ]);
+
+                // Clustered subproject/priority pins. A single GeoJSON source with
+                // clustering scales to tens of thousands of points without the
+                // freeze caused by one DOM marker per record.
+                map.addSource('subprojects', {
+                    type: 'geojson',
+                    data: pendingSubprojectData || { type: 'FeatureCollection', features: [] },
+                    cluster: true,
+                    clusterMaxZoom: 14,
+                    clusterRadius: 50
+                });
+
+                map.addLayer({
+                    id: 'subproject-clusters',
+                    type: 'circle',
+                    source: 'subprojects',
+                    filter: ['has', 'point_count'],
+                    paint: {
+                        'circle-color': ['step', ['get', 'point_count'], '#60a5fa', 50, '#3b82f6', 200, '#1d4ed8'],
+                        'circle-radius': ['step', ['get', 'point_count'], 16, 50, 22, 200, 30],
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#ffffff'
+                    }
+                });
+                map.addLayer({
+                    id: 'subproject-cluster-count',
+                    type: 'symbol',
+                    source: 'subprojects',
+                    filter: ['has', 'point_count'],
+                    layout: {
+                        'text-field': ['get', 'point_count_abbreviated'],
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                    },
+                    paint: { 'text-color': '#ffffff' }
+                });
+                map.addLayer({
+                    id: 'subproject-unclustered',
+                    type: 'circle',
+                    source: 'subprojects',
+                    filter: ['!', ['has', 'point_count']],
+                    paint: {
+                        'circle-color': ['get', 'color'],
+                        'circle-radius': 7,
+                        'circle-stroke-width': 1.5,
+                        'circle-stroke-color': '#ffffff'
+                    }
+                });
+
+                // Click a cluster -> zoom to expand it.
+                map.on('click', 'subproject-clusters', function (e) {
+                    const features = map.queryRenderedFeatures(e.point, { layers: ['subproject-clusters'] });
+                    const clusterId = features[0].properties.cluster_id;
+                    map.getSource('subprojects').getClusterExpansionZoom(clusterId, function (err, zoom) {
+                        if (err) return;
+                        map.easeTo({ center: features[0].geometry.coordinates, zoom: zoom });
+                    });
+                });
+                // Click a single pin -> popup (same content as the old markers).
+                map.on('click', 'subproject-unclustered', function (e) {
+                    const f = e.features[0];
+                    const sp = subprojectsById[f.properties.id] || f.properties;
+                    const coords = f.geometry.coordinates.slice();
+                    new mapboxgl.Popup({ offset: 12 })
+                        .setLngLat(coords)
+                        .setHTML(buildPopupHtml(sp))
+                        .addTo(map);
+                });
+                ['subproject-clusters', 'subproject-unclustered'].forEach(function (layer) {
+                    map.on('mouseenter', layer, function () { map.getCanvas().style.cursor = 'pointer'; });
+                    map.on('mouseleave', layer, function () { map.getCanvas().style.cursor = ''; });
+                });
+
+                subprojectsLayerReady = true;
+                if (pendingSubprojectData) {
+                    map.getSource('subprojects').setData(pendingSubprojectData);
+                    pendingSubprojectData = null;
+                }
             });
 
             return map;
@@ -573,73 +666,74 @@
 
         function updateMap(map, subprojects, filterSector = null) {
             if (!map) return;
-            markers.forEach(marker => marker.remove());
-            markers = [];
 
-            subprojects.forEach((subproject, index) => {
+            const features = [];
+            subprojectsById = {};
+            (subprojects || []).forEach((subproject) => {
                 if ((filterSector === null || subproject.sector__category__name === filterSector) &&
                     subproject.latitude && subproject.longitude) {
-                    const sectorColor = getRandomColor(subproject.sector__category__name);
-                    // const markerElement = createCustomMarker(sectorColor);
-
-                    let carousel_images_html = ""
-                    let carousel_html = ""
-                    if (subproject.attachments){
-                        subproject.attachments.forEach((attachment, index) => {
-                            if ( index === 0 ){
-                                carousel_images_html += '<div class="carousel-item active">' +
-                                '<img class="d-block w-100" src="' + attachment.split('?')[0] + '" alt="First slide">' +
-                                '</div>'
-                            }else{
-                                carousel_images_html += '<div class="carousel-item">' +
-                                '<img class="d-block w-100" src="' + attachment.split('?')[0] + '" alt="First slide">' +
-                                '</div>'
-                            }
-
-                        })
-
-                        carousel_html = '<div id="carouselExampleControls" class="carousel slide" ' +
-                         'data-ride="carousel"><div class="carousel-inner">' +
-                            carousel_images_html +
-                            '<a class="carousel-control-prev" href="#carouselExampleControls" role="button" ' +
-                             'data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
-                                '<span class="sr-only">Previous</span>' +
-                              '</a>' +
-                              '<a class="carousel-control-next" href="#carouselExampleControls" role="button" ' +
-                               'data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span>' +
-                                '<span class="sr-only">Next</span>' +
-                              '</a>' +
-                          '</div>' +
-                        '</div>'
-                    }
-
-                    const popover_html = '<h3 class="popover-header">'+
-                                '<a href="{% url 'administrativelevels:village_detail' 0 %}"'.replace(
-                                    0, subproject.administrative_level__id) +
-                                    'target="_blank">' +
-                                subproject.administrative_level__name +
-                                '</a>' +
-                            '</h3>' +
-                            '<div class="popover-body">' +
-                               '<h6> <strong> {% translate 'Type of subproject' %}</strong> : ' +
-                               subproject.sector__name + '</h6>' +
-                               '<h6> <strong> {% translate 'Physical rate' %}</strong> : ' +
-                               subproject.physical_execution_rate + '</h6>' +
-                                carousel_html +
-                            '</div>'
-                    const offset = calculateOffset(index);
-                    const marker = new mapboxgl.Marker({
-                        color: sectorColor,
-                        draggable: false,
-                        offset: [offset.x, offset.y]
-                    })
-                    .setLngLat([subproject.longitude, subproject.latitude])
-                    .setPopup(new mapboxgl.Popup({ offset: 20 }).setHTML(popover_html));
-
-                    marker.addTo(map);
-                    markers.push(marker);
+                    subprojectsById[subproject.id] = subproject;
+                    // Many priorities share one village coordinate; spread them with a
+                    // stable per-id jitter so they don't stack into a single invisible
+                    // point (the DB coordinate stays village-accurate).
+                    const offset = jitterOffset(subproject.id);
+                    features.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [
+                                Number(subproject.longitude) + offset[0],
+                                Number(subproject.latitude) + offset[1]
+                            ]
+                        },
+                        properties: {
+                            id: subproject.id,
+                            color: getRandomColor(subproject.sector__category__name)
+                        }
+                    });
                 }
             });
+
+            const data = { type: 'FeatureCollection', features: features };
+            if (subprojectsLayerReady && map.getSource('subprojects')) {
+                map.getSource('subprojects').setData(data);
+            } else {
+                // Stats can return before the map style finishes loading; the
+                // load handler applies this once the source exists.
+                pendingSubprojectData = data;
+            }
+        }
+
+        function buildPopupHtml(subproject) {
+            let carousel_html = "";
+            if (subproject.attachments && subproject.attachments.length) {
+                let items = "";
+                subproject.attachments.forEach((attachment, index) => {
+                    items += '<div class="carousel-item ' + (index === 0 ? 'active' : '') + '">' +
+                        '<img class="d-block w-100" src="' + String(attachment).split('?')[0] + '" alt="slide">' +
+                        '</div>';
+                });
+                carousel_html = '<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">' +
+                    '<div class="carousel-inner">' + items +
+                    '<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">' +
+                        '<span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="sr-only">Previous</span></a>' +
+                    '<a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">' +
+                        '<span class="carousel-control-next-icon" aria-hidden="true"></span><span class="sr-only">Next</span></a>' +
+                    '</div></div>';
+            }
+            const villageUrl = "{% url 'administrativelevels:village_detail' 0 %}".replace(
+                0, subproject.administrative_level__id);
+            return '<h3 class="popover-header">' +
+                    '<a href="' + villageUrl + '" target="_blank">' +
+                    (subproject.administrative_level__name || '') + '</a>' +
+                '</h3>' +
+                '<div class="popover-body">' +
+                    '<h6> <strong> {% translate 'Type of subproject' %}</strong> : ' +
+                    (subproject.sector__name || '') + '</h6>' +
+                    '<h6> <strong> {% translate 'Physical rate' %}</strong> : ' +
+                    (subproject.physical_execution_rate != null ? subproject.physical_execution_rate : '') + '</h6>' +
+                    carousel_html +
+                '</div>';
         }
 
         function createCustomMarker(color) {
@@ -658,10 +752,12 @@
             };
         }
 
+        /* Categorical chart palette — green / terracotta / gold / brown family.
+           No blue, purple, cyan or magenta; ordered so adjacent slices contrast. */
         const CHART_PALETTE = [
-            '#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
-            '#8b5cf6', '#ec4899', '#84cc16', '#3b82f6', '#14b8a6',
-            '#f97316', '#a855f7', '#22c55e', '#0ea5e9', '#d946ef'
+            '#009639', '#c2410c', '#00562f', '#f59e0b', '#65a30d',
+            '#9a3412', '#15803d', '#d97706', '#4d7c0f', '#b45309',
+            '#34d399', '#78350f', '#84cc16', '#ca8a04', '#047857'
         ];
 
         function hashString(s) {
@@ -671,6 +767,16 @@
                 h = ((h << 5) - h + str.charCodeAt(i)) | 0;
             }
             return Math.abs(h);
+        }
+
+        function jitterOffset(id) {
+            // Deterministic spread (~80..520 m) keyed off the subproject id so pins
+            // sharing a village coordinate fan out instead of stacking. Stable across
+            // re-renders so a pin doesn't jump when filters change.
+            const h = hashString('j' + id);
+            const angle = (h % 360) * Math.PI / 180;
+            const radius = 0.0008 + ((h >> 9) % 100) / 100 * 0.0040; // degrees
+            return [Math.cos(angle) * radius, Math.sin(angle) * radius];
         }
 
         function getRandomColor(label) {
@@ -816,6 +922,8 @@
 
                 if (selectedValue) {
                     const baseUrl = window.location.href.split('?')[0];
+                    // Loading feedback while the next level's options are fetched (§3.5).
+                    $('#adm-filter-loading').prop('hidden', false);
                     $.ajax({
                         type: "POST",
                         url: `${baseUrl}ajax/adm-levels`,
@@ -828,6 +936,9 @@
                         },
                         error: function() {
                             alert('Failed to fetch administrative levels. Please try again.');
+                        },
+                        complete: function() {
+                            $('#adm-filter-loading').prop('hidden', true);
                         }
                     });
                     selectToFill.prop('disabled', false);
@@ -910,7 +1021,10 @@
 
             fetchAndDisplayStatistics() {
                 const baseUrl = window.location.href.split('?')[0];
-                const requestUrl = `${baseUrl}ajax/statistics`;
+                // Trailing slash matches the urlconf (statistics/) so the request
+                // hits the view directly instead of going through a 301 redirect,
+                // which the XHR didn't reliably follow on the initial unfiltered load.
+                const requestUrl = `${baseUrl}ajax/statistics/`;
 
 
 

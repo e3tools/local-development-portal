@@ -29,11 +29,10 @@
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            {% with request.resolver_match.url_name as url_name %}
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                 <li class="nav-item">
                     <a href="{% url 'investments:home_investments' %}"
-                       class="nav-link {% if url_name == 'home_investments' %}active{% endif %}">
+                       class="nav-link {% nav_active 'investments:home_investments' %}">
                         <i class="nav-icon fa fa-comments-dollar"></i>
                         <p>{% translate "Fund a project" %}</p>
                     </a>
@@ -42,14 +41,14 @@
                     <a
                         href="{% url 'administrativelevels:search' %}"
                         {% comment %}href="{% url 'administrativelevels:list' %}"{% endcomment %}
-                       class="nav-link {% if url_name == 'search' %}active{% endif %}">
+                       class="nav-link {% nav_active 'administrativelevels:search' %}">
                         <i class="nav-icon fa fa-home"></i>
                         <p>{% translate "Locality profile" %}</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'dashboard:dashboard_summary' %}"
-                        class="nav-link {% if url_name == 'dashboard_summary' %}active{% endif %}">
+                        class="nav-link {% nav_active 'dashboard:dashboard_summary' %}">
                         <i class="nav-icon fa fa-tachometer"></i>
                         <p>{% translate "Dashboard" %}</p>
                     </a>
@@ -57,14 +56,14 @@
                 {% if not request.user.is_moderator %}
                 <li class="nav-item">
                     <a href="{% url 'administrativelevels:project-create' %}"
-                       class="nav-link {% if url_name == 'project-create' %}active{% endif %}">
+                       class="nav-link {% nav_active 'administrativelevels:project-create' %}">
                         <i class="nav-icon fas fa-paperclip"></i>
                         <p>{% translate "Project create" %}</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'administrativelevels:projects' %}"
-                       class="nav-link {% if url_name == 'projects' %}active{% endif %}">
+                       class="nav-link {% nav_active 'administrativelevels:projects' %}">
                         <i class="nav-icon fas fa-project-diagram"></i>
                         <p>{% translate "Project tracking" %}</p>
                     </a>
@@ -72,7 +71,7 @@
                 {% endif %}
                 <li class="nav-item">
                     <a href="{% url 'administrativelevels:attachments' %}?type=Photo"
-                       class="nav-link {% if url_name == 'attachments' %}active{% endif %}">
+                       class="nav-link {% nav_active 'administrativelevels:attachments' %}">
                         <i class="nav-icon fa fa-images"></i>
                         <p>{% translate "Gallery" %}</p>
                     </a>
@@ -80,7 +79,7 @@
                 {% if not request.user.is_moderator %}
                  <li class="nav-item">
                     <a href="{% url 'investments:profile' %}"
-                       class="nav-link {% if url_name == 'profile' %}active{% endif %}">
+                       class="nav-link {% nav_active 'investments:profile' %}">
                         <i class="nav-icon fa fa-user"></i>
                         <p>{% translate "User" %}</p>
                     </a>
@@ -90,14 +89,13 @@
                 {% if request.user.is_staff %}
                  <li class="nav-item">
                     <a href="{% url 'cdd_funnel:main_funnel' %}"
-                       class="nav-link {% if url_name == 'main_funnel' %}active{% endif %}">
+                       class="nav-link {% nav_active 'cdd_funnel:main_funnel' %}">
                         <i class="nav-icon fa fa-funnel-dollar"></i>
                         <p>{% translate "CDD Funnel" %}</p>
                     </a>
                 </li>
                 {% endif %}
             </ul>
-            {% endwith %}
         </nav>
         <nav class="toogle-sidebar-button">
             <ul class="nav nav-pills nav-sidebar flex-column">

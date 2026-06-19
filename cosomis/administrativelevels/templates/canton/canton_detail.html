@@ -37,7 +37,7 @@
 							<div class="carousel-item {% if forloop.first %}active{% endif %}">
 								<a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
 									<img class="d-block w-100 img-fluid" src="{{ image.url|imgAWSS3Filter }}"
-										 style="height: 500px; object-fit: cover;" alt="{{ image.name|default:'' }}">
+										 style="height: 500px; object-fit: cover;" alt="{% blocktranslate with name=object.name %}Photo of {{ name }}{% endblocktranslate %}{% if image.name %} — {{ image.name }}{% endif %}">
 								</a>
 							</div>
 						{% endfor %}
@@ -51,7 +51,7 @@
 				</div>
 			{% else %}
 				<a href="{% url 'administrativelevels:attachments' %}?{{ context_object_name }}={{ object.id }}">
-					<img class="card-img rounded" src="{% static 'images/village-image.jpg' %}" alt="Default image">
+					<img class="card-img rounded" src="{% static 'images/village-image.jpg' %}" alt="{% blocktranslate with name=object.name %}No photo available for {{ name }}{% endblocktranslate %}">
 				</a>
 			{% endif %}
 		</div>
@@ -208,7 +208,7 @@
 								<div hx-get="{% url 'administrativelevels:canton_planning_summary' object.id %}"
 									 hx-trigger="load" hx-swap="innerHTML">
 									<div class="text-center py-5">
-										<div class="spinner-border text-primary" role="status">
+										<div class="spinner-border text-primary" role="status" aria-live="polite">
 											<span class="sr-only">{% trans "Loading..." %}</span>
 										</div>
 										<p class="mt-2 text-muted">{% trans "Loading planning cycle data..." %}</p>
@@ -219,7 +219,7 @@
 								<div hx-get="{% url 'administrativelevels:canton_map' object.id %}" hx-trigger="load"
 									 hx-swap="innerHTML">
 									<div class="text-center py-5">
-										<div class="spinner-border text-primary" role="status">
+										<div class="spinner-border text-primary" role="status" aria-live="polite">
 											<span class="sr-only">{% trans "Loading..." %}</span>
 										</div>
 										<p class="mt-2 text-muted">{% trans "Loading map data..." %}</p>
@@ -468,7 +468,47 @@
             $(document).on('shown.bs.tab', '#priorities button[data-toggle="pill"]', function (e) {
                 localStorage.setItem('activePriorityTab', e.target.id);
             });
-        });
+
+            $('.submit-reset').on('click', function () {
+                $('#reset-hidden-id').attr('value', 'true');
+                $('#filter-form').submit();
+            });
+
+            // Loading feedback while the filter triggers a full-page reload (S17).
+            $(document).on('submit', '#filter-form', function () {
+                $('#priorities-loading').css('opacity', 1);
+                $('#filter-form').find('input[type="submit"], .submit-reset').prop('disabled', true);
+            });
+
+            $('#category-select-id').on('change', function () {
+                change_sectors_selects($(this), $('#sector-select-id'), [])
+            });
+
+            function change_sectors_selects(select_input, select_to_fill) {
+                let selected_value = select_input.find(":selected").val();
+
+                if (selected_value != '') {
+                    let base_url = "{% url 'investments:home_investments' %}";
+                    $.ajax({
+                        type: "POST",
+                        url: base_url + "ajax/sectors",
+                        data: {
+                            value: selected_value,
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function (response) {
+                            select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                            response.values.forEach((element) => {
+                                select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                            })
+                        }
+                    });
+                    select_to_fill.prop('disabled', false);
+                } else {
+                    select_to_fill.prop('disabled', 'disabled');
+                    select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                }
+            };        });
 	</script>
 
 	<script>

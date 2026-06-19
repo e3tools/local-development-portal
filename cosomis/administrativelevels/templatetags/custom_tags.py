@@ -58,7 +58,7 @@ def adm_breadcrumb(adm_level):
             parts.append(f'<span class="font-weight-bold">{item.name}</span>')
         elif url_name:
             url = reverse(url_name, args=[item.id])
-            parts.append(f'<a href="{url}" style="color: #3498db;">{item.name}</a>')
+            parts.append(f'<a href="{url}" style="color: #009639;">{item.name}</a>')
         else:
             parts.append(f'<span>{item.name}</span>')
 
@@ -86,6 +86,105 @@ def adm_detail_url(level):
     if level.is_village():
         return reverse('administrativelevels:village_detail', args=[level.id])
     return reverse('administrativelevels:detail', args=[level.id])
+
+
+# --- S16: navigation context (active sidebar item + section breadcrumb) -----
+# A "section" is a top-level sidebar destination plus the set of fully-qualified
+# view names ("app:name") whose pages belong to it. Matching on the namespaced
+# view_name (not the bare url_name) avoids cross-app collisions — both the
+# investments and administrativelevels apps expose a 'detail'/'profile' name —
+# and lets detail / sub-pages keep their section highlighted (the §6.6 bug:
+# active detection compared url_name only and broke on partial matches).
+_NAV_SECTIONS = [
+    {
+        'label': gettext_lazy('Fund a project'),
+        'url': 'investments:home_investments',
+        'match': ('investments:home_investments',),
+    },
+    {
+        'label': gettext_lazy('Locality profile'),
+        'url': 'administrativelevels:search',
+        'match': (
+            'administrativelevels:search', 'administrativelevels:list',
+            'administrativelevels:detail', 'administrativelevels:region_detail',
+            'administrativelevels:prefecture_detail', 'administrativelevels:commune_detail',
+            'administrativelevels:canton_detail', 'administrativelevels:village_detail',
+            'administrativelevels:canton_planning_summary', 'administrativelevels:canton_map',
+            'administrativelevels:infrastructure',
+        ),
+    },
+    {
+        'label': gettext_lazy('Dashboard'),
+        'url': 'dashboard:dashboard_summary',
+        'match': (
+            'dashboard:dashboard_summary', 'dashboard:dashboard_subprojects',
+            'dashboard:dashboard_administrativelevels', 'dashboard:dashboard_indicators',
+        ),
+    },
+    {
+        'label': gettext_lazy('Project create'),
+        'url': 'administrativelevels:project-create',
+        'match': ('administrativelevels:project-create',),
+    },
+    {
+        'label': gettext_lazy('Project tracking'),
+        'url': 'administrativelevels:projects',
+        'match': (
+            'administrativelevels:projects', 'administrativelevels:project-detail',
+            'administrativelevels:project-upload-investments',
+            'administrativelevels:download-manual',
+        ),
+    },
+    {
+        'label': gettext_lazy('Gallery'),
+        'url': 'administrativelevels:attachments',
+        'match': ('administrativelevels:attachments',),
+    },
+    {
+        'label': gettext_lazy('User'),
+        'url': 'investments:profile',
+        'match': ('investments:profile',),
+    },
+    {
+        'label': gettext_lazy('CDD Funnel'),
+        'url': 'cdd_funnel:main_funnel',
+        'match': ('cdd_funnel:main_funnel',),
+    },
+]
+
+
+def _current_view_name(context):
+    request = context.get('request')
+    match = getattr(request, 'resolver_match', None)
+    return match.view_name if match else None
+
+
+@register.simple_tag(takes_context=True)
+def nav_active(context, section_url_name):
+    """Return 'active' when the current page belongs to the given sidebar
+    section. `section_url_name` is the section's landing route ('app:name');
+    the whole section's match-set is consulted so detail/sub-pages stay lit.
+    Falls back to an exact view-name compare for non-section routes."""
+    current = _current_view_name(context)
+    if not current:
+        return ''
+    for section in _NAV_SECTIONS:
+        if section['url'] == section_url_name:
+            return 'active' if current in section['match'] else ''
+    return 'active' if current == section_url_name else ''
+
+
+@register.simple_tag(takes_context=True)
+def current_section(context):
+    """Return {'label', 'url'} for the section the current page belongs to (for
+    the breadcrumb), or None on pages outside the section map."""
+    current = _current_view_name(context)
+    if not current:
+        return None
+    for section in _NAV_SECTIONS:
+        if current in section['match']:
+            return {'label': section['label'], 'url': reverse(section['url'])}
+    return None
 
 
 @register.filter(name="humanize_snakecase")
@@ -548,3 +647,79 @@ def divide(value, arg):
 def string_to_date(date_time, date_format="%Y-%m-%dT%H:%M:%S.%fZ"):
     if date_time:
         return datetime.strptime(date_time, date_format)
+
+
+# --- CDD planning cycle: completion stats -----------------------------------
+# The planning-cycle view builds a nested list of phase dicts, each carrying
+# `activities` (with `tasks`), and every node carries a `status` string drawn
+# from Task.STATUS ('not started' / 'in progress' / 'completed' / 'error').
+# These helpers let the redesigned village-profile template surface "what's
+# done" without re-querying the DB or hard-coding counts in the view (which
+# exists in three near-identical copies).
+_CDD_COMPLETED = 'completed'
+
+
+def _cdd_iter_tasks(node):
+    """Yield every task dict beneath a phase node or an activity node."""
+    if not isinstance(node, dict):
+        return
+    if 'activities' in node:
+        for activity in node.get('activities') or []:
+            for task in activity.get('tasks') or []:
+                yield task
+    else:
+        for task in node.get('tasks') or []:
+            yield task
+
+
+@register.filter(name="cdd_task_total")
+def cdd_task_total(node):
+    """Total number of tasks under a phase or activity node."""
+    return sum(1 for _ in _cdd_iter_tasks(node))
+
+
+@register.filter(name="cdd_task_done")
+def cdd_task_done(node):
+    """Number of completed tasks under a phase or activity node."""
+    return sum(1 for task in _cdd_iter_tasks(node)
+               if task.get('status') == _CDD_COMPLETED)
+
+
+@register.filter(name="cdd_percent")
+def cdd_percent(node):
+    """Completion percentage (0-100, rounded) for a phase or activity node."""
+    total = done = 0
+    for task in _cdd_iter_tasks(node):
+        total += 1
+        if task.get('status') == _CDD_COMPLETED:
+            done += 1
+    return round(done * 100 / total) if total else 0
+
+
+@register.simple_tag(name="cdd_overview")
+def cdd_overview(phases):
+    """Roll up phase / activity / task completion across the whole cycle so the
+    village profile can show an at-a-glance summary header."""
+    phases = phases or []
+    p_total = len(phases)
+    p_done = a_total = a_done = t_total = t_done = 0
+    for phase in phases:
+        if phase.get('status') == _CDD_COMPLETED:
+            p_done += 1
+        for activity in phase.get('activities') or []:
+            a_total += 1
+            if activity.get('status') == _CDD_COMPLETED:
+                a_done += 1
+            for task in activity.get('tasks') or []:
+                t_total += 1
+                if task.get('status') == _CDD_COMPLETED:
+                    t_done += 1
+    return {
+        'phases_total': p_total,
+        'phases_done': p_done,
+        'activities_total': a_total,
+        'activities_done': a_done,
+        'tasks_total': t_total,
+        'tasks_done': t_done,
+        'percent': round(t_done * 100 / t_total) if t_total else 0,
+    }

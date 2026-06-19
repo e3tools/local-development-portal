@@ -1,5 +1,10 @@
 {% load static i18n humanize custom_tags %}
-{% if complaints|length == 0 %}
+{% if complaints_error %}
+    <div class="alert alert-warning" role="alert">
+        <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+        {% translate "Complaints could not be loaded right now. Please try again later." %}
+    </div>
+{% elif complaints|length == 0 %}
     <h3>{% translate 'You have no complaints' %}</h3>
 {% else %}
     <div class="table-responsive">

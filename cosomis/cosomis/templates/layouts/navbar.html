@@ -7,7 +7,7 @@
         {% if object_tile %}
             <li class="nav-item">
                 <a class="nav-link font-weight-bold" href="{{ preview_page }}" 
-                role="button"><i class="fas fa-chevron-left text-primary"></i></a>
+                role="button" aria-label="{% translate 'Back' %}"><i class="fas fa-chevron-left text-primary" aria-hidden="true"></i></a>
             </li>
             <li class="nav-item shadow-sm bg-light rounded" style="margin-left: 25px;">
                 <a class="nav-link font-weight-bold" style="color: #599cf7 !important;">
@@ -17,7 +17,7 @@
         {% elif administrativelevel_village %}
             <li class="nav-item">
                 <a class="nav-link font-weight-bold" href="{% url 'administrativelevels:detail' administrativelevel_village.pk %}" 
-                role="button"><i class="fas fa-chevron-left text-primary"></i></a>
+                role="button" aria-label="{% translate 'Back' %}"><i class="fas fa-chevron-left text-primary" aria-hidden="true"></i></a>
             </li>
             <li class="nav-item shadow-sm bg-light rounded" style="margin-left: 25px;">
                 <a class="nav-link font-weight-bold" style="color: #599cf7 !important;">
@@ -27,7 +27,7 @@
         {% elif administrativelevel_profile %}
             <li class="nav-item">
                 <a class="nav-link font-weight-bold" href="{% url 'administrativelevels:search' %}"
-                role="button"><i class="fas fa-chevron-left text-primary"></i></a>
+                role="button" aria-label="{% translate 'Back' %}"><i class="fas fa-chevron-left text-primary" aria-hidden="true"></i></a>
             </li>
             <li class="nav-item shadow-sm bg-light rounded pt-2" style="margin-left: 25px; padding-left: 15px; padding-right: 15px;">
                 <a class="font-weight-bold" style="color: #599cf7 !important;">
@@ -48,7 +48,7 @@
             </li>
         {% else %}
             <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button" aria-label="{% translate 'Toggle navigation menu' %}" aria-expanded="true"><i class="fas fa-bars" aria-hidden="true"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 <div class="nav-greetings">
@@ -76,8 +76,8 @@
 {#        </li>#}
         {% if user.is_moderator %}
         <li class="nav-item">
-            <a href="{% url 'investments:notifications' %}" class="nav-link">
-                <i class="fa fa-bell"></i>
+            <a href="{% url 'investments:notifications' %}" class="nav-link" aria-label="{% translate 'Notifications' %}">
+                <i class="fa fa-bell" aria-hidden="true"></i>
                 {% if pending_approvals > 0 %}
                     {% if has_urgent_approvals %}
                     <span class="badge badge-danger navbar-badge">{{ pending_approvals }}</span>
@@ -89,8 +89,8 @@
         </li>
         {% else %}
         <li class="nav-item">
-            <a href="{% url 'investments:investor_notifications' %}" class="nav-link">
-                <i class="fa fa-bell"></i>
+            <a href="{% url 'investments:investor_notifications' %}" class="nav-link" aria-label="{% translate 'Notifications' %}">
+                <i class="fa fa-bell" aria-hidden="true"></i>
                 {% if pending_approvals > 0 %}
                     {% if has_urgent_approvals %}
                     <span class="badge badge-danger navbar-badge">{{ pending_approvals }}</span>
@@ -101,8 +101,8 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{% url 'investments:cart' %}" class="nav-link">
-                <i class="fa fa-shopping-cart"></i>
+            <a href="{% url 'investments:cart' %}" class="nav-link" aria-label="{% translate 'Cart' %}">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                 {% if cart_items > 0 %}
                 <span class="badge badge-success navbar-badge">{{ cart_items|intcomma }}</span>
                 {% endif %}
@@ -114,8 +114,8 @@
         {% endif %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'usermanager:logout' %}" title="{% translate 'Logout' %}"
-               role="button">
-                <i class="fa fa-sign-out align-bottom"></i>
+               role="button" aria-label="{% translate 'Logout' %}">
+                <i class="fa fa-sign-out align-bottom" aria-hidden="true"></i>
             </a>
         </li>
     </ul>
