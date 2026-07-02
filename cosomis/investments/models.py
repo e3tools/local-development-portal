@@ -32,12 +32,14 @@ class Investment(BaseModel): # Investment module
     IN_PROGRESS = "P"
     COMPLETED = "C"
     PAUSED = "PA"
+    FUNDED_NOT_STARTED = "FNS"
     PROJECT_STATUS_CHOICES = (
         (NOT_FUNDED, _("Not Funded")),
         (FUNDED, _("Funded")),
         (IN_PROGRESS, _("In Progress")),
         (COMPLETED, _("Completed")),
         (PAUSED, _("Paused")),
+        (FUNDED_NOT_STARTED, _("Funded — not started")),
     )
 
     PRIORITY = "p"

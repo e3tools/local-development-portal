@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from cosomis.mixins import LoginRequiredApproveRequiredMixin
 from usermanager.models import Organization
 from administrativelevels.models import AdministrativeLevel, Sector, Category
-from investments.models import Investment  # Make sure to import the Investment model
+from investments.models import Investment
 
 
 class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateView):
@@ -30,7 +30,7 @@ class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateVi
             ('not_funded',  _('Unfunded needs')),
             ('in_progress', _('Funded — in progress')),
             ('completed',   _('Funded — completed')),
-]
+        ]
         return context
 
     def get_filters_context(self):

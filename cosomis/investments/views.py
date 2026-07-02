@@ -370,6 +370,8 @@ class IndexListView(
             queryset = queryset.filter(project_status=Investment.IN_PROGRESS)
         elif funded_filter == "completed":
             queryset = queryset.filter(project_status=Investment.COMPLETED)
+        elif funded_filter == "funded_not_started":
+            queryset = queryset.filter(project_status=Investment.FUNDED_NOT_STARTED)
 
         return queryset.none()
 
