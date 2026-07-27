@@ -48,7 +48,7 @@ def update_or_create_adm_document(client, population_document):
     }
     # docs = Result(db.all_docs, include_docs=True, selector=selector).all()
 
-    adm_object = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
+    adm_object = AdministrativeLevel.objects.filter(no_sql_db_id=adm_id).first()
 
     extracted_population_data = None
 

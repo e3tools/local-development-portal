@@ -4580,3 +4580,6 @@ msgstr "K"
 
 #~ msgid "Not enough funds"
 #~ msgstr "Pas assez de fonds"
+
+#~ msgid "You are in test mode. Everything you do here will be ignored."
+#~ msgstr "Vous êtes en mode test. Tout ce que vous ferez ici sera ignoré."

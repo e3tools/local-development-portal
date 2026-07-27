@@ -66,7 +66,7 @@ def update_from_sous_composante(
 def update_investment_document(document):
     adm_id = document["administrative_level_id"]
 
-    administrative_level = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
+    administrative_level = AdministrativeLevel.objects.filter(no_sql_db_id=adm_id).first()
 
     if "form_response" in document:
         form_response_document = document.get("form_response")

@@ -37,8 +37,9 @@ class Command(BaseCommand):
                     break
                 extracted_attachments = get_attachments_from_database(task_documents)
                 if adm_id:
-                    adm = AdministrativeLevel.objects.get(no_sql_db_id=adm_id)
-                    save_attachments_to_purs_test(adm, extracted_attachments)
+                    adm = AdministrativeLevel.objects.filter(no_sql_db_id=adm_id).first()
+                    if adm:
+                        save_attachments_to_purs_test(adm, extracted_attachments)
         self.stdout.write(self.style.SUCCESS('Successfully extracted attachments!'))
 
 

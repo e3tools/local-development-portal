@@ -73,4 +73,9 @@
     {% if user.is_authenticated and user.password_changed_once == False %}
         pushNotify("{% translate 'Veuillez aller changer votre mot de passe dans la session Utilisateur.' %}", "error");
     {% endif %}
+
+    {% if ENVIRONNEMENT_EXECUTION == 'dev' %}
+        pushNotify("{% translate 'You are in test mode. Everything you do here will be ignored.' %}", "warning");
+    {% endif %}
+
 </script>
