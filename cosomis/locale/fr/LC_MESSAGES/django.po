@@ -3623,6 +3623,31 @@ msgstr "Type de sous-projet"
 msgid "Population priority"
 msgstr "Priorité de la population"
 
+#: .\investments\templates\investments\list.html:1122
+#: .\investments\templates\investments\list.html:1288
+msgid "History"
+msgstr "Historique"
+
+#: .\investments\serializers.py:148
+msgid "Previously rejected"
+msgstr "Déjà rejeté"
+
+#: .\administrativelevels\templates\shared\priorities_table.html:81
+#: .\administrativelevels\templates\canton\tabs\priorities.html:316
+#: .\administrativelevels\templates\commune\tabs\priorities.html:208
+#: .\administrativelevels\templates\commune\tabs\priorities.html:313
+msgid "previously rejected"
+msgstr "déjà rejeté"
+
+#: .\investments\serializers.py:144
+#: .\administrativelevels\templates\shared\priorities_table.html:82
+#: .\administrativelevels\templates\canton\tabs\priorities.html:316
+#: .\administrativelevels\templates\canton\tabs\priorities.html:426
+#: .\administrativelevels\templates\commune\tabs\priorities.html:208
+#: .\administrativelevels\templates\commune\tabs\priorities.html:313
+msgid "Unknown organization"
+msgstr "Organisation inconnue"
+
 #: .\investments\templates\investments\cart.html:257
 msgid "Are you sure do you want to clear the package?"
 msgstr "Êtes-vous sûr de vouloir déballer le colis?"

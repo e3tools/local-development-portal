@@ -3573,6 +3573,31 @@ msgstr ""
 msgid "Population priority"
 msgstr ""
 
+#: .\investments\templates\investments\list.html:1122
+#: .\investments\templates\investments\list.html:1288
+msgid "History"
+msgstr ""
+
+#: .\investments\serializers.py:148
+msgid "Previously rejected"
+msgstr ""
+
+#: .\administrativelevels\templates\shared\priorities_table.html:81
+#: .\administrativelevels\templates\canton\tabs\priorities.html:316
+#: .\administrativelevels\templates\commune\tabs\priorities.html:208
+#: .\administrativelevels\templates\commune\tabs\priorities.html:313
+msgid "previously rejected"
+msgstr ""
+
+#: .\investments\serializers.py:144
+#: .\administrativelevels\templates\shared\priorities_table.html:82
+#: .\administrativelevels\templates\canton\tabs\priorities.html:316
+#: .\administrativelevels\templates\canton\tabs\priorities.html:426
+#: .\administrativelevels\templates\commune\tabs\priorities.html:208
+#: .\administrativelevels\templates\commune\tabs\priorities.html:313
+msgid "Unknown organization"
+msgstr ""
+
 #: .\investments\templates\investments\cart.html:257
 msgid "Are you sure do you want to clear the package?"
 msgstr ""

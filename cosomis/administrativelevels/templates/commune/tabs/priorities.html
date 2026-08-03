@@ -201,6 +201,16 @@
 							<td>
 								{% if investment.project_status == investment.NOT_FUNDED %}
 									{{ investment.get_project_status_display }}
+									{% with investment.get_last_rejection as rejection %}
+									{% if rejection %}
+										<br>
+										<span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+											  data-reason="{{ rejection.reason|default:_('No reason provided') }}">
+											{% translate "previously rejected" %} ({{ rejection.organization|default:_('Unknown organization') }})
+											<i class="fas fa-info-circle"></i>
+										</span>
+									{% endif %}
+									{% endwith %}
 								{% else %}
 									<span class="text-success">{% translate 'Funded' %}</span>
 								{% endif %}
@@ -298,6 +308,16 @@
 										{% endif %}
 										<input type="hidden" name="cart-toggle" value="{{ investment.id }}">
 									</form>
+									{% with investment.get_last_rejection as rejection %}
+									{% if rejection %}
+										<br>
+										<span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+											  data-reason="{{ rejection.reason|default:_('No reason provided') }}">
+											{% translate "previously rejected" %} ({{ rejection.organization|default:_('Unknown organization') }})
+											<i class="fas fa-info-circle"></i>
+										</span>
+									{% endif %}
+									{% endwith %}
 								{% endif %}
 							</td>
 						</tr>

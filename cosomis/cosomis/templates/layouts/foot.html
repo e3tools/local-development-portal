@@ -69,6 +69,14 @@
 
 <script src="{% static 'js/notifications.js' %}"></script>
 <script src="{% static 'js/htmx.min.js' %}"></script>
+<!-- Modale partagée "raison de rejet" (cf. common/rejection_reason_modal.html) -->
+<script type="text/javascript">
+    $(document).on('click', '.show-rejection-reason', function () {
+        var reason = $(this).data('reason');
+        $('#rejection-reason-text').text(reason);
+        $('#rejectionReasonModal').modal('show');
+    });
+</script>
 <script type="text/javascript">
     {% if user.is_authenticated and user.password_changed_once == False %}
         pushNotify("{% translate 'Veuillez aller changer votre mot de passe dans la session Utilisateur.' %}", "error");

@@ -75,7 +75,18 @@
                 {% if investment.funded_by %}
                     {{ investment.funded_by.name }}
                 {% else %}
-                    {% translate "Not Funded" %}
+                    {% with investment.get_last_rejection as rejection %}
+                    {% if rejection %}
+                        {% translate "Not Funded" %} -
+                        <span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+                              data-reason="{{ rejection.reason|default:_('No reason provided') }}">
+                            {% translate "previously rejected" %} ({{ rejection.organization|default:_('Unknown organization') }})
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+                    {% else %}
+                        {% translate "Not Funded" %}
+                    {% endif %}
+                    {% endwith %}
                 {% endif %}
             </td>
             <td class="border-sides--light">{% if investment.climate_contribution %}{{ investment.climate_contribution_text }}{% else %}

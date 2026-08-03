@@ -306,7 +306,21 @@
 								<td class="text-center">{% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
 								<td>{% if investment.total_beneficiaries %}{{ investment.total_beneficiaries|intcomma }}{% else %}-{% endif %}</td>
 								<td>{% if investment.estimated_cost %}{{ investment.estimated_cost|intcomma }}{% else %}-{% endif %}</td>
-								<td>{{ investment.funded_by.name }}</td>
+								<td>
+									{% if investment.funded_by %}
+										{{ investment.funded_by.name }}
+									{% else %}
+										{% with investment.get_last_rejection as rejection %}
+										{% if rejection %}
+											<span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+												  data-reason="{{ rejection.reason|default:_('No reason provided') }}">
+												{% translate "previously rejected" %} ({{ rejection.organization|default:_('Unknown organization') }})
+												<i class="fas fa-info-circle"></i>
+											</span>
+										{% endif %}
+										{% endwith %}
+									{% endif %}
+								</td>
 								<td>
 									{% if investment.climate_contribution %}
 										{{ investment.climate_contribution_text }}
@@ -408,7 +422,17 @@
 									{% if investment.funded_by %}
 										<span class="badge badge-success">{{ investment.funded_by.name }}</span>
 									{% else %}
-										—
+										{% with investment.get_last_rejection as rejection %}
+										{% if rejection %}
+											<span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+												  data-reason="{{ rejection.reason|default:_('No reason provided') }}">
+												{% translate "Rejected" %}: {{ rejection.organization|default:_('Unknown organization') }}
+												<i class="fas fa-info-circle"></i>
+											</span>
+										{% else %}
+											—
+										{% endif %}
+										{% endwith %}
 									{% endif %}
 								</td>
 								<td>

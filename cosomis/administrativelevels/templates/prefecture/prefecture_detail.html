@@ -107,6 +107,11 @@
 
 {% endblock %}
 
+{% block modals %}
+    {{ block.super }}
+    {% include 'common/rejection_reason_modal.html' %}
+{% endblock %}
+
 {% block javascript %}
     {{ block.super }}
     <!-- Attachments script for carrousel -->

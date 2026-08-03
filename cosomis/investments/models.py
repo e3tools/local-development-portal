@@ -111,8 +111,30 @@ class Investment(BaseModel): # Investment module
             return ", ".join([p.name for p in projects])
         else:
             return projects
-        
-        
+
+    def get_last_rejection(self):
+        """Most recent rejected package claim on this investment (organization + reason).
+
+        Only relevant while the investment is available again (no current
+        funded_by) — an investment currently claimed by a partner doesn't
+        need its past rejection history surfaced.
+        """
+        if self.funded_by_id is not None:
+            return None
+        pfi = (
+            PackageFundedInvestment.objects
+            .filter(investment_id=self.pk, status=PackageFundedInvestment.REJECTED)
+            .select_related('package__project__organization')
+            .order_by('-updated_date')
+            .first()
+        )
+        if pfi is None:
+            return None
+        return {
+            'organization': pfi.package.project.organization if pfi.package.project_id else None,
+            'reason': pfi.rejection_reason,
+        }
+
     def __str__(self):
         return f'{self.title}'
 

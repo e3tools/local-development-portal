@@ -1116,6 +1116,11 @@
                                                data-column="9" id="customSwitchPopulation" type="checkbox">
                                         <label class="custom-control-label" for="customSwitchPopulation">{% translate 'Population priority' %}</label>
                                     </div>
+                                    <div class="custom-control custom-switch">
+                                        <input checked class="custom-control-input column-switch"
+                                               data-column="10" id="customSwitchHistory" type="checkbox">
+                                        <label class="custom-control-label" for="customSwitchHistory">{% translate 'History' %}</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1280,6 +1285,7 @@
                                 <th data-priority="8" class="align-middle">{{ adm_labels.prefecture }}</th>
                                 <th data-priority="9" class="align-middle">{% translate 'Village priority' %}</th>
                                 <th data-priority="10" class="align-middle">{% translate 'Population priority' %}</th>
+                                <th data-priority="11" class="align-middle">{% translate 'History' %}</th>
                             </thead>
                         <tbody>
                         {% for investments in object_list %}
@@ -1405,6 +1411,8 @@
         </div>
     </div>
 </div>
+
+{% include 'common/rejection_reason_modal.html' %}
 
 {% endblock %}
 

@@ -258,6 +258,7 @@ class IndexListView(
             {'data': 'administrative_level__parent__parent__parent__name'},
             {'data': 'ranking'},
             {'data': 'population_priority', 'name': 'population_priority', 'searchable': 'false', 'orderable': 'false'},
+            {'data': 'rejection_history', 'name': 'rejection_history', 'searchable': 'false', 'orderable': 'false'},
 
         ]
         context["datatable_config"]["order"] = [3, 'asc']

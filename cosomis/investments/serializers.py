@@ -30,6 +30,7 @@ class InvestmentSerializer(serializers.ModelSerializer):
     estimated_cost = serializers.SerializerMethodField()
     ranking = serializers.SerializerMethodField()
     administrative_level__type_with_projects_priority_came_from = serializers.SerializerMethodField()
+    rejection_history = serializers.SerializerMethodField()
 
 
     class Meta:
@@ -135,6 +136,18 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     def get_projects_priority_came_from(self, obj):
         return obj.get_projects_priority_came_from()
+
+    def get_rejection_history(self, obj):
+        rejection = obj.get_last_rejection()
+        if not rejection:
+            return format_html('<span class="inv-muted">—</span>')
+        organization = rejection['organization'] or _('Unknown organization')
+        reason = rejection['reason'] or _('No reason provided')
+        return format_html(
+            '<span class="badge badge-warning show-rejection-reason" style="cursor:pointer;" data-reason="{1}">'
+            '{0}: {2} <i class="fas fa-info-circle"></i></span>',
+            _('Previously rejected'), reason, organization,
+        )
 
     def get_administrative_level__type_with_projects_priority_came_from(self, obj):
         adm_type = self.get_administrative_level__type(obj)
