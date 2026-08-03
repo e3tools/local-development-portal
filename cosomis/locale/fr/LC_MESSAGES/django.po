@@ -3500,11 +3500,13 @@ msgstr "Rejeté"
 msgid "Under Execution"
 msgstr "En construction"
 
-#: .\investments\models.py:132
+#: .\investments\models.py:135
 #: .\investments\templates\investments\investor\approvals_list.html:94
 #: .\investments\templates\investments\investor\package_review.html:52
-msgid "Partially Approved"
-msgstr "Approbation Partielle"
+#: .\investments\templates\investments\moderator\approvals_list.html:144
+#: .\investments\templates\investments\moderator\package_review.html:374
+msgid "Partially Processed"
+msgstr "Partiellement traité"
 
 #: .\investments\models.py:137
 #: .\investments\templates\investments\moderator\approvals_list.html:146
@@ -3989,10 +3991,6 @@ msgstr "Non renseignée"
 msgid "No account has been created yet."
 msgstr "Aucun compte n'a encore été créé."
 
-#: .\investments\templates\investments\moderator\approvals_list.html:144
-msgid "Partially Approve"
-msgstr "Approbation partielle"
-
 #: .\investments\templates\investments\moderator\approvals_list.html:151
 msgid "Review"
 msgstr "Examiner"
@@ -4004,10 +4002,6 @@ msgstr "Traité par"
 #: .\investments\templates\investments\moderator\package_review.html:346
 msgid "# Villages:"
 msgstr "# Villages:"
-
-#: .\investments\templates\investments\moderator\package_review.html:374
-msgid "Partially Approval"
-msgstr "Approbation Partielle"
 
 #: .\investments\templates\investments\moderator\package_review.html:510
 msgid "Request resubmission of package"

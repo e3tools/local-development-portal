@@ -3454,10 +3454,12 @@ msgstr ""
 msgid "Under Execution"
 msgstr ""
 
-#: .\investments\models.py:132
+#: .\investments\models.py:135
 #: .\investments\templates\investments\investor\approvals_list.html:94
 #: .\investments\templates\investments\investor\package_review.html:52
-msgid "Partially Approved"
+#: .\investments\templates\investments\moderator\approvals_list.html:144
+#: .\investments\templates\investments\moderator\package_review.html:374
+msgid "Partially Processed"
 msgstr ""
 
 #: .\investments\models.py:137
@@ -3907,10 +3909,6 @@ msgstr ""
 msgid "No account has been created yet."
 msgstr ""
 
-#: .\investments\templates\investments\moderator\approvals_list.html:144
-msgid "Partially Approve"
-msgstr ""
-
 #: .\investments\templates\investments\moderator\approvals_list.html:151
 msgid "Review"
 msgstr ""
@@ -3921,10 +3919,6 @@ msgstr ""
 
 #: .\investments\templates\investments\moderator\package_review.html:346
 msgid "# Villages:"
-msgstr ""
-
-#: .\investments\templates\investments\moderator\package_review.html:374
-msgid "Partially Approval"
 msgstr ""
 
 #: .\investments\templates\investments\moderator\package_review.html:510

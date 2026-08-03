@@ -132,7 +132,7 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
         (APPROVED, _("Approved")),
         (REJECTED, _("Rejected")),
         (UNDER_EXECUTION, _("Under Execution")),
-        (PARTIALLY_APPROVED, _("Partially Approved")),
+        (PARTIALLY_APPROVED, _("Partially Processed")),
         (SELECTED_BY_GOVERNMENT, _("Selected by Government")),
         (CLOSED, _("Closed")),
     )

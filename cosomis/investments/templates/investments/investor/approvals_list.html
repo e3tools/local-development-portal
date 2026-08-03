@@ -91,7 +91,7 @@
                                         {% elif package.status == package.PARTIALLY_APPROVED %}
                                         <span class="badge badge-info show-rejection-reason" style="cursor:pointer;"
                                               data-reason="{% translate 'Some items were rejected. Click View details to see individual reasons.' %}">
-                                            {% translate 'Partially Approved' %} <i class="fas fa-info-circle"></i>
+                                            {% translate 'Partially Processed' %} <i class="fas fa-info-circle"></i>
                                         </span>
                                         {% elif package.status == package.CLOSED %}
                                         <span class="badge badge-dark show-rejection-reason" style="cursor:pointer;"
