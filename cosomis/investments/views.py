@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Subquery, Sum, Count
+from django.db.models import Subquery, Sum, Count, Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -707,6 +707,7 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
             "packages_overdue": package_queryset.filter(updated_date__lt=overdue_date),
             "user_list": user_queryset,
             "users_overdue": user_queryset.filter(date_joined__lt=overdue_date),
+            "organization_stats": self.get_organization_stats(),
         }
         context.update(kwargs)
 
@@ -738,6 +739,34 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
             is_approved=None, is_moderator=False
         ).order_by("date_joined")
         return queryset
+
+    def get_organization_stats(self):
+        queryset = (
+            self.user_model._default_manager.filter(is_moderator=False)
+            .values("organization_id", "organization__name")
+            .annotate(
+                total_accounts=Count("id"),
+                approved_accounts=Count("id", filter=Q(is_approved=True)),
+            )
+            .order_by("organization__name")
+        )
+
+        # Calculé séparément (plutôt qu'en annotation combinée sur le même
+        # queryset) pour éviter le gonflement classique des Count() de Django
+        # quand deux relations one-to-many différentes sont agrégées ensemble.
+        investments_by_organization = dict(
+            Investment.objects.filter(funded_by__organization_id__isnull=False)
+            .values("funded_by__organization_id")
+            .annotate(total=Count("id"))
+            .values_list("funded_by__organization_id", "total")
+        )
+
+        stats = list(queryset)
+        for stat in stats:
+            stat["total_investments"] = investments_by_organization.get(
+                stat["organization_id"], 0
+            )
+        return stats
 
 
 class ModeratorPackageReviewView(

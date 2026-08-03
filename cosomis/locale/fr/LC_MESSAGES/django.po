@@ -3506,6 +3506,14 @@ msgstr "En construction"
 msgid "Partially Approved"
 msgstr "Approbation Partielle"
 
+#: .\investments\models.py:137
+#: .\investments\templates\investments\moderator\approvals_list.html:146
+#: .\investments\templates\investments\moderator\package_review.html:376
+#: .\investments\templates\investments\investor\approvals_list.html:99
+#: .\investments\templates\investments\investor\package_review.html:54
+msgid "Closed"
+msgstr "Clôturé"
+
 #: .\investments\models.py:133
 msgid "Selected by Government"
 msgstr "Sélectionné par le gouvernement"
@@ -3961,9 +3969,33 @@ msgstr "Courrier indésirable"
 msgid "Submission approval requests"
 msgstr "Demande d'approbation pour financement"
 
+#: .\investments\templates\investments\moderator\approvals_list.html:169
+msgid "Accounts created and approved by organization"
+msgstr "Comptes créés et approuvés par organisation"
+
+#: .\investments\templates\investments\moderator\approvals_list.html:181
+msgid "Accounts created"
+msgstr "Comptes créés"
+
+#: .\investments\templates\investments\moderator\approvals_list.html:182
+msgid "Accounts approved"
+msgstr "Comptes approuvés"
+
+#: .\investments\templates\investments\moderator\approvals_list.html:183
+msgid "Not specified"
+msgstr "Non renseignée"
+
+#: .\investments\templates\investments\moderator\approvals_list.html:194
+msgid "No account has been created yet."
+msgstr "Aucun compte n'a encore été créé."
+
 #: .\investments\templates\investments\moderator\approvals_list.html:144
 msgid "Partially Approve"
 msgstr "Approbation partielle"
+
+#: .\investments\templates\investments\moderator\approvals_list.html:151
+msgid "Review"
+msgstr "Examiner"
 
 #: .\investments\templates\investments\moderator\approvals_list.html:149
 msgid "Review by"
@@ -4011,6 +4043,7 @@ msgstr ""
 
 #: .\investments\templates\investments\profile.html:41
 #: .\investments\templates\investments\profile.html:90
+#: .\investments\templates\investments\moderator\approvals_list.html:186
 msgid "Total investments"
 msgstr "Investissements"
 

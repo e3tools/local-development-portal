@@ -11,7 +11,7 @@ def notifications(request):
             'has_urgent_approvals': False
         }
     try:
-        if request.user.is_moderator:
+        if request.user.is_moderator or request.user.is_superuser:
             max_response_day = settings.MAX_RESPONSE_DAYS if hasattr(settings, 'MAX_RESPONSE_DAYS') else 3
             urgent_day = datetime.now() - timedelta(days=max_response_day)
 

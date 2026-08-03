@@ -5,6 +5,8 @@ from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.db import models, transaction
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
 
@@ -123,6 +125,7 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     UNDER_EXECUTION = "E"
     PARTIALLY_APPROVED = "PA"
     SELECTED_BY_GOVERNMENT = "SG"
+    CLOSED = "C"
     STATUS = (
         (PENDING_SUBMISSION, _("Pending Submission")),
         (PENDING_APPROVAL, _("Pending Approval")),
@@ -131,6 +134,7 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
         (UNDER_EXECUTION, _("Under Execution")),
         (PARTIALLY_APPROVED, _("Partially Approved")),
         (SELECTED_BY_GOVERNMENT, _("Selected by Government")),
+        (CLOSED, _("Closed")),
     )
 
     objects = PackageQuerySet.as_manager()
@@ -196,25 +200,31 @@ class PackageFundedInvestment(BaseModel):
             if reason:
                 self.rejection_reason = reason
             self.save()
-            # Remettre funded_by à None pour que l'investissement rejeté
-            # redevienne disponible sur la page "Financer un projet"
+            # Remettre funded_by à None et le statut à "Non Financé" pour que
+            # l'investissement rejeté redevienne disponible partout (catalogue
+            # "Financer un projet" et onglets Priorités village/commune/canton)
             self.investment.funded_by = None
-            self.investment.save(update_fields=["funded_by"])
+            self.investment.project_status = Investment.NOT_FUNDED
+            self.investment.save(update_fields=["funded_by", "project_status"])
             self.update_package_status()
 
     def update_package_status(self):
         packages = PackageFundedInvestment.objects.filter(package_id=self.package_id)
         pending = packages.filter(status__in=self.PENDING_APPROVAL).count()
-
-        if pending > 0:
-            self.package.status = self.package.PENDING_APPROVAL
-            self.package.save()
-            return
-
         approved = packages.filter(status__in=self.APPROVED).count()
         rejected = packages.filter(status__in=self.REJECTED).count()
 
-        if approved > 0 and rejected == 0:
+        if pending > 0:
+            # Dès qu'au moins un élément a été traité, le paquet est "Partiellement
+            # approuvé" (et reste consultable/actionnable pour le reste) plutôt que
+            # de rester "En attente d'approbation" jusqu'à ce que tout soit traité.
+            self.package.status = (
+                self.package.PARTIALLY_APPROVED
+                if (approved > 0 or rejected > 0)
+                else self.package.PENDING_APPROVAL
+            )
+
+        elif approved > 0 and rejected == 0:
             self.package.status = self.package.APPROVED
 
         elif rejected > 0 and approved == 0:
@@ -224,6 +234,46 @@ class PackageFundedInvestment(BaseModel):
             self.package.status = self.package.PARTIALLY_APPROVED
 
         self.package.save()
+
+
+@receiver(m2m_changed, sender=Package.funded_investments.through)
+def sync_investment_status_on_selection(sender, instance, action, pk_set, reverse, **kwargs):
+    """Garde Investment.project_status synchronisé avec sa présence dans un panier.
+
+    Dès qu'un partenaire sélectionne un investissement (quel que soit l'écran :
+    catalogue "Financer un projet" ou onglets Priorités village/commune/canton),
+    celui-ci passe à FUNDED pour qu'il disparaisse partout des listes en attente
+    de financement. S'il est retiré avant traitement par un modérateur, il repasse
+    à NOT_FUNDED et funded_by est réinitialisé pour redevenir disponible.
+    """
+    if reverse:
+        # Ce signal ne gère que le sens Package -> Investments utilisé par l'app.
+        return
+
+    if action == "pre_clear":
+        instance._investments_before_clear = list(
+            instance.funded_investments.values_list("pk", flat=True)
+        )
+        return
+
+    if action == "post_add" and pk_set:
+        # Ne "promeut" que les investissements encore Non Financé : n'écrase jamais
+        # un statut déjà plus avancé (ex. import en masse déjà En cours/Terminé).
+        Investment.objects.filter(
+            pk__in=pk_set, project_status=Investment.NOT_FUNDED
+        ).update(project_status=Investment.FUNDED)
+
+    elif action == "post_remove" and pk_set:
+        Investment.objects.filter(pk__in=pk_set).update(
+            project_status=Investment.NOT_FUNDED, funded_by=None
+        )
+
+    elif action == "post_clear":
+        investment_ids = getattr(instance, "_investments_before_clear", [])
+        if investment_ids:
+            Investment.objects.filter(pk__in=investment_ids).update(
+                project_status=Investment.NOT_FUNDED, funded_by=None
+            )
 
 
 class Attachment(BaseModel):

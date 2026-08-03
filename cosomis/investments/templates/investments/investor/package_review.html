@@ -50,6 +50,8 @@
                                     <span class="badge badge-primary">{% translate 'Under Execution' %}</span>
                                 {% elif package.status == package.PARTIALLY_APPROVED %}
                                     <span class="badge badge-info">{% translate 'Partially Approved' %}</span>
+                                {% elif package.status == package.CLOSED %}
+                                    <span class="badge badge-dark">{% translate 'Closed' %}</span>
                                 {% endif %}
                             </b>
                         </p>

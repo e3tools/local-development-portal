@@ -142,15 +142,61 @@
                                         {% translate 'Under Execution' %}
                                         {% elif package.status == package.PARTIALLY_APPROVED %}
                                         {% translate 'Partially Approve' %}
+                                        {% elif package.status == package.CLOSED %}
+                                        {% translate 'Closed' %}
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if package.status != package.PENDING_APPROVAL and package.status != package.PENDING_SUBMISSION %}
+                                        {% if package.status == package.PENDING_APPROVAL or package.status == package.PENDING_SUBMISSION or package.status == package.PARTIALLY_APPROVED %}
+                                        <a href="{% url 'investments:package_review' package.pk %}" class="btn btn-xs btn-primary">{% translate 'Review' %}</a>
+                                        {% endif %}
+                                        {% if package.review_by %}
                                             <span>{% translate 'Review by' %}</span> <b>{{ package.review_by }}</b>
-                                        {% else %}
-                                        <a href="{% url 'investments:package_review' package.pk %}" class="btn btn-xs btn-primary">Review</a>
                                         {% endif %}
                                     </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="headingThree">
+                <h5 class="mb-0">
+                    <button aria-controls="collapseThree" aria-expanded="false" class="btn btn-link"
+                            data-target="#collapseThree" data-toggle="collapse">
+                         {% translate 'Accounts created and approved by organization' %}
+                    </button>
+                </h5>
+            </div>
+            <div aria-labelledby="headingThree" class="collapse show" id="collapseThree">
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{% translate 'Organization' %}</th>
+                                    <th>{% translate 'Accounts created' %}</th>
+                                    <th>{% translate 'Accounts approved' %}</th>
+                                    <th>{% translate 'Total investments' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for stat in organization_stats %}
+                                <tr>
+                                    <td>{{ stat.organization__name|default:_("Not specified") }}</td>
+                                    <td>{{ stat.total_accounts|intcomma }}</td>
+                                    <td>{{ stat.approved_accounts|intcomma }}</td>
+                                    <td>{{ stat.total_investments|intcomma }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4">{% translate 'No account has been created yet.' %}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

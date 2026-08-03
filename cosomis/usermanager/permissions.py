@@ -269,7 +269,12 @@ class IsModeratorMixin(UserPassesTestMixin):
     permission_denied_message = ''
 
     def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.is_approved and self.request.user.is_moderator
+        user = self.request.user
+        if not user.is_authenticated:
+            return False
+        if user.is_superuser:
+            return True
+        return bool(user.is_approved) and user.is_moderator
 
 
 class IsInvestorMixin(UserPassesTestMixin):

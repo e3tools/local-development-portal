@@ -372,10 +372,12 @@
                                         {% translate 'Under Execution' %}
                                     {% elif package.status == package.PARTIALLY_APPROVED %}
                                         {% translate 'Partially Approval' %}
+                                    {% elif package.status == package.CLOSED %}
+                                        {% translate 'Closed' %}
                                     {% endif %}
                         </div>
                         <br>
-                        {% if package.status != package.PARTIALLY_APPROVED and package.status != package.APPROVE and package.status != package.REJECTED %}
+                        {% if package.status != package.PARTIALLY_APPROVED and package.status != package.APPROVED and package.status != package.REJECTED and package.status != package.CLOSED %}
                         <form action="" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="investments-from">

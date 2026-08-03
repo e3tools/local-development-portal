@@ -3460,6 +3460,14 @@ msgstr ""
 msgid "Partially Approved"
 msgstr ""
 
+#: .\investments\models.py:137
+#: .\investments\templates\investments\moderator\approvals_list.html:146
+#: .\investments\templates\investments\moderator\package_review.html:376
+#: .\investments\templates\investments\investor\approvals_list.html:99
+#: .\investments\templates\investments\investor\package_review.html:54
+msgid "Closed"
+msgstr ""
+
 #: .\investments\models.py:133
 msgid "Selected by Government"
 msgstr ""
@@ -3879,8 +3887,32 @@ msgstr ""
 msgid "Submission approval requests"
 msgstr ""
 
+#: .\investments\templates\investments\moderator\approvals_list.html:169
+msgid "Accounts created and approved by organization"
+msgstr ""
+
+#: .\investments\templates\investments\moderator\approvals_list.html:181
+msgid "Accounts created"
+msgstr ""
+
+#: .\investments\templates\investments\moderator\approvals_list.html:182
+msgid "Accounts approved"
+msgstr ""
+
+#: .\investments\templates\investments\moderator\approvals_list.html:183
+msgid "Not specified"
+msgstr ""
+
+#: .\investments\templates\investments\moderator\approvals_list.html:194
+msgid "No account has been created yet."
+msgstr ""
+
 #: .\investments\templates\investments\moderator\approvals_list.html:144
 msgid "Partially Approve"
+msgstr ""
+
+#: .\investments\templates\investments\moderator\approvals_list.html:151
+msgid "Review"
 msgstr ""
 
 #: .\investments\templates\investments\moderator\approvals_list.html:149
@@ -3925,6 +3957,7 @@ msgstr ""
 
 #: .\investments\templates\investments\profile.html:41
 #: .\investments\templates\investments\profile.html:90
+#: .\investments\templates\investments\moderator\approvals_list.html:186
 msgid "Total investments"
 msgstr ""
 

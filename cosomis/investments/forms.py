@@ -70,7 +70,7 @@ class PackageApprovalForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean(self):
-        if self.user is None or not self.user.is_moderator:
+        if self.user is None or not (self.user.is_moderator or self.user.is_superuser):
             raise Exception("Moderator user required.")
 
     def save(self):
@@ -84,11 +84,25 @@ class PackageApprovalForm(forms.Form):
             package.status = Package.APPROVED
         package.review_by = self.user
         package.save()
-        package_funded_investments = PackageFundedInvestment.objects.filter(package_id=package.id)
+        package_funded_investments = PackageFundedInvestment.objects.select_related('investment').filter(package_id=package.id)
+        released_investments = []
+        package_is_rejected = package.status in (Package.REJECTED, Package.CLOSED)
+        # CLOSED n'existe pas dans les statuts (P/A/R) d'un item : un paquet clôturé
+        # reflète quand même chaque item comme rejeté.
+        item_status = PackageFundedInvestment.REJECTED if package_is_rejected else package.status
         for package_item in package_funded_investments:
-            package_item.status = package.status
+            package_item.status = item_status
             package_item.rejection_reason = package.rejection_reason
             package_item.save()
+            if package_is_rejected:
+                # Libérer l'investissement pour qu'il redevienne disponible
+                # (catalogue "Financer un projet" et onglets Priorités),
+                # comme le fait déjà le rejet ligne par ligne.
+                package_item.investment.funded_by = None
+                package_item.investment.project_status = Investment.NOT_FUNDED
+                released_investments.append(package_item.investment)
+        if released_investments:
+            Investment.objects.bulk_update(released_investments, ['funded_by', 'project_status'])
 
 
 class UserApprovalForm(forms.Form):
