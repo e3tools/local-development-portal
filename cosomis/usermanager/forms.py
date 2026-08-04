@@ -3,6 +3,7 @@ import unicodedata
 from django.contrib.auth import authenticate, get_user_model, password_validation
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.contrib.auth.hashers import UNUSABLE_PASSWORD_PREFIX, identify_hasher
 from django import forms
 from django.utils.translation import gettext as _
@@ -155,10 +156,21 @@ class UserCreationForm(forms.ModelForm):
         label=_("Organization"),
         queryset=Organization.objects.all()
     )
+    phone = forms.CharField(
+        label=_("Phone number"),
+        required=True,
+        validators=[
+            RegexValidator(
+                r"^\+?[0-9\s\-]{6,20}$",
+                _("Enter a valid phone number."),
+            )
+        ],
+        widget=forms.TextInput(attrs={"placeholder": _("Phone number")}),
+    )
 
     class Meta:
         model = UserModel
-        fields = ("username", "password1", "password2", "organization")
+        fields = ("username", "password1", "password2", "phone", "organization")
         field_classes = {"username": UsernameField}
 
     def __init__(self, *args, **kwargs):

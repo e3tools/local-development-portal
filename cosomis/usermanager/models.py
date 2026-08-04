@@ -103,7 +103,11 @@ class User(AbstractUser):
 
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL,
                                      null=True, blank=True, related_name='users')
-    
+
+    # Nullable au niveau base (pour ne pas casser les comptes existants) ;
+    # rendu obligatoire au niveau du formulaire d'inscription.
+    phone = models.CharField(_("phone number"), max_length=20, null=True, blank=True)
+
     password_changed_once = models.BooleanField(null=True, blank=True, default=None)
 
     objects = UserManager()

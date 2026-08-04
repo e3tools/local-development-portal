@@ -76,6 +76,18 @@ msgstr ""
 msgid "Active organizations"
 msgstr ""
 
+#: .\usermanager\models.py:109
+msgid "phone number"
+msgstr ""
+
+#: .\usermanager\forms.py:160
+#: .\usermanager\forms.py:168
+msgid "Phone number"
+msgstr ""
+
+#: .\usermanager\forms.py:165
+msgid "Enter a valid phone number."
+msgstr ""
 #: .\administrativelevels\forms.py:52 .\administrativelevels\models.py:367
 #: .\dashboard\views_administrativelevels.py:245
 #: .\dashboard\views_administrativelevels.py:249
