@@ -700,6 +700,7 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
         overdue_date = datetime.now() - timedelta(days=settings.MAX_RESPONSE_DAYS)
         package_queryset = self.package_list
         user_queryset = self.user_list
+        organization_stats = self.get_organization_stats()
         context = {
             "paginator": None,
             "page_obj": None,
@@ -708,7 +709,13 @@ class ModeratorApprovalsListView(IsModeratorMixin, PageMixin, generic.ListView):
             "packages_overdue": package_queryset.filter(updated_date__lt=overdue_date),
             "user_list": user_queryset,
             "users_overdue": user_queryset.filter(date_joined__lt=overdue_date),
-            "organization_stats": self.get_organization_stats(),
+            "organization_stats": organization_stats,
+            "organization_stats_totals": {
+                "total_accounts": sum(stat["total_accounts"] for stat in organization_stats),
+                "approved_accounts": sum(stat["approved_accounts"] for stat in organization_stats),
+                "total_investments": sum(stat["total_investments"] for stat in organization_stats),
+            },
+            "datatable_config": get_datatable_config(),
         }
         context.update(kwargs)
 

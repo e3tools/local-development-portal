@@ -177,7 +177,7 @@
                 <div class="card-body">
 
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover" id="organization-stats-table">
                             <thead>
                                 <tr>
                                     <th>{% translate 'Organization' %}</th>
@@ -200,6 +200,16 @@
                                 </tr>
                             {% endfor %}
                             </tbody>
+                            {% if organization_stats %}
+                            <tfoot>
+                                <tr class="font-weight-bold">
+                                    <td>{% translate 'Total' %}</td>
+                                    <td>{{ organization_stats_totals.total_accounts|intcomma }}</td>
+                                    <td>{{ organization_stats_totals.approved_accounts|intcomma }}</td>
+                                    <td>{{ organization_stats_totals.total_investments|intcomma }}</td>
+                                </tr>
+                            </tfoot>
+                            {% endif %}
                         </table>
                     </div>
 
@@ -237,8 +247,17 @@
 
 {% block javascript %}
 {{ block.super }}
+{% include 'layouts/datatable-js.html' %}
 <script type="text/javascript">
     $( document ).ready(function() {
+
+        $('#organization-stats-table').DataTable(
+            Object.assign({{ datatable_config|safe }}, {
+                order: [[3, 'desc']],
+                dom: 'Bfrtip',
+                buttons: ['excel'],
+            })
+        );
 
         $('.user-form-action').on('click', function(){
 
