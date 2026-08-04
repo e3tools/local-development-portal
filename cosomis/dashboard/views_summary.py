@@ -5,6 +5,8 @@ from cosomis.mixins import LoginRequiredApproveRequiredMixin
 from usermanager.models import Organization
 from administrativelevels.models import AdministrativeLevel, Sector, Category
 from investments.models import Investment  # Make sure to import the Investment model
+from investments.services import get_organization_account_stats
+from static.config.datatable import get_datatable_config
 
 
 class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateView):
@@ -23,6 +25,18 @@ class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateVi
         context['country_iso_code'] = settings.DIAGNOSTIC_MAP_ISO_CODE
         context.update(self.get_filters_context())
         context['project_statuses'] = Investment.PROJECT_STATUS_CHOICES
+
+        organization_stats = get_organization_account_stats()
+        context['organization_stats'] = organization_stats
+        context['organization_stats_totals'] = {
+            'total_accounts': sum(stat['total_accounts'] for stat in organization_stats),
+            'approved_accounts': sum(stat['approved_accounts'] for stat in organization_stats),
+            'total_investments': sum(stat['total_investments'] for stat in organization_stats),
+        }
+        context['active_organizations_count'] = sum(
+            1 for stat in organization_stats if stat['organization_id'] is not None
+        )
+        context['datatable_config'] = get_datatable_config()
         return context
 
     def get_filters_context(self):

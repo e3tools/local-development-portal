@@ -72,6 +72,10 @@ msgstr "Description"
 msgid "Organization"
 msgstr "Organisation"
 
+#: .\dashboard\templates\dashboard_summary.html:414
+msgid "Active organizations"
+msgstr "Organisations actives"
+
 #: .\administrativelevels\forms.py:52 .\administrativelevels\models.py:367
 #: .\dashboard\views_administrativelevels.py:245
 #: .\dashboard\views_administrativelevels.py:249

@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load static i18n bootstrap4 custom_tags %}
+{% load static i18n humanize bootstrap4 custom_tags %}
 
 {% block extracss %}
     {{ block.super }}
@@ -403,13 +403,98 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="card stat-card mb-3" data-toggle="modal" data-target="#activeOrganizationsModal" style="cursor:pointer;">
+                    <div class="card-body">
+                        <div class="stat-head" style="justify-content: space-between;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span class="stat-icon">
+                                    <i class="fas fa-building" style="font-size:16px;"></i>
+                                </span>
+                                <h5 class="stat-title mb-0">{% translate 'Active organizations' %}</h5>
+                            </div>
+                            <span class="text-muted"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <h2 class="stat-value">{{ active_organizations_count }}</h2>
+                    </div>
+                </div>
             </div>
 
         </div>
     </div>
 {% endblock %}
+
+{% block modals %}
+    {{ block.super }}
+    <div class="modal fade" id="activeOrganizationsModal" tabindex="-1" role="dialog" aria-labelledby="activeOrganizationsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="activeOrganizationsModalLabel">{% translate 'Accounts created and approved by organization' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="dashboard-organization-stats-table">
+                            <thead>
+                                <tr>
+                                    <th>{% translate 'Organization' %}</th>
+                                    <th>{% translate 'Accounts created' %}</th>
+                                    <th>{% translate 'Accounts approved' %}</th>
+                                    <th>{% translate 'Total investments' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for stat in organization_stats %}
+                                <tr>
+                                    <td>{{ stat.organization__name|default:_("Not specified") }}</td>
+                                    <td>{{ stat.total_accounts|intcomma }}</td>
+                                    <td>{{ stat.approved_accounts|intcomma }}</td>
+                                    <td>{{ stat.total_investments|intcomma }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4">{% translate 'No account has been created yet.' %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            {% if organization_stats %}
+                            <tfoot>
+                                <tr class="font-weight-bold">
+                                    <td>{% translate 'Total' %}</td>
+                                    <td>{{ organization_stats_totals.total_accounts|intcomma }}</td>
+                                    <td>{{ organization_stats_totals.approved_accounts|intcomma }}</td>
+                                    <td>{{ organization_stats_totals.total_investments|intcomma }}</td>
+                                </tr>
+                            </tfoot>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block javascript %}
     {{ block.super }}
+    {% include 'layouts/datatable-js.html' %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#dashboard-organization-stats-table').DataTable(
+                Object.assign({{ datatable_config|safe }}, {
+                    order: [[3, 'desc']],
+                    dom: 'Bfrtip',
+                    buttons: ['excel'],
+                })
+            );
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.js' %}"></script>
     <script type="text/javascript">
