@@ -153,6 +153,10 @@ def update_or_create_priorities_document(priorities_document, meeting_date):
                                 investment.climate_contribution = True if priority.get("contributionClimatique") else False
                                 investment.climate_contribution_text = priority.get("contributionClimatique")
 
+                        if start_date:
+                            administrative_level.identified_priority = start_date
+                            administrative_level.save()
+
                         if not investment:
                             investment = Investment.objects.create(
                                 ranking=idx + 1,

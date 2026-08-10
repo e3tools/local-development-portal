@@ -45,39 +45,39 @@
 						<tbody>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.total|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.total|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.men|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.men|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.women|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.women|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.young|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.young|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.elder|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.elder|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.handicap|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.handicap|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agriculture" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.agriculturist|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.agriculturist|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.pastoralist|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.pastoralist|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
-							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ population.minorities|intcomma }}</td>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic minorities" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.minorities|default:'-'|intcomma }}</td>
 						</tr>
 						</tbody>
 					</table>
@@ -107,7 +107,7 @@
 							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified|default:"0" }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified|default:"-" }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>

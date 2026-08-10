@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from usermanager.models import User, Organization
-from cosomis.models_base import BaseModel
+from cosomis.models_base import BaseModel, safe_json_value
 
 
 class AdministrativeLevel(BaseModel):
@@ -69,6 +69,7 @@ class AdministrativeLevel(BaseModel):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
+    is_headquarters = models.BooleanField(default=False)
 
     # LDP properties
     name = models.CharField(max_length=255, verbose_name=_("Name"))
@@ -86,9 +87,12 @@ class AdministrativeLevel(BaseModel):
     population_agriculturist = models.IntegerField(default=0)
     population_pastoralist = models.IntegerField(default=0)
     population_minorities = models.IntegerField(default=0)
+    minorities = models.CharField(max_length=100, blank=True, null=True)
+    total_house_holds = models.IntegerField(default=0)
     main_languages = models.CharField(max_length=50, blank=True, null=True)
     identified_priority = models.DateField(null=True, blank=True)
     infrastructure = models.JSONField(null=True, blank=True)
+    ethnic_groups = models.JSONField(null=True, blank=True, default=list)  # Store ethnic groups as a list of strings
 
     # climate properties
 
@@ -235,6 +239,10 @@ class AdministrativeLevel(BaseModel):
             else:
                 coordinates += child.get_villages_coordinates()
         return coordinates
+
+    @property
+    def ethnic_groups_value(self):
+        return safe_json_value(self.ethnic_groups)
 
 
 class GeographicalUnit(BaseModel):

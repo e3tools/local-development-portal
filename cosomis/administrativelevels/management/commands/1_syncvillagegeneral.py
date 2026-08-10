@@ -56,6 +56,7 @@ def create_or_update_adm(administrative_level_data):
     adm_name = administrative_level_data.get('name')
     adm_parent_id = administrative_level_data.get('parent_id')
     adm_type = administrative_level_data.get('administrative_level')
+    is_headquarters = administrative_level_data.get('is_headquarters', False)  # Default to False if not provided
     # Other fields can be added as needed
 
     # Check if an AdministrativeLevel with the given adm_id exists
@@ -68,6 +69,7 @@ def create_or_update_adm(administrative_level_data):
             # Set the parent if a parent_id is provided, otherwise leave it unchanged
             parent = AdministrativeLevel.objects.get(no_sql_db_id=adm_parent_id)
             adm_level.parent = parent
+        adm_level.is_headquarters = is_headquarters
         # You can add more fields to update as necessary
         adm_level.save()
     except AdministrativeLevel.DoesNotExist:
@@ -82,6 +84,7 @@ def create_or_update_adm(administrative_level_data):
             # Assuming the 'parent' field is a ForeignKey to another AdministrativeLevel
             parent=parent,
             type=adm_type,
+            is_headquarters=is_headquarters,
             # Set other fields with defaults or extract from administrative_level_data
         )
         adm_level.save()

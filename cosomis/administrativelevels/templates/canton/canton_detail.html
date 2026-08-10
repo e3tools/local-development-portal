@@ -65,39 +65,39 @@
 						<tbody>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.total|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.total|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.men|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.men|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.women|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.women|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.young|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.young|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.elder|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.elder|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.disabilities|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.disabilities|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Agriculturists" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.agriculturists|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.agriculturists|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Breeders" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.pastoralists|intcomma }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.pastoralists|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
-							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.minorities|intcomma }}</td>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic minorities" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ canton_population.minorities|default:'-'|intcomma }}</td>
 						</tr>
 						</tbody>
 					</table>
@@ -112,19 +112,19 @@
 						<tbody>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Number of Villages" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.village_count }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.village_count|default:'-' }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Number of CVDs" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.cvd_count }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.cvd_count|default:'-' }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.priority_count }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.priority_count|default:'-' }}</td>
 						</tr>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total Estimated Cost" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.total_estimated_cost|intcomma }}
+							<td class="border-0 p-0 pr-2 text-right">{{ villages_summary.total_estimated_cost|default:'-'|intcomma }}
 								FCFA
 							</td>
 						</tr>

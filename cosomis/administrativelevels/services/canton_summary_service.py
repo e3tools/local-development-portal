@@ -57,8 +57,8 @@ class CantonSummaryService:
         # CVD count: geographical units linked to child villages
         cvd_count = (
             self._child_villages
-            .filter(geographical_unit__isnull=False)
-            .values('geographical_unit')
+            .filter(is_headquarters=True)
+            .values('id')
             .distinct()
             .count()
         )

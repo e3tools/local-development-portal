@@ -76,31 +76,31 @@
                         <tbody>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.total|default:object.total_population|intcomma }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.total|default:object.total_population|default:'-'|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Men" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.men|default:object.population_men|intcomma }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.men|default:object.population_men|default:'-'|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Women" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.women|default:object.population_women|intcomma }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.women|default:object.population_women|default:'-'|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Young" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.young|default:object.population_young|intcomma }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.young|default:object.population_young|default:'-'|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Elder" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.elder|default:object.population_elder|intcomma }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.elder|default:object.population_elder|default:'-'|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Persons with disabilities" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.handicap|default:object.population_handicap|intcomma }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{{ population.handicap|default:object.population_handicap|default:'-'|intcomma }}</td>
                         </tr>
                         <tr>
                             <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Ethnic groups" %}</td>
-                            <td class="border-0 p-0 pr-2 text-right">{{ population.minorities|default:object.population_minorities|intcomma }}</td>
+                            <td class="border-0 p-0 pr-2 text-right">{% if object.ethnic_groups %}{{ object.ethnic_groups|length }} | {{ object.ethnic_groups|join:", " }}{% endif %}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -131,8 +131,8 @@
                                 <td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
                             </tr>
                             <tr>
-                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
-                                <td class="border-0 p-0 pr-2 text-right">{{ object.identified_priority }}</td>
+                                <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Date of needs identification" %}</td>
+                                <td class="border-0 p-0 pr-2 text-right">{{ object.identified_priority|default:'-' }}</td>
                             </tr>
                             {% if development_plan %}
                                 <tr>
