@@ -54,6 +54,13 @@
                         <p>{% translate "Dashboard" %}</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{% url 'dashboard:dashboard_map' %}"
+                        class="nav-link {% if url_name == 'dashboard_map' %}active{% endif %}">
+                        <i class="nav-icon fa fa-map"></i>
+                        <p>{% translate "Map" %}</p>
+                    </a>
+                </li>
                 {% if not request.user.is_moderator %}
                 <li class="nav-item">
                     <a href="{% url 'administrativelevels:project-create' %}"

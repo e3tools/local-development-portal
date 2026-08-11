@@ -13,6 +13,7 @@ urlpatterns = [
             path('adm-levels', FillAdmLevelsSelectFilters.as_view()),
             path('statistics/', StatisticsView.as_view(), name='statistics'),
     ])),
+    path('map/', views_summary.DashboardMapView.as_view(), name='dashboard_map'),
     path('subprojects/', views_subprojects.DashboardTemplateView.as_view(), name='dashboard_subprojects'),
     path('administrativelevels/', views_administrativelevels.DashboardTemplateView.as_view(), name='dashboard_administrativelevels'),
     

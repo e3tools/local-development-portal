@@ -1,0 +1,837 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n custom_tags %}
+
+{% block extracss %}
+    {{ block.super }}
+    <link href="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.css' %}" rel="stylesheet">
+    <style>
+        .card { margin-bottom: 10px; border: 1px solid #e5e7eb; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        .form-group { margin-bottom: 0; }
+        .vertical-form { display: flex; flex-direction: column; gap: 12px; }
+        .vertical-form .btn { align-self: flex-start; }
+
+        .map-page-wrap { display: flex; align-items: stretch; gap: 12px; height: calc(100vh - 90px); min-height: 560px; }
+        .map-page-sidebar { flex: 0 0 300px; max-width: 300px; overflow-y: auto; padding-right: 2px; }
+        .map-page-mapcol { flex: 1 1 auto; min-width: 0; position: relative; border-radius: 6px; overflow: hidden; border: 1px solid #e5e7eb; background: #f9fafb; }
+        #map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; height: 100%; width: 100%; }
+
+        .map-style-toggle {
+            /* Left side: Mapbox's own zoom control (NavigationControl) sits
+               top-right, so the toggle would otherwise overlap/collide with it. */
+            position: absolute; top: 12px; left: 12px; z-index: 5;
+            display: inline-flex; border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden;
+            background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        }
+        .map-style-toggle button {
+            border: none; background: #fff; color: #374151; font-size: 12.5px; font-weight: 600;
+            padding: 7px 16px; cursor: pointer; transition: background-color .12s ease, color .12s ease;
+        }
+        .map-style-toggle button + button { border-left: 1px solid #d1d5db; }
+        .map-style-toggle button.active { background: #4f46e5; color: #fff; }
+
+        .mapboxgl-popup-content { min-width: 0 !important; max-height: 420px; overflow-y: auto; padding: 0 !important; border-radius: 8px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important; }
+        .mapboxgl-popup-content::-webkit-scrollbar { width: 4px; }
+        .mapboxgl-popup-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+        .mapboxgl-popup-close-button { z-index: 10; background: rgba(255,255,255,0.85); border-radius: 50%; width: 20px; height: 20px; line-height: 20px; top: 4px; right: 4px; font-size: 14px; }
+
+        .map-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 400px; padding: 24px; text-align: center; color: #6b7280; }
+        .map-empty .map-empty-icon { width: 56px; height: 56px; margin-bottom: 12px; opacity: 0.45; }
+        .map-empty p { margin: 0; font-size: 14px; max-width: 280px; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="map-page-wrap">
+        <aside class="map-page-sidebar">
+            <div class="card card-Administrative rounded-0">
+                <div class="card-body">
+                    <form action="" method="GET" id="adm-filter-form">
+                        {% csrf_token %}
+                        <div class="vertical-form">
+                            <div class="form-group">
+                                <label for="sector-select-id">{% translate 'Sector' %}</label>
+                                <select class="form-control" name="sector-filter" id="sector-select-id" style="width: 100%;">
+                                    <option selected value="">{% translate 'Sector' %}</option>
+                                    {% for sector in sectors %}
+                                        <option value="{{ sector.id }}">{{ sector.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="type-select-id">{% translate 'Type' %}</label>
+                                <select class="form-control" name="type-filter" id="type-select-id" style="width: 100%;">
+                                    <option selected value="">{% translate 'Type' %}</option>
+                                    {% for type in sector_types %}
+                                        <option value="{{ type.0 }}">{{ type.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="organization-select-id">{% translate 'Organization' %}</label>
+                                <select class="form-control" name="organization-filter" id="organization-select-id" style="width: 100%;">
+                                    <option selected value="">{% translate 'Organization' %}</option>
+                                    {% for organization in organizations %}
+                                        <option value="{{ organization.id }}">{{ organization.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% if single_region %}
+                                <div class="form-group" style="display: none;">
+                                    <select class="form-control" name="region-filter"
+                                        empty-option="{{ adm_labels.region }}" style="width: 100%;" id="region-select-id">
+                                        <option value="{{ single_region.id }}" selected>{{ single_region.name }}</option>
+                                    </select>
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    <label for="region-select-id">{{ adm_labels.region }}</label>
+                                    <select class="form-control" name="region-filter"
+                                        empty-option="{{ adm_labels.region }}" style="width: 100%;" id="region-select-id">
+                                        <option selected value="">{{ adm_labels.region }}</option>
+                                        {% for region in regions %}
+                                            <option value="{{ region.id }}" {% if query_strings_raw|get_item:'region-filter' == region.id %}selected{% endif %}>{{ region.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+                            <div class="form-group">
+                                <label for="prefecture-select-id">{{ adm_labels.prefecture }}</label>
+                                <select class="form-control" name="prefecture-filter" id="prefecture-select-id"
+                                    empty-option="{{ adm_labels.prefecture }}" style="width: 100%;" {% if not single_region and not 'region-filter' in query_strings_raw %}disabled{% endif %}>
+                                    <option selected value="">{{ adm_labels.prefecture }}</option>
+                                    {% for prefecture in prefectures %}
+                                        <option value="{{ prefecture.id }}" {% if query_strings_raw|get_item:'prefecture-filter' == prefecture.id %}selected{% endif %}>{{ prefecture.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="commune-select-id">{{ adm_labels.commune }}</label>
+                                <select class="form-control" name="commune-filter" id="commune-select-id"
+                                    empty-option="{{ adm_labels.commune }}" style="width: 100%;" {% if not 'prefecture-filter' in query_strings_raw %}disabled{% endif %}>
+                                    <option selected value="">{{ adm_labels.commune }}</option>
+                                    {% for commune in communes %}
+                                        <option value="{{ commune.id }}" {% if query_strings_raw|get_item:'commune-filter' == commune.id %}selected{% endif %}>{{ commune.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="canton-select-id">{{ adm_labels.canton }}</label>
+                                <select class="form-control" name="canton-filter" id="canton-select-id"
+                                    empty-option="{{ adm_labels.canton }}" style="width: 100%;" {% if not 'commune-filter' in query_strings_raw %}disabled{% endif %}>
+                                    <option selected value="">{{ adm_labels.canton }}</option>
+                                    {% for canton in cantons %}
+                                        <option value="{{ canton.id }}" {% if query_strings_raw|get_item:'canton-filter' == canton.id %}selected{% endif %}>{{ canton.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="village-select-id">{{ adm_labels.village }}</label>
+                                <select class="form-control" name="village-filter" id="village-select-id"
+                                    empty-option="{{ adm_labels.village }}" style="width: 100%;" {% if not 'canton-filter' in query_strings_raw %}disabled{% endif %}>
+                                    <option selected value="">{{ adm_labels.village }}</option>
+                                    {% for village in villages %}
+                                        <option value="{{ village.id }}" {% if query_strings_raw|get_item:'village-filter' == village.id %}selected{% endif %}>{{ village.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-status-select-id">{% translate 'Sub-Project Status' %}</label>
+                                <select class="form-control" name="project-status-filter" id="project-status-select-id" style="width: 100%;">
+                                    <option selected value="">{% translate 'All Statuses' %}</option>
+                                    {% for status in project_statuses %}
+                                        <option value="{{ status.0 }}">{{ status.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="button" class="btn btn-link adm-submit-reset" value="{% translate 'Reset' %}" id="adm-reset-hidden-id"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="headingMoreFilters">
+                    <h5 class="mb-0">
+                        <button aria-controls="collapseMoreFilters" aria-expanded="false" class="btn btn-link collapsed"
+                                data-target="#collapseMoreFilters" data-toggle="collapse" type="button">
+                            {% translate 'More filters' %}
+                        </button>
+                    </h5>
+                </div>
+                <div aria-labelledby="headingMoreFilters" class="collapse" id="collapseMoreFilters">
+                    <div class="card-body">
+                        <form action="" method="GET" id="more-filters-form">
+                            {% csrf_token %}
+                            <div class="vertical-form">
+                                <div class="form-group">
+                                    <label for="endorse-by-select-id">{% translate 'Endorsed by' %}</label>
+                                    <select class="form-control" name="subpopulation-filter" id="endorse-by-select-id" style="width: 100%;">
+                                        <option selected value="">{% translate 'Endorsed by' %}</option>
+                                        {% for subpopulation in subpopulations %}
+                                            <option value="{{ subpopulation.id }}">{{ subpopulation.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="priorities-select-id">{% translate 'Priorities' %}</label>
+                                    <select class="form-control" name="priorities-filter" id="priorities-select-id" style="width: 100%;">
+                                        <option selected value="">{% translate 'Priorities' %}</option>
+                                        {% for priority in priorities %}
+                                            <option value="{{ priority.id }}">{{ priority.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="climate-contribution-select-id">{% translate 'Climate Contribution' %}</label>
+                                    <select class="form-control" name="climate-contribution-filter" id="climate-contribution-select-id" style="width: 100%;">
+                                        <option selected value="">{% translate 'Climate Contribution' %}</option>
+                                        <option value="True">{% translate 'Yes' %}</option>
+                                        <option value="False">{% translate 'No' %}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="land-type-select-id">{% translate 'Land Type' %}</label>
+                                    <select class="form-control" name="land-type-filter" id="land-type-select-id" style="width: 100%;">
+                                        <option selected value="">{% translate 'Land Type' %}</option>
+                                        {% for land_type in land_types %}
+                                            <option value="{{ land_type }}">{% translate land_type %}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>{% translate 'Average Monthly Maximum Temperature (°c)' %}</label>
+                                    <div class="row no-gutters">
+                                        <div class="col-6 pr-1">
+                                            <input type="number" class="form-control" id="temperature-min-filter" name="temperature-min-filter"
+                                                   step="0.1" min="-50" max="60" placeholder="{% translate 'min' %}">
+                                        </div>
+                                        <div class="col-6 pl-1">
+                                            <input type="number" class="form-control" id="temperature-max-filter" name="temperature-max-filter"
+                                                   step="0.1" min="-50" max="60" placeholder="{% translate 'max' %}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>{% translate 'Precipitation Change' %}</label>
+                                    <div class="row no-gutters">
+                                        <div class="col-6 pr-1">
+                                            <input type="number" class="form-control" id="precipitation-min-filter" name="precipitation-min-filter"
+                                                   step="0.1" min="-100" max="100" placeholder="{% translate 'min' %}">
+                                        </div>
+                                        <div class="col-6 pl-1">
+                                            <input type="number" class="form-control" id="precipitation-max-filter" name="precipitation-max-filter"
+                                                   step="0.1" min="-100" max="100" placeholder="{% translate 'max' %}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="button" class="btn btn-link" id="more-filters-reset-id" value="{% translate 'Reset' %}"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="map-page-mapcol">
+            <div class="map-style-toggle" role="group" aria-label="{% translate 'Map style' %}">
+                <button type="button" id="map-style-details" class="active" data-style="details">{% translate 'Details' %}</button>
+                <button type="button" id="map-style-grouped" data-style="grouped">{% translate 'Grouped' %}</button>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.js' %}"></script>
+    <script type="text/javascript">
+        let filter_values = {};
+        const sectorColors = {};
+        let allSubprojects = [];
+
+        // "details" -> one Mapbox marker per point (same rendering/popup as the
+        // classic dashboard-summary map). "grouped" -> a single clustered GeoJSON
+        // layer (GPU), for large result sets.
+        let pointsMode = 'details';
+        let markers = [];
+        let subprojectsLayerReady = false;
+        let pendingSubprojectData = null;
+        let subprojectsById = {};
+
+        const ajaxBaseUrl = '{% url "dashboard:dashboard_summary" %}ajax/';
+
+        const CHART_PALETTE = [
+            '#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
+            '#8b5cf6', '#ec4899', '#84cc16', '#3b82f6', '#14b8a6',
+            '#f97316', '#a855f7', '#22c55e', '#0ea5e9', '#d946ef'
+        ];
+
+        function renderMapEmpty(message) {
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) return;
+            mapContainer.innerHTML =
+                '<div class="map-empty">' +
+                    '<svg class="map-empty-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">' +
+                        '<path d="M15.817.613A.5.5 0 0 1 16 1v13a.5.5 0 0 1-.402.49l-5 1a.5.5 0 0 1-.196 0L5.5 14.51l-4.902.98A.5.5 0 0 1 0 15V2a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0l4.902.98 4.902-.98a.5.5 0 0 1 .415.103M10 2.41l-4-.8v11.98l4 .8zm1 11.98 4-.8V1.61l-4 .8zm-6-.8V1.61l-4 .8v11.98z"/>' +
+                    '</svg>' +
+                    '<p>' + message + '</p>' +
+                '</div>';
+        }
+
+        function initializeMap() {
+            const token = '{{ access_token }}';
+            if (!token) {
+                renderMapEmpty('{% translate "Map unavailable: MAPBOX_ACCESS_TOKEN is not set." %}');
+                return null;
+            }
+            mapboxgl.accessToken = token;
+            if (!mapboxgl.supported()) {
+                renderMapEmpty('{% translate "Your browser does not support Mapbox GL." %}');
+                return null;
+            }
+            const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [{{ lng }}, {{ lat }}],
+                zoom: {{ zoom }},
+                collectResourceTiming: false
+            });
+
+            const bounds = [
+                {{ ws_bound }}, // [west, south]
+                {{ en_bound }}  // [east, north]
+            ];
+            // setMaxBounds forces a "cover" fit (zoom until bounds fill the
+            // container on every side, cropping whichever axis has room to
+            // spare) while fitBounds() below does a "contain" fit (zoom out
+            // until bounds are fully inside, padding the spare axis). On this
+            // page's tall/narrow container those two disagree, and maxBounds
+            // wins — which is what was cropping part of Togo. Give maxBounds
+            // a generous margin around the country box so it stops fighting
+            // fitBounds and only kicks in if someone pans way out.
+            const [west, south] = bounds[0];
+            const [east, north] = bounds[1];
+            const lngPad = (east - west) * 0.75;
+            const latPad = (north - south) * 0.75;
+            map.setMaxBounds([
+                [west - lngPad, south - latPad],
+                [east + lngPad, north + latPad]
+            ]);
+            map.addControl(new mapboxgl.NavigationControl());
+            map.on('load', function () {
+                // This page's map fills the whole viewport height (unlike the small
+                // card on dashboard-summary), so the fixed center/zoom from settings
+                // no longer frames the country correctly. Fit the country bounds to
+                // whatever space is actually available instead.
+                map.resize();
+                map.fitBounds(bounds, { padding: 24, duration: 0 });
+
+                map.addLayer(
+                    {
+                        'id': 'country-boundaries',
+                        'source': {
+                            'type': 'vector',
+                            'url': 'mapbox://mapbox.country-boundaries-v1',
+                        },
+                        'source-layer': 'country_boundaries',
+                        'type': 'fill',
+                        'paint': {
+                            'fill-color': '#00FFFF',
+                            'fill-opacity': 0.2,
+                        },
+                    },
+                    'country-label'
+                );
+
+                map.setFilter('country-boundaries', [
+                    "in",
+                    "iso_3166_1_alpha_3",
+                    '{{ country_iso_code }}',
+                ]);
+
+                const clusterLayersVisible = pointsMode === 'grouped';
+
+                map.addSource('subprojects', {
+                    type: 'geojson',
+                    data: pendingSubprojectData || { type: 'FeatureCollection', features: [] },
+                    cluster: true,
+                    clusterMaxZoom: 14,
+                    clusterRadius: 50
+                });
+
+                map.addLayer({
+                    id: 'subproject-clusters',
+                    type: 'circle',
+                    source: 'subprojects',
+                    filter: ['has', 'point_count'],
+                    layout: { visibility: clusterLayersVisible ? 'visible' : 'none' },
+                    paint: {
+                        'circle-color': ['step', ['get', 'point_count'], '#60a5fa', 50, '#3b82f6', 200, '#1d4ed8'],
+                        'circle-radius': ['step', ['get', 'point_count'], 16, 50, 22, 200, 30],
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#ffffff'
+                    }
+                });
+                map.addLayer({
+                    id: 'subproject-cluster-count',
+                    type: 'symbol',
+                    source: 'subprojects',
+                    filter: ['has', 'point_count'],
+                    layout: {
+                        visibility: clusterLayersVisible ? 'visible' : 'none',
+                        'text-field': ['get', 'point_count_abbreviated'],
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                    },
+                    paint: { 'text-color': '#ffffff' }
+                });
+                map.addLayer({
+                    id: 'subproject-unclustered',
+                    type: 'circle',
+                    source: 'subprojects',
+                    filter: ['!', ['has', 'point_count']],
+                    layout: { visibility: clusterLayersVisible ? 'visible' : 'none' },
+                    paint: {
+                        'circle-color': ['get', 'color'],
+                        'circle-radius': 7,
+                        'circle-stroke-width': 1.5,
+                        'circle-stroke-color': '#ffffff'
+                    }
+                });
+
+                map.on('click', 'subproject-clusters', function (e) {
+                    const features = map.queryRenderedFeatures(e.point, { layers: ['subproject-clusters'] });
+                    const clusterId = features[0].properties.cluster_id;
+                    map.getSource('subprojects').getClusterExpansionZoom(clusterId, function (err, zoom) {
+                        if (err) return;
+                        map.easeTo({ center: features[0].geometry.coordinates, zoom: zoom });
+                    });
+                });
+                map.on('click', 'subproject-unclustered', function (e) {
+                    const f = e.features[0];
+                    const sp = subprojectsById[f.properties.id];
+                    if (!sp) return;
+                    const coords = f.geometry.coordinates.slice();
+                    new mapboxgl.Popup({ offset: 20, maxWidth: '260px' })
+                        .setLngLat(coords)
+                        .setHTML(buildPopupHtml(sp))
+                        .addTo(map);
+                });
+                ['subproject-clusters', 'subproject-unclustered'].forEach(function (layer) {
+                    map.on('mouseenter', layer, function () { map.getCanvas().style.cursor = 'pointer'; });
+                    map.on('mouseleave', layer, function () { map.getCanvas().style.cursor = ''; });
+                });
+
+                subprojectsLayerReady = true;
+                if (pendingSubprojectData) {
+                    map.getSource('subprojects').setData(pendingSubprojectData);
+                    pendingSubprojectData = null;
+                }
+            });
+
+            return map;
+        }
+
+        function setClusterLayersVisible(map, visible) {
+            ['subproject-clusters', 'subproject-cluster-count', 'subproject-unclustered'].forEach(function (layer) {
+                if (map.getLayer && map.getLayer(layer)) {
+                    map.setLayoutProperty(layer, 'visibility', visible ? 'visible' : 'none');
+                }
+            });
+        }
+
+        function clearIndividualMarkers() {
+            markers.forEach(marker => marker.remove());
+            markers = [];
+        }
+
+        // Same rendering as the classic (pre-clustering) dashboard-summary map:
+        // one Mapbox marker per point, offset by index so co-located points fan out.
+        function renderIndividualMarkers(map, subprojects, filterSector) {
+            clearIndividualMarkers();
+            (subprojects || []).forEach((subproject, index) => {
+                if ((filterSector === null || subproject.sector__category__name === filterSector) &&
+                    subproject.latitude && subproject.longitude) {
+                    const sectorColor = getRandomColor(subproject.sector__category__name);
+                    const offset = calculateOffset(index);
+                    const marker = new mapboxgl.Marker({
+                        color: sectorColor,
+                        draggable: false,
+                        offset: [offset.x, offset.y]
+                    })
+                    .setLngLat([subproject.longitude, subproject.latitude])
+                    .setPopup(new mapboxgl.Popup({ offset: 20, maxWidth: '260px' }).setHTML(buildPopupHtml(subproject)));
+
+                    marker.addTo(map);
+                    markers.push(marker);
+                }
+            });
+        }
+
+        function calculateOffset(index) {
+            const angle = index * 30; // Adjust the angle increment as needed
+            const radius = 10; // Adjust the radius as needed
+            return {
+                x: radius * Math.cos(angle),
+                y: radius * Math.sin(angle)
+            };
+        }
+
+        // Clustered GeoJSON rendering.
+        function renderGroupedMarkers(map, subprojects, filterSector) {
+            const features = [];
+            subprojectsById = {};
+            (subprojects || []).forEach((subproject) => {
+                if ((filterSector === null || subproject.sector__category__name === filterSector) &&
+                    subproject.latitude && subproject.longitude) {
+                    subprojectsById[subproject.id] = subproject;
+                    const offset = jitterOffset(subproject.id);
+                    features.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [
+                                Number(subproject.longitude) + offset[0],
+                                Number(subproject.latitude) + offset[1]
+                            ]
+                        },
+                        properties: {
+                            id: subproject.id,
+                            color: getRandomColor(subproject.sector__category__name)
+                        }
+                    });
+                }
+            });
+
+            const data = { type: 'FeatureCollection', features: features };
+            if (subprojectsLayerReady && map.getSource('subprojects')) {
+                map.getSource('subprojects').setData(data);
+            } else {
+                pendingSubprojectData = data;
+            }
+        }
+
+        function renderPoints(map, subprojects, filterSector = null) {
+            if (!map) return;
+            if (pointsMode === 'grouped') {
+                clearIndividualMarkers();
+                setClusterLayersVisible(map, true);
+                renderGroupedMarkers(map, subprojects, filterSector);
+            } else {
+                setClusterLayersVisible(map, false);
+                renderIndividualMarkers(map, subprojects, filterSector);
+            }
+        }
+
+        function switchPointsMode(map, mode) {
+            if (mode === pointsMode) return;
+            pointsMode = mode;
+            $('.map-style-toggle button').removeClass('active');
+            $('#map-style-' + mode).addClass('active');
+            renderPoints(map, allSubprojects, filter_values['sector-filter']);
+        }
+
+        function buildPopupHtml(subproject) {
+            let carousel_images_html = ""
+            let carousel_html = ""
+            if (subproject.attachments){
+                subproject.attachments.forEach((imgSrc, idx) => {
+                    carousel_images_html += '<div class="carousel-item' + (idx === 0 ? ' active' : '') + '">' +
+                        '<img class="d-block w-100" src="' + (imgSrc ? imgSrc.split('?')[0] : '') + '" style="max-height:130px;object-fit:cover;"></div>'
+                })
+                carousel_html = '<div id="pc-' + subproject.id + '" class="carousel slide mt-2" data-ride="carousel">' +
+                    '<div class="carousel-inner">' + carousel_images_html + '</div>' +
+                    '<a class="carousel-control-prev" href="#pc-' + subproject.id + '" role="button" data-slide="prev"><span class="carousel-control-prev-icon"></span></a>' +
+                    '<a class="carousel-control-next" href="#pc-' + subproject.id + '" role="button" data-slide="next"><span class="carousel-control-next-icon"></span></a>' +
+                    '</div>'
+            }
+
+            const levelLabels = ['RÉG.','PRÉF.','COM.','CANT.','VIL.'];
+            const rawParts = [
+                subproject['administrative_level__parent__parent__parent__parent__name'],
+                subproject['administrative_level__parent__parent__parent__name'],
+                subproject['administrative_level__parent__parent__name'],
+                subproject['administrative_level__parent__name'],
+                subproject['administrative_level__name']
+            ];
+            const villageLinkBase = "{% url 'administrativelevels:village_detail' 0 %}";
+            const villageId = subproject['administrative_level__id'];
+            let lastValidIdx = -1;
+            rawParts.forEach((v, i) => { if (v && v !== 'null' && v !== 'None') lastValidIdx = i; });
+            let breadcrumb = '';
+            rawParts.forEach((v, i) => {
+                if (v && v !== 'null' && v !== 'None') {
+                    if (breadcrumb) breadcrumb += ' <span style="color:#aaa;">›</span> ';
+                    let nameHtml;
+                    if (i === lastValidIdx && villageId) {
+                        const villageUrl = villageLinkBase.replace('/0/', '/' + villageId + '/');
+                        nameHtml = '<a href="' + villageUrl + '" style="font-weight:700;color:#1a1a1a;text-decoration:underline;" target="_blank">' + v + '</a>';
+                    } else {
+                        nameHtml = '<span style="font-weight:700;">' + v + '</span>';
+                    }
+                    breadcrumb += '<span style="font-size:9px;color:#888;font-weight:600;">' + levelLabels[i] + '</span> ' + nameHtml;
+                }
+            });
+
+            const sectorLabel = subproject.sector__name || subproject.sector__category__name || '—';
+            const statusLabels = {'NF':'{% translate "Not funded" %}','P':'{% translate "In progress" %}','A':'{% translate "Approved" %}','C':'{% translate "Completed" %}'};
+            const statusDisplay = statusLabels[subproject.project_status] || subproject.project_status || '—';
+            const rate = subproject.physical_execution_rate || 0;
+
+            return (
+                '<div style="background:#f8f9fa;border-bottom:1px solid #dee2e6;padding:5px 10px;font-size:10px;line-height:1.6;word-break:break-word;">' +
+                    breadcrumb +
+                '</div>' +
+                '<div style="padding:8px 10px;">' +
+                    '<div style="font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.4;">' +
+                        (subproject.title || '') +
+                        (subproject.description ? ' <span style="font-weight:400;color:#6c757d;font-size:11px;">[' + subproject.description + ']</span>' : '') +
+                    '</div>' +
+                    '<table style="width:100%;font-size:11px;border-collapse:collapse;">' +
+                        '<tr><td style="padding:2px 0;color:#6c757d;width:45%;">{% translate "Sector" %}</td>' +
+                            '<td style="padding:2px 0;font-weight:600;">' + sectorLabel + '</td></tr>' +
+                        '<tr><td style="padding:2px 0;color:#6c757d;">{% translate "Status" %}</td>' +
+                            '<td style="padding:2px 0;font-weight:600;">' + statusDisplay + '</td></tr>' +
+                        '<tr><td style="padding:2px 0;color:#6c757d;">{% translate "Physical rate" %}</td>' +
+                            '<td style="padding:2px 0;">' +
+                                '<div style="display:flex;align-items:center;gap:4px;">' +
+                                    '<div style="flex:1;background:#e9ecef;border-radius:4px;height:5px;">' +
+                                        '<div style="width:' + rate + '%;background:#3b82f6;height:5px;border-radius:4px;"></div>' +
+                                    '</div>' +
+                                    '<span style="font-weight:600;white-space:nowrap;font-size:11px;">' + rate + ' %</span>' +
+                                '</div>' +
+                            '</td></tr>' +
+                    '</table>' +
+                    carousel_html +
+                '</div>'
+            );
+        }
+
+        function hashString(s) {
+            let h = 0;
+            const str = String(s || '');
+            for (let i = 0; i < str.length; i++) {
+                h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+            }
+            return Math.abs(h);
+        }
+
+        function jitterOffset(id) {
+            const h = hashString('j' + id);
+            const angle = (h % 360) * Math.PI / 180;
+            const radius = 0.0008 + ((h >> 9) % 100) / 100 * 0.0040; // degrees
+            return [Math.cos(angle) * radius, Math.sin(angle) * radius];
+        }
+
+        function getRandomColor(label) {
+            if (label && sectorColors[label]) return sectorColors[label];
+            const key = label != null ? String(label) : Math.random().toString(36);
+            const color = CHART_PALETTE[hashString(key) % CHART_PALETTE.length];
+            if (label) sectorColors[label] = color;
+            return color;
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                const later = function() {
+                    timeout = null;
+                    func.apply(context, args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        class MapStatisticsComponent {
+            constructor(map) {
+                this.map = map;
+                this.typeSelect = $('#type-select-id');
+            }
+
+            fetchAndDisplayStatistics() {
+                $.ajax({
+                    url: ajaxBaseUrl + 'statistics/',
+                    data: filter_values,
+                    success: (data) => {
+                        if (data.sector_types && data.sector_types.length > 0) {
+                            const current_value = this.typeSelect.val();
+                            this.typeSelect.prop('disabled', false);
+                            this.typeSelect.html('');
+                            this.typeSelect.append(`<option value="0">-------</option>`);
+                            data.sector_types.forEach(type => {
+                                const selectedAttr = current_value == type.id ? ' selected' : '';
+                                this.typeSelect.append(`<option value="${type.id}"${selectedAttr}>${type.name}</option>`);
+                            });
+                        } else {
+                            this.typeSelect.prop('disabled', true);
+                        }
+                        allSubprojects = data.subprojects;
+                        renderPoints(this.map, allSubprojects, filter_values['sector-filter']);
+                    },
+                    error: (jqXHR, textStatus, errorThrown) => {
+                        console.error('Error fetching statistics:', { status: jqXHR.status, textStatus, errorThrown });
+                        alert('Failed to fetch statistics. Please check the console for more details.');
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function() {
+            let map = null;
+            try {
+                map = initializeMap();
+            } catch (e) {
+                console.warn('Map init failed:', e);
+            }
+
+            const statisticsComponent = new MapStatisticsComponent(map);
+            initializeFilters(statisticsComponent);
+
+            $('.map-style-toggle button').on('click', function() {
+                switchPointsMode(map, $(this).data('style'));
+            });
+
+            statisticsComponent.fetchAndDisplayStatistics();
+        });
+
+        function initializeFilters(statisticsComponent) {
+            const regionOptions = $('#region-select-id').html();
+
+            ['region', 'prefecture', 'commune', 'canton', 'village'].forEach(level => {
+                $(`#${level}-select-id`).on('change', debounce(function() {
+                    const selectedValue = $(this).val();
+                    const nextLevel = getNextLevel(level);
+                    if (level !== 'village') {
+                        changeAdmLevelsSelects($(this), $(`#${nextLevel}-select-id`), getFollowingLevels(nextLevel));
+                    }
+                    filter_values[`${level}_id`] = selectedValue;
+                    statisticsComponent.fetchAndDisplayStatistics();
+                }, 300));
+            });
+
+            $('#project-status-select-id').on('change', function() {
+                filter_values['project-status-filter'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            $('#organization-select-id').on('change', function() {
+                filter_values['organization'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            $('#sector-select-id').on('change', function() {
+                filter_values['sector'] = $(this).val();
+                filter_values['type'] = null;
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            $('#type-select-id').on('change', function() {
+                filter_values['type'] = $(this).val();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            const extraFilterFields = [
+                'subpopulation-filter', 'priorities-filter', 'climate-contribution-filter',
+                'land-type-filter', 'temperature-min-filter', 'temperature-max-filter',
+                'precipitation-min-filter', 'precipitation-max-filter'
+            ];
+            extraFilterFields.forEach(function(field) {
+                $(`[name="${field}"]`).on('change', debounce(function() {
+                    filter_values[field] = $(this).val();
+                    statisticsComponent.fetchAndDisplayStatistics();
+                }, 300));
+            });
+
+            $('#adm-reset-hidden-id').on('click', function() {
+                resetFilters(regionOptions, statisticsComponent);
+            });
+
+            $('#more-filters-reset-id').on('click', function() {
+                extraFilterFields.forEach(function(field) {
+                    delete filter_values[field];
+                });
+                $('#more-filters-form')[0].reset();
+                statisticsComponent.fetchAndDisplayStatistics();
+            });
+
+            function getNextLevel(level) {
+                const levels = ['region', 'prefecture', 'commune', 'canton', 'village'];
+                return levels[levels.indexOf(level) + 1] || '';
+            }
+
+            function getFollowingLevels(level) {
+                const levels = ['region', 'prefecture', 'commune', 'canton', 'village'];
+                return levels.slice(levels.indexOf(level) + 1).map(lvl => $(`#${lvl}-select-id`));
+            }
+
+            function changeAdmLevelsSelects(selectInput, selectToFill, otherSelects) {
+                const selectedValue = selectInput.find(":selected").val();
+
+                if (selectedValue) {
+                    $.ajax({
+                        type: "POST",
+                        url: ajaxBaseUrl + 'adm-levels',
+                        data: {
+                            value: selectedValue,
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                        },
+                        success: function(response) {
+                            populateSelectOptions(selectToFill, response.values);
+                        },
+                        error: function() {
+                            alert('Failed to fetch administrative levels. Please try again.');
+                        }
+                    });
+                    selectToFill.prop('disabled', false);
+                } else {
+                    resetSelect(selectToFill);
+                }
+
+                if (selectInput.attr('id') !== 'village-select-id') {
+                    otherSelects.forEach(resetSelect);
+                }
+            }
+
+            function populateSelectOptions(selectElement, options) {
+                selectElement.html("<option selected value=''>" + selectElement.attr('empty-option') + "</option>");
+                options.forEach(option => {
+                    selectElement.append(`<option value='${option.id}'>${option.name}</option>`);
+                });
+            }
+
+            function resetSelect(selectElement) {
+                selectElement.prop('disabled', true);
+                selectElement.html("<option selected value=''>" + selectElement.attr('empty-option') + "</option>");
+            }
+        }
+
+        function resetFilters(regionOptions, statisticsComponent) {
+            const form = $('#adm-filter-form')[0];
+            filter_values = {};
+            form.reset();
+
+            ['prefecture', 'commune', 'canton', 'village'].forEach(level => {
+                $(`#${level}-select-id`).prop('disabled', true).html(
+                    "<option selected value=''>" + $(`#${level}-select-id`).attr('empty-option') + "</option>"
+                );
+            });
+
+            const regionSelect = $('#region-select-id');
+            regionSelect.prop('disabled', false).html(regionOptions);
+
+            $('#project-status-select-id').val('').change();
+            $('#organization-select-id').val('').change();
+            $('#sector-select-id').val('').change();
+            $('#more-filters-reset-id').click();
+
+            statisticsComponent.fetchAndDisplayStatistics();
+        }
+    </script>
+{% endblock %}

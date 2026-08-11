@@ -9,36 +9,7 @@ from investments.services import get_organization_account_stats
 from static.config.datatable import get_datatable_config
 
 
-class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateView):
-    template_name = "dashboard_summary.html"
-    active_level1 = 'dashboard_summary'
-    title = _('Dashboard')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['access_token'] = settings.MAPBOX_ACCESS_TOKEN
-        context['lat'] = settings.DIAGNOSTIC_MAP_LATITUDE
-        context['lng'] = settings.DIAGNOSTIC_MAP_LONGITUDE
-        context['zoom'] = settings.DIAGNOSTIC_MAP_ZOOM
-        context['ws_bound'] = settings.DIAGNOSTIC_MAP_WS_BOUND
-        context['en_bound'] = settings.DIAGNOSTIC_MAP_EN_BOUND
-        context['country_iso_code'] = settings.DIAGNOSTIC_MAP_ISO_CODE
-        context.update(self.get_filters_context())
-        context['project_statuses'] = Investment.PROJECT_STATUS_CHOICES
-
-        organization_stats = get_organization_account_stats()
-        context['organization_stats'] = organization_stats
-        context['organization_stats_totals'] = {
-            'total_accounts': sum(stat['total_accounts'] for stat in organization_stats),
-            'approved_accounts': sum(stat['approved_accounts'] for stat in organization_stats),
-            'total_investments': sum(stat['total_investments'] for stat in organization_stats),
-        }
-        context['active_organizations_count'] = sum(
-            1 for stat in organization_stats if stat['organization_id'] is not None
-        )
-        context['datatable_config'] = get_datatable_config()
-        return context
-
+class DashboardFiltersMixin:
     def get_filters_context(self):
         filters_context = {}
         adm_queryset = AdministrativeLevel.objects.all()
@@ -101,3 +72,61 @@ class DashboardSummaryView(LoginRequiredApproveRequiredMixin, generic.TemplateVi
             {"id": "endorsed_by_pastoralist", "name": _("Endorsed by ethnic minorities")},
         ]
         return filters_context
+
+
+class DashboardSummaryView(DashboardFiltersMixin, LoginRequiredApproveRequiredMixin, generic.TemplateView):
+    template_name = "dashboard_summary.html"
+    active_level1 = 'dashboard_summary'
+    title = _('Dashboard')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['access_token'] = settings.MAPBOX_ACCESS_TOKEN
+        context['lat'] = settings.DIAGNOSTIC_MAP_LATITUDE
+        context['lng'] = settings.DIAGNOSTIC_MAP_LONGITUDE
+        context['zoom'] = settings.DIAGNOSTIC_MAP_ZOOM
+        context['ws_bound'] = settings.DIAGNOSTIC_MAP_WS_BOUND
+        context['en_bound'] = settings.DIAGNOSTIC_MAP_EN_BOUND
+        context['country_iso_code'] = settings.DIAGNOSTIC_MAP_ISO_CODE
+        context.update(self.get_filters_context())
+        context['project_statuses'] = Investment.PROJECT_STATUS_CHOICES
+
+        organization_stats = get_organization_account_stats()
+        context['organization_stats'] = organization_stats
+        context['organization_stats_totals'] = {
+            'total_accounts': sum(stat['total_accounts'] for stat in organization_stats),
+            'approved_accounts': sum(stat['approved_accounts'] for stat in organization_stats),
+            'total_investments': sum(stat['total_investments'] for stat in organization_stats),
+        }
+        context['active_organizations_count'] = sum(
+            1 for stat in organization_stats if stat['organization_id'] is not None
+        )
+        context['datatable_config'] = get_datatable_config()
+        return context
+
+
+class DashboardMapView(DashboardFiltersMixin, LoginRequiredApproveRequiredMixin, generic.TemplateView):
+    template_name = "dashboard_map.html"
+    active_level1 = 'dashboard_map'
+    title = _('Map')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['hide_content_header'] = True
+        context['access_token'] = settings.MAPBOX_ACCESS_TOKEN
+        context['lat'] = settings.DIAGNOSTIC_MAP_LATITUDE
+        context['lng'] = settings.DIAGNOSTIC_MAP_LONGITUDE
+        context['zoom'] = settings.DIAGNOSTIC_MAP_ZOOM
+        context['ws_bound'] = settings.DIAGNOSTIC_MAP_WS_BOUND
+        context['en_bound'] = settings.DIAGNOSTIC_MAP_EN_BOUND
+        context['country_iso_code'] = settings.DIAGNOSTIC_MAP_ISO_CODE
+        context.update(self.get_filters_context())
+        context['project_statuses'] = Investment.PROJECT_STATUS_CHOICES
+
+        context['priorities'] = [
+            {"id": 1, "name": _("Priority 1")},
+            {"id": 2, "name": _("Priorities 1 and 2")},
+            {"id": 3, "name": _("All priorities")},
+        ]
+        context['land_types'] = ['Grassland', 'Cropland', 'Savanna', 'Cropland Mosaic', 'Urban/Built-Up Land', 'Water']
+        return context

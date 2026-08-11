@@ -3207,6 +3207,18 @@ msgstr "Aucun sous‑projet pour les minorités ethniques pour le moment"
 msgid "Location of infrastructures by sector"
 msgstr "Localisation des infrastructures par secteur"
 
+#: .\dashboard\templates\dashboard_map.html
+msgid "Map style"
+msgstr "Style de carte"
+
+#: .\dashboard\templates\dashboard_map.html
+msgid "Details"
+msgstr "Détails"
+
+#: .\dashboard\templates\dashboard_map.html
+msgid "Grouped"
+msgstr "Groupé"
+
 #: .\dashboard\templates\dashboard_summary.html:436
 msgid "Map unavailable: MAPBOX_ACCESS_TOKEN is not set."
 msgstr "Carte indisponible : MAPBOX_ACCESS_TOKEN n’est pas défini."

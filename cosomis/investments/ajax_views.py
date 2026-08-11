@@ -16,6 +16,38 @@ from .serializers import InvestmentSerializer
 from cosomis.constants import IMAGE_EXTENSIONS
 
 
+def apply_climate_filters(queryset, get_params):
+    apply_filter = False
+    geoseg_queryset = GeoSegment.objects.all()
+    if "temperature-max-filter" in get_params and get_params[
+        "temperature-max-filter"] not in ["", None]:
+        geoseg_queryset = geoseg_queryset.filter(tmmx_avg_2020_diff__lte=get_params["temperature-max-filter"])
+        apply_filter = True
+    if "temperature-min-filter" in get_params and get_params[
+        "temperature-min-filter"] not in ["", None]:
+        geoseg_queryset = geoseg_queryset.filter(tmmx_avg_2020_diff__gte=get_params["temperature-min-filter"])
+        apply_filter = True
+
+    if "precipitation-min-filter" in get_params and get_params[
+        "precipitation-min-filter"] not in ["", None]:
+        geoseg_queryset = geoseg_queryset.filter(pr_avg_2020_diff__lte=get_params["precipitation-min-filter"])
+        apply_filter = True
+    if "precipitation-max-filter" in get_params and get_params[
+        "precipitation-max-filter"] not in ["", None]:
+        geoseg_queryset = geoseg_queryset.filter(pr_avg_2020_diff__gte=get_params["precipitation-max-filter"])
+        apply_filter = True
+
+    if "land-type-filter" in get_params and get_params[
+        "land-type-filter"] not in ["", None]:
+        geoseg_queryset = geoseg_queryset.filter(lc_gencat_20=get_params["land-type-filter"])
+        apply_filter = True
+
+    if apply_filter:
+        return queryset.filter(administrative_level__geo_segment__id__in=Subquery(geoseg_queryset.values("id")))
+    else:
+        return queryset
+
+
 class FillAdmLevelsSelectFilters(generics.GenericAPIView):
     """
     Region -> Prefecture -> Commune -> Canton -> Village
@@ -258,40 +290,9 @@ class InvestmentModelViewSet(ModelViewSet):
                     project_status=Investment.FUNDED
                 )
 
-        queryset = self._climate_filters(queryset)
+        queryset = apply_climate_filters(queryset, self.request.GET)
 
         return queryset
-
-    def _climate_filters(self, base_queryset):
-        apply_filter = False
-        geoseg_queryset = GeoSegment.objects.all()
-        if "temperature-max-filter" in self.request.GET and self.request.GET[
-            "temperature-max-filter"] not in ["", None]:
-            geoseg_queryset = geoseg_queryset.filter(tmmx_avg_2020_diff__lte=self.request.GET["temperature-max-filter"])
-            apply_filter = True
-        if "temperature-min-filter" in self.request.GET and self.request.GET[
-            "temperature-min-filter"] not in ["", None]:
-            geoseg_queryset = geoseg_queryset.filter(tmmx_avg_2020_diff__gte=self.request.GET["temperature-min-filter"])
-            apply_filter = True
-
-        if "precipitation-min-filter" in self.request.GET and self.request.GET[
-            "precipitation-min-filter"] not in ["", None]:
-            geoseg_queryset = geoseg_queryset.filter(pr_avg_2020_diff__lte=self.request.GET["precipitation-min-filter"])
-            apply_filter = True
-        if "precipitation-max-filter" in self.request.GET and self.request.GET[
-            "precipitation-max-filter"] not in ["", None]:
-            geoseg_queryset = geoseg_queryset.filter(pr_avg_2020_diff__gte=self.request.GET["precipitation-max-filter"])
-            apply_filter = True
-
-        if "land-type-filter" in self.request.GET and self.request.GET[
-            "land-type-filter"] not in ["", None]:
-            geoseg_queryset = geoseg_queryset.filter(lc_gencat_20=self.request.GET["land-type-filter"])
-            apply_filter = True
-
-        if apply_filter:
-            return base_queryset.filter(administrative_level__geo_segment__id__in=Subquery(geoseg_queryset.values("id")))
-        else:
-            return base_queryset
 
 
 class StatisticsView(View):
@@ -306,6 +307,9 @@ class StatisticsView(View):
         organization = request.GET.get('organization', None)
         sector = request.GET.get('sector', None)
         sector_type = request.GET.get('type', None)
+        subpopulation = request.GET.get('subpopulation-filter', None)
+        priorities_filter = request.GET.get('priorities-filter', None)
+        climate_contribution = request.GET.get('climate-contribution-filter', None)
         sector_type_list = []
         sector_filter_active = False
         # Initial queryset
@@ -333,8 +337,21 @@ class StatisticsView(View):
             filters &= Q(sector__category=sector)
         if sector_type and sector_type is not None:
             filters &= Q(sector=sector_type)
+        if subpopulation and subpopulation is not None:
+            filters &= Q(**{subpopulation: True})
+        if priorities_filter and priorities_filter is not None:
+            priorities = [1]
+            if priorities_filter == '2':
+                priorities.append(2)
+            elif priorities_filter == '3':
+                priorities.append(2)
+                priorities.append(3)
+            filters &= Q(ranking__in=priorities)
+        if climate_contribution and climate_contribution is not None:
+            filters &= Q(climate_contribution=climate_contribution)
 
         investments = investments.filter(filters)
+        investments = apply_climate_filters(investments, request.GET)
 
         # Calculate statistics
         total_communities = investments.values('administrative_level').distinct().count()

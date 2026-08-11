@@ -498,10 +498,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'plugins/mapbox-gl-js/v2.6.1/mapbox-gl.js' %}"></script>
     <script type="text/javascript">
-        let markers = [];
         let filter_values = {}
         const sectorColors = {};
         let allSubprojects = [];
+        // Pins are rendered as a single clustered GeoJSON layer (GPU) instead of
+        // thousands of DOM markers.
+        let subprojectsLayerReady = false;
+        let pendingSubprojectData = null;
+        let subprojectsById = {};
 
         function renderMapEmpty(message) {
             const mapContainer = document.getElementById('map');
@@ -563,6 +567,84 @@
                     "iso_3166_1_alpha_3",
                     '{{ country_iso_code }}',
                 ]);
+
+                // Clustered subproject pins. A single GeoJSON source with clustering
+                // scales to many records without one DOM marker per record.
+                map.addSource('subprojects', {
+                    type: 'geojson',
+                    data: pendingSubprojectData || { type: 'FeatureCollection', features: [] },
+                    cluster: true,
+                    clusterMaxZoom: 14,
+                    clusterRadius: 50
+                });
+
+                map.addLayer({
+                    id: 'subproject-clusters',
+                    type: 'circle',
+                    source: 'subprojects',
+                    filter: ['has', 'point_count'],
+                    paint: {
+                        'circle-color': ['step', ['get', 'point_count'], '#60a5fa', 50, '#3b82f6', 200, '#1d4ed8'],
+                        'circle-radius': ['step', ['get', 'point_count'], 16, 50, 22, 200, 30],
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#ffffff'
+                    }
+                });
+                map.addLayer({
+                    id: 'subproject-cluster-count',
+                    type: 'symbol',
+                    source: 'subprojects',
+                    filter: ['has', 'point_count'],
+                    layout: {
+                        'text-field': ['get', 'point_count_abbreviated'],
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                    },
+                    paint: { 'text-color': '#ffffff' }
+                });
+                map.addLayer({
+                    id: 'subproject-unclustered',
+                    type: 'circle',
+                    source: 'subprojects',
+                    filter: ['!', ['has', 'point_count']],
+                    paint: {
+                        'circle-color': ['get', 'color'],
+                        'circle-radius': 7,
+                        'circle-stroke-width': 1.5,
+                        'circle-stroke-color': '#ffffff'
+                    }
+                });
+
+                // Click a cluster -> zoom to expand it.
+                map.on('click', 'subproject-clusters', function (e) {
+                    const features = map.queryRenderedFeatures(e.point, { layers: ['subproject-clusters'] });
+                    const clusterId = features[0].properties.cluster_id;
+                    map.getSource('subprojects').getClusterExpansionZoom(clusterId, function (err, zoom) {
+                        if (err) return;
+                        map.easeTo({ center: features[0].geometry.coordinates, zoom: zoom });
+                    });
+                });
+                // Click a single pin -> popup (unchanged content).
+                map.on('click', 'subproject-unclustered', function (e) {
+                    const f = e.features[0];
+                    const sp = subprojectsById[f.properties.id];
+                    if (!sp) return;
+                    const coords = f.geometry.coordinates.slice();
+                    new mapboxgl.Popup({ offset: 20, maxWidth: '260px' })
+                        .setLngLat(coords)
+                        .setHTML(buildPopupHtml(sp))
+                        .addTo(map);
+                });
+                ['subproject-clusters', 'subproject-unclustered'].forEach(function (layer) {
+                    map.on('mouseenter', layer, function () { map.getCanvas().style.cursor = 'pointer'; });
+                    map.on('mouseleave', layer, function () { map.getCanvas().style.cursor = ''; });
+                });
+
+                subprojectsLayerReady = true;
+                if (pendingSubprojectData) {
+                    map.getSource('subprojects').setData(pendingSubprojectData);
+                    pendingSubprojectData = null;
+                }
             });
 
             return map;
@@ -570,121 +652,133 @@
 
         function updateMap(map, subprojects, filterSector = null) {
             if (!map) return;
-            markers.forEach(marker => marker.remove());
-            markers = [];
 
-            subprojects.forEach((subproject, index) => {
+            const features = [];
+            subprojectsById = {};
+            (subprojects || []).forEach((subproject) => {
                 if ((filterSector === null || subproject.sector__category__name === filterSector) &&
                     subproject.latitude && subproject.longitude) {
-                    const sectorColor = getRandomColor(subproject.sector__category__name);
-                    // const markerElement = createCustomMarker(sectorColor);
-
-                    let carousel_images_html = ""
-                    let carousel_html = ""
-                    if (subproject.attachments){
-                        subproject.attachments.forEach((imgSrc, idx) => {
-                            carousel_images_html += '<div class="carousel-item' + (idx === 0 ? ' active' : '') + '">' +
-                                '<img class="d-block w-100" src="' + (imgSrc ? imgSrc.split('?')[0] : '') + '" style="max-height:130px;object-fit:cover;"></div>' 
-                        })
-                        carousel_html = '<div id="pc-' + subproject.id + '" class="carousel slide mt-2" data-ride="carousel">' +
-                            '<div class="carousel-inner">' + carousel_images_html + '</div>' +
-                            '<a class="carousel-control-prev" href="#pc-' + subproject.id + '" role="button" data-slide="prev"><span class="carousel-control-prev-icon"></span></a>' +
-                            '<a class="carousel-control-next" href="#pc-' + subproject.id + '" role="button" data-slide="next"><span class="carousel-control-next-icon"></span></a>' +
-                            '</div>'
-                    }
-
-                    // Breadcrumb hiérarchie
-                    const levelLabels = ['RÉG.','PRÉF.','COM.','CANT.','VIL.'];
-                    const rawParts = [
-                        subproject['administrative_level__parent__parent__parent__parent__name'],
-                        subproject['administrative_level__parent__parent__parent__name'],
-                        subproject['administrative_level__parent__parent__name'],
-                        subproject['administrative_level__parent__name'],
-                        subproject['administrative_level__name']
-                    ];
-                    const villageLinkBase = "{% url 'administrativelevels:village_detail' 0 %}";
-                    const villageId = subproject['administrative_level__id'];
-                    // Dernier index valide = niveau de la localité cliquable
-                    let lastValidIdx = -1;
-                    rawParts.forEach((v, i) => { if (v && v !== 'null' && v !== 'None') lastValidIdx = i; });
-                    let breadcrumb = '';
-                    rawParts.forEach((v, i) => {
-                        if (v && v !== 'null' && v !== 'None') {
-                            if (breadcrumb) breadcrumb += ' <span style="color:#aaa;">›</span> ';
-                            let nameHtml;
-                            if (i === lastValidIdx && villageId) {
-                                const villageUrl = villageLinkBase.replace('/0/', '/' + villageId + '/');
-                                nameHtml = '<a href="' + villageUrl + '" style="font-weight:700;color:#1a1a1a;text-decoration:underline;" target="_blank">' + v + '</a>';
-                            } else {
-                                nameHtml = '<span style="font-weight:700;">' + v + '</span>';
-                            }
-                            breadcrumb += '<span style="font-size:9px;color:#888;font-weight:600;">' + levelLabels[i] + '</span> ' + nameHtml;
+                    subprojectsById[subproject.id] = subproject;
+                    // Many priorities share one village coordinate; spread them with a
+                    // stable per-id jitter so they don't stack into a single invisible
+                    // point (the DB coordinate stays village-accurate).
+                    const offset = jitterOffset(subproject.id);
+                    features.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [
+                                Number(subproject.longitude) + offset[0],
+                                Number(subproject.latitude) + offset[1]
+                            ]
+                        },
+                        properties: {
+                            id: subproject.id,
+                            color: getRandomColor(subproject.sector__category__name)
                         }
                     });
-
-                    const sectorLabel = subproject.sector__name || subproject.sector__category__name || '—';
-                    const statusLabels = {'NF':'{% translate "Not funded" %}','P':'{% translate "In progress" %}','A':'{% translate "Approved" %}','C':'{% translate "Completed" %}'};
-                    const statusDisplay = statusLabels[subproject.project_status] || subproject.project_status || '—';
-                    const rate = subproject.physical_execution_rate || 0;
-
-                    const popover_html =
-                        // Breadcrumb compact
-                        '<div style="background:#f8f9fa;border-bottom:1px solid #dee2e6;padding:5px 10px;font-size:10px;line-height:1.6;word-break:break-word;">' +
-                            breadcrumb +
-                        '</div>' +
-                        '<div style="padding:8px 10px;">' +
-                            // Titre [Description]
-                            '<div style="font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.4;">' +
-                                (subproject.title || '') +
-                                (subproject.description ? ' <span style="font-weight:400;color:#6c757d;font-size:11px;">[' + subproject.description + ']</span>' : '') +
-                            '</div>' +
-                            // Tableau infos compact
-                            '<table style="width:100%;font-size:11px;border-collapse:collapse;">' +
-                                '<tr><td style="padding:2px 0;color:#6c757d;width:45%;">{% translate "Sector" %}</td>' +
-                                    '<td style="padding:2px 0;font-weight:600;">' + sectorLabel + '</td></tr>' +
-                                '<tr><td style="padding:2px 0;color:#6c757d;">{% translate "Status" %}</td>' +
-                                    '<td style="padding:2px 0;font-weight:600;">' + statusDisplay + '</td></tr>' +
-                                '<tr><td style="padding:2px 0;color:#6c757d;">{% translate "Physical rate" %}</td>' +
-                                    '<td style="padding:2px 0;">' +
-                                        '<div style="display:flex;align-items:center;gap:4px;">' +
-                                            '<div style="flex:1;background:#e9ecef;border-radius:4px;height:5px;">' +
-                                                '<div style="width:' + rate + '%;background:#3b82f6;height:5px;border-radius:4px;"></div>' +
-                                            '</div>' +
-                                            '<span style="font-weight:600;white-space:nowrap;font-size:11px;">' + rate + ' %</span>' +
-                                        '</div>' +
-                                    '</td></tr>' +
-                            '</table>' +
-                            carousel_html +
-                        '</div>'
-                    const offset = calculateOffset(index);
-                    const marker = new mapboxgl.Marker({
-                        color: sectorColor,
-                        draggable: false,
-                        offset: [offset.x, offset.y]
-                    })
-                    .setLngLat([subproject.longitude, subproject.latitude])
-                    .setPopup(new mapboxgl.Popup({ offset: 20, maxWidth: '260px' }).setHTML(popover_html));
-
-                    marker.addTo(map);
-                    markers.push(marker);
                 }
             });
+
+            const data = { type: 'FeatureCollection', features: features };
+            if (subprojectsLayerReady && map.getSource('subprojects')) {
+                map.getSource('subprojects').setData(data);
+            } else {
+                // Stats can return before the map style finishes loading; the
+                // load handler applies this once the source exists.
+                pendingSubprojectData = data;
+            }
         }
 
-        function createCustomMarker(color) {
-            const marker = document.createElement('div');
-            marker.className = 'marker';
-            marker.style.backgroundColor = color;
-            return marker;
+        function buildPopupHtml(subproject) {
+            let carousel_images_html = ""
+            let carousel_html = ""
+            if (subproject.attachments){
+                subproject.attachments.forEach((imgSrc, idx) => {
+                    carousel_images_html += '<div class="carousel-item' + (idx === 0 ? ' active' : '') + '">' +
+                        '<img class="d-block w-100" src="' + (imgSrc ? imgSrc.split('?')[0] : '') + '" style="max-height:130px;object-fit:cover;"></div>'
+                })
+                carousel_html = '<div id="pc-' + subproject.id + '" class="carousel slide mt-2" data-ride="carousel">' +
+                    '<div class="carousel-inner">' + carousel_images_html + '</div>' +
+                    '<a class="carousel-control-prev" href="#pc-' + subproject.id + '" role="button" data-slide="prev"><span class="carousel-control-prev-icon"></span></a>' +
+                    '<a class="carousel-control-next" href="#pc-' + subproject.id + '" role="button" data-slide="next"><span class="carousel-control-next-icon"></span></a>' +
+                    '</div>'
+            }
+
+            // Breadcrumb hiérarchie
+            const levelLabels = ['RÉG.','PRÉF.','COM.','CANT.','VIL.'];
+            const rawParts = [
+                subproject['administrative_level__parent__parent__parent__parent__name'],
+                subproject['administrative_level__parent__parent__parent__name'],
+                subproject['administrative_level__parent__parent__name'],
+                subproject['administrative_level__parent__name'],
+                subproject['administrative_level__name']
+            ];
+            const villageLinkBase = "{% url 'administrativelevels:village_detail' 0 %}";
+            const villageId = subproject['administrative_level__id'];
+            // Dernier index valide = niveau de la localité cliquable
+            let lastValidIdx = -1;
+            rawParts.forEach((v, i) => { if (v && v !== 'null' && v !== 'None') lastValidIdx = i; });
+            let breadcrumb = '';
+            rawParts.forEach((v, i) => {
+                if (v && v !== 'null' && v !== 'None') {
+                    if (breadcrumb) breadcrumb += ' <span style="color:#aaa;">›</span> ';
+                    let nameHtml;
+                    if (i === lastValidIdx && villageId) {
+                        const villageUrl = villageLinkBase.replace('/0/', '/' + villageId + '/');
+                        nameHtml = '<a href="' + villageUrl + '" style="font-weight:700;color:#1a1a1a;text-decoration:underline;" target="_blank">' + v + '</a>';
+                    } else {
+                        nameHtml = '<span style="font-weight:700;">' + v + '</span>';
+                    }
+                    breadcrumb += '<span style="font-size:9px;color:#888;font-weight:600;">' + levelLabels[i] + '</span> ' + nameHtml;
+                }
+            });
+
+            const sectorLabel = subproject.sector__name || subproject.sector__category__name || '—';
+            const statusLabels = {'NF':'{% translate "Not funded" %}','P':'{% translate "In progress" %}','A':'{% translate "Approved" %}','C':'{% translate "Completed" %}'};
+            const statusDisplay = statusLabels[subproject.project_status] || subproject.project_status || '—';
+            const rate = subproject.physical_execution_rate || 0;
+
+            return (
+                // Breadcrumb compact
+                '<div style="background:#f8f9fa;border-bottom:1px solid #dee2e6;padding:5px 10px;font-size:10px;line-height:1.6;word-break:break-word;">' +
+                    breadcrumb +
+                '</div>' +
+                '<div style="padding:8px 10px;">' +
+                    // Titre [Description]
+                    '<div style="font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.4;">' +
+                        (subproject.title || '') +
+                        (subproject.description ? ' <span style="font-weight:400;color:#6c757d;font-size:11px;">[' + subproject.description + ']</span>' : '') +
+                    '</div>' +
+                    // Tableau infos compact
+                    '<table style="width:100%;font-size:11px;border-collapse:collapse;">' +
+                        '<tr><td style="padding:2px 0;color:#6c757d;width:45%;">{% translate "Sector" %}</td>' +
+                            '<td style="padding:2px 0;font-weight:600;">' + sectorLabel + '</td></tr>' +
+                        '<tr><td style="padding:2px 0;color:#6c757d;">{% translate "Status" %}</td>' +
+                            '<td style="padding:2px 0;font-weight:600;">' + statusDisplay + '</td></tr>' +
+                        '<tr><td style="padding:2px 0;color:#6c757d;">{% translate "Physical rate" %}</td>' +
+                            '<td style="padding:2px 0;">' +
+                                '<div style="display:flex;align-items:center;gap:4px;">' +
+                                    '<div style="flex:1;background:#e9ecef;border-radius:4px;height:5px;">' +
+                                        '<div style="width:' + rate + '%;background:#3b82f6;height:5px;border-radius:4px;"></div>' +
+                                    '</div>' +
+                                    '<span style="font-weight:600;white-space:nowrap;font-size:11px;">' + rate + ' %</span>' +
+                                '</div>' +
+                            '</td></tr>' +
+                    '</table>' +
+                    carousel_html +
+                '</div>'
+            );
         }
 
-        function calculateOffset(index) {
-            const angle = index * 30; // Adjust the angle increment as needed
-            const radius = 10; // Adjust the radius as needed
-            return {
-                x: radius * Math.cos(angle),
-                y: radius * Math.sin(angle)
-            };
+        function jitterOffset(id) {
+            // Deterministic spread (~80..520 m) keyed off the subproject id so pins
+            // sharing a village coordinate fan out instead of stacking. Stable across
+            // re-renders so a pin doesn't jump when filters change.
+            const h = hashString('j' + id);
+            const angle = (h % 360) * Math.PI / 180;
+            const radius = 0.0008 + ((h >> 9) % 100) / 100 * 0.0040; // degrees
+            return [Math.cos(angle) * radius, Math.sin(angle) * radius];
         }
 
         const CHART_PALETTE = [
