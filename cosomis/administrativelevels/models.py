@@ -346,7 +346,7 @@ class GeoSegment(BaseModel):
         return [northwest, northeast, southeast, southwest]
 
 
-class Category(BaseModel):
+class Category(BaseModel): # Considered as a Sector
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
 
@@ -354,7 +354,7 @@ class Category(BaseModel):
         return self.name
 
 
-class Sector(BaseModel):
+class Sector(BaseModel): # Considered as a Type of Structure
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -380,8 +380,50 @@ class Project(BaseModel):
     source_of_financing = models.CharField(_("Source of financing"), null=True, blank=True, max_length=255)
 
 
+class Component(BaseModel):
+    """A slot of a priorisation form (e.g. "Sous-composante 1.1", "Composante 2")
+    that an Investment/GroupInvestment can be tagged with, so the sync logic
+    doesn't need to branch on project name or raw JSON key everywhere."""
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="components")
+    name = models.CharField(max_length=255)
+    short_name = models.CharField(max_length=5, null=True, blank=True)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name="children")
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ['project', 'name', 'parent']
+
+    def __str__(self):
+        return f"{self.project.name} - {self.name}"
+
+    @property
+    def get_short_name(self):
+        if self.short_name:
+            return self.short_name
+        return self.name.split(' ')[-1]
+
+
+class GroupeSocioeconomique(BaseModel):
+    """Predefined socio-economic group (sous-composante 1.2b), e.g. "riz", "maraîchers"."""
+    name = models.CharField(max_length=255, unique=True)
+    # Synonymes/mots-clés utilisés pour rapprocher un besoin en texte libre de ce
+    # groupe (voir administrativelevels/management/commands/priorities_sync_helpers.py).
+    keywords = models.JSONField(null=True, blank=True, default=list)
+
+    def __str__(self):
+        return self.name
+
+
 class Phase(BaseModel):
     village = models.ForeignKey(AdministrativeLevel, on_delete=models.CASCADE, related_name='phases')
+    # Chaque projet (COSO, FA-COSO, PURS...) mène son propre cycle de
+    # planification pour un même village : les documents CouchDB "phase"
+    # portent déjà project_id/project_name (comme les documents "task" utilisés
+    # pour les priorités), donc chaque projet obtient naturellement ses propres
+    # lignes Phase (no_sql_db_id différent) — ce champ sert seulement à les
+    # regrouper pour l'affichage. Nullable pour ne pas casser les Phase déjà
+    # synchronisées avant son ajout.
+    project = models.ForeignKey('Project', on_delete=models.SET_NULL, null=True, blank=True, related_name='phases')
     order = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -467,12 +509,16 @@ class Task(BaseModel):
     IN_PROGRESS = 'in progress'
     COMPLETED = 'completed'
     ERROR = 'error'
+    VALIDATED = 'validated'
+    INVALIDATED = 'invalidated'
 
     STATUS = [
         (NOT_STARTED, _(NOT_STARTED)),
         (IN_PROGRESS, _(IN_PROGRESS)),
         (COMPLETED, _(COMPLETED)),
         (ERROR, _(ERROR)),
+        (VALIDATED, _(VALIDATED)),
+        (INVALIDATED, _(INVALIDATED)),
     ]
 
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='tasks')

@@ -22,6 +22,26 @@ STATUS_NOT_STARTED = Task.NOT_STARTED
 STATUS_ERROR = Task.ERROR
 
 
+def _select_default_project_phases(phases):
+    """A village can run one planning cycle per project (COSO/FA-COSO/PURS/...,
+    see Phase.project). Canton-level rollups must not mix those cycles together:
+    summing/rendering every phase sharing a name across projects double-counts
+    it and renders duplicate status dots in the same table cell. Mirror the
+    village page's own default project (alphabetically-first project name) so
+    the numbers agree between the two pages. Legacy rows synced before
+    Phase.project existed (project is None) have nothing to disambiguate, so
+    they're left untouched. Non-Phase inputs (test doubles) pass through
+    unfiltered rather than risk misreading a mock's auto-generated attributes.
+    """
+    named = [p for p in phases if isinstance(p, Phase) and p.project_id is not None]
+    if not named:
+        return list(phases)
+    by_project_name = {}
+    for p in named:
+        by_project_name.setdefault(p.project.name, []).append(p)
+    return by_project_name[min(by_project_name)]
+
+
 @dataclass
 class PhaseStatus:
     """Represents the status of a single phase for a village."""
@@ -151,7 +171,8 @@ class CantonPlanningRepository:
         villages = self.get_villages_for_canton(canton)
         return (
             Phase.objects.filter(village__in=villages)
-            .only("id", "village_id", "order", "name")
+            .select_related("project")
+            .only("id", "village_id", "order", "name", "project__name")
             .prefetch_related(
                 Prefetch(
                     "activities",
@@ -171,7 +192,8 @@ class CantonPlanningRepository:
     def get_phases_for_village(self, village: AdministrativeLevel):
         return (
             Phase.objects.filter(village=village)
-            .only("id", "village_id", "order", "name")
+            .select_related("project")
+            .only("id", "village_id", "order", "name", "project__name")
             .prefetch_related(
                 Prefetch(
                     "activities",
@@ -205,7 +227,7 @@ class CantonPlanningService:
     def get_summary(self) -> CantonPlanningSummary:
         logger.info("Building planning summary for canton '%s' (id=%s)", self._canton.name, self._canton.pk)
 
-        villages = list(self._repo.get_villages_for_canton(self._canton))
+        villages = list(self._repo.get_villages_for_canton(self._canton).filter(is_headquarters=True))
         
         # In tests with mocks, get_phases_for_canton might not be mocked
         # so we fall back to a safe way to handle it.
@@ -231,16 +253,14 @@ class CantonPlanningService:
 
         for village in villages:
             if village.pk in phases_by_village:
-                v_phases = phases_by_village[village.pk]
-                row = self._build_village_row(village, v_phases)
-                for p in v_phases:
-                    if p.name not in all_phase_names_map:
-                        all_phase_names_map[p.name] = p.order
+                row = self._build_village_row(village, phases_by_village[village.pk])
             else:
                 row = self._build_village_row(village)
-                for ps in row.phases:
-                    if ps.name not in all_phase_names_map:
-                        all_phase_names_map[ps.name] = ps.order
+            # Built from row.phases (post project-dedup), not the raw fetch, so
+            # a village's other projects don't leak in as always-empty columns.
+            for ps in row.phases:
+                if ps.name not in all_phase_names_map:
+                    all_phase_names_map[ps.name] = ps.order
 
             village_rows.append(row)
             total_completed_phases += row.completed_phases
@@ -278,15 +298,21 @@ class CantonPlanningService:
     def _build_village_row(self, village: AdministrativeLevel, phases_qs=None) -> VillagePlanningRow:
         if phases_qs is None:
             phases_qs = self._repo.get_phases_for_village(village)
-        
+        phases_qs = _select_default_project_phases(list(phases_qs))
+
         phase_statuses: List[PhaseStatus] = []
         completed_phases_count = in_progress_phases_count = not_started_phases_count = 0
 
         for phase in phases_qs:
-            # If phases_qs was prefetched, get_status would still do queries
-            # unless we use the optimized path.
-            # In tests with simple mocks, we use phase.get_status()
-            if hasattr(phase, 'activities'):
+            # Real Phase rows: read prefetched activities/tasks in Python
+            # (see _get_phase_status_optimized). phase.get_status() fires up
+            # to 3 correlated EXISTS subqueries against the *entire* Task
+            # table per phase — with real canton-sized data (dozens of
+            # villages x 4 phases) that's what was making this tab take
+            # several seconds to load. Test doubles (plain MagicMock, no real
+            # `activities` relation) still go through get_status() since
+            # that's what they configure.
+            if isinstance(phase, Phase):
                 status = self._get_phase_status_optimized(phase)
             else:
                 status = phase.get_status()
@@ -314,45 +340,38 @@ class CantonPlanningService:
 
     def _get_phase_status_optimized(self, phase: Phase) -> str:
         """
-        Logic from Phase.get_status() rewritten to avoid subqueries
-        and use prefetch_related data.
+        Logic from Phase.get_status() rewritten to read prefetched
+        activities/tasks in Python instead of firing Phase.get_status()'s up
+        to 3 correlated EXISTS subqueries (each scanning the *entire* Task
+        table via `tasks__id__in=Subquery(Task.objects.filter(status=X)...)`)
+        per phase. Iterating phase.activities.all() is a no-op query when
+        prefetched (the normal case here) and at worst one query when not —
+        either way far cheaper than the subquery pattern, which is what made
+        canton-sized cantons (dozens of villages x 4 phases) take seconds.
         """
-        # Optimized path for real Django objects with prefetched data
-        if hasattr(phase, 'activities') and hasattr(phase.activities, 'all'):
-            all_activities = phase.activities.all()
-            
-            # If it's a list-like (prefetched) it won't have .query
-            if not hasattr(all_activities, 'query'):
-                if not all_activities:
-                    return STATUS_NOT_STARTED
+        all_activities = list(phase.activities.all())
+        if not all_activities:
+            return STATUS_NOT_STARTED
 
-                completed_exists = False
-                not_started_exists = False
-                error_exists = False
-                in_progress_exists = False
+        completed_exists = False
+        not_started_exists = False
+        error_exists = False
 
-                for activity in all_activities:
-                    # activity.tasks.all() is prefetched
-                    tasks = activity.tasks.all()
-                    for task in tasks:
-                        t_status = task.status
-                        if t_status == Task.COMPLETED:
-                            completed_exists = True
-                        elif t_status == Task.NOT_STARTED:
-                            not_started_exists = True
-                        elif t_status == Task.ERROR:
-                            error_exists = True
-                        elif t_status == Task.IN_PROGRESS:
-                            in_progress_exists = True
+        for activity in all_activities:
+            for task in activity.tasks.all():
+                t_status = task.status
+                if t_status == Task.COMPLETED:
+                    completed_exists = True
+                elif t_status == Task.NOT_STARTED:
+                    not_started_exists = True
+                elif t_status == Task.ERROR:
+                    error_exists = True
 
-                if not_started_exists and not completed_exists:
-                    return Task.NOT_STARTED
-                elif not not_started_exists and completed_exists:
-                    return Task.COMPLETED
-                elif error_exists:
-                    return Task.ERROR
-                
-                return Task.IN_PROGRESS
+        if not_started_exists and not completed_exists:
+            return Task.NOT_STARTED
+        elif not not_started_exists and completed_exists:
+            return Task.COMPLETED
+        elif error_exists:
+            return Task.ERROR
 
-        # Fallback for mocks or non-prefetched data
-        return phase.get_status()
+        return Task.IN_PROGRESS

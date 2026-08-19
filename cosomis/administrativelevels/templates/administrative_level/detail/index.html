@@ -271,7 +271,21 @@
                             <div id="planning_cycle" class="tab-pane fade">
                                 <div class="card">
                                     <div class="card-body">
-                                        {% include 'administrative_level/detail/tabs/planning_cycle.html' %}
+                                        {% if planning_projects|length > 1 %}
+                                        <div class="d-flex align-items-center justify-content-end mb-3" style="gap:8px;">
+                                            <label for="planning-cycle-project-select" class="mb-0 font-weight-bold" style="font-size:13px;">
+                                                {% translate "Project" %}
+                                            </label>
+                                            <select id="planning-cycle-project-select" class="form-control" style="width:auto; min-width:180px;">
+                                                {% for project in planning_projects %}
+                                                    <option value="{{ project.id }}" {% if selected_planning_project.id == project.id %}selected{% endif %}>{{ project.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        {% endif %}
+                                        <div id="planning-cycle-content">
+                                            {% include 'administrative_level/detail/tabs/planning_cycle.html' %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -367,29 +381,24 @@
     <script src="{% static 'plugins/datepicker/datepicker.en.js' %}"></script>
     <script src="{% static 'plugins/datepicker/datepicker.custom.js' %}"></script>
 
-    <!-- Planning cycle script -->
-    <script type="text/javascript" async>
+    <!-- Planning cycle: project selector (re-fetches the tab content only) -->
+    <script type="text/javascript">
         $(document).ready(function () {
-            
-            $(".pc-btn").on('click', function () {
-
-                let phase_id = $(this).attr("id").split("-")[3];
-                let activity_buttons = $("#v-phase-" + phase_id + "-pills-tab").children();
-                let has_selected = false;
-                $(".tasks-pane").removeClass("active show");
-                activity_buttons.each(function () {
-                    if ($(this).hasClass("active")) {
-                        let activity_id = $(this).attr("id").split("-")[3];
-                        $("#activity-" + activity_id + "-content").tab("show");
-                        has_selected = true;
+            $('#planning-cycle-project-select').on('change', function () {
+                let base_url = "{% url 'administrativelevels:village_planning_cycle' object.id %}";
+                let content = $('#planning-cycle-content');
+                content.css('opacity', 0.5);
+                $.ajax({
+                    type: "GET",
+                    url: base_url,
+                    data: {project_id: $(this).val()},
+                    success: function (response) {
+                        content.html(response);
+                    },
+                    complete: function () {
+                        content.css('opacity', 1);
                     }
                 });
-                if (!has_selected) {
-                    let single_button = $("#v-phase-" + phase_id + "-pills-tab").children(":first-child");
-                    let activity_id = single_button.attr("id").split("-")[3];
-                    single_button.addClass("active")
-                    $("#activity-" + activity_id + "-content").tab("show");
-                }
             });
 
             $('#taskModalLong').on('shown.bs.modal', function (e) {

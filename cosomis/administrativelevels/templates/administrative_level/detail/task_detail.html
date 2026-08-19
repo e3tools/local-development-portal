@@ -54,8 +54,7 @@
                                                     <div class="form-group">
                                                         <label>{{ dicts2.name|structureTheWords }}</label>
                                                         <div>
-                                                        <p>{% if dicts2.value %}{{ dicts2.value }}{% else %}-{% endif %}</p>
-                                                            <input type="text" readonly value="{% if dicts2.value %}{{ dicts2.value }}{% else %}-{% endif %}" class="form-control" />
+                                                        <input type="text" readonly value="{% if dicts2.value %}{{ dicts2.value }}{% else %}-{% endif %}" class="form-control" />
                                                         </div>
                                                         <div class="clearfix"></div>
                                                     </div>
@@ -69,7 +68,6 @@
                                         <div class="form-group">
                                             <label>{{ v1.name }}</label>
                                             <div>
-                                            <p>{% if v1.value %}{{ v1.value }}{% else %}-{% endif %}</p>
                                                 <input type="text" readonly value="{% if v1.value %}{{ v1.value }}{% else %}-{% endif %}" class="form-control" />
                                             </div>
                                             <div class="clearfix"></div>
@@ -90,7 +88,6 @@
                                             <div class="form-group">
                                                 <label>{{ dicts0.name|structureTheWords }}</label>
                                                 <div>
-                                                <p>{% if dicts0.value %}{{ dicts0.value }}{% else %}-{% endif %}</p>
                                                     <input type="text" readonly value="{% if dicts0.value %}{{ dicts0.value }}{% else %}-{% endif %}" class="form-control" />
                                                 </div>
                                                 <div class="clearfix"></div>
@@ -105,7 +102,6 @@
                             <div class="form-group">
                                 <label>{{ v.name }}</label>
                                 <div>
-                                <p>{% if v.value %}{{ v.value }}{% else %}-{% endif %}</p>
                                     <input type="text" readonly value="{% if v.value %}{{ v.value }}{% else %}-{% endif %}" class="form-control" />
                                 </div>
                                 <div class="clearfix"></div>
@@ -127,7 +123,6 @@
                                     <div class="form-group">
                                         <label>{{ dicts1.name|structureTheWords }}</label>
                                         <div>
-                                        <p>{% if dicts1.value %}{{ dicts1.value }}{% else %}-{% endif %}</p>
                                             <input type="text" readonly value="{% if dicts1.value %}{{ dicts1.value }}{% else %}-{% endif %}" class="form-control" />
                                         </div>
                                         <div class="clearfix"></div>
@@ -142,7 +137,6 @@
                 <div class="form-group">
                     <label>{{ dicts.name }}</label>
                     <div>
-                    <p>{% if dicts.value %}{{ dicts.value }}{% else %}-{% endif %}</p>
                         <input type="text" readonly value="{% if dicts.value %}{{ dicts.value }}{% else %}-{% endif %}" class="form-control" />
                     </div>
                     <div class="clearfix"></div>

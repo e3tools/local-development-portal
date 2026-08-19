@@ -180,6 +180,78 @@ class AdministrativeLevelSearchListView(PageMixin, LoginRequiredApproveRequiredM
         return ctx
 
 
+def build_planning_cycle(admin_level, project=None):
+    """Nested phases/activities/tasks for one village's CDD cycle, with each
+    node's status bubbled up from its children. `project` restricts the
+    cycle to that Project's phases (a village can run one cycle per project:
+    COSO/FA-COSO/PURS/...); leave it None to show every phase regardless of
+    project (legacy Phase rows synced before Phase.project existed)."""
+    phases = list()
+    phases_qs = admin_level.phases.all()
+    if project is not None:
+        phases_qs = phases_qs.filter(project=project)
+    for phase in phases_qs.order_by("order"):
+        phase_node = {
+            "id": phase.id,
+            "name": phase.name,
+            "order": phase.order,
+            "activities": list(),
+        }
+        activities_status = None
+        for activity in phase.activities.all().order_by("order"):
+            activity_node = {
+                "id": activity.id,
+                "name": activity.name,
+                "order": activity.order,
+                "tasks": list(),
+            }
+            tasks_status = None
+            for task in activity.tasks.all().order_by("order"):
+                task_node = {
+                    "id": task.id,
+                    "name": task.name,
+                    "order": task.order,
+                    "status": task.status,
+                }
+                activity_node["tasks"].append(task_node)
+                if tasks_status is None:
+                    tasks_status = task.status
+                if task.status != Task.ERROR:
+                    if tasks_status == Task.COMPLETED and task.status == Task.IN_PROGRESS:
+                        tasks_status = Task.IN_PROGRESS
+                else:
+                    tasks_status = Task.ERROR
+            activity_node["status"] = tasks_status
+            phase_node["activities"].append(activity_node)
+            if activities_status is None:
+                activities_status = tasks_status
+            if activity_node["status"] != Task.ERROR:
+                if activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
+                    activities_status = Task.IN_PROGRESS
+            else:
+                activities_status = Task.ERROR
+        phase_node["status"] = activities_status
+        phases.append(phase_node)
+    return phases
+
+
+class VillagePlanningCycleAjaxView(LoginRequiredApproveRequiredMixin, DetailView):
+    """Re-renders just the planning-cycle tab content for one project, so the
+    project selector on the village page can switch cycles without a full
+    page reload."""
+    model = AdministrativeLevel
+    template_name = "administrative_level/detail/tabs/planning_cycle.html"
+
+    def get(self, request, *args, **kwargs):
+        admin_level = self.get_object()
+        project = None
+        project_id = request.GET.get('project_id')
+        if project_id:
+            project = Project.objects.filter(pk=project_id).first()
+        phases = build_planning_cycle(admin_level, project)
+        return self.render_to_response({'phases': phases, 'selected_planning_project': project})
+
+
 class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, DetailView):
     """Class to present the detail page of one village"""
 
@@ -227,7 +299,22 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
             context['children_services_infrastructures_total_ids'] = list(
                 set(context['children_services_infrastructures_total_ids']))
 
-        context['phases'] = self._get_planning_cycle()
+        if admin_level.is_village():
+            context['planning_projects'] = Project.objects.filter(
+                phases__village=admin_level
+            ).distinct().order_by('name')
+            selected_planning_project = None
+            requested_project_id = self.request.GET.get('planning_project')
+            if requested_project_id:
+                selected_planning_project = context['planning_projects'].filter(
+                    pk=requested_project_id
+                ).first()
+            if not selected_planning_project:
+                selected_planning_project = context['planning_projects'].first()
+            context['selected_planning_project'] = selected_planning_project
+            context['phases'] = self._get_planning_cycle(selected_planning_project)
+        else:
+            context['phases'] = self._get_planning_cycle()
         context['development_plan'] = self._get_development_plan(context['phases'])
 
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
@@ -403,52 +490,8 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
 
         return context
 
-    def _get_planning_cycle(self):
-        phases = list()
-        admin_level = self.object
-        for phase in admin_level.phases.all().order_by("order"):
-            phase_node = {
-                "id": phase.id,
-                "name": phase.name,
-                "order": phase.order,
-                "activities": list(),
-            }
-            activities_status = None
-            for activity in phase.activities.all().order_by("order"):
-                activity_node = {
-                    "id": activity.id,
-                    "name": activity.name,
-                    "order": activity.order,
-                    "tasks": list(),
-                }
-                tasks_status = None
-                for task in activity.tasks.all().order_by("order"):
-                    task_node = {
-                        "id": task.id,
-                        "name": task.name,
-                        "order": task.order,
-                        "status": task.status,
-                    }
-                    activity_node["tasks"].append(task_node)
-                    if tasks_status is None:
-                        tasks_status = task.status
-                    if task.status != Task.ERROR:
-                        if tasks_status == Task.COMPLETED and task.status == Task.IN_PROGRESS:
-                            tasks_status = Task.IN_PROGRESS
-                    else:
-                        tasks_status = Task.ERROR
-                activity_node["status"] = tasks_status
-                phase_node["activities"].append(activity_node)
-                if activities_status is None:
-                    activities_status = tasks_status
-                if activity_node["status"] != Task.ERROR:
-                    if activities_status == Task.COMPLETED and activity_node["status"] == Task.IN_PROGRESS:
-                        activities_status = Task.IN_PROGRESS
-                else:
-                    activities_status = Task.ERROR
-            phase_node["status"] = activities_status
-            phases.append(phase_node)
-        return phases
+    def _get_planning_cycle(self, project=None):
+        return build_planning_cycle(self.object, project)
 
     def _get_development_plan(self, phases):
         phase = next((phase for phase in phases if phase['order'] == 3), None)
@@ -484,9 +527,9 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
                             total_ids = [child.id]
                 else:
                     final_total_ids += [child.id]
-                    print('###')
-                    print("Village without infrastructure: ", child.id)
-                    print('###')
+                    # print('###')
+                    # print("Village without infrastructure: ", child.id)
+                    # print('###')
 
             if base_resp is not None:
                 for key, value in base_resp.items():
@@ -949,12 +992,42 @@ class CommuneDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, 
 
         task_number = tasks_qs.count()
         tasks_done = tasks_qs.filter(status=Task.COMPLETED).count()
+
+
         context["planning_status"] = {
             "current_phase": current_phase,
             "current_activity": current_activity,
             "current_task": current_task,
             "completed": round(float(tasks_done) * 100 / float(task_number), 2) if task_number != 0 else '-',
-            "priorities_identified": context["object"].identified_priority,
+            **Investment.objects.filter(
+                administrative_level__parent__parent=admin_level
+            ).aggregate(
+                priorities_identified_not_funded=Count(
+                    'id',
+                    filter=Q(project_status=Investment.NOT_FUNDED)
+                ),
+                priorities_identified_funded=Count(
+                    'id',
+                    filter=~Q(project_status=Investment.NOT_FUNDED)
+                ),
+                priorities_identified=Count('id'),
+                total_estimated_cost_not_funded=Coalesce(
+                    Sum(
+                        'estimated_cost',
+                        filter=Q(project_status=Investment.NOT_FUNDED)
+                    ),
+                    0
+                ),
+                total_estimated_cost_funded=Coalesce(
+                    Sum(
+                        'estimated_cost',
+                        filter=~Q(project_status=Investment.NOT_FUNDED)
+                    ),
+                    0
+                ),
+            ),
+            "cvd_count": descendant_villages.filter(is_headquarters=True).count(),
+            # "priorities_identified": context["object"].identified_priority,
             "village_development_plan_date": "",
             "facilitator": "",
         }

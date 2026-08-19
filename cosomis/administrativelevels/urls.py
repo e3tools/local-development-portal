@@ -23,6 +23,7 @@ urlpatterns = [
          name='attachment_download_by_id'),
 
     path('village/<int:pk>/', views.AdministrativeLevelDetailView.as_view(), name='village_detail'),
+    path('village/<int:pk>/planning-cycle/', views.VillagePlanningCycleAjaxView.as_view(), name='village_planning_cycle'),
     path('canton/<int:pk>/', views.CantonDetailView.as_view(), name='canton_detail'),
     path('canton/<int:pk>/planning-summary/', views.CantonPlanningSummaryView.as_view(), name='canton_planning_summary'),
     path('canton/<int:pk>/map/', views.CantonMapView.as_view(), name='canton_map'),

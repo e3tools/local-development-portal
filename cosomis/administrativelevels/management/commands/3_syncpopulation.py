@@ -93,7 +93,7 @@ def extract_population_data(form_response, old_form_response=None):
     data = {field: None for field in fields}
 
     def set_if_empty(field, value):
-        if (data[field] is None or data[field] in IGNORES) and (value is not None or value not in IGNORES):
+        if (data[field] is None or str(data[field]).lower() in IGNORES) and (value is not None or str(value).lower() not in IGNORES):
             data[field] = value
 
     def scan_current_format(entries):
@@ -120,7 +120,7 @@ def extract_population_data(form_response, old_form_response=None):
             ethnics_groups = entry.get("principaleEthnies")
             if ethnics_groups:
                 set_if_empty("ethnic_groups", [
-                    v for k, v in ethnics_groups.items() if k.startswith("principaleEthnie") and (v and v not in IGNORES)
+                    v for k, v in ethnics_groups.items() if k.startswith("principaleEthnie") and (v and str(v).lower() not in IGNORES)
                 ])
 
     def scan_legacy_format(entries):

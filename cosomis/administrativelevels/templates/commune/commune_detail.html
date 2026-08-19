@@ -85,31 +85,62 @@
 			</div>
 			<div class="card col-12">
 				<div class="card-header">
-					<h5 class="font-weight-bold mb-0">{% translate 'Planning Cycle' %}</h5>
+					<h5 class="font-weight-bold mb-0">{% translate 'Villages' %}</h5>
 				</div>
 				<div class="card-body p-2">
 					<table class="table">
 						<tbody>
+							
+
 						<tr>
-							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Phase' %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_phase.name }}</td>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Number of Cantons" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.canton_count|default:'-' }}</td>
+						</tr>
+						
+
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Number of Villages" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.village_count|default:'-' }}</td>
+						</tr>
+
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Number of CVDs" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.cvd_count|default:'-' }}</td>
+						</tr>
+						
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified (Funded)" %}</td> 
+							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified_funded|default:"-"|intcomma }}</td>
 						</tr>
 						<tr>
-							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Activity' %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_activity.name }}</td>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified (Not Funded)" %}</td> 
+							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified_not_funded|default:"-"|intcomma }}</td>
 						</tr>
-						<tr>
-							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate 'Task' %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.current_task.name }}</td>
-						</tr>
-						<tr>
-							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Completed" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.completed|intcomma }} %</td>
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Priorities Identified" %}</td>
-							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified|default:"-" }}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.priorities_identified|default:'-'|intcomma }}</td>
 						</tr>
 						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total Estimated Cost (Funded)" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.total_estimated_cost_funded|default:'-'|intcomma }}
+								FCFA
+							</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total Estimated Cost (Not Funded)" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.total_estimated_cost_not_funded|default:'-'|intcomma }}
+								FCFA
+							</td>
+						</tr>
+						<tr>
+							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Total Estimated Cost" %}</td>
+							<td class="border-0 p-0 pr-2 text-right">{{ population.total_estimated_cost|default:'-'|intcomma }}
+								FCFA
+							</td>
+						</tr>
+
+
+						{% comment %} <tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
 							<td class="border-0 p-0 pr-2 text-right">
 								{% if development_plan %}
@@ -122,7 +153,7 @@
 						<tr>
 							<td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
 							<td class="border-0 p-0 pr-2 text-right">{{ planning_status.facilitator }}</td>
-						</tr>
+						</tr> {% endcomment %}
 						</tbody>
 					</table>
 				</div>
@@ -150,8 +181,8 @@
 		<div class="col-md-3 col-6">
 			<div class="card stat-card">
 				<div class="card-body text-center">
-					<div class="stat-value h2 font-weight-bold">{{ planning_status.priorities_identified|default:"0" }}</div>
-					<div class="stat-label text-muted">{% translate "Priorities Identified" %}</div>
+					<div class="stat-value h2 font-weight-bold">{{ planning_status.priorities_identified_not_funded|default:"0" }}</div>
+					<div class="stat-label text-muted">{% translate "Priorities Identified (Not Funded)" %}</div>
 				</div>
 			</div>
 		</div>
@@ -159,17 +190,17 @@
 			<div class="card stat-card">
 				<div class="card-body text-center">
 					<div class="stat-value h2 font-weight-bold">
-						{% if population.total_estimated_cost >= 1000000000000 %}
-							{{ population.total_estimated_cost|divide:1000000000000|floatformat:1 }}{% translate "T" %}
-						{% elif population.total_estimated_cost >= 1000000000 %}
-							{{ population.total_estimated_cost|divide:1000000000|floatformat:1 }}{% translate "B" %}
-						{% elif population.total_estimated_cost >= 1000000 %}
-							{{ population.total_estimated_cost|divide:1000000|floatformat:1 }}{% translate "M" %}
+						{% if planning_status.total_estimated_cost_not_funded >= 1000000000000 %}
+							{{ planning_status.total_estimated_cost_not_funded|divide:1000000000000|floatformat:1 }}{% translate "T" %}
+						{% elif planning_status.total_estimated_cost_not_funded >= 1000000000 %}
+							{{ planning_status.total_estimated_cost_not_funded|divide:1000000000|floatformat:1 }}{% translate "B" %}
+						{% elif planning_status.total_estimated_cost_not_funded >= 1000000 %}
+							{{ planning_status.total_estimated_cost_not_funded|divide:1000000|floatformat:1 }}{% translate "M" %}
 						{% else %}
-							{{ population.total_estimated_cost|intcomma }}
+							{{ planning_status.total_estimated_cost_not_funded|intcomma }}
 						{% endif %}
 					</div>
-					<div class="stat-label text-muted">{% translate "Total Estimated Cost (FCFA)" %}</div>
+					<div class="stat-label text-muted">{% translate "Total Estimated Cost (FCFA)" %}{% translate "Not Funded" %}</div>
 				</div>
 			</div>
 		</div>
@@ -232,9 +263,9 @@
 													{{ village.parent.name }}
 												</a>
 											</td>
-											<td>{{ village.total_population|intcomma }}</td>
-											<td>{{ village.total_founded|intcomma }}</td>
-											<td>{{ village.total_estimated_cost|intcomma }}</td>
+											<td>{% if village.total_population %}{{ village.total_population|intcomma }}{% else %}-{% endif %}</td>
+											<td>{% if village.total_founded %}{{ village.total_founded|intcomma }}{% else %}-{% endif %}</td>
+											<td>{% if village.total_estimated_cost %}{{ village.total_estimated_cost|intcomma }}{% else %}-{% endif %}</td>
 											<td>{{ village.per_capita_invested|intcomma }}</td>
 											<td>{{ village.per_capita_required|intcomma }}</td>
 											<td><i class="nav-icon fa fa-bars text-primary" data-toggle="modal"
@@ -264,7 +295,7 @@
 									<table class="table table-bordered">
 										<thead>
 										<tr>
-											<th class="align-middle" rowspan="2">{% translate 'Ranking' %}</th>
+											<th class="align-middle" rowspan="2">{% translate 'Ranking' %} [{% translate 'Component' %}]</th>
 											<th class="align-middle"
 												rowspan="2">{% translate 'Sub-project priorities' %}</th>
 											<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
@@ -302,9 +333,14 @@
 										<tbody>
 										{% for subproject in subprojects %}
 											<tr>
-												<td>{% if subproject.ranking %}{{ subproject.ranking }}{% else %}-{% endif %}</td>
+												<td>{% if subproject.ranking %}{{ subproject.ranking }}{% else %}-{% endif %}{% if subproject.component.get_short_name %} [{{ subproject.component.get_short_name }}]{% endif %}</td>
 												{% if subproject.title == "Autre" %}
 													<td class="border-sides--light">
+                
+														{% if subproject.group_investment %}
+															{{ subproject.group_investment.title }} | 
+														{% endif %}
+
 														<a href="" data-container="body" data-toggle="popover"
 														   data-placement="top" data-trigger="hover" data-content="
 
@@ -313,7 +349,14 @@
 														</a>
 													</td>
 												{% else %}
-													<td class="border-sides--light">{{ subproject.title }}</td>
+													<td class="border-sides--light">
+                
+														{% if subproject.group_investment %}
+															{{ subproject.group_investment.title }} | 
+														{% endif %}
+
+														{{ subproject.title }}
+													</td>
 												{% endif %}
 												<td class="border-sides--light">
 													{% if subproject.endorsed_by_youth %}✓{% endif %}</td>
@@ -326,9 +369,13 @@
 												<td class="border-sides--light">{% if subproject.beneficiaries %}{{ subproject.beneficiaries|intcomma }}{% else %}-{% endif %}</td>
 												<td class="border-sides--light">{% if subproject.estimated_cost %}{{ subproject.estimated_cost|intcomma }}{% else %}-{% endif %}</td>
 												<td class="border-sides--light">{{ subproject.funded_by.name }}</td>
-												<td class="border-sides--light">{% if subproject.climate_contribution %}
-													{{ subproject.climate_contribution_text }}{% else %}
-													{% translate "No" %}{% endif %}</td>
+												<td class="border-sides--light">
+													{% if subproject.climate_contribution %}
+														{{ subproject.climate_contribution_text }}
+													{% else %}
+														{% comment %} {% translate "No" %} {% endcomment %}
+													{% endif %}
+												</td>
 												<td class="border-sides--light">{{ subproject.administrative_level.name }}</td>
 												<td><i class="nav-icon fa fa-bars" data-toggle="modal"
 													   data-target="#exampleModal"></i></td>

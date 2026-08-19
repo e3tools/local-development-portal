@@ -130,5 +130,29 @@
     };
 </script>
 
-{# canton_map.js should be loaded once in the base template or here #}
-<script src="{% static 'js/canton_map.js' %}"></script>
+{% comment %}
+canton_map.js needs the mapboxgl global. This tab is loaded async via htmx
+(hx-trigger="load"), so it cannot assume the Climate tab's own mapbox-gl.js
+include elsewhere on the page has finished loading by the time this runs —
+on a slow connection canton_map.js would crash on `mapboxgl.accessToken`
+and the map would never render. Load the library ourselves, skipping it
+if some other tab already provided it, then load canton_map.js only once
+mapboxgl is confirmed available.
+{% endcomment %}
+<script>
+    (function () {
+        function loadCantonMapJs() {
+            var s = document.createElement("script");
+            s.src = "{% static 'js/canton_map.js' %}";
+            document.body.appendChild(s);
+        }
+        if (typeof mapboxgl !== "undefined") {
+            loadCantonMapJs();
+        } else {
+            var lib = document.createElement("script");
+            lib.src = "{% static 'plugins/mapbox-gl-js/v3.2.0/mapbox-gl.js' %}";
+            lib.onload = loadCantonMapJs;
+            document.body.appendChild(lib);
+        }
+    })();
+</script>

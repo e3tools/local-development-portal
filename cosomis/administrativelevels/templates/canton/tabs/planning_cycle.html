@@ -1,4 +1,4 @@
-{% load i18n l10n %}
+{% load i18n l10n custom_tags %}
 
 {# ── Summary counters ── #}
 <div class="row mt-3">
@@ -138,10 +138,10 @@
 								{% for ps in row.phases %}
 									{% if ps.name == phase_name %}
 										<div class="d-flex align-items-center justify-content-center"
-											 title="{{ ps.status }}">
+											 title="{{ ps.status|status_display|default:'' }}">
 											<span class="status-dot mr-2"
 												  style="background-color: {{ ps.dot_color }}; width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
-											<span class="small text-muted">{{ ps.status }}</span>
+											<span class="small text-muted">{{ ps.status|status_display|default:'' }}</span>
 										</div>
 									{% endif %}
 								{% endfor %}

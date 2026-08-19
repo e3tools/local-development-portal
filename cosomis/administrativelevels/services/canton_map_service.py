@@ -154,12 +154,15 @@ class CantonMapService:
                 # phases → activities → tasks for planning layer
                 Prefetch(
                     "phases",
-                    queryset=Phase.objects.prefetch_related(
+                    # select_related/only("project__name") so CantonPlanningService's
+                    # per-village project dedup (a village can run one cycle per
+                    # project — see Phase.project) doesn't N+1 on phase.project.name.
+                    queryset=Phase.objects.select_related("project").prefetch_related(
                         Prefetch(
                             "activities__tasks",
                             queryset=Task.objects.only("id", "status", "activity_id"),
                         )
-                    ).only("id", "name", "order", "village_id"),
+                    ).only("id", "name", "order", "village_id", "project__name"),
                 ),
             )
             .only(

@@ -52,6 +52,29 @@ class CantonSummaryService:
         ).aggregate(
             priority_count=Count('id'),
             total_estimated_cost=Coalesce(Sum('estimated_cost'), 0),
+
+            priority_count_not_funded=Count(
+                'id',
+                filter=Q(project_status=Investment.NOT_FUNDED)
+            ),
+            priority_count_funded=Count(
+                'id',
+                filter=~Q(project_status=Investment.NOT_FUNDED)
+            ),
+            total_estimated_cost_not_funded=Coalesce(
+                Sum(
+                    'estimated_cost',
+                    filter=Q(project_status=Investment.NOT_FUNDED)
+                ),
+                0
+            ),
+            total_estimated_cost_funded=Coalesce(
+                Sum(
+                    'estimated_cost',
+                    filter=~Q(project_status=Investment.NOT_FUNDED)
+                ),
+                0
+            ),
         )
 
         # CVD count: geographical units linked to child villages
@@ -66,8 +89,9 @@ class CantonSummaryService:
         return {
             'village_count': self._child_villages.count(),
             'cvd_count': cvd_count,
-            'priority_count': investment_agg['priority_count'],
-            'total_estimated_cost': investment_agg['total_estimated_cost'],
+            **investment_agg,
+            # 'priority_count': investment_agg['priority_count'],
+            # 'total_estimated_cost': investment_agg['total_estimated_cost'],
         }
 
     def get_carousel_images(self, max_images: int = 5) -> list:

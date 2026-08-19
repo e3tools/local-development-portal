@@ -1,6 +1,7 @@
 from fileinput import filename
 from django.core.management.base import BaseCommand, CommandError
-from administrativelevels.models import Project, AdministrativeLevel, Sector
+from django.db.models import Q
+from administrativelevels.models import Project, AdministrativeLevel, Sector, Component
 from investments.models import Investment, Attachment
 from cosomis.constants import STRUCTURE_COMPLETED_STATUS, STRUCTURE_IN_PROGRESS_STATUS, IMAGE_EXTENSIONS, STRUCTURE_COMPLETED_ONLY_STATUS
 from django.conf import settings
@@ -75,8 +76,19 @@ class Command(BaseCommand):
         for subproject in all_results:
             investment_id = f'{project.name}.{subproject["joint_subproject_number"]}.{subproject["number"]}' # PROJECT_NAME.SUBPROJECT_KIT_NUMBER.NUMBER_INFRASTRUCTURE
             investment = None
+            _suproject_component = subproject["component"]['name']
+            _suproject_component_alias = [_suproject_component, f"Sous-{_suproject_component}"]
+            name_queries = Q()
+            for alias in _suproject_component_alias:
+                name_queries |= Q(name__iexact=alias)
+            
+            component = Component.objects.filter(
+                name_queries | Q(short_name__iexact=_suproject_component.split(' ')[-1]),
+                project=project
+            ).first()
+            
             try:
-                investment = Investment.objects.get(imported_project_id=investment_id)
+                investment = Investment.objects.get(Q(component__isnull=True) | Q(component=component), imported_project_id=investment_id)
             except Investment.DoesNotExist:
                 investments_not_exists.append(investment_id)
                 self.stdout.write(self.style.ERROR(f"Investment with imported_project_id {investment_id} does not exist."))
@@ -104,6 +116,18 @@ class Command(BaseCommand):
                     project_status = "PA"
                 elif subproject["current_status_of_the_site"] in STRUCTURE_COMPLETED_STATUS: #row["status"] == "Achevé" or row["status"] == "Réception provisoire" or row["status"] == "Réception technique":
                     project_status = "C"
+
+                #Whose choice this subproject?
+                if subproject.get("women_s_group"):
+                    investment.endorsed_by_women = True
+                if subproject.get("youth_group"):
+                    investment.endorsed_by_youth = True
+                if subproject.get("breeders_farmers_group"):
+                    investment.endorsed_by_agriculturist = True
+                if subproject.get("ethnic_minority_group"):
+                    investment.endorsed_by_pastoralist = True
+                if subproject.get("refugee_and_internally_displaced_persons_group"):
+                    investment.endorsed_by_displaced = True
 
                 investment.project_status = project_status
 
@@ -160,6 +184,16 @@ class Command(BaseCommand):
         print(f"Updated {len(attachments_bucket_update)} attachments")
         print(f"Investments not found for IDs: {len(investments_not_exists)} {investments_not_exists}")
         print(f"Investments with multiple objects for IDs: {len(investments_multiple_objects)} {investments_multiple_objects}")
+        for investment_multiple_object in investments_multiple_objects:
+            investments_multiple_objects = Investment.objects.filter(
+                imported_project_id=investment_multiple_object
+            ).order_by('created_date')
+            _last = investments_multiple_objects.last()
+            # Delete Old/First Investment
+            investments_multiple_objects.exclude(id=_last.id).delete()
+            
+        if investments_multiple_objects:
+            print(f"Deleted { len(investments_multiple_objects) } Investment with multiple objects")
 
         _count_delete, _dict_delete = attachments.exclude(url__in=urls).delete()
         print(f"Deleted { _count_delete } attachments")

@@ -166,7 +166,7 @@
 					<thead>
 					<tr>
 						<th class="align-middle" rowspan="2">{% translate 'Investment Type' %}</th>
-						<th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Investment' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Funding Needed' %}</th>
 						<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Status' %}</th>
@@ -191,8 +191,19 @@
 					{% for investment in investments %}
 						<tr>
 							<td>{{ investment.get_investment_status_display }}</td>
-							<td>{{ investment.sector.category.name }}</td>
-							<td>{% if investment.project_status == investment.NOT_FUNDED %}
+							<td>
+                
+								{% if investment.group_investment %}
+									{{ investment.group_investment.title }} | 
+								{% endif %}
+
+								{% if investment.title == "Autre" and investment.description %}
+									{{ investment.title }} <span class="inv-title-extra text-muted">[{{ investment.description }}]</span>
+								{% else %}
+									{{ investment.title }}
+								{% endif %}
+							</td>
+							<td>{% if investment.estimated_cost and investment.project_status == investment.NOT_FUNDED %}
 								{{ investment.estimated_cost|intcomma }}{% else %}-{% endif %}</td>
 							<td>{% if investment.endorsed_by_youth %}✓{% endif %}</td>
 							<td>{% if investment.endorsed_by_women %}✓{% endif %}</td>
@@ -254,9 +265,9 @@
 					<tr>
 						<th class="align-middle" rowspan="2">{% translate 'Village' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Canton' %}</th>
-						<th class="align-middle" rowspan="2">{% translate 'Sector' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Investment' %}</th>
 						<th class="align-middle" colspan="4">{% translate 'Priorities' %}</th>
-						<th class="align-middle" rowspan="2">{% translate 'Village Rank' %}</th>
+						<th class="align-middle" rowspan="2">{% translate 'Village Rank' %} [{% translate 'Component' %}]</th>
 						<th class="align-middle" rowspan="2">{% translate 'Est. Cost' %}</th>
 						<th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
 					</tr>
@@ -284,13 +295,24 @@
 								</a>
 							</td>
 							<td>{{ investment.administrative_level.parent.name }}</td>
-							<td>{{ investment.sector.category.name }}</td>
+							<td>
+                
+								{% if investment.group_investment %}
+									{{ investment.group_investment.title }} | 
+								{% endif %}
+								
+								{% if investment.title == "Autre" and investment.description %}
+									{{ investment.title }} <span class="inv-title-extra text-muted">[{{ investment.description }}]</span>
+								{% else %}
+									{{ investment.title }}
+								{% endif %}
+							</td>
 							<td>{% if investment.endorsed_by_youth %}✓{% endif %}</td>
 							<td>{% if investment.endorsed_by_women %}✓{% endif %}</td>
 							<td>{% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
 							<td>{% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
-							<td>{{ investment.ranking }}</td>
-							<td>{{ investment.estimated_cost|intcomma }}</td>
+							<td>{% if investment.ranking %}{{ investment.ranking }}{% else %}-{% endif %}{% if investment.component.get_short_name %} [{{ investment.component.get_short_name }}]{% endif %}</td>
+							<td>{% if investment.estimated_cost %}{{ investment.estimated_cost|intcomma }}{% else %}-{% endif %}</td>
 							<td>
 								{% if investment.project_status == investment.NOT_FUNDED %}
 									<form hx-post="{{ commune_post_url }}?active_tab=villages"

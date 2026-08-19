@@ -140,6 +140,12 @@ class CantonMapServiceFeatureTests(TestCase):
         activity.tasks.all.return_value = [task]
         phase = MagicMock()
         phase.activities.all.return_value = [activity]
+        # Real Phase rows are routed to the in-memory activities/tasks walk
+        # (see CantonPlanningService._get_phase_status_optimized); this bare
+        # MagicMock isn't a Phase instance, so it goes through get_status()
+        # instead — configure it to match, same convention as the phase
+        # mocks in test_canton_planning_service.py.
+        phase.get_status.return_value = Task.COMPLETED
         village = self._make_village(phases=[phase])
         canton = MagicMock()
         canton.type = "Canton"

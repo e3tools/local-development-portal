@@ -5,7 +5,7 @@ from django.urls import reverse
 from datetime import datetime
 import json
 
-from administrativelevels.models import Project, AdministrativeLevel
+from administrativelevels.models import Project, AdministrativeLevel, Task
 from itertools import zip_longest
 from cosomis.constants import SUB_PROJECT_STATUS_COLOR
 from investments.models import Investment, Package
@@ -548,3 +548,82 @@ def divide(value, arg):
 def string_to_date(date_time, date_format="%Y-%m-%dT%H:%M:%S.%fZ"):
     if date_time:
         return datetime.strptime(date_time, date_format)
+
+
+# --- CDD planning cycle: completion stats -----------------------------------
+# The planning-cycle view builds a nested list of phase dicts, each carrying
+# `activities` (with `tasks`), and every node carries a `status` string drawn
+# from Task.STATUS ('not started' / 'in progress' / 'completed' / 'error').
+# These helpers let the village-profile template surface "what's done"
+# without re-querying the DB or hard-coding counts in the view.
+_CDD_COMPLETED = 'completed'
+
+
+def _cdd_iter_tasks(node):
+    """Yield every task dict beneath a phase node or an activity node."""
+    if not isinstance(node, dict):
+        return
+    if 'activities' in node:
+        for activity in node.get('activities') or []:
+            for task in activity.get('tasks') or []:
+                yield task
+    else:
+        for task in node.get('tasks') or []:
+            yield task
+
+
+@register.filter(name="cdd_task_total")
+def cdd_task_total(node):
+    """Total number of tasks under a phase or activity node."""
+    return sum(1 for _ in _cdd_iter_tasks(node))
+
+
+@register.filter(name="cdd_task_done")
+def cdd_task_done(node):
+    """Number of completed tasks under a phase or activity node."""
+    return sum(1 for task in _cdd_iter_tasks(node)
+               if task.get('status') == _CDD_COMPLETED)
+
+
+@register.filter(name="cdd_percent")
+def cdd_percent(node):
+    """Completion percentage (0-100, rounded) for a phase or activity node."""
+    total = done = 0
+    for task in _cdd_iter_tasks(node):
+        total += 1
+        if task.get('status') == _CDD_COMPLETED:
+            done += 1
+    return round(done * 100 / total) if total else 0
+
+
+@register.simple_tag(name="cdd_overview")
+def cdd_overview(phases):
+    """Roll up phase / activity / task completion across the whole cycle so the
+    village profile can show an at-a-glance summary header."""
+    phases = phases or []
+    p_total = len(phases)
+    p_done = a_total = a_done = t_total = t_done = 0
+    for phase in phases:
+        if phase.get('status') == _CDD_COMPLETED:
+            p_done += 1
+        for activity in phase.get('activities') or []:
+            a_total += 1
+            if activity.get('status') == _CDD_COMPLETED:
+                a_done += 1
+            for task in activity.get('tasks') or []:
+                t_total += 1
+                if task.get('status') == _CDD_COMPLETED:
+                    t_done += 1
+    return {
+        'phases_total': p_total,
+        'phases_done': p_done,
+        'activities_total': a_total,
+        'activities_done': a_done,
+        'tasks_total': t_total,
+        'tasks_done': t_done,
+        'percent': round(t_done * 100 / t_total) if t_total else 0,
+    }
+
+@register.filter(name="status_display")
+def status_display(status):
+    return dict(Task.STATUS).get(status, status)

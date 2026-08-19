@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import AdministrativeLevel, GeographicalUnit, Phase, Activity, Task, Project, Sector, Category, GeoSegment
+from .models import (
+    AdministrativeLevel, GeographicalUnit, Phase, Activity, Task, Project, Sector, Category, GeoSegment,
+    Component, GroupeSocioeconomique,
+)
 
 class AdministrativeLevelAdmin(admin.ModelAdmin):
     list_display = ("name","type","parent")
@@ -39,3 +42,18 @@ admin.site.register(Project)
 admin.site.register(Sector)
 admin.site.register(Category)
 admin.site.register(GeoSegment)
+
+
+class ComponentAdmin(admin.ModelAdmin):
+    list_display = ("name", "short_name", "project", "parent")
+    list_filter = ("project",)
+    search_fields = ("name", "short_name")
+
+
+class GroupeSocioeconomiqueAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+
+
+admin.site.register(Component, ComponentAdmin)
+admin.site.register(GroupeSocioeconomique, GroupeSocioeconomiqueAdmin)

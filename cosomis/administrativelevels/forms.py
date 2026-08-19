@@ -167,7 +167,7 @@ class AdministrativeLevelForm(forms.ModelForm):
                 self.fields[label].label = parent
             if label == "type":
                 self.fields[label].initial = type
-                print("######### ", parent)
+                # print("######### ", parent)
 
     class Meta:
         model = AdministrativeLevel
