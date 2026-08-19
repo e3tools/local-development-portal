@@ -10,7 +10,8 @@ GOALS_FOCUS_GROUP = [
     "Vision for the youth focus group", "Vision for the focus group of ethnic minority groups"
 ]
 
-IGNORES = (' ', '  ', 'Nean', 'Neant', 'O', 'Oo', 'Ooo', 'X', 'Xx', 'Xxx', 'Non', '-', '0', '00', '000', 'Pas De Minorite', "Pas D'", 'Ras', 'Aucun', 'Pas', "Il N'Y A Pas", ' N Existe Pas', "N'Existe Pas", "Il N'Yapas De Groupe", "Il N'Y a pas De Groupe")
+IGNORES = ('', ' ', '  ', 'nean', 'neant', 'néant', 'o', 'oo', 'ooo', 'x', 'xx', 'xxx', 'non', '-', '0', '00', '000', 'pas de minorite', "pas d'", 'ras', 'aucun', 'pas', "il n'y a pas", ' n existe pas', "n'existe pas", "il n'yapas de groupe", "il n'y a pas de groupe")
+IGNORES_SPECIALS_CASE = ('1',)
 PEULS = ('Peulh', 'Peuhl', 'Paulh', 'Pauhl', 'Peuls', 'Peul', 'Peul...', 'Peul.', 'Pheul', 'Les Peulhs', 'Les Peulh', 'Peulhs', 'Les Peuhl', 'Les Peuhls', 'Les Pleuh')
 
 

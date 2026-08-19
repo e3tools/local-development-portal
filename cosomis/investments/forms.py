@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from administrativelevels.models import Project
 from usermanager.models import User
 from usermanager.utils import confirm_email_notification
-from .models import Package, Investment, PackageFundedInvestment
+from .models import Package, Investment, PackageFundedInvestment, GroupInvestment
 
 
 class InvestmentsForm(forms.Form):
@@ -124,3 +124,46 @@ class UserApprovalForm(forms.Form):
 
         self.cleaned_data['user'].save()
         confirm_email_notification(self.cleaned_data['user'])
+
+
+class GroupInvestmentAnomalyEditForm(forms.ModelForm):
+    """Used from the anomalies report to correct a market's own fields
+    (typically the missing canton/village link that flagged it)."""
+
+    class Meta:
+        model = GroupInvestment
+        fields = ['title', 'description', 'administrative_level', 'lieu', 'component', 'ranking']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
+class InvestmentAnomalyEditForm(forms.ModelForm):
+    """Used from the anomalies report to correct an Investment's own fields
+    (location, classification, status...). Sync-managed bookkeeping fields
+    (no_sql_id, imported_project_id, last_sync, came_from) are left out —
+    they're overwritten by the next sync and editing them locally wouldn't
+    stick."""
+
+    class Meta:
+        model = Investment
+        fields = [
+            'title', 'description', 'responsible_structure',
+            'administrative_level', 'administrative_levels', 'sector', 'component',
+            'group_investment', 'groupes_socioeconomiques', 'ranking',
+            'investment_status', 'project_status', 'funded_by',
+            'estimated_cost', 'real_cost', 'beneficiaries',
+            'start_date', 'duration', 'delays_consumed',
+            'physical_execution_rate', 'financial_implementation_rate',
+            'endorsed_by_youth', 'endorsed_by_women', 'endorsed_by_agriculturist',
+            'endorsed_by_pastoralist', 'endorsed_by_displaced',
+            'climate_contribution', 'climate_contribution_text',
+            'latitude', 'longitude', 'abandoned_in_the_meantime',
+        ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+            'climate_contribution_text': forms.Textarea(attrs={'rows': 2}),
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'administrative_levels': forms.SelectMultiple(),
+            'groupes_socioeconomiques': forms.SelectMultiple(),
+        }

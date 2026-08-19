@@ -1,0 +1,289 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+
+{% block extracss %}
+    {{ block.super }}
+    <style>
+        .anomaly-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 6px;
+            margin-bottom: 1.25rem;
+            background: #f4f5fa;
+            border: 1px solid #eceefa;
+            border-radius: 14px;
+        }
+        .anomaly-tab {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #5a6472;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background .15s ease, color .15s ease, box-shadow .15s ease, transform .1s ease;
+        }
+        .anomaly-tab:hover {
+            background: #ffffff;
+            color: #3730a3;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .07);
+        }
+        .anomaly-tab.is-active {
+            background: #ffffff;
+            color: #3730a3;
+            box-shadow: 0 4px 14px rgba(55, 48, 163, .16);
+        }
+        .anomaly-tab-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e6e8fb;
+            color: #4f46e5;
+            font-size: 11.5px;
+            flex: 0 0 auto;
+            transition: background .15s ease, color .15s ease;
+        }
+        .anomaly-tab.is-active .anomaly-tab-icon {
+            background: #4f46e5;
+            color: #ffffff;
+        }
+        .anomaly-count { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #fee2e2; color: #b91c1c; }
+        .anomaly-count.is-zero { background: #dcfce7; color: #15803d; }
+        .anomaly-tab.is-active .anomaly-count { background: #ede9fe; color: #4f46e5; }
+        .anomaly-tab.is-active .anomaly-count.is-zero { background: #dcfce7; color: #15803d; }
+        .anomaly-table { width: 100%; font-size: 13px; }
+        .anomaly-table th { white-space: nowrap; color: #6b7280; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: .03em; }
+        .anomaly-table td, .anomaly-table th { padding: 6px 10px; border-bottom: 1px solid #f1f3f5; vertical-align: top; }
+        .anomaly-empty { color: #6b7280; font-size: 13px; padding: 10px 4px; }
+        .score-pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #fef3c7; color: #92400e; font-weight: 700; font-size: 11px; }
+        .anomaly-actions { white-space: nowrap; }
+        .anomaly-actions form { margin-left: 4px; }
+        .anomaly-actions .btn, .anomaly-actions form { display: inline-block; }
+        .anomaly-detail-grid > div { margin-bottom: .85rem; }
+        .anomaly-detail-grid b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: #6b7280; margin-bottom: 2px; }
+        .anomaly-group-card { border: 1px solid #f1f3f5; border-radius: 8px; margin-bottom: 14px; }
+        .anomaly-group-card .anomaly-group-header { padding: 8px 12px; background: #f8f9fa; font-weight: 700; font-size: 13px; border-bottom: 1px solid #f1f3f5; }
+        .anomaly-pair-side b { display: block; }
+        .anomaly-pair-side .anomaly-actions { margin-top: 4px; }
+        .anomaly-panel-title { font-weight: 700; font-size: 1.05rem; color: #3730a3; margin: 0 0 1rem; display: flex; align-items: center; gap: 10px; }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <p class="text-muted mb-3">
+        {% blocktranslate %}Data quality checks on synchronized data (Investment / GroupInvestment). Corrections here are manual and permanent — deleting an item cannot be undone.{% endblocktranslate %}
+    </p>
+
+    <div class="card">
+        <div class="card-body">
+            <nav class="anomaly-tabs" role="tablist" aria-label="{% translate 'Anomaly categories' %}">
+                {% for tab in tabs %}
+                <a class="anomaly-tab {% if tab.key == active_tab_key %}is-active{% endif %}" href="{{ tab.url }}" role="tab">
+                    <span class="anomaly-tab-icon"><i class="fas {{ tab.icon }}"></i></span>
+                    {{ tab.label }}
+                    <span class="anomaly-count {% if tab.total == 0 %}is-zero{% endif %}">{{ tab.total }}</span>
+                </a>
+                {% endfor %}
+            </nav>
+
+            {% for tab in tabs %}
+                {% if tab.key == active_tab_key %}
+                <div id="{{ tab.key }}" role="tabpanel">
+                    <h6 class="anomaly-panel-title"><i class="fas {{ tab.icon }}"></i>{{ tab.label }}</h6>
+
+                    {% if tab.kind == 'groupinvestment_list' %}
+                        {% if tab.page_obj.object_list %}
+                        <div class="table-responsive">
+                            <table class="anomaly-table">
+                                <thead>
+                                    <tr>
+                                        <th>{% translate "Market title" %}</th>
+                                        <th>{% translate "Canton" %}</th>
+                                        <th>{% translate "Location" %}</th>
+                                        <th>{% translate "Component" %}</th>
+                                        <th>{% translate "Ranking" %}</th>
+                                        <th>{% translate "Actions" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for gi in tab.page_obj %}
+                                        {% include 'investments/anomalies_row_groupinvestment.html' with gi=gi tab_key=tab.key current_path=current_path %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% include 'investments/anomalies_pagination.html' with page_obj=tab.page_obj page_param=tab.page_param tab_url=tab.url %}
+                        {% for gi in tab.page_obj %}
+                            {% include 'investments/anomalies_modal_groupinvestment.html' with gi=gi tab_key=tab.key %}
+                        {% endfor %}
+                        {% else %}
+                            <p class="anomaly-empty">{% translate "No anomaly detected." %}</p>
+                        {% endif %}
+
+                    {% elif tab.kind == 'investment_list' %}
+                        {% if tab.page_obj.object_list %}
+                        <div class="table-responsive">
+                            <table class="anomaly-table">
+                                <thead>
+                                    <tr>
+                                        <th>{% translate "Title" %}</th>
+                                        <th>{% translate "Sector" %}</th>
+                                        <th>{% translate "Administrative level" %}</th>
+                                        <th>{% translate "Market" %}</th>
+                                        <th>{% translate "Status" %}</th>
+                                        <th>{% translate "Estimated cost" %}</th>
+                                        <th>{% translate "Actions" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for inv in tab.page_obj %}
+                                        {% include 'investments/anomalies_row_investment.html' with inv=inv tab_key=tab.key current_path=current_path %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% include 'investments/anomalies_pagination.html' with page_obj=tab.page_obj page_param=tab.page_param tab_url=tab.url %}
+                        {% for inv in tab.page_obj %}
+                            {% include 'investments/anomalies_modal_investment.html' with inv=inv tab_key=tab.key %}
+                        {% endfor %}
+                        {% else %}
+                            <p class="anomaly-empty">{% translate "No anomaly detected." %}</p>
+                        {% endif %}
+
+                    {% elif tab.kind == 'investment_groups' %}
+                        {% if tab.page_obj.object_list %}
+                            {% for group in tab.page_obj %}
+                            <div class="anomaly-group-card">
+                                <div class="anomaly-group-header">imported_project_id = {{ group.imported_project_id }}</div>
+                                <div class="table-responsive">
+                                    <table class="anomaly-table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>{% translate "Title" %}</th>
+                                                <th>{% translate "Sector" %}</th>
+                                                <th>{% translate "Administrative level" %}</th>
+                                                <th>{% translate "Market" %}</th>
+                                                <th>{% translate "Status" %}</th>
+                                                <th>{% translate "Estimated cost" %}</th>
+                                                <th>{% translate "Actions" %}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for inv in group.investments %}
+                                                {% include 'investments/anomalies_row_investment.html' with inv=inv tab_key=tab.key current_path=current_path %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {% for inv in group.investments %}
+                                {% include 'investments/anomalies_modal_investment.html' with inv=inv tab_key=tab.key %}
+                            {% endfor %}
+                            {% endfor %}
+                            {% include 'investments/anomalies_pagination.html' with page_obj=tab.page_obj page_param=tab.page_param tab_url=tab.url %}
+                        {% else %}
+                            <p class="anomaly-empty">{% translate "No anomaly detected." %}</p>
+                        {% endif %}
+
+                    {% elif tab.kind == 'groupinvestment_pairs' %}
+                        {% if tab.page_obj.object_list %}
+                        <div class="table-responsive">
+                            <table class="anomaly-table">
+                                <thead>
+                                    <tr>
+                                        <th>{% translate "Market A" %}</th>
+                                        <th>{% translate "Market B" %}</th>
+                                        <th>{% translate "Similarity" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for a, b, score in tab.page_obj %}
+                                    <tr>
+                                        <td class="anomaly-pair-side">
+                                            <b>{{ a.title }}</b>{{ a.administrative_level|default:"—" }}
+                                            <div class="anomaly-actions">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#detail-{{ tab.key }}-a-{{ a.id }}">{% translate "Details" %}</button>
+                                                {% include 'investments/anomalies_edit_link.html' with model_key='groupinvestment' pk=a.pk current_path=current_path %}
+                                                {% include 'investments/anomalies_delete_form.html' with model_key='groupinvestment' pk=a.pk label=a.title current_path=current_path %}
+                                            </div>
+                                        </td>
+                                        <td class="anomaly-pair-side">
+                                            <b>{{ b.title }}</b>{{ b.administrative_level|default:"—" }}
+                                            <div class="anomaly-actions">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#detail-{{ tab.key }}-b-{{ b.id }}">{% translate "Details" %}</button>
+                                                {% include 'investments/anomalies_edit_link.html' with model_key='groupinvestment' pk=b.pk current_path=current_path %}
+                                                {% include 'investments/anomalies_delete_form.html' with model_key='groupinvestment' pk=b.pk label=b.title current_path=current_path %}
+                                            </div>
+                                        </td>
+                                        <td><span class="score-pill">{{ score }}%</span></td>
+                                    </tr>
+                                    {% include 'investments/anomalies_modal_groupinvestment.html' with gi=a tab_key=tab.key side='a' %}
+                                    {% include 'investments/anomalies_modal_groupinvestment.html' with gi=b tab_key=tab.key side='b' %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% include 'investments/anomalies_pagination.html' with page_obj=tab.page_obj page_param=tab.page_param tab_url=tab.url %}
+                        {% else %}
+                            <p class="anomaly-empty">{% translate "No anomaly detected." %}</p>
+                        {% endif %}
+
+                    {% elif tab.kind == 'investment_pairs' %}
+                        {% if tab.page_obj.object_list %}
+                        <div class="table-responsive">
+                            <table class="anomaly-table">
+                                <thead>
+                                    <tr>
+                                        <th>{% translate "Investment A" %}</th>
+                                        <th>{% translate "Investment B" %}</th>
+                                        <th>{% translate "Similarity" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for a, b, score in tab.page_obj %}
+                                    <tr>
+                                        <td class="anomaly-pair-side">
+                                            <b>{{ a.component.get_short_name }} {{ a.title }}{% if a.description %}. Desc : {{ a.description }}{% endif %}{% if a.funded_by %} [{% translate 'Funded by' %}: {{ a.funded_by.name }}{% if a.imported_project_id %} | {{ a.imported_project_id }}{% endif %}]{% endif %}</b>{{ a.administrative_level|default:"—" }}{% if a.came_from.all %} [{% for c_f in a.came_from.all %}{{ c_f.name }}{% if not forloop.last %}|{% endif %}{% endfor %}]{% endif %}
+                                            <div class="anomaly-actions">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#detail-{{ tab.key }}-a-{{ a.id }}">{% translate "Details" %}</button>
+                                                {% include 'investments/anomalies_edit_link.html' with model_key='investment' pk=a.pk current_path=current_path %}
+                                                {% include 'investments/anomalies_delete_form.html' with model_key='investment' pk=a.pk label=a.title current_path=current_path %}
+                                            </div>
+                                        </td>
+                                        <td class="anomaly-pair-side">
+                                            <b>{{ b.component.get_short_name }} {{ b.title }}{% if b.description %}. Desc : {{ b.description }}{% endif %}{% if b.funded_by %} [{% translate 'Funded by' %}: {{ b.funded_by.name }}{% if b.imported_project_id %} | {{ b.imported_project_id }}{% endif %}]{% endif %}</b>{{ b.administrative_level|default:"—" }}{% if b.came_from.all %} [{% for c_f in b.came_from.all %}{{ c_f.name }}{% if not forloop.last %}|{% endif %}{% endfor %}]{% endif %}
+                                            <div class="anomaly-actions">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#detail-{{ tab.key }}-b-{{ b.id }}">{% translate "Details" %}</button>
+                                                {% include 'investments/anomalies_edit_link.html' with model_key='investment' pk=b.pk current_path=current_path %}
+                                                {% include 'investments/anomalies_delete_form.html' with model_key='investment' pk=b.pk label=b.title current_path=current_path %}
+                                            </div>
+                                        </td>
+                                        <td><span class="score-pill">{{ score }}%</span></td>
+                                    </tr>
+                                    {% include 'investments/anomalies_modal_investment.html' with inv=a tab_key=tab.key side='a' %}
+                                    {% include 'investments/anomalies_modal_investment.html' with inv=b tab_key=tab.key side='b' %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% include 'investments/anomalies_pagination.html' with page_obj=tab.page_obj page_param=tab.page_param tab_url=tab.url %}
+                        {% else %}
+                            <p class="anomaly-empty">{% translate "No anomaly detected." %}</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

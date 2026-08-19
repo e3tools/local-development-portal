@@ -10,7 +10,9 @@ from django.dispatch import receiver
 from cosomis.models_base import BaseModel
 from django.utils.translation import gettext_lazy as _
 
-from administrativelevels.models import AdministrativeLevel, Project, Task, Sector
+from administrativelevels.models import (
+    AdministrativeLevel, Project, Task, Sector, Component, GroupeSocioeconomique,
+)
 from usermanager.models import User
 
 
@@ -29,6 +31,41 @@ class PackageQuerySet(models.QuerySet):
                 user=user, status=Package.PENDING_SUBMISSION
             )
         return package
+
+
+class GroupInvestment(BaseModel):
+    """A canton market (sous-composante 1.2a): groups the Investment rows created
+    from the equipment/infrastructure types requested for that market, so several
+    villages citing the same market don't each create their own copy of it."""
+    title = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+    # Canton auquel appartient le marché (résolu depuis nomDuMarcheLePlusImportant,
+    # ou à défaut lieuDuMarcheLePlusImportant — voir priorities_sync_helpers.py).
+    administrative_level = models.ForeignKey(
+        AdministrativeLevel, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="group_investments",
+    )
+    # Village précis mentionné dans lieuDuMarcheLePlusImportant, quand résolu.
+    lieu = models.ForeignKey(
+        AdministrativeLevel, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="group_investments_as_lieu",
+    )
+    ranking = models.PositiveIntegerField(null=True, blank=True)
+    component = models.ForeignKey(
+        Component, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="group_investments",
+    )
+
+    def refresh_ranking(self):
+        best = self.investments.exclude(ranking__isnull=True).aggregate(
+            models.Min("ranking")
+        )["ranking__min"]
+        if best != self.ranking:
+            self.ranking = best
+            self.save(update_fields=["ranking"])
+
+    def __str__(self):
+        return self.title
 
 
 class Investment(BaseModel): # Investment module
@@ -61,7 +98,10 @@ class Investment(BaseModel): # Investment module
     sector = models.ForeignKey(
         Sector, on_delete=models.CASCADE, related_name="investments"
     )
-    estimated_cost = models.PositiveBigIntegerField()
+    # Nullable : les besoins des sous-composantes 1.2a/1.2b n'ont ni coût estimé
+    # ni nombre de bénéficiaires dans le formulaire de terrain.
+    estimated_cost = models.PositiveBigIntegerField(null=True, blank=True)
+    beneficiaries = models.PositiveIntegerField(null=True, blank=True)
     real_cost = models.PositiveIntegerField(null=True, blank=True)
     start_date = models.DateField(null=True)
     came_from = models.ManyToManyField(
@@ -88,6 +128,7 @@ class Investment(BaseModel): # Investment module
     endorsed_by_women = models.BooleanField(default=False)
     endorsed_by_agriculturist = models.BooleanField(default=False)
     endorsed_by_pastoralist = models.BooleanField(default=False)
+    endorsed_by_displaced = models.BooleanField(default=False)
     climate_contribution = models.BooleanField(default=False)
     climate_contribution_text = models.TextField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True, verbose_name=_("Latitude"))
@@ -104,6 +145,28 @@ class Investment(BaseModel): # Investment module
 
     abandoned_in_the_meantime = models.BooleanField(default=False)
     abandonment_history = models.JSONField(null=True, blank=True)
+
+    # Slot du formulaire de priorisation d'où vient cet Investment (ex. "Sous-composante 1.1").
+    component = models.ForeignKey(
+        Component, on_delete=models.SET_NULL, null=True, blank=True, related_name="investments"
+    )
+    # Renseigné uniquement pour les Investment issus de la sous-composante 1.2a
+    # (un équipement/infrastructure demandé pour un marché cantonal).
+    group_investment = models.ForeignKey(
+        GroupInvestment, on_delete=models.SET_NULL, null=True, blank=True, related_name="investments"
+    )
+    # Sous-composante 1.2b : groupe(s) socio-économique(s) auxquels ce besoin se rapporte.
+    groupes_socioeconomiques = models.ManyToManyField(
+        GroupeSocioeconomique, blank=True, related_name="investments"
+    )
+    # Sous-composante 1.2a : autres villages ayant demandé ce même équipement pour
+    # le même marché cantonal (le village "porteur" reste administrative_level).
+    administrative_levels = models.ManyToManyField(
+        AdministrativeLevel, blank=True, related_name="co_investments"
+    )
+    # Date de la donnée de terrain (last_updated_moment/last_updated du document)
+    # la plus récente déjà appliquée à cet Investment — voir sync_investment_data().
+    last_sync = models.DateTimeField(null=True, blank=True)
 
     def get_projects_priority_came_from(self, join_on_chain=True):
         projects = self.came_from.all()

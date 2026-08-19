@@ -91,6 +91,9 @@ class User(AbstractUser):
     email = models.EmailField(_("email address"), blank=False, null=False, unique=True)
 
     is_moderator = models.BooleanField(default=False)
+    # Can review AND correct (delete) rows flagged on the portal's data
+    # anomalies report, without needing the broader moderator role.
+    is_anomaly_corrector = models.BooleanField(default=False)
 
     photo = models.ImageField(upload_to=upload_to_user_photo, null=True, blank=True)
 

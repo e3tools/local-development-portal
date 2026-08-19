@@ -1,0 +1,15 @@
+{% load i18n %}
+{% comment %}
+One inline delete form for an anomaly row. Needs: model_key, pk, label, current_path.
+Only rendered when can_edit_anomalies is true — server side also re-checks
+(is_superuser or is_anomaly_corrector) in AnomalyObjectDeleteView.
+{% endcomment %}
+{% if can_edit_anomalies %}
+<form method="post" action="{% url 'investments:anomaly_delete' model=model_key pk=pk %}"
+      class="d-inline anomaly-delete-form"
+      onsubmit="return confirm('{% blocktranslate %}Delete{% endblocktranslate %} \'{{ label|escapejs }}\'? {% blocktranslate %}This cannot be undone.{% endblocktranslate %}');">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ current_path }}">
+    <button type="submit" class="btn btn-sm btn-outline-danger">{% translate "Delete" %}</button>
+</form>
+{% endif %}

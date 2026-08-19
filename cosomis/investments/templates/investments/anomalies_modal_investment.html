@@ -1,0 +1,65 @@
+{% load i18n humanize %}
+{% comment %}
+Full field dump for one Investment — triggered by the "Details" button on an
+anomaly row. Needs: inv, tab_key (side is optional, for A/B pairs).
+{% endcomment %}
+<div class="modal fade" id="detail-{{ tab_key }}-{% if side %}{{ side }}-{% endif %}{{ inv.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ inv.title }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row anomaly-detail-grid">
+                    <div class="col-md-6"><b>{% translate "ID" %}</b><div>{{ inv.id }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Title" %}</b><div>{{ inv.title }}</div></div>
+                    <div class="col-12"><b>{% translate "Description" %}</b><div>{{ inv.description|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Responsible structure" %}</b><div>{{ inv.responsible_structure|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Sector" %}</b><div>{{ inv.sector|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Administrative level" %}</b><div>{{ inv.administrative_level|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Other supporting villages" %}</b><div>{% for a in inv.administrative_levels.all %}{{ a }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</div></div>
+                    <div class="col-md-6"><b>{% translate "Component" %}</b><div>{{ inv.component|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Market (group investment)" %}</b><div>{{ inv.group_investment|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Socioeconomic groups" %}</b><div>{% for g in inv.groupes_socioeconomiques.all %}{{ g }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</div></div>
+                    <div class="col-md-6"><b>{% translate "Ranking" %}</b><div>{{ inv.ranking|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Investment status" %}</b><div>{{ inv.get_investment_status_display }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Project status" %}</b><div>{{ inv.get_project_status_display }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Funded by" %}</b><div>{{ inv.funded_by|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Came from (priority forms)" %}</b><div>{{ inv.get_projects_priority_came_from|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Estimated cost" %}</b><div>{% if inv.estimated_cost %}{{ inv.estimated_cost|intcomma }} FCFA{% else %}—{% endif %}</div></div>
+                    <div class="col-md-6"><b>{% translate "Real cost" %}</b><div>{% if inv.real_cost %}{{ inv.real_cost|intcomma }} FCFA{% else %}—{% endif %}</div></div>
+                    <div class="col-md-6"><b>{% translate "Beneficiaries" %}</b><div>{{ inv.beneficiaries|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Start date" %}</b><div>{{ inv.start_date|default:"—" }}</div></div>
+                    <div class="col-md-4"><b>{% translate "Duration (days)" %}</b><div>{{ inv.duration }}</div></div>
+                    <div class="col-md-4"><b>{% translate "Delays consumed" %}</b><div>{{ inv.delays_consumed }}</div></div>
+                    <div class="col-md-4"><b>{% translate "Abandoned in the meantime" %}</b><div>{{ inv.abandoned_in_the_meantime|yesno }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Physical execution rate" %}</b><div>{{ inv.physical_execution_rate }}%</div></div>
+                    <div class="col-md-6"><b>{% translate "Financial implementation rate" %}</b><div>{{ inv.financial_implementation_rate }}%</div></div>
+                    <div class="col-md-12">
+                        <b>{% translate "Endorsements" %}</b>
+                        <div>
+                            {% translate "Youth" %}: {{ inv.endorsed_by_youth|yesno }} ·
+                            {% translate "Women" %}: {{ inv.endorsed_by_women|yesno }} ·
+                            {% translate "Agriculturist" %}: {{ inv.endorsed_by_agriculturist|yesno }} ·
+                            {% translate "Pastoralist" %}: {{ inv.endorsed_by_pastoralist|yesno }} ·
+                            {% translate "Displaced" %}: {{ inv.endorsed_by_displaced|yesno }}
+                        </div>
+                    </div>
+                    <div class="col-md-6"><b>{% translate "Climate contribution" %}</b><div>{{ inv.climate_contribution|yesno }}{% if inv.climate_contribution_text %} — {{ inv.climate_contribution_text }}{% endif %}</div></div>
+                    <div class="col-md-6"><b>{% translate "Coordinates" %}</b><div>{% if inv.latitude and inv.longitude %}{{ inv.latitude }}, {{ inv.longitude }}{% else %}—{% endif %}</div></div>
+                    <div class="col-md-6"><b>{% translate "no_sql_id" %}</b><div>{{ inv.no_sql_id|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "imported_project_id" %}</b><div>{{ inv.imported_project_id|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Last sync" %}</b><div>{{ inv.last_sync|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Created" %}</b><div>{{ inv.created_date|default:"—" }}</div></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="/admin/investments/investment/{{ inv.id }}/change/" target="_blank" class="btn btn-outline-secondary">{% translate "Open in admin" %}</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

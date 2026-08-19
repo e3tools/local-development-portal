@@ -1,0 +1,34 @@
+{% load i18n %}
+{% comment %}
+Full field dump for one GroupInvestment (market) — triggered by the "Details"
+button on an anomaly row. Needs: gi, tab_key (side is optional, for A/B pairs).
+{% endcomment %}
+<div class="modal fade" id="detail-{{ tab_key }}-{% if side %}{{ side }}-{% endif %}{{ gi.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ gi.title }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row anomaly-detail-grid">
+                    <div class="col-md-6"><b>{% translate "ID" %}</b><div>{{ gi.id }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Title" %}</b><div>{{ gi.title }}</div></div>
+                    <div class="col-12"><b>{% translate "Description" %}</b><div>{{ gi.description|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Canton (administrative_level)" %}</b><div>{{ gi.administrative_level|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Location (lieu)" %}</b><div>{{ gi.lieu|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Component" %}</b><div>{{ gi.component|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Ranking" %}</b><div>{{ gi.ranking|default:"—" }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Investments in this market" %}</b><div>{{ gi.investments.count }}</div></div>
+                    <div class="col-md-6"><b>{% translate "Created" %}</b><div>{{ gi.created_date|default:"—" }}</div></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="/admin/investments/groupinvestment/{{ gi.id }}/change/" target="_blank" class="btn btn-outline-secondary">{% translate "Open in admin" %}</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

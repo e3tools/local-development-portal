@@ -1,0 +1,16 @@
+{% load i18n %}
+{# One <tr> for a GroupInvestment anomaly row. Needs: gi, tab_key, current_path (side is optional, for A/B pairs). #}
+<tr>
+    <td>{{ gi.title }}</td>
+    <td>{{ gi.administrative_level|default:"—" }}</td>
+    <td>{{ gi.lieu|default:"—" }}</td>
+    <td>{{ gi.component|default:"—" }}</td>
+    <td>{{ gi.ranking|default:"—" }}</td>
+    <td class="anomaly-actions">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#detail-{{ tab_key }}-{% if side %}{{ side }}-{% endif %}{{ gi.id }}">
+            {% translate "Details" %}
+        </button>
+        {% include 'investments/anomalies_edit_link.html' with model_key='groupinvestment' pk=gi.pk current_path=current_path %}
+        {% include 'investments/anomalies_delete_form.html' with model_key='groupinvestment' pk=gi.pk label=gi.title current_path=current_path %}
+    </td>
+</tr>

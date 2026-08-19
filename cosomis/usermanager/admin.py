@@ -15,7 +15,7 @@ class UserCustomAdmin(UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
-    list_display = ('email', 'username', 'phone', 'date_joined', 'last_login', 'is_staff', "is_moderator")
+    list_display = ('email', 'username', 'phone', 'date_joined', 'last_login', 'is_staff', "is_moderator", "is_anomaly_corrector")
     search_fields = ('email', 'username', 'phone')
     readonly_fields = ('date_joined', 'last_login')
 
@@ -30,6 +30,7 @@ class UserCustomAdmin(UserAdmin):
                     "is_staff",
                     "is_superuser",
                     "is_moderator",
+                    "is_anomaly_corrector",
                     "groups",
                     "user_permissions",
                 ),

@@ -277,6 +277,33 @@ class IsModeratorMixin(UserPassesTestMixin):
         return bool(user.is_approved) and user.is_moderator
 
 
+class CanViewAnomaliesMixin(UserPassesTestMixin):
+    """Moderators and dedicated anomaly correctors can both review (and
+    correct/delete rows on) the data anomalies report."""
+    permission_denied_message = ''
+
+    def test_func(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return False
+        if user.is_superuser:
+            return True
+        return bool(user.is_approved) and (user.is_moderator or user.is_anomaly_corrector)
+
+class CanEditAnomaliesMixin(UserPassesTestMixin):
+    """Moderators and dedicated anomaly correctors can both review (and
+    correct/delete rows on) the data anomalies report."""
+    permission_denied_message = ''
+
+    def test_func(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return False
+        if user.is_superuser:
+            return True
+        return user.is_anomaly_corrector
+
+
 class IsInvestorMixin(UserPassesTestMixin):
     permission_denied_message = ''
 

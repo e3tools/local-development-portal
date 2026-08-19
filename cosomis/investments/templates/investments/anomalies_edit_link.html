@@ -1,0 +1,10 @@
+{% load i18n %}
+{% comment %}
+One inline "Edit" link for an anomaly row. Needs: model_key, pk, current_path.
+Only rendered when can_edit_anomalies is true — server side also re-checks
+(is_superuser or is_anomaly_corrector) in AnomalyObjectEditView.
+{% endcomment %}
+{% if can_edit_anomalies %}
+<a href="{% url 'investments:anomaly_edit' model=model_key pk=pk %}?next={{ current_path|urlencode }}"
+   class="btn btn-sm btn-outline-primary">{% translate "Edit" %}</a>
+{% endif %}

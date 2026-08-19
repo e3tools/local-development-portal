@@ -1275,17 +1275,17 @@
                             </div>
                         <table class="table table-bordered table-striped" style="width: 100%;">
                             <thead>
-                                <th data-priority="1" class="align-middle"><input class="" id="checkbox-select-all" type="checkbox"></th>
-                                <th data-priority="2" class="align-middle">{% translate 'Name' %}</th>
-                                <th data-priority="3" class="align-middle">{% translate 'Source' %}</th>
-                                <th data-priority="4" class="align-middle">{% translate 'Estimate cost' %}</th>
-                                <th data-priority="5" class="align-middle">{{ adm_labels.village }}</th>
-                                <th data-priority="6" class="align-middle">{{ adm_labels.canton }}</th>
-                                <th data-priority="7" class="align-middle">{{ adm_labels.commune }}</th>
-                                <th data-priority="8" class="align-middle">{{ adm_labels.prefecture }}</th>
-                                <th data-priority="9" class="align-middle">{% translate 'Village priority' %}</th>
-                                <th data-priority="10" class="align-middle">{% translate 'Population priority' %}</th>
-                                <th data-priority="11" class="align-middle">{% translate 'History' %}</th>
+                                <th data-priority="1" class="align-middle all"><input class="" id="checkbox-select-all" type="checkbox"></th>
+                                <th data-priority="2" class="align-middle all">{% translate 'Name' %}</th>
+                                <th data-priority="3" class="align-middle all">{% translate 'Source' %}</th>
+                                <th data-priority="4" class="align-middle all">{% translate 'Estimate cost' %}</th>
+                                <th data-priority="5" class="align-middle all">{{ adm_labels.village }}</th>
+                                <th data-priority="6" class="align-middle all">{{ adm_labels.canton }}</th>
+                                <th data-priority="7" class="align-middle all">{{ adm_labels.commune }}</th>
+                                <th data-priority="8" class="align-middle all">{{ adm_labels.prefecture }}</th>
+                                <th data-priority="9" class="align-middle all">{% translate 'Village priority' %}</th>
+                                <th data-priority="10" class="align-middle all">{% translate 'Population priority' %}</th>
+                                <th data-priority="11" class="align-middle all">{% translate 'History' %}</th>
                             </thead>
                         <tbody>
                         {% for investments in object_list %}
@@ -1439,9 +1439,22 @@
     alignInvestmentsOverlay();
     $(window).on('resize', alignInvestmentsOverlay);
 
+    // Ensure the loading overlay stays visible long enough to be perceived
+    // even when the (now paginated, fast) ajax response comes back almost
+    // instantly.
+    var overlayShownAt = 0;
+    var MIN_OVERLAY_MS = 400;
     table.on('processing.dt', function (e, settings, processing) {
-        $('#investments-table-overlay').toggleClass('is-active', !!processing);
-        if (processing) { alignInvestmentsOverlay(); }
+        var $overlay = $('#investments-table-overlay');
+        if (processing) {
+            overlayShownAt = Date.now();
+            $overlay.addClass('is-active');
+            alignInvestmentsOverlay();
+        } else {
+            var elapsed = Date.now() - overlayShownAt;
+            var wait = Math.max(0, MIN_OVERLAY_MS - elapsed);
+            setTimeout(function () { $overlay.removeClass('is-active'); }, wait);
+        }
     });
     table.on('init.dt draw.dt', function () { alignInvestmentsOverlay(); });
 
@@ -1470,6 +1483,21 @@
     table.on('draw', function () {
         $( document ).find('[data-toggle="popover"]').popover('dispose').popover();
         $('[data-toggle="popover"]').popover();
+
+        // Server-side paging rebuilds every row's checkbox from scratch on each
+        // draw, so re-apply whatever selection state the user already made
+        // (investments_list holds the delta against the select-all baseline)
+        // or it looks like navigating pages clears the selection.
+        let mod_check_value = $('.checkbox-select-all-monitor').val() === 'true';
+        let $rowChecks = $('.project-table-check');
+        $rowChecks.each(function () {
+            let inList = investments_list.indexOf(this.value) !== -1;
+            $(this).prop('checked', inList ? !mod_check_value : mod_check_value);
+        });
+        $('#checkbox-select-all').prop(
+            'checked',
+            $rowChecks.length > 0 && $rowChecks.filter(':checked').length === $rowChecks.length
+        );
     });
 
     const SKELETON_NUM = '<span class="skeleton skeleton-text" aria-label="Loading"></span>';

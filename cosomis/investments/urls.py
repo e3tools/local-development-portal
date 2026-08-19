@@ -7,6 +7,7 @@ from .views import (
     ModeratorPackageReviewView, PackageDetailView, InvestorApprovesListView,
     InvestorPackageReviewView,
 )
+from .views_anomalies import AnomaliesReportView, AnomalyObjectDeleteView, AnomalyObjectEditView
 from .ajax_views import FillAdmLevelsSelectFilters, FillSectorsSelectFilters, InvestmentModelViewSet
 
 router = routers.DefaultRouter()
@@ -18,6 +19,10 @@ urlpatterns = [
     path('cart', CartView.as_view(), name='cart'),
     path('profile', ProfileTemplateView.as_view(), name='profile'),
     path('package/<int:pk>', PackageDetailView.as_view(), name='package_detail'),
+    path('anomalies', AnomaliesReportView.as_view(), name='anomalies'),
+    path('anomalies/delete/<str:model>/<int:pk>/', AnomalyObjectDeleteView.as_view(), name='anomaly_delete'),
+    path('anomalies/edit/<str:model>/<int:pk>/', AnomalyObjectEditView.as_view(), name='anomaly_edit'),
+    path('anomalies/<str:tab_key>', AnomaliesReportView.as_view(), name='anomalies_tab'),
     path('moderator/', include([
         path('notifications', ModeratorApprovalsListView.as_view(), name='notifications'),
         path('review/<int:package>', ModeratorPackageReviewView.as_view(), name='package_review'),

@@ -1,0 +1,17 @@
+{% load i18n humanize %}
+{# One <tr> for an Investment anomaly row. Needs: inv, tab_key, current_path (side is optional, for A/B pairs). #}
+<tr>
+    <td>{{ inv.title }}</td>
+    <td>{{ inv.sector|default:"—" }}</td>
+    <td>{{ inv.administrative_level|default:"—" }}</td>
+    <td>{{ inv.group_investment|default:"—" }}</td>
+    <td>{{ inv.get_project_status_display }}</td>
+    <td>{% if inv.estimated_cost %}{{ inv.estimated_cost|intcomma }} FCFA{% else %}—{% endif %}</td>
+    <td class="anomaly-actions">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#detail-{{ tab_key }}-{% if side %}{{ side }}-{% endif %}{{ inv.id }}">
+            {% translate "Details" %}
+        </button>
+        {% include 'investments/anomalies_edit_link.html' with model_key='investment' pk=inv.pk current_path=current_path %}
+        {% include 'investments/anomalies_delete_form.html' with model_key='investment' pk=inv.pk label=inv.title current_path=current_path %}
+    </td>
+</tr>
