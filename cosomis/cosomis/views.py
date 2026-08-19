@@ -52,13 +52,13 @@ def alert_examples(request):
     """
     # Ajouter quelques messages de test
     if request.GET.get('test') == 'messages':
-        messages.success(request, _('Exemple d\'alerte de succès via le système de messages Django'))
-        messages.info(request, _('Exemple d\'alerte d\'information via le système de messages Django'))
-        messages.warning(request, _('Exemple d\'alerte d\'avertissement via le système de messages Django'))
-        messages.error(request, _('Exemple d\'alerte d\'erreur via le système de messages Django'))
+        messages.success(request, _('Success alert example via Django\'s messages framework'))
+        messages.info(request, _('Info alert example via Django\'s messages framework'))
+        messages.warning(request, _('Warning alert example via Django\'s messages framework'))
+        messages.error(request, _('Error alert example via Django\'s messages framework'))
 
     context = {
-        'title': _('Exemples d\'Alertes'),
+        'title': _('Alert Examples'),
     }
     return render(request, 'common/alert_examples.html', context)
 

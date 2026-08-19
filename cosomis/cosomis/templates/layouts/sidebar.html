@@ -103,6 +103,15 @@
                     </a>
                 </li>
                 {% comment %} {% endif %} {% endcomment %}
+                {% if request.user.is_moderator or request.user.is_anomaly_corrector or request.user.is_superuser %}
+                <li class="nav-item">
+                    <a href="{% url 'investments:anomalies' %}"
+                       class="nav-link {% if url_name == 'anomalies' %}active{% endif %}">
+                        <i class="nav-icon fa fa-exclamation-triangle"></i>
+                        <p>{% translate "Data anomalies" %}</p>
+                    </a>
+                </li>
+                {% endif %}
             </ul>
             {% endwith %}
         </nav>

@@ -17,11 +17,11 @@
                         {% endif %}
                         <strong>
                             {% if message.extra_tags == 'success' %}
-                                {% translate 'Succès' %} :
+                                {% translate 'Success' %} :
                             {% elif message.extra_tags == 'danger' %}
-                                {% translate 'Erreur' %} :
+                                {% translate 'Error' %} :
                             {% elif message.extra_tags == 'warning' %}
-                                {% translate 'Avertissement' %} :
+                                {% translate 'Warning' %} :
                             {% elif message.extra_tags == 'info' %}
                                 {% translate 'Information' %} :
                             {% endif %}
@@ -41,7 +41,7 @@
                     <div class="col-md-12">
                         <div class="alert alert-{{ message.extra_tags }} alert-dismissible fade show" role="alert">
                             <i class="icon fas fa-exclamation-triangle"></i>
-                            <strong>{% translate 'Erreur' %} :</strong> {{ message | safe }}
+                            <strong>{% translate 'Error' %} :</strong> {{ message | safe }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
