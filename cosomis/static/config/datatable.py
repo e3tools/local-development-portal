@@ -9,7 +9,7 @@ def get_datatable_config():
     return {
         "language": {
             "sLengthMenu": _("Show _MENU_ registers"),
-            "sZeroRecords": _("Loading data..."),
+            "sZeroRecords": _("No matching records found"),
             "sEmptyTable": _("No result found"),
             "sInfo": _("Showing _START_ to _END_ of _TOTAL_ entries"),
             "sInfoEmpty": _("Showing 0 to 0 of 0 entries"),

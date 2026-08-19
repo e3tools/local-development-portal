@@ -71,6 +71,7 @@ class IndexListView(
     )
     form_class = InvestmentsForm
     title = _("Investments")
+    paginate_by = 100
 
     def post(self, request, *args, **kwargs):
         if "cart-submitted" in request.POST:
@@ -243,15 +244,26 @@ class IndexListView(
 
         context["datatable_config"] = get_datatable_config()
         context["datatable_config"]["responsive"] = "true"
-        context["datatable_config"]["server-side"] = "true"
+        context["datatable_config"]["serverSide"] = "true"
         context["datatable_config"]["processing"] = "true"
         context["datatable_config"]["searching"] = "false"
+        context["datatable_config"]["pageLength"] = 10
+        context["datatable_config"]["pagingType"] = "full_numbers"
+        context["datatable_config"]["lengthMenu"] = [
+            [10, 20, 50, 100, -1],
+            [10, 20, 50, 100, _("Tout afficher")],
+        ]
         context["datatable_config"][
-            "ajax"] = self.request.scheme + '://' + self.request.get_host() + self.request.path + "ajax/datatable?format=datatables"
+            "ajax"] = self.request.scheme + '://' + self.request.get_host() + self.request.path + "ajax/datatable/?format=datatables"
         context["datatable_config"]["columns"] = [
             {'data': 'select_input', 'name': 'select_input', 'searchable': 'false', 'orderable': 'false'},
             {'data': 'title'},
-            {'data': 'administrative_level__type_with_projects_priority_came_from'},
+            {
+                'data': 'administrative_level__type_with_projects_priority_came_from',
+                'name': 'administrative_level__type_with_projects_priority_came_from',
+                'searchable': 'false',
+                'orderable': 'false',
+            },
             {'data': 'estimated_cost'},
             {'data': 'administrative_level__name'},
             {'data': 'administrative_level__parent__name'},
@@ -262,7 +274,7 @@ class IndexListView(
             {'data': 'rejection_history', 'name': 'rejection_history', 'searchable': 'false', 'orderable': 'false'},
 
         ]
-        context["datatable_config"]["order"] = [3, 'asc']
+        context["datatable_config"]["order"] = [8, 'asc']
         if len(kwargs["query_strings_raw"]) > 0:
             context["datatable_config"]["ajax"] += "&" + kwargs["selected_investments_data_querystring"]
         context.update(kwargs)
@@ -489,10 +501,10 @@ class CartView(IsInvestorMixin, PageMixin, generic.DetailView):
         def _budget_error_msg(project, already_committed, current_total):
             grand_total = already_committed + current_total
             return _(
-                "Budget du projet dépassé. Budget : {budget:,} FCFA - "
-                "Déjà engagé (autres paquets) : {committed:,} FCFA - "
-                "Ce paquet : {current:,} FCFA - "
-                "Total : {total:,} FCFA."
+                "Project budget exceeded. Budget: {budget:,} FCFA - "
+                "Already committed (other packages): {committed:,} FCFA - "
+                "This package: {current:,} FCFA - "
+                "Total: {total:,} FCFA."
             ).format(
                 budget=project.total_amount,
                 committed=already_committed,
