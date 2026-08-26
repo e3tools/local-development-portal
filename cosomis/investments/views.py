@@ -41,17 +41,23 @@ class ProfileTemplateView(IsInvestorMixin, PageMixin, generic.DetailView):
 
         context["organization"] = self.request.user.organization
 
+        not_rejected = [PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED]
+
         if context["organization"] is not None:
             user_qs = context["organization"].users.all().values_list("id")
             investments_qs = Investment.objects.filter(
-                packages__user__id__in=Subquery(user_qs)
+                packagefundedinvestment__package__user__id__in=Subquery(user_qs),
+                packagefundedinvestment__status__in=not_rejected,
             )
             context["organization"].total_investments = investments_qs.count()
             context["organization"].total_investments_amount = investments_qs.aggregate(
                 Sum("estimated_cost")
             )["estimated_cost__sum"]
 
-        user_investments_qs = Investment.objects.filter(packages__user=self.request.user)
+        user_investments_qs = Investment.objects.filter(
+            packagefundedinvestment__package__user=self.request.user,
+            packagefundedinvestment__status__in=not_rejected,
+        )
         context['user_investments'] = user_investments_qs.count()
         context['user_investments_commited_funds'] = user_investments_qs.aggregate(
             Sum("estimated_cost")
@@ -460,15 +466,27 @@ class PackageDetailView(IsInvestorMixin, PageMixin, generic.DetailView):
             {"responsivePriority": 7, "targets": 6},
             {"responsivePriority": 9, "targets": 7},
             {"responsivePriority": 8, "targets": 8},
+            {"responsivePriority": 3, "targets": 9},
         ]
+        context["package_investments"] = (
+            PackageFundedInvestment.objects
+            .select_related('investment', 'investment__sector', 'investment__sector__category',
+                            'investment__administrative_level',
+                            'investment__administrative_level__parent',
+                            'investment__administrative_level__parent__parent',
+                            'investment__administrative_level__parent__parent__parent')
+            .filter(package_id=context["object"].id)
+        )
+
         sectors = list()
         categories = list()
         context['total_funding'] = 0
 
-        for inv in context["object"].funded_investments.all():
-            sectors.append(inv.sector)
-            categories.append(inv.sector.category)
-            context['total_funding'] += inv.estimated_cost
+        for package_investment in context["package_investments"]:
+            sectors.append(package_investment.investment.sector)
+            categories.append(package_investment.investment.sector.category)
+            if package_investment.status != PackageFundedInvestment.REJECTED:
+                context['total_funding'] += package_investment.investment.estimated_cost
 
         context['title'] = context["object"].status
 
