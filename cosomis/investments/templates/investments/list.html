@@ -391,13 +391,15 @@
 
         /* Wrap for the table — borderless / flat; the parent card already
            provides the visual frame. Keep position:relative so the skeleton
-           overlay anchors correctly. */
+           overlay anchors correctly. overflow-x:auto (not hidden) lets users
+           scroll to reach columns the responsive "+" toggle didn't collapse. */
         .investments-table-stage {
             background: #ffffff;
             border: none;
             border-radius: 0;
             box-shadow: none;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: hidden;
         }
 
         /* Reset Bootstrap's heavy borders + striping */

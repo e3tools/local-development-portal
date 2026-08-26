@@ -250,9 +250,11 @@ class Package(BaseModel):  # investments module (orden de compra(cart de invesme
     rejection_reason = models.TextField(null=True, blank=True)
 
     def estimated_final_cost(self):
-        return self.funded_investments.all().aggregate(
-            estimated_final_cost=models.Sum("estimated_cost")
-        )["estimated_final_cost"]
+        return PackageFundedInvestment.objects.filter(
+            package=self, status__in=[PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED]
+        ).aggregate(
+            estimated_final_cost=models.Sum("investment__estimated_cost")
+        )["estimated_final_cost"] or 0
 
 
 class PackageFundedInvestment(BaseModel):

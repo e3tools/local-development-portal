@@ -186,9 +186,11 @@
                     <th>{% translate 'Region' %}</th>
                     <th>{% translate 'Village priority' %}</th>
                     <th>{% translate 'Population priority' %}</th>
+                    <th>{% translate 'Status' %}</th>
                     </thead>
                     <tbody>
-                    {% for investment in object.funded_investments.all %}
+                    {% for package_investment in package_investments %}
+                    {% with investment=package_investment.investment %}
                     <tr>
                         <td>
                             {% if investment.description %}
@@ -231,7 +233,20 @@
                             ME
                             {% endif %}
                         </td>
+                        <td class="text-center">
+                            {% if package_investment.status == package_investment.PENDING_APPROVAL %}
+                                <span class="badge badge-warning">{% translate 'Pending Approval' %}</span>
+                            {% elif package_investment.status == package_investment.APPROVED %}
+                                <span class="badge badge-success">{% translate 'Approved' %}</span>
+                            {% elif package_investment.status == package_investment.REJECTED %}
+                                <span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+                                      data-reason="{% if package_investment.rejection_reason %}{{ package_investment.rejection_reason }}{% else %}{% translate 'No reason provided' %}{% endif %}">
+                                    {% translate 'Rejected' %} <i class="fas fa-info-circle"></i>
+                                </span>
+                            {% endif %}
+                        </td>
                     </tr>
+                    {% endwith %}
                     {% endfor %}
                     </tbody>
                 </table>
@@ -296,6 +311,37 @@
             $('.total-subprojects-display').html(numeral(subprojects).format('0,0'));
 
         };
+
+        // Afficher la raison de rejet en popup au clic sur le badge "Rejeté"
+        $(document).on('click', '.show-rejection-reason', function(){
+            var reason = $(this).data('reason');
+            $('#rejection-reason-text').text(reason);
+            $('#rejectionReasonModal').modal('show');
+        });
     });
 </script>
+{% endblock %}
+
+{% block modals %}
+{{ block.super }}
+<div class="modal fade" id="rejectionReasonModal" tabindex="-1" role="dialog" aria-labelledby="rejectionReasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="rejectionReasonModalLabel">
+                    <i class="fas fa-times-circle mr-2"></i>{% translate 'Rejection reason' %}
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="rejection-reason-text" class="mb-0" style="white-space: pre-wrap;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

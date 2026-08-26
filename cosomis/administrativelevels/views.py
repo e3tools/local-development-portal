@@ -1403,10 +1403,13 @@ class ProjectListView(PageMixin, IsInvestorMixin, ListView):
 
         object_name = self.get_context_object_name(queryset)
         if object_name in context:
+            not_rejected = Q(packages__packagefundedinvestment__status__in=[
+                PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED,
+            ])
             context[object_name] = context[object_name].annotate(
-                investments_count=Count('packages__funded_investments'))
+                investments_count=Count('packages__packagefundedinvestment', filter=not_rejected, distinct=True))
             context[object_name] = context[object_name].annotate(
-                investments_total=Sum('packages__funded_investments__estimated_cost'))
+                investments_total=Sum('packages__packagefundedinvestment__investment__estimated_cost', filter=not_rejected))
             context['total_mount_invested'] = context[object_name].aggregate(Sum('investments_total'))[
                                                   'investments_total__sum'] or 0
 
