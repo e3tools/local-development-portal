@@ -82,7 +82,7 @@
         pushNotify("{% translate 'Veuillez aller changer votre mot de passe dans la session Utilisateur.' %}", "error");
     {% endif %}
 
-    {% if ENVIRONNEMENT_EXECUTION == 'dev' %}
+    {% if ENVIRONNEMENT_EXECUTION == 'test' %}
         pushNotify("{% translate 'You are in test mode. Everything you do here will be ignored.' %}", "warning");
     {% endif %}
 

@@ -1309,12 +1309,20 @@
                                 {{ investment.estimated_cost|intcomma }} FCFA
                             </td>
                             <td>
+                                {% if investment.administrative_level.type == "Village" %}
                                 <a href="{% url 'administrativelevels:village_detail' investment.administrative_level.id %}" target="_blank">
                                     {{ investment.administrative_level.name }}
                                 </a>
+                                {% else %}
+                                    -
+                                {% endif %}
                             </td>
                             <td>
-                                {% if investment.administrative_level.parent %}
+                                {% if investment.administrative_level.type == "Canton" %}
+                                    <a href="{% url 'administrativelevels:canton_detail' investment.administrative_level.id %}" target="_blank">
+                                        {{ investment.administrative_level.name }}
+                                    </a>
+                                {% elif investment.administrative_level.parent %}
                                     <a href="{% url 'administrativelevels:canton_detail' investment.administrative_level.parent.id %}" target="_blank">
                                         {{ investment.administrative_level.parent.name }}
                                     </a>
@@ -1323,14 +1331,30 @@
                                 {% endif %}
                             </td>
                             <td>
+                                {% if investment.administrative_level.parent.type == "Commune" %}
+                                <a href="{% url 'administrativelevels:commune_detail' investment.administrative_level.parent.id %}" target="_blank">
+                                    {{ investment.administrative_level.parent.name }}
+                                </a>
+                                {% elif investment.administrative_level.parent.parent %}
                                 <a href="{% url 'administrativelevels:commune_detail' investment.administrative_level.parent.parent.id %}" target="_blank">
                                     {{ investment.administrative_level.parent.parent.name }}
                                 </a>
+                                {% else %}
+                                    -
+                                {% endif %}
                             </td>
                             <td>
+                                {% if investment.administrative_level.parent.parent.type == "Prefecture" %}
+                                <a href="{% url 'administrativelevels:detail' investment.administrative_level.parent.parent.id %}" target="_blank">
+                                    {{ investment.administrative_level.parent.parent.name }}
+                                </a>
+                                {% elif investment.administrative_level.parent.parent.parent %}
                                 <a href="{% url 'administrativelevels:detail' investment.administrative_level.parent.parent.parent.id %}" target="_blank">
                                     {{ investment.administrative_level.parent.parent.parent.name }}
                                 </a>
+                                {% else %}
+                                    -
+                                {% endif %}
                             </td>
                             <td>{{ investment.ranking }}</td>
                             <td>

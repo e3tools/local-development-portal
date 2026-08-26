@@ -5,6 +5,7 @@ from django.utils.html import format_html, format_html_join
 from django.utils.translation import gettext_lazy as _
 
 from investments.models import Investment
+from administrativelevels.models import AdministrativeLevel
 
 
 def _safe_parent_chain(adm_level, depth):
@@ -67,11 +68,15 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     def get_administrative_level__name(self, obj):
         adm = obj.administrative_level
+        if adm.type != AdministrativeLevel.VILLAGE:
+            return "-"
         url = reverse('administrativelevels:village_detail', args=[adm.id])
         return format_html('<a class="inv-link inv-place" href="{}">{}</a>', url, adm.name)
 
     def get_administrative_level__parent__name(self, obj):
         parent = _safe_parent_chain(obj.administrative_level, 1)
+        if parent.type == AdministrativeLevel.COMMUNE:
+            parent = obj.administrative_level
         if parent is None:
             return format_html('<span class="inv-muted">—</span>')
         url = reverse('administrativelevels:canton_detail', args=[parent.id])
@@ -82,12 +87,16 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     def get_administrative_level__parent__parent__name(self, obj):
         node = _safe_parent_chain(obj.administrative_level, 2)
+        if node.type == AdministrativeLevel.PREFECTURE:
+            node = _safe_parent_chain(obj.administrative_level, 1)
         if node is None:
             return format_html('<span class="inv-muted">—</span>')
         return format_html('<span class="inv-place">{}</span>', node.name)
 
     def get_administrative_level__parent__parent__parent__name(self, obj):
         node = _safe_parent_chain(obj.administrative_level, 3)
+        if node.type == AdministrativeLevel.REGION:
+            node = _safe_parent_chain(obj.administrative_level, 2)
         if node is None:
             return format_html('<span class="inv-muted">—</span>')
         return format_html('<span class="inv-place">{}</span>', node.name)

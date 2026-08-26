@@ -1,3 +1,9 @@
+const COLORS_TYPE = {
+    "error": "#e74c3c",
+    "warning": "#cc872e",
+    "success": "#2ecc71"
+};
+
 function pushNotify(
     message, 
     type = "error",
@@ -5,7 +11,7 @@ function pushNotify(
 ) {
     const notif = document.createElement("div");
 
-    notif.style.background = type === "error" ? "#e74c3c" : "#2ecc71";
+    notif.style.background = COLORS_TYPE[type] ?? "#2ecc71";
     notif.style.color = "#fff";
     notif.style.padding = "12px 18px";
     notif.style.marginTop = "10px";
