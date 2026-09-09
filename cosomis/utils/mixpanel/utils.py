@@ -26,6 +26,12 @@ def get_anonymous_id(request):
     return request.session["anon_id"]
 
 def track_user_activity(request, class_name):
+    # PageMixin calls this on every request. With no token configured (demo and
+    # local deployments) every page view would otherwise raise inside the
+    # Mixpanel client and log a traceback, so skip the work entirely.
+    if not settings.MIXPANEL_TOKEN:
+        return
+
     try:
         if class_name == 'IndexListView':
             class_name = 'InvestmentsPageView'

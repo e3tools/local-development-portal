@@ -1,0 +1,78 @@
+name: CI
+
+# Pull-request gate for the demo branch. Merges into developAgentic are
+# checked again by deploy-vercel.yml before anything reaches production.
+
+on:
+  pull_request:
+    branches: [developAgentic]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Migrate, seed and render every page
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # The demo runs on Neon (Postgres); CI uses a throwaway Postgres of the
+    # same major version so migrations are exercised on the real backend
+    # rather than on SQLite.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: cosomis
+          POSTGRES_PASSWORD: cosomis
+          POSTGRES_DB: cosomis_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: cosomis
+
+    env:
+      # Matches the Vercel runtime; see requirements.txt for the pins this
+      # forces (numpy/pandas wheels, setuptools for pkg_resources).
+      DATABASE_URL: postgres://cosomis:cosomis@localhost:5432/cosomis_ci
+      SECRET_KEY: ci-only-not-a-real-secret
+      DEBUG: 'False'
+      ALLOWED_HOSTS: '*'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: cosomis/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Plain `check`, not `check --deploy`: the deploy checks currently trip
+      # drf-spectacular E001 (the pinned drf-spectacular calls
+      # serializers.NullBooleanField, removed in DRF 3.14), which is unrelated
+      # to this deployment and only affects the OpenAPI schema endpoint.
+      - name: Django system checks
+        run: python manage.py check --fail-level ERROR
+
+      - name: Apply migrations
+        run: python manage.py migrate --noinput
+
+      - name: Seed the demo dataset
+        run: python manage.py seed_togo_demo --reset
+
+      - name: Render every major page
+        run: python manage.py demo_smoke_test

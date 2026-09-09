@@ -36,11 +36,15 @@ jsonschema==4.19.1
 jsonschema-specifications==2023.7.1
 kombu==5.3.2
 Markdown==3.7
-numpy==1.23.3
+# numpy/pandas raised off 1.23.3/1.5.0: neither publishes wheels for the
+# Python 3.12 runtime used by the Vercel deployment, and their sdists no
+# longer build there. Only read_csv/read_excel/isna/to_excel are used, all
+# unchanged in pandas 2.x.
+numpy==1.26.4
 openpyxl==3.0.10
 orjson==3.8.0
 packaging==23.1
-pandas==1.5.0
+pandas==2.2.3
 prompt-toolkit==3.0.39
 psycopg2-binary==2.9.9
 Pillow
@@ -73,3 +77,11 @@ djangorestframework-simplejwt==4.8.0
 pyshp==3.0.12
 pyproj==3.7.2
 shapely==2.1.2
+
+# Serves /static/ from inside the WSGI app (no nginx on serverless deploys)
+whitenoise==6.6.0
+
+# Python 3.12 (the Vercel runtime) no longer ships pkg_resources, which
+# djangorestframework-simplejwt 4.8.0 imports at module level. Pinned below
+# 81 because that release drops pkg_resources altogether.
+setuptools<81

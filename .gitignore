@@ -31,3 +31,16 @@ cosomis/coso_subprojects.xlsx
 
 # Environment
 venv/
+
+# Node build artefacts. The agentic-LDP branch holds a Next.js app at this
+# same path, so switching branches leaves these behind in the working tree.
+node_modules/
+.next/
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# Nested Claude Code worktrees
+cosomis/.claude/worktrees/
+
+# Static files collected at build time
+cosomis/staticfiles/

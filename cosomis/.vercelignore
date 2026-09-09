@@ -1,0 +1,18 @@
+# Local virtualenv and caches — the build installs from requirements.txt.
+venv/
+__pycache__/
+*.pyc
+
+# Local SQLite snapshots (300 MB+ each) and spreadsheet fixtures. The
+# deployment reads Postgres, so none of this belongs in the bundle.
+*.db
+*.xlsx
+
+# Local-only tooling and docs.
+.claude/
+.elasticbeanstalk/
+.ebextensions/
+Dockerfile.dev
+docker-compose.yml
+.dockerignore
+media/

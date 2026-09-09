@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img">
+  <defs>
+    <linearGradient id="sky-education-23" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9dc9e0"/>
+      <stop offset="100%" stop-color="#f0e4c8"/>
+    </linearGradient>
+    <linearGradient id="ground-education-23" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a8ab6f"/>
+      <stop offset="100%" stop-color="#8b9457"/>
+    </linearGradient>
+    <radialGradient id="sun-education-23" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fff6e0" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#fff6e0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vig-education-23" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.10"/>
+      <stop offset="35%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.14"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky-education-23)"/>
+  <circle cx="172" cy="130" r="140" fill="url(#sun-education-23)"/>
+  <circle cx="172" cy="130" r="26" fill="#fff6e0" opacity="0.9"/>
+  <rect y="230" width="800" height="70" fill="#e2dcc0" opacity="0.35"/>
+  <path d="M0 500 L0 248 Q 50 252 100 251 Q 150 242 200 249 Q 250 248 300 262 Q 350 259 400 246 Q 450 255 500 249 Q 550 234 600 262 Q 650 259 700 254 Q 750 256 800 246 L800 500 Z" fill="#a8ab6f" opacity="0.55"/><path d="M0 500 L0 273 Q 50 273 100 282 Q 150 259 200 280 Q 250 259 300 269 Q 350 277 400 268 Q 450 275 500 272 Q 550 268 600 282 Q 650 277 700 281 Q 750 282 800 276 L800 500 Z" fill="#a8ab6f" opacity="0.75"/><path d="M0 500 L0 294 Q 50 291 100 285 Q 150 278 200 290 Q 250 297 300 298 Q 350 294 400 292 Q 450 278 500 297 Q 550 274 600 288 Q 650 294 700 284 Q 750 290 800 297 L800 500 Z" fill="#8b9457" opacity="0.9"/>
+  <rect y="300" width="800" height="200" fill="url(#ground-education-23)"/>
+  <g opacity="0.88">
+      <rect x="609" y="287.29" width="1.99" height="8.71" fill="#4c6234"/>
+      <ellipse cx="610" cy="279.61" rx="13.96" ry="8.66" fill="#617a42"/>
+      <ellipse cx="603.72" cy="282.4" rx="8.38" ry="5.86" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.76">
+      <rect x="589.84" y="294.89" width="2.31" height="10.11" fill="#4c6234"/>
+      <ellipse cx="591" cy="287.43" rx="13.56" ry="8.41" fill="#617a42"/>
+      <ellipse cx="584.9" cy="290.14" rx="8.14" ry="5.7" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.77">
+      <rect x="26.92" y="291.51" width="2.17" height="9.49" fill="#4c6234"/>
+      <ellipse cx="28" cy="283.35" rx="14.84" ry="9.2" fill="#617a42"/>
+      <ellipse cx="21.32" cy="286.32" rx="8.9" ry="6.23" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.8">
+      <rect x="455.56" y="308.4" width="2.88" height="12.6" fill="#4c6234"/>
+      <ellipse cx="457" cy="298.28" rx="18.4" ry="11.41" fill="#617a42"/>
+      <ellipse cx="448.72" cy="301.96" rx="11.04" ry="7.73" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.83">
+      <rect x="149.67" y="303.33" width="2.67" height="11.67" fill="#4c6234"/>
+      <ellipse cx="151" cy="294.35" rx="16.33" ry="10.12" fill="#617a42"/>
+      <ellipse cx="143.65" cy="297.61" rx="9.8" ry="6.86" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.96">
+      <rect x="71.61" y="305.87" width="2.77" height="12.13" fill="#4c6234"/>
+      <ellipse cx="73" cy="295.49" rx="18.87" ry="11.7" fill="#617a42"/>
+      <ellipse cx="64.51" cy="299.27" rx="11.32" ry="7.93" fill="#4c6234" opacity="0.5"/>
+    </g>
+  <ellipse cx="400" cy="438" rx="190" ry="24.7" fill="#000" opacity="0.13"/>
+    <rect x="230" y="352" width="330" height="82" fill="#e6dcc8"/>
+    <rect x="230" y="404" width="330" height="30" fill="#cbbfa6"/>
+    <path d="M214 352 h362 l-22 -34 h-318 Z" fill="#9aa7ad"/>
+    <path d="M214 352 h362 l-6 8 h-350 Z" fill="#7f8b91"/>
+    <rect x="262" y="372" width="46" height="34" fill="#5d6b63"/><rect x="262" y="372" width="46" height="34" fill="none" stroke="#cbbfa6" stroke-width="3"/><rect x="366" y="372" width="46" height="34" fill="#5d6b63"/><rect x="366" y="372" width="46" height="34" fill="none" stroke="#cbbfa6" stroke-width="3"/><rect x="470" y="372" width="46" height="34" fill="#5d6b63"/><rect x="470" y="372" width="46" height="34" fill="none" stroke="#cbbfa6" stroke-width="3"/>
+    <rect x="318" y="374" width="26" height="60" fill="#6f5a44"/><rect x="422" y="374" width="26" height="60" fill="#6f5a44"/>
+    <rect x="596" y="300" width="4" height="134" fill="#9aa2a8"/>
+    <path d="M600 302 h44 l-10 12 10 12 h-44 Z" fill="#2e7d4f"/>
+    <g fill="#2f3a33" opacity="0.85">
+    <circle cx="178" cy="399" r="5.46"/>
+    <path d="M172.15 404.2 h11.7 l2.6 18.2 h-16.9 Z"/>
+    <rect x="172.8" y="422.4" width="3.9" height="15.6"/>
+    <rect x="179.3" y="422.4" width="3.9" height="15.6"/>
+  </g><g fill="#3a4640" opacity="0.85">
+    <circle cx="198" cy="407.5" r="4.83"/>
+    <path d="M192.83 412.1 h10.35 l2.3 16.1 h-14.95 Z"/>
+    <rect x="193.4" y="428.2" width="3.45" height="13.8"/>
+    <rect x="199.15" y="428.2" width="3.45" height="13.8"/>
+  </g><g fill="#33403a" opacity="0.85">
+    <circle cx="602" cy="404" r="5.04"/>
+    <path d="M596.6 408.8 h10.8 l2.4 16.8 h-15.6 Z"/>
+    <rect x="597.2" y="425.6" width="3.6" height="14.4"/>
+    <rect x="603.2" y="425.6" width="3.6" height="14.4"/>
+  </g>
+  <rect width="800" height="500" fill="url(#vig-education-23)"/>
+</svg>
