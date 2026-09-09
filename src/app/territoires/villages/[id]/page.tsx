@@ -5,6 +5,8 @@ import { VILLAGES, villageById, cantonById, prefectureById, regionById } from "@
 import { prioritiesOfVillage } from "@/data/priorities";
 import { investmentsOfVillage } from "@/data/investments";
 import { GRIEVANCES } from "@/data/grm";
+import { photosOfVillage } from "@/data/media";
+import { Gallery } from "@/components/gallery";
 import { SECTOR_COLOR } from "@/data/sectors";
 import { fmtInt, fmtMFcfa, fmtDate, fmtPct } from "@/lib/format";
 
@@ -20,6 +22,7 @@ export default async function VillagePage({ params }: { params: Promise<{ id: st
   const prios = prioritiesOfVillage(v.id);
   const invs = investmentsOfVillage(v.id);
   const grm = GRIEVANCES.filter((g) => g.villageId === v.id);
+  const photos = photosOfVillage(v.id);
   const vulnTone = v.vulnerabilityScore >= 70 ? "critical" : v.vulnerabilityScore >= 55 ? "warning" : "good";
   return (
     <>
@@ -72,6 +75,10 @@ export default async function VillagePage({ params }: { params: Promise<{ id: st
           </div>
         </Card>
       </div>
+      <Card title="Photothèque du village" subtitle={`${photos.length} photo(s) versées au dossier par les agents de terrain`} className="mb-4"
+        action={<span className="text-xs text-ink-3">Illustrations de démonstration</span>}>
+        <Gallery photos={photos} columns={4} />
+      </Card>
       <Card title="Priorités locales du village" subtitle="Issues de l'assemblée villageoise et des focus groupes · classées par rang" className="mb-4" action={<Link href="/priorites" className="text-xs text-brand-700 hover:underline">Registre complet →</Link>}>
         <Table head={["Rang", "Code", "Priorité", "Secteur", "Source", "Coût estimé", "Bénéficiaires", "Voix", "Statut"]}>
           {prios.map((p) => (

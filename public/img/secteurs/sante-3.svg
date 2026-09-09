@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img">
+  <defs>
+    <linearGradient id="sky-sante-43" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9dc9e0"/>
+      <stop offset="100%" stop-color="#f0e4c8"/>
+    </linearGradient>
+    <linearGradient id="ground-sante-43" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8fae63"/>
+      <stop offset="100%" stop-color="#6f9350"/>
+    </linearGradient>
+    <radialGradient id="sun-sante-43" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fff6e0" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#fff6e0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vig-sante-43" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.10"/>
+      <stop offset="35%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.14"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky-sante-43)"/>
+  <circle cx="680" cy="130" r="140" fill="url(#sun-sante-43)"/>
+  <circle cx="680" cy="130" r="26" fill="#fff6e0" opacity="0.9"/>
+  <rect y="230" width="800" height="70" fill="#e2dcc0" opacity="0.35"/>
+  <path d="M0 500 L0 251 Q 50 249 100 247 Q 150 234 200 258 Q 250 233 300 247 Q 350 261 400 249 Q 450 240 500 260 Q 550 262 600 246 Q 650 247 700 250 Q 750 243 800 257 L800 500 Z" fill="#8fae63" opacity="0.55"/><path d="M0 500 L0 277 Q 50 282 100 270 Q 150 253 200 281 Q 250 264 300 276 Q 350 265 400 279 Q 450 274 500 276 Q 550 284 600 270 Q 650 271 700 269 Q 750 252 800 280 L800 500 Z" fill="#8fae63" opacity="0.75"/><path d="M0 500 L0 295 Q 50 284 100 297 Q 150 293 200 295 Q 250 300 300 291 Q 350 291 400 287 Q 450 276 500 295 Q 550 269 600 287 Q 650 284 700 294 Q 750 294 800 285 L800 500 Z" fill="#6f9350" opacity="0.9"/>
+  <rect y="300" width="800" height="200" fill="url(#ground-sante-43)"/>
+  <g opacity="0.97">
+      <rect x="593.97" y="288.98" width="2.06" height="9.02" fill="#3d5a2b"/>
+      <ellipse cx="595" cy="280.01" rx="16.31" ry="10.11" fill="#4f7038"/>
+      <ellipse cx="587.66" cy="283.27" rx="9.79" ry="6.85" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.85">
+      <rect x="76.54" y="309.24" width="2.92" height="12.76" fill="#3d5a2b"/>
+      <ellipse cx="78" cy="300.12" rx="16.58" ry="10.28" fill="#4f7038"/>
+      <ellipse cx="70.54" cy="303.44" rx="9.95" ry="6.96" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.96">
+      <rect x="60.81" y="296.58" width="2.38" height="10.42" fill="#3d5a2b"/>
+      <ellipse cx="62" cy="286.73" rx="17.91" ry="11.1" fill="#4f7038"/>
+      <ellipse cx="53.94" cy="290.31" rx="10.75" ry="7.52" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.8">
+      <rect x="705.58" y="307.56" width="2.84" height="12.44" fill="#3d5a2b"/>
+      <ellipse cx="707" cy="297.54" rx="18.22" ry="11.3" fill="#4f7038"/>
+      <ellipse cx="698.8" cy="301.18" rx="10.93" ry="7.65" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.83">
+      <rect x="74.63" y="305.02" width="2.74" height="11.98" fill="#3d5a2b"/>
+      <ellipse cx="76" cy="294.74" rx="18.69" ry="11.59" fill="#4f7038"/>
+      <ellipse cx="67.59" cy="298.48" rx="11.21" ry="7.85" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.99">
+      <rect x="560.61" y="305.87" width="2.77" height="12.13" fill="#3d5a2b"/>
+      <ellipse cx="562" cy="294.94" rx="19.87" ry="12.32" fill="#4f7038"/>
+      <ellipse cx="553.06" cy="298.92" rx="11.92" ry="8.35" fill="#3d5a2b" opacity="0.5"/>
+    </g>
+  <ellipse cx="400" cy="436" rx="165" ry="21.45" fill="#000" opacity="0.13"/>
+    <rect x="268" y="346" width="264" height="90" fill="#e6dcc8"/>
+    <rect x="268" y="410" width="264" height="26" fill="#cbbfa6"/>
+    <path d="M252 346 h296 l-26 -40 h-244 Z" fill="#8d5b3f"/>
+    <rect x="380" y="378" width="40" height="58" fill="#6f5a44"/>
+    <rect x="300" y="368" width="42" height="32" fill="#5d6b63"/>
+    <rect x="458" y="368" width="42" height="32" fill="#5d6b63"/>
+    <g transform="translate(400 328)"><rect x="-6" y="-18" width="12" height="36" fill="#c8443c"/><rect x="-18" y="-6" width="36" height="12" fill="#c8443c"/></g>
+    <rect x="556" y="392" width="52" height="44" rx="4" fill="#dfe4e2"/>
+    <rect x="556" y="392" width="52" height="10" rx="4" fill="#c3ccc8"/>
+    <g fill="#2f3a33" opacity="0.85">
+    <circle cx="232" cy="397" r="5.46"/>
+    <path d="M226.15 402.2 h11.7 l2.6 18.2 h-16.9 Z"/>
+    <rect x="226.8" y="420.4" width="3.9" height="15.6"/>
+    <rect x="233.3" y="420.4" width="3.9" height="15.6"/>
+  </g><g fill="#3a4640" opacity="0.85">
+    <circle cx="254" cy="407" r="4.62"/>
+    <path d="M249.05 411.4 h9.9 l2.2 15.4 h-14.3 Z"/>
+    <rect x="249.6" y="426.8" width="3.3" height="13.2"/>
+    <rect x="255.1" y="426.8" width="3.3" height="13.2"/>
+  </g>
+  <rect width="800" height="500" fill="url(#vig-sante-43)"/>
+</svg>

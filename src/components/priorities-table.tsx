@@ -5,9 +5,11 @@ import { Select, Search } from "./filter-bar";
 import { StatusBadge, Table } from "./ui";
 import { fmtInt, fmtMFcfa } from "@/lib/format";
 import { SECTOR_COLOR, SECTORS, type Sector } from "@/data/sectors";
-import { PRIORITY_STATUSES } from "@/data/priorities";
+import { MAX_PRIORITIES_PER_VILLAGE, PRIORITY_STATUSES } from "@/data/priorities";
 
 export type PriorityRow = { id: string; code: string; title: string; sector: Sector; rank: number; status: string; source: string; cost: number; beneficiaries: number; votes: number; village: string; villageId: string; canton: string; prefecture: string; region: string; registeredAt: string };
+
+const RANKS = Array.from({ length: MAX_PRIORITIES_PER_VILLAGE }, (_, i) => String(i + 1));
 
 export function PrioritiesTable({ rows, regions }: { rows: PriorityRow[]; regions: string[] }) {
   const [q, setQ] = useState("");
@@ -31,7 +33,7 @@ export function PrioritiesTable({ rows, regions }: { rows: PriorityRow[]; region
         <Select label="Région" value={region} onChange={setRegion} options={regions} />
         <Select label="Secteur" value={sector} onChange={setSector} options={[...SECTORS]} />
         <Select label="Statut" value={status} onChange={setStatus} options={[...PRIORITY_STATUSES]} />
-        <Select label="Rang" value={rank} onChange={setRank} options={["1", "2", "3"]} />
+        <Select label="Rang" value={rank} onChange={setRank} options={RANKS} />
         <label className="text-xs text-ink-2 flex flex-col gap-1">Tri
           <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} className="rounded-md border border-line bg-white px-2 py-1.5 text-sm text-ink">
             <option value="date">Plus récentes</option><option value="votes">Plus de voix</option><option value="cost">Coût décroissant</option>

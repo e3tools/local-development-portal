@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The Django app that lives on the other branches of this repo — its
+    // vendored AdminLTE/jQuery bundles are not ours to lint.
+    "cosomis/**",
   ]),
   {
     rules: {

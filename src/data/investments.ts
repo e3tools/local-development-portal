@@ -1,6 +1,7 @@
 import { createRng } from "@/lib/rng";
 import { addDays } from "@/lib/format";
-import { PRIORITIES } from "./priorities";
+import { VILLAGES } from "./geo";
+import { prioritiesOfVillage } from "./priorities";
 import type { Sector } from "./sectors";
 
 export const APPROVAL_STEPS = [
@@ -57,11 +58,18 @@ const STATUS_STEP: Record<InvestmentStatus, number> = {
   Soumis: 0, "Validation CCD": 1, "Revue communale": 2, "Revue régionale": 3, "Approbation UCP": 4, Approuvé: 5, "En exécution": 6, Achevé: 6, Rejeté: -1,
 };
 
+// Every village carries its rank-1 priority forward as a sub-project; lower
+// ranks follow only once they are funded or written into the PDC, so villages
+// end up with one to three sub-projects at different points of the funnel.
+const candidates = VILLAGES.flatMap((v) => {
+  const [lead, ...rest] = prioritiesOfVillage(v.id);
+  const extras = rest.filter((p) => (p.status === "Financée" || p.status === "Intégrée au PDC") && rng.chance(0.55));
+  return lead ? [lead, ...extras] : [];
+});
+
 export const INVESTMENTS: Investment[] = [];
-const candidates = PRIORITIES.filter((p) => p.status === "Financée" || p.status === "Intégrée au PDC");
 let seq = 1;
 for (const p of candidates) {
-  if (p.status === "Intégrée au PDC" && !rng.chance(0.4)) continue;
   const status: InvestmentStatus =
     p.status === "Financée"
       ? rng.pick(["En exécution", "En exécution", "Achevé", "Approuvé", "En exécution"])

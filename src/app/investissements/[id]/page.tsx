@@ -6,6 +6,8 @@ import { villageById, cantonById, prefectureById, regionById } from "@/data/geo"
 import { priorityById } from "@/data/priorities";
 import { partnerById } from "@/data/partners";
 import { GRIEVANCES } from "@/data/grm";
+import { photosOfInvestment } from "@/data/media";
+import { Gallery } from "@/components/gallery";
 import { SECTOR_COLOR } from "@/data/sectors";
 import { fmtInt, fmtFcfa, fmtMFcfa, fmtDate, fmtPct } from "@/lib/format";
 
@@ -22,6 +24,7 @@ export default async function InvestmentPage({ params }: { params: Promise<{ id:
   const prio = priorityById(inv.priorityId)!;
   const partner = partnerById(inv.partnerId)!;
   const grm = GRIEVANCES.filter((g) => g.investmentId === inv.id);
+  const photos = photosOfInvestment(inv.id);
   const current = inv.steps.find((s) => s.status === "En cours");
   const rejected = inv.steps.find((s) => s.status === "Rejeté");
   const executing = inv.status === "En exécution" || inv.status === "Achevé";
@@ -91,6 +94,10 @@ export default async function InvestmentPage({ params }: { params: Promise<{ id:
           </Card>
         </div>
       </div>
+      <Card title="Suivi photographique" subtitle="Photos versées par les agents de terrain aux différentes étapes du sous-projet"
+        action={<span className="text-xs text-ink-3">Illustrations de démonstration</span>}>
+        <Gallery photos={photos} columns={4} />
+      </Card>
     </>
   );
 }

@@ -1,0 +1,39 @@
+name: CI
+
+# Pull-request gate. Merges into agentic-LDP are checked again by
+# deploy-vercel.yml before anything reaches production.
+
+on:
+  pull_request:
+    branches: [agentic-LDP]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, type-check and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npx tsc --noEmit
+
+      - name: Check sample images are in sync with the generator
+        run: |
+          node scripts/generate-sample-images.mjs
+          git diff --exit-code -- public/img \
+            || { echo "::error::public/img is out of date — run 'npm run images' and commit the result."; exit 1; }
+
+      - run: npm run build

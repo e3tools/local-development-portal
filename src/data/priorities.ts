@@ -6,11 +6,17 @@ export const PRIORITY_STATUSES = ["Identifiée", "Validée CCD", "Intégrée au 
 export type PriorityStatus = (typeof PRIORITY_STATUSES)[number];
 export const PRIORITY_SOURCES = ["Assemblée villageoise", "Focus groupe femmes", "Focus groupe jeunes", "Diagnostic participatif"] as const;
 
+// Villages register between MIN and MAX priorities each, ranked by the village
+// assembly. Rank 1 is always carried forward, so every village has at least one
+// sub-project attached to it (see data/investments.ts).
+export const MIN_PRIORITIES_PER_VILLAGE = 4;
+export const MAX_PRIORITIES_PER_VILLAGE = 6;
+
 export type Priority = {
   id: string;
   code: string;
   villageId: string;
-  rank: 1 | 2 | 3;
+  rank: number;
   sector: Sector;
   title: string;
   estimatedCostFcfa: number;
@@ -37,18 +43,22 @@ const COST: Record<Sector, [number, number]> = {
 export const PRIORITIES: Priority[] = [];
 let seq = 1;
 for (const v of VILLAGES) {
-  const sectors = rng.sample(SECTORS, 3);
+  const sectors = rng.sample(SECTORS, rng.int(MIN_PRIORITIES_PER_VILLAGE, MAX_PRIORITIES_PER_VILLAGE));
   sectors.forEach((sector, i) => {
     const [lo, hi] = COST[sector];
+    // Rank 1 always reaches the PDC so the village has a sub-project to show;
+    // the tail of the list spreads across the rest of the funnel.
     const status: PriorityStatus =
       i === 0
-        ? rng.pick(["Financée", "Financée", "Intégrée au PDC", "Validée CCD"])
-        : rng.pick(["Identifiée", "Validée CCD", "Intégrée au PDC", "Non retenue", "Identifiée"]);
+        ? rng.pick(["Financée", "Financée", "Financée", "Intégrée au PDC"])
+        : i === 1
+          ? rng.pick(["Validée CCD", "Intégrée au PDC", "Financée", "Identifiée"])
+          : rng.pick(["Identifiée", "Validée CCD", "Intégrée au PDC", "Non retenue", "Identifiée"]);
     PRIORITIES.push({
       id: `prio-${seq}`,
       code: `LP-${String(seq).padStart(4, "0")}`,
       villageId: v.id,
-      rank: (i + 1) as 1 | 2 | 3,
+      rank: i + 1,
       sector,
       title: rng.pick(PRIORITY_TITLES[sector]),
       estimatedCostFcfa: rng.int(lo, hi) * 1_000_000,
