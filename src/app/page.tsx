@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Card, Kpi, PageHeader, StatusBadge, Table } from "@/components/ui";
 import { Distribution, HBarChart, Sparkline } from "@/components/charts";
 import { REGIONS, VILLAGES, CANTONS, PREFECTURES, villageById, cantonById } from "@/data/geo";
-import { PRIORITIES } from "@/data/priorities";
+import { MAX_PRIORITIES_PER_VILLAGE, PRIORITIES } from "@/data/priorities";
 import { INVESTMENTS } from "@/data/investments";
 import { GRIEVANCES } from "@/data/grm";
 import { SECTORS, SECTOR_COLOR } from "@/data/sectors";
@@ -37,7 +37,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4 mb-4">
-        <Card title="Priorités locales par secteur" subtitle="Toutes priorités enregistrées (rang 1 à 3)" className="lg:col-span-1">
+        <Card title="Priorités locales par secteur" subtitle={`Toutes priorités enregistrées (rang 1 à ${MAX_PRIORITIES_PER_VILLAGE})`} className="lg:col-span-1">
           <HBarChart data={SECTORS.map((s) => ({ label: s, value: bySector[s] ?? 0, color: SECTOR_COLOR[s] })).sort((a, b) => b.value - a.value)} />
         </Card>
         <Card title="Sous-projets par statut" subtitle="Circuit d'approbation et exécution">
