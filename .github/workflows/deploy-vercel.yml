@@ -42,7 +42,12 @@ jobs:
         run: npm run lint
 
       - name: Type-check
-        run: npx tsc --noEmit
+        # `next typegen` writes the generated route helpers (LayoutProps,
+        # PageProps, …) that app-router files reference; without it tsc fails on
+        # a clean checkout that has never run `next dev`/`next build`.
+        run: |
+          npx next typegen
+          npx tsc --noEmit
 
       - name: Check sample images are in sync with the generator
         run: |
