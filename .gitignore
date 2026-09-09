@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.idea/
+
+# Django app checked out inside this repo (separate project, contains .env + large DBs)
+/cosomis/
