@@ -21,3 +21,5 @@ Procfile
 Dockerfile.dev
 docker-compose.yml
 .dockerignore
+.vercel
+.env*
