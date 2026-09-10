@@ -147,6 +147,15 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
+      # Shows which account the token belongs to and which teams it can act
+      # for. `vercel pull` fails with "Could not retrieve Project Settings"
+      # when the token is scoped to an account that cannot see
+      # VERCEL_ORG_ID, and this makes that diagnosis immediate.
+      - name: Check token scope
+        run: |
+          vercel whoami --token="${{ secrets.VERCEL_TOKEN }}"
+          vercel teams ls --token="${{ secrets.VERCEL_TOKEN }}"
+
       - name: Pull Vercel project settings
         run: vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
 
