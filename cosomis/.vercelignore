@@ -1,14 +1,18 @@
 # Keep this list identical to `functions.api/index.py.excludeFiles` in
-# vercel.json. `vercel build` traces the function's files from everything
-# *excludeFiles* leaves in, while `vercel deploy` uploads only what this file
-# leaves in — anything listed here but not there is referenced by the build
-# yet never uploaded, and the deployment fails with ENOENT.
+# vercel.json, minus `_uv/`. `vercel build` traces the function's files from
+# everything *excludeFiles* leaves in, while `vercel deploy` uploads only what
+# this file leaves in — anything listed here but not there is referenced by
+# the build yet never uploaded, and the deployment fails with ENOENT.
+#
+# `_uv/` is the exception: the Python builder downloads its own uv binary
+# there on every build and maps it into the function (.vc-config.json) even
+# though excludeFiles names it, so it has to be uploadable. It stays
+# git-ignored.
 #
 # Everything here is either a local artefact (virtualenv, caches, SQLite
 # snapshots of 300 MB+ each) or unrelated tooling; the function bundle also
 # has a hard 500 MB limit that these alone would blow through.
 venv/
-_uv/
 .agents/
 .vercel/
 .claude/
