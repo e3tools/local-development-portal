@@ -28,6 +28,9 @@ cosomis/AWSCLIV2.pkg
 cosomis/coso_subprojects.xlsx
 
 *.xlsx
+# …except the bulk-upload template the portal links to with {% static %}.
+# The blanket rule above had left it untracked, so clean checkouts 404 on it.
+!cosomis/static/investments/project_investments_template.xlsx
 
 # Environment
 venv/

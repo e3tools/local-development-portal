@@ -17,5 +17,8 @@ node_modules/
 .next/
 media/
 __pycache__/
-*.db
-*.xlsx
+# Anchored to the project root: the excludeFiles globs `*.db`/`*.xlsx` only
+# match top-level files, and unanchored gitignore patterns here would also
+# drop nested ones the build has traced (e.g. static/investments/*.xlsx).
+/*.db
+/*.xlsx
