@@ -76,9 +76,10 @@ ticked.
 
 ### One-time setup
 
-1. Create the Neon project and copy its pooled connection string.
+This is already done for `ldp-togo-demo`; the steps are kept for rebuilding
+it elsewhere.
 
-2. Link the Vercel project from this directory (the Django project root, not
+1. Link the Vercel project from this directory (the Django project root, not
    the repository root):
 
    ```bash
@@ -88,13 +89,25 @@ ticked.
    cat .vercel/project.json   # -> orgId and projectId
    ```
 
-3. Set the Vercel environment variables (Production):
+2. Provision the database through the Vercel Marketplace — no separate Neon
+   account is needed, and the integration writes `DATABASE_URL` (plus the
+   `POSTGRES_*`/`PG*` variants) into the project's Production environment:
+
+   ```bash
+   vercel integration add neon --name ldp-togo-demo-db -e production --plan free_v3
+   vercel env pull .vercel/.env.production.local --environment=production
+   ```
+
+   The integration also drops agent-skill docs (`.agents/`, `.claude/skills/`,
+   `skills-lock.json`) into the directory; they are ignored and can be deleted.
+
+3. Set the remaining Vercel environment variables (Production):
 
    | Variable | Value |
    |---|---|
-   | `DATABASE_URL` | the Neon connection string |
    | `SECRET_KEY` | a long random string |
    | `ALLOWED_HOSTS` | `*` |
+   | `DEBUG` | `False` |
    | `PROGRAM_NAME` | optional, overrides the branded programme name |
 
 4. Add the GitHub Actions secrets (*Settings → Secrets and variables →
@@ -108,13 +121,34 @@ ticked.
    | `DATABASE_URL` | the same Neon connection string |
    | `SECRET_KEY` | the same secret key |
 
-5. Seed the database once:
+5. Seed the database once (about 2½ minutes over the wire to Neon's
+   `us-east-1`):
 
    ```bash
    cd cosomis
    DATABASE_URL='<neon url>' python manage.py migrate --noinput
    DATABASE_URL='<neon url>' python manage.py seed_togo_demo --reset
    ```
+
+### Deploying by hand
+
+```bash
+cd cosomis
+vercel pull --yes --environment=production
+vercel build --prod
+vercel deploy --prebuilt --prod --yes
+```
+
+Two things about the prebuilt flow are easy to trip over:
+
+- `vercel build` traces the function's files from everything that
+  `excludeFiles` (vercel.json) leaves in, but `vercel deploy --prebuilt`
+  uploads only what `.vercelignore` leaves in. Anything in the second list but
+  not the first is referenced by the build and never uploaded, and the deploy
+  fails with `ENOENT`. Keep the two lists identical.
+- The exception is `_uv/`: the Python builder downloads its own `uv` binary
+  there on every build and maps it into the function even though
+  `excludeFiles` names it, so it must stay uploadable (it is git-ignored).
 
 ## Checking a deployment
 
