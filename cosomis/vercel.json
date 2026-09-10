@@ -10,7 +10,7 @@
     "api/index.py": {
       "memory": 1024,
       "maxDuration": 30,
-      "excludeFiles": "{venv/**,_uv/**,.vercel/**,.claude/**,.git/**,node_modules/**,.next/**,media/**,__pycache__/**,**/__pycache__/**,*.db,*.xlsx}"
+      "excludeFiles": "{venv/**,.agents/**,_uv/**,.vercel/**,.claude/**,.git/**,node_modules/**,.next/**,media/**,__pycache__/**,**/__pycache__/**,*.db,*.xlsx}"
     }
   },
   "github": {
