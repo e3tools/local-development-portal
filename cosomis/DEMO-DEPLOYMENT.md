@@ -43,6 +43,31 @@ Moderators and investors see different modules — the cart, the profile page
 and the partner approvals are deliberately closed to moderators
 (`IsInvestorMixin`), so demo both roles.
 
+## The assistant (`/fr/assistant/`)
+
+A read-only chat over the portal's data, in the sidebar for every approved
+user. It is built as tool calling over typed query functions — the model
+never sees the database, only what `assistant/tools.py` returns, and each of
+those functions applies the caller's rights (`assistant/scope.py`) exactly as
+the views do: partners get their own packages and their organisation's
+programmes, moderators and administrators get all of them, and no tool reads
+user accounts. Every entity comes back with its portal URL so answers link to
+the page the figure came from; row counts are capped at 50.
+
+Provider: OpenAI Chat Completions with function calling (`openai` SDK).
+
+| Variable | Purpose |
+|---|---|
+| `OPENAI_API_KEY` | required; without it the page renders but says it is not configured |
+| `ASSISTANT_MODEL` | default `gpt-5-mini` |
+| `OPENAI_BASE_URL` | optional, for an OpenAI-compatible proxy |
+
+Every question and answer is stored (`assistant.Conversation` / `Message`)
+with the tool calls it used and the token counts, for audit and for building
+an evaluation set. `python manage.py test assistant` covers the scoping rules
+and the tool loop with a scripted fake client and runs in CI; the live model
+is exercised only by real use.
+
 ## How it is deployed
 
 `api/index.py` exposes the Django WSGI app to Vercel's Python runtime, and
@@ -108,6 +133,7 @@ it elsewhere.
    | `SECRET_KEY` | a long random string |
    | `ALLOWED_HOSTS` | `*` |
    | `DEBUG` | `False` |
+   | `OPENAI_API_KEY` | enables the assistant |
    | `PROGRAM_NAME` | optional, overrides the branded programme name |
 
 4. Add the GitHub Actions secrets (*Settings → Secrets and variables →

@@ -81,6 +81,7 @@ CREATED_APPS = [
     'dashboard',
     'cdd_funnel',
     'utils',
+    'assistant',
 ]
 
 THIRD_PARTY_APPS = [
@@ -329,3 +330,10 @@ MIS_URL = env('MIS_URL', default='')
 # GRM API
 GRM_SECRET_KEY_GENRATE = env('GRM_SECRET_KEY_GENRATE', default='')
 GRM_URL = env('GRM_URL', default='')
+
+
+# Portal assistant (assistant/) — read-only chat over the portal's data.
+# Without OPENAI_API_KEY the page renders but explains it is not configured.
+OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
+OPENAI_BASE_URL = env('OPENAI_BASE_URL', default='')  # optional, OpenAI-compatible proxy
+ASSISTANT_MODEL = env('ASSISTANT_MODEL', default='gpt-5-mini')

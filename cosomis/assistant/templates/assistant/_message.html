@@ -1,0 +1,23 @@
+{% load i18n assistant_tags %}
+<div class="assistant-msg assistant-msg--{{ message.role }}">
+    <div class="assistant-msg__avatar" aria-hidden="true">
+        {% if message.role == 'assistant' %}<i class="fas fa-robot"></i>{% else %}<i class="fas fa-user"></i>{% endif %}
+    </div>
+    <div class="assistant-msg__bubble">
+        {% if message.role == 'assistant' %}
+            <div class="assistant-msg__body">{{ message.content|assistant_markdown }}</div>
+            {% if message.tool_trace %}
+                <details class="assistant-msg__trace">
+                    <summary>{% translate "Data used" %} · {{ message.tool_trace|length }}</summary>
+                    <ul>
+                        {% for step in message.tool_trace %}
+                            <li><code>{{ step.tool }}</code>{% if step.arguments %} <span class="text-muted">{{ step.arguments }}</span>{% endif %}{% if step.rows is not None %} <span class="badge badge-light">{{ step.rows }}</span>{% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                </details>
+            {% endif %}
+        {% else %}
+            <div class="assistant-msg__body">{{ message.content|linebreaksbr }}</div>
+        {% endif %}
+    </div>
+</div>

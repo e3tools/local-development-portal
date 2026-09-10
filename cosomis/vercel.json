@@ -8,8 +8,7 @@
   ],
   "functions": {
     "api/index.py": {
-      "memory": 1024,
-      "maxDuration": 30,
+      "maxDuration": 60,
       "excludeFiles": "{venv/**,.agents/**,_uv/**,.vercel/**,.claude/**,.git/**,node_modules/**,.next/**,media/**,__pycache__/**,**/__pycache__/**,*.db,*.xlsx}"
     }
   },

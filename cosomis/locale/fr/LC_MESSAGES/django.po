@@ -4184,3 +4184,33 @@ msgstr ""
 
 #~ msgid "See village"
 #~ msgstr "Voir le village"
+
+msgid "Assistant"
+msgstr "Assistant"
+
+msgid "Ask the portal"
+msgstr "Interroger le portail"
+
+msgid "Ask a question in French or English about villages, priorities, sub-projects, the planning cycle, programmes and packages. The assistant only reads the data you are allowed to see and can change nothing."
+msgstr "Posez une question, en français ou en anglais, sur les villages, les priorités, les sous-projets, le cycle de planification, les programmes et les paquets. L'assistant ne lit que les données auxquelles vous avez accès et ne peut rien modifier."
+
+msgid "The assistant is not configured on this deployment (missing OPENAI_API_KEY)."
+msgstr "L'assistant n'est pas configuré sur ce déploiement (OPENAI_API_KEY manquante)."
+
+msgid "Your question…"
+msgstr "Votre question…"
+
+msgid "Send"
+msgstr "Envoyer"
+
+msgid "Read-only. Answers are computed from portal data and are not an official UCP statement."
+msgstr "Lecture seule. Les réponses sont calculées à partir des données du portail et ne constituent pas une déclaration officielle de l'UCP."
+
+msgid "New conversation"
+msgstr "Nouvelle conversation"
+
+msgid "Data used"
+msgstr "Données utilisées"
+
+msgid "The assistant is unavailable right now."
+msgstr "L'assistant est indisponible pour le moment."

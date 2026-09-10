@@ -81,6 +81,11 @@ jobs:
       - name: Apply migrations
         run: python manage.py migrate --noinput
 
+      # The assistant's scoping rules (what a partner vs. a moderator can see)
+      # are enforced in code and covered by unit tests with a fake model client.
+      - name: Assistant unit tests
+        run: python manage.py test assistant --noinput
+
       - name: Seed the demo dataset
         run: python manage.py seed_togo_demo --reset
 

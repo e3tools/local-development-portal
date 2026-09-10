@@ -1,0 +1,125 @@
+{% extends 'layouts/base.html' %}
+{% load i18n static %}
+
+{% block extracss %}
+<style>
+    .assistant-shell { max-width: 960px; margin: 0 auto; }
+    .assistant-intro { background: var(--brand-primary-soft); border: 1px solid var(--brand-primary-border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+    .assistant-intro h5 { color: var(--brand-primary-darker); margin-bottom: .35rem; }
+    .assistant-intro p { margin: 0; color: var(--brand-text); }
+    .assistant-log { display: flex; flex-direction: column; gap: .9rem; padding: .25rem 0 1rem; min-height: 200px; }
+    .assistant-msg { display: flex; gap: .75rem; align-items: flex-start; }
+    .assistant-msg--user { flex-direction: row-reverse; }
+    .assistant-msg__avatar { flex: 0 0 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--brand-primary); color: #fff; font-size: .95rem; }
+    .assistant-msg--user .assistant-msg__avatar { background: var(--brand-secondary); }
+    .assistant-msg__bubble { max-width: 78%; background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: .7rem 1rem; box-shadow: 0 1px 2px rgba(17,24,39,.04); }
+    .assistant-msg--user .assistant-msg__bubble { background: var(--brand-primary-soft); border-color: var(--brand-primary-border); }
+    .assistant-msg__bubble--error { border-color: var(--color-danger); background: #fff5f5; }
+    .assistant-msg__body p:last-child { margin-bottom: 0; }
+    .assistant-msg__body table { width: 100%; border-collapse: collapse; margin: .5rem 0; font-size: .92rem; }
+    .assistant-msg__body th, .assistant-msg__body td { border: 1px solid #e5e7eb; padding: .3rem .5rem; text-align: left; }
+    .assistant-msg__body th { background: var(--brand-primary-soft); color: var(--brand-primary-darker); }
+    .assistant-msg__body a { color: var(--brand-primary-darker); text-decoration: underline; }
+    .assistant-msg__trace { margin-top: .5rem; font-size: .82rem; color: var(--brand-muted); }
+    .assistant-msg__trace summary { cursor: pointer; }
+    .assistant-msg__trace ul { margin: .35rem 0 0; padding-left: 1.1rem; }
+    .assistant-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+    .assistant-chip { border: 1px solid var(--brand-primary-border); background: #fff; color: var(--brand-primary-darker); border-radius: 999px; padding: .3rem .8rem; font-size: .85rem; cursor: pointer; }
+    .assistant-chip:hover { background: var(--brand-primary-soft); }
+    .assistant-form { position: sticky; bottom: 0; background: #fff; border-top: 1px solid #e5e7eb; padding: .75rem 0 .25rem; }
+    .assistant-form textarea { resize: vertical; min-height: 64px; }
+    .assistant-form .htmx-indicator { display: none; }
+    .assistant-form.htmx-request .htmx-indicator { display: inline-block; }
+    .assistant-form.htmx-request .assistant-send-label { display: none; }
+    .assistant-foot { font-size: .78rem; color: var(--brand-muted); margin-top: .35rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="assistant-shell">
+    <div class="assistant-intro">
+        <h5><i class="fas fa-robot mr-1"></i> {% translate "Ask the portal" %}</h5>
+        <p>
+            {% translate "Ask a question in French or English about villages, priorities, sub-projects, the planning cycle, programmes and packages. The assistant only reads the data you are allowed to see and can change nothing." %}
+        </p>
+    </div>
+
+    {% if not assistant_enabled %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle mr-1"></i>
+            {% translate "The assistant is not configured on this deployment (missing OPENAI_API_KEY)." %}
+        </div>
+    {% endif %}
+
+    {% if not chat_messages %}
+        <div class="assistant-chips" id="assistant-chips">
+            {% for question in suggestions %}
+                <button type="button" class="assistant-chip" data-question="{{ question }}">{{ question }}</button>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="assistant-log" id="assistant-log" aria-live="polite">
+        {% for message in chat_messages %}
+            {% include "assistant/_message.html" with message=message %}
+        {% endfor %}
+    </div>
+
+    <form id="assistant-form" class="assistant-form"
+          method="post" action="{% url 'assistant:send' %}"
+          hx-post="{% url 'assistant:send' %}" hx-target="#assistant-log" hx-swap="beforeend"
+          hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-disabled-elt="#assistant-send, #assistant-question">
+        {% csrf_token %}
+        <div class="input-group">
+            <textarea class="form-control" id="assistant-question" name="question" rows="2" maxlength="2000" required
+                      placeholder="{% translate 'Your question…' %}" {% if not assistant_enabled %}disabled{% endif %}></textarea>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit" id="assistant-send" {% if not assistant_enabled %}disabled{% endif %}>
+                    <span class="assistant-send-label"><i class="fas fa-paper-plane mr-1"></i>{% translate "Send" %}</span>
+                    <span class="htmx-indicator"><i class="fas fa-circle-notch fa-spin"></i></span>
+                </button>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="assistant-foot">
+                {% translate "Read-only. Answers are computed from portal data and are not an official UCP statement." %}
+                {% if assistant_enabled %}· {{ assistant_model }}{% endif %}
+            </div>
+            {% if conversation %}
+                <button class="btn btn-link btn-sm" type="submit" form="assistant-new">
+                    <i class="fas fa-plus mr-1"></i>{% translate "New conversation" %}
+                </button>
+            {% endif %}
+        </div>
+    </form>
+    <form id="assistant-new" method="post" action="{% url 'assistant:new' %}" class="d-none">{% csrf_token %}</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script>
+    (function () {
+        var form = document.getElementById('assistant-form');
+        var box = document.getElementById('assistant-question');
+        var log = document.getElementById('assistant-log');
+        var chips = document.getElementById('assistant-chips');
+        function scrollDown() { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+        document.querySelectorAll('.assistant-chip').forEach(function (chip) {
+            chip.addEventListener('click', function () {
+                box.value = chip.dataset.question;
+                box.focus();
+                if (window.htmx) { htmx.trigger(form, 'submit'); }
+            });
+        });
+        box.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (window.htmx) { htmx.trigger(form, 'submit'); } }
+        });
+        form.addEventListener('htmx:afterRequest', function (e) {
+            if (e.detail.successful) { box.value = ''; if (chips) { chips.remove(); chips = null; } }
+        });
+        log.addEventListener('htmx:afterSwap', scrollDown);
+        scrollDown();
+    })();
+</script>
+{% endblock %}

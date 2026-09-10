@@ -85,3 +85,7 @@ whitenoise==6.6.0
 # djangorestframework-simplejwt 4.8.0 imports at module level. Pinned below
 # 81 because that release drops pkg_resources altogether.
 setuptools<81
+
+# Portal assistant (assistant/): OpenAI Chat Completions with function calling.
+# Pinned to the newest line that ships Linux/3.12 wheels for the Vercel bundle.
+openai==2.54.0
