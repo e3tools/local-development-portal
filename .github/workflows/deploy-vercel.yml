@@ -144,6 +144,16 @@ jobs:
         with:
           node-version: 22
 
+      # `vercel build` runs the Python builder locally on the runner, and that
+      # builder resolves and installs requirements.txt with uv — it aborts
+      # with "uv is required but was not found in PATH" otherwise. Python
+      # 3.12 matches .python-version.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: astral-sh/setup-uv@v6
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
