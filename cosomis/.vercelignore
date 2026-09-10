@@ -1,38 +1,21 @@
-# Anything listed here is kept out of the function bundle, which has a hard
-# 500 MB limit. Without these the local virtualenv, the build cache and the
-# SQLite snapshots alone come to well over 1 GB.
-
-# Local virtualenvs, build caches and compiled bytecode.
+# Keep this list identical to `functions.api/index.py.excludeFiles` in
+# vercel.json. `vercel build` traces the function's files from everything
+# *excludeFiles* leaves in, while `vercel deploy` uploads only what this file
+# leaves in — anything listed here but not there is referenced by the build
+# yet never uploaded, and the deployment fails with ENOENT.
+#
+# Everything here is either a local artefact (virtualenv, caches, SQLite
+# snapshots of 300 MB+ each) or unrelated tooling; the function bundle also
+# has a hard 500 MB limit that these alone would blow through.
 venv/
-.vercel/
 _uv/
 .agents/
-skills-lock.json
-__pycache__/
-*.pyc
-.python-version
-
-# Local SQLite snapshots (300 MB+ each) and spreadsheet fixtures. The
-# deployment reads Postgres, so none of this belongs in the bundle.
-*.db
-*.xlsx
-
-# Node artefacts (the agentic-LDP branch keeps a Next.js app at this path).
+.vercel/
+.claude/
+.git/
 node_modules/
 .next/
-
-# Tooling, local-only setups and documentation.
-.claude/
-.idea/
-.github/
-.elasticbeanstalk/
-.ebextensions/
-Dockerfile.dev
-docker-compose.yml
-.dockerignore
 media/
-*.md
-
-# Sync/import scripts that talk to CouchDB, Kobo and the MIS — unused by the
-# demo, which is seeded from `seed_togo_demo`.
-administrativelevels/management/commands/[0-9]*.py
+__pycache__/
+*.db
+*.xlsx
