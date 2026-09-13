@@ -27,6 +27,7 @@ from datetime import date, timedelta
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.models import Q
 from django.test.utils import override_settings
 
 from administrativelevels.models import (
@@ -362,7 +363,12 @@ class Command(BaseCommand):
         Project.objects.all().delete()
         Sector.objects.all().delete()
         Category.objects.all().delete()
-        User.objects.filter(is_superuser=False).delete()
+        # Every seeded account goes, the superuser included — otherwise the
+        # second run collides on the unique username. Accounts created by hand
+        # (other domains, superuser) survive a reset.
+        User.objects.filter(
+            Q(is_superuser=False) | Q(email__iendswith="@coso-demo.tg")
+        ).delete()
         Organization.objects.all().delete()
 
     # -- sectors ----------------------------------------------------------
