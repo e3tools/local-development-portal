@@ -65,7 +65,8 @@ class ScopingTests(SeededTestCase):
     def test_partner_sees_only_own_packages(self):
         result = tools.list_packages(self.partner)
         own = Package.objects.filter(user=self.partner).count()
-        self.assertEqual(result["count"], own)
+        self.assertEqual(result["packages_count"], own)
+        self.assertEqual(result["returned"], own)
         self.assertGreater(own, 0)
         self.assertTrue(Package.objects.exclude(user=self.partner).exists())
         for pkg in result["packages"]:
@@ -73,7 +74,7 @@ class ScopingTests(SeededTestCase):
 
     def test_moderator_sees_all_packages(self):
         result = tools.list_packages(self.moderator)
-        self.assertEqual(result["count"], Package.objects.count())
+        self.assertEqual(result["packages_count"], Package.objects.count())
         self.assertEqual(result["scope"], "all packages")
 
     def test_partner_programmes_scoped_to_organisation(self):

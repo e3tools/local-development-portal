@@ -678,7 +678,9 @@ class Command(BaseCommand):
             chosen = self.rng.sample(sector_names, self.priorities_per_village)
             for rank, sector_name in enumerate(chosen, start=1):
                 sector, _image, (low, high), titles = sectors[sector_name]
-                cost = self.rng.randrange(low, high, 500)
+                # SECTORS gives the range in thousands of FCFA; the model stores
+                # FCFA, so a borehole lands around 10 500 000 rather than 10 500.
+                cost = self.rng.randrange(low, high, 500) * 1000
                 beneficiaries = int(village.total_population
                                     * self.rng.uniform(0.35, 1.0))
 

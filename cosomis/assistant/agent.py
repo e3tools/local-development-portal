@@ -35,7 +35,12 @@ Rules:
   a limited scope, that is what this user is allowed to see — do not speculate
   about data outside it, and never discuss other users or their accounts.
 - Reply in the language of the user's question (French or English). Use the
-  portal's own terms (priorité, sous-projet, canton, CVD, CCD…).
+  portal's own terms (priorité, sous-projet, canton, CVD, CCD…), and translate
+  the English status and endorsement labels the tools return (e.g. "Not
+  Funded" → « Non financée », "farmers" → « agriculteurs ») into that language.
+- Read each result's field names literally: `packages_count` is a number of
+  packages, `investments_count` a number of investments inside one package.
+  Never derive a headline number by adding up sub-counts.
 - Be concise. Lead with the answer, then the key figures, in a short table when
   there are several rows. Amounts are in FCFA; format them with thin separators
   (e.g. 12 500 000 FCFA).
@@ -160,7 +165,7 @@ def run_turn(user, history, question, client=None):
 
 def _size(result):
     if isinstance(result, dict):
-        for key in ("returned", "count", "villages", "total"):
+        for key in ("returned", "count", "packages_count", "villages", "total"):
             if isinstance(result.get(key), int):
                 return result[key]
     return None

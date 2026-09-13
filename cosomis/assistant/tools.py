@@ -480,7 +480,7 @@ def list_packages(user, status=None, limit=None):
             "source": pkg.source,
             "reviewed": pkg.review_by is not None,
             "rejection_reason": pkg.rejection_reason,
-            "items": pkg.n_items,
+            "investments_count": pkg.n_items,
             "estimated_cost_fcfa": pkg.estimated_final_cost() or 0,
             "updated": pkg.updated_date.date().isoformat() if pkg.updated_date else None,
             "investments": [{
@@ -489,10 +489,14 @@ def list_packages(user, status=None, limit=None):
                 "url": _level_url(i.administrative_level),
             } for i in items],
         })
+    # Named so the model cannot read the number of investments inside the
+    # packages as the number of packages (it did, once).
     return {
-        "count": qs.count(),
+        "packages_count": qs.count(),
+        "returned": len(rows),
+        "investments_in_returned_packages": sum(r["investments_count"] for r in rows),
         "scope": ("all packages" if scope.is_staff_role(user) else "your own packages"),
-        "by_status": {
+        "packages_by_status": {
             PACKAGE_STATUS_LABELS.get(r["status"], r["status"]): r["n"]
             for r in qs.values("status").annotate(n=Count("id"))
         },
