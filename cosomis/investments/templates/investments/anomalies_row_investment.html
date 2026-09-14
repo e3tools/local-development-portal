@@ -1,5 +1,5 @@
 {% load i18n humanize %}
-{# One <tr> for an Investment anomaly row. Needs: inv, tab_key, current_path (side is optional, for A/B pairs). #}
+{% comment %} {# One <tr> for an Investment anomaly row. Needs: inv, tab_key, current_path (side is optional, for A/B pairs). #} {% endcomment %}
 <tr>
     <td>{{ inv.title }}</td>
     <td>{{ inv.sector|default:"—" }}</td>

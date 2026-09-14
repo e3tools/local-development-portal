@@ -35,6 +35,17 @@ class Command(BaseCommand):
                     update_or_create_adm_document(self.nsc, document)
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))
 
+
+def _get_0_population_greater_than_total_population_and_million(population, total_population):
+    if (
+        population is None or 
+        (total_population is not None and population > total_population) or 
+        population > 1000000
+    ):
+        return 0
+    
+    return population
+
 def update_or_create_adm_document(client, population_document):
 
     # Access the 'purs_test' database
@@ -59,17 +70,20 @@ def update_or_create_adm_document(client, population_document):
 
     # If the document exists, update it
     adm_object.total_population = extracted_population_data['total_population']
-    adm_object.population_men = extracted_population_data['population_men']
-    adm_object.population_women = extracted_population_data['population_women']
-    adm_object.population_young = extracted_population_data['population_young']
-    adm_object.population_elder = extracted_population_data['population_elder']
-    adm_object.population_handicap = extracted_population_data['population_handicap']
-    adm_object.population_agriculture = extracted_population_data['population_agriculture']
-    adm_object.population_breeders = extracted_population_data['population_breeders']
-    adm_object.population_minorities = extracted_population_data['population_minorities']
-    adm_object.total_house_holds = extracted_population_data['total_house_holds']
+    adm_object.total_population = adm_object.total_population if adm_object.total_population and adm_object.total_population < 3000000 else 0
+
+    adm_object.population_men = _get_0_population_greater_than_total_population_and_million(extracted_population_data['population_men'], adm_object.total_population)
+    adm_object.population_women = _get_0_population_greater_than_total_population_and_million(extracted_population_data['population_women'], adm_object.total_population)
+    adm_object.population_young = _get_0_population_greater_than_total_population_and_million(extracted_population_data['population_young'], adm_object.total_population)
+    adm_object.population_elder = _get_0_population_greater_than_total_population_and_million(extracted_population_data['population_elder'], adm_object.total_population)
+    adm_object.population_handicap = _get_0_population_greater_than_total_population_and_million(extracted_population_data['population_handicap'], adm_object.total_population)
+    adm_object.population_agriculture = _get_0_population_greater_than_total_population_and_million(extracted_population_data['population_agriculture'], adm_object.total_population)
+    adm_object.population_breeders = _get_0_population_greater_than_total_population_and_million(extracted_population_data['population_breeders'], adm_object.total_population)
+    adm_object.population_minorities = _get_0_population_greater_than_total_population_and_million(extracted_population_data['population_minorities'], adm_object.total_population)
+    adm_object.total_house_holds = _get_0_population_greater_than_total_population_and_million(extracted_population_data['total_house_holds'], adm_object.total_population)
     adm_object.minorities = extracted_population_data['minorities']
     adm_object.ethnic_groups = extracted_population_data['ethnic_groups']
+
     adm_object.save()
 
 

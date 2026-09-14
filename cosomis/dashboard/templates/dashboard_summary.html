@@ -117,7 +117,7 @@
                                         </select>
                                     </div>
                                     {% if single_region %}
-                                        {# Single-root dataset: keep the select in the DOM for the JS cascade but hide the row visually. #}
+                                        {% comment %} {# Single-root dataset: keep the select in the DOM for the JS cascade but hide the row visually. #} {% endcomment %}
                                         <div class="form-group" style="display: none;">
                                             <select class="form-control" name="region-filter"
                                                 empty-option="{{ adm_labels.region }}" style="width: 100%;" id="region-select-id">

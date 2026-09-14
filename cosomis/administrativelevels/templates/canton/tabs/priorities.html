@@ -247,7 +247,7 @@
 
 	<div class="tab-content" id="priorityTabsContent">
 
-		{# ---- Investment Types ---- #}
+		{% comment %} {# ---- Investment Types ---- #} {% endcomment %}
 		<div class="tab-pane fade {% if active_tab != 'villages' %}show active{% endif %}"
 			 id="priorities-investments-type-tab" role="tabpanel"
 			 aria-labelledby="button-priorities-investments-type-tab">
@@ -368,7 +368,7 @@
 			{% endif %}
 		</div>
 
-		{# ---- Individual Villages ---- #}
+		{% comment %} {# ---- Individual Villages ---- #} {% endcomment %}
 		<div class="tab-pane fade {% if active_tab == 'villages' %}show active{% endif %}" id="priorities-villages-tab"
 			 role="tabpanel" aria-labelledby="button-priorities-villages-tab">
 

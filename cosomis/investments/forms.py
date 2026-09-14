@@ -5,6 +5,7 @@ from administrativelevels.models import Project
 from usermanager.models import User
 from usermanager.utils import confirm_email_notification
 from .models import Package, Investment, PackageFundedInvestment, GroupInvestment
+from .ajax_views import get_selectable_investments_queryset
 
 
 class InvestmentsForm(forms.Form):
@@ -18,6 +19,8 @@ class InvestmentsForm(forms.Form):
             raise 'Need context.'
         if 'user' not in self.context:
             raise 'Need user.'
+        if 'request' not in self.context:
+            raise 'Need request.'
         super().__init__(*args, **kwargs)
         self.fields['project'].queryset = Project.objects.filter(organization=context["user"].organization)
         self.package = Package.objects.get_active_cart(
@@ -33,7 +36,11 @@ class InvestmentsForm(forms.Form):
         return self.cleaned_data['all_queryset'] == 'true'
 
     def clean(self):
-        qs = Investment.objects.filter(project_status=Investment.NOT_FUNDED)
+        # Doit rester la MEME base + les MEMES filtres GET (region/prefecture/
+        # category/...) que ceux utilisés pour peupler le datatable, sinon
+        # "tout sélectionner" (all_queryset=True) ajoute au panier des
+        # investissements qui n'ont jamais été affichés/filtrés à l'écran.
+        qs = get_selectable_investments_queryset(self.context['request'].GET)
         inv_ids = self.cleaned_data['investments'] if 'investments' in self.cleaned_data else []
         all_queryset = self.cleaned_data['all_queryset']
         self.cleaned_data['investments'] = qs.exclude(id__in=inv_ids) if all_queryset else qs.filter(id__in=inv_ids)

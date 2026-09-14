@@ -481,7 +481,7 @@
 {% endblock %}
 
 {% block modals %}
-{# Modal affichant la raison de rejet au clic sur le badge "Rejeté" #}
+{% comment %} {# Modal affichant la raison de rejet au clic sur le badge "Rejeté" #} {% endcomment %}
 <div class="modal fade" id="rejectionReasonModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -503,7 +503,7 @@
     </div>
 </div>
 
-{# Modal de rejet global du paquet #}
+{% comment %} {# Modal de rejet global du paquet #} {% endcomment %}
 <div aria-hidden="true" aria-labelledby="rejectModalLabel" class="modal fade" id="rejectModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -529,7 +529,7 @@
     </div>
 </div>
 
-{# Modal de rejet individuel d'un élément du paquet #}
+{% comment %} {# Modal de rejet individuel d'un élément du paquet #} {% endcomment %}
 <div aria-hidden="true" aria-labelledby="rejectItemModalLabel" class="modal fade" id="rejectItemModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">

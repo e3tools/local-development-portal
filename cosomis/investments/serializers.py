@@ -170,3 +170,74 @@ class InvestmentSerializer(serializers.ModelSerializer):
                 pill, priority_sources,
             )
         return pill
+
+
+class PriorityInvestmentSerializer(InvestmentSerializer):
+    """Colonnes de l'onglet "Priorités" (région/préfecture) : mêmes informations
+    que l'ancien tableau unique de `shared/priorities_table.html`, rendues pour
+    un DataTable server-side (pagination) au lieu d'un unique <table> HTML
+    contenant tous les investissements du sous-arbre."""
+
+    funded_by = serializers.SerializerMethodField()
+    climate_contribution = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Investment
+        fields = [
+            'id', 'ranking', 'title', 'population_priority', 'estimated_cost',
+            'funded_by', 'climate_contribution', 'actions',
+        ]
+
+    def get_ranking(self, obj):
+        # Réutilise le badge rond (inv-rank-badge) de /investments/ tel quel,
+        # et ajoute juste le nom court du composant à côté.
+        badge = super().get_ranking(obj)
+        short_name = obj.component.get_short_name if obj.component_id else None
+        if short_name:
+            return format_html('{} <span class="inv-muted">[{}]</span>', badge, short_name)
+        return badge
+
+    def get_title(self, obj):
+        title = super().get_title(obj)
+        if obj.group_investment_id:
+            return format_html(
+                '<span class="inv-muted">{}</span> | {}', obj.group_investment.title, title
+            )
+        return title
+
+    def get_funded_by(self, obj):
+        if obj.funded_by_id:
+            return format_html('{}', obj.funded_by.name)
+        rejection = obj.get_last_rejection()
+        if not rejection:
+            return _('Not Funded')
+        organization = rejection['organization'] or _('Unknown organization')
+        reason = rejection['reason'] or _('No reason provided')
+        return format_html(
+            '{} - <span class="badge badge-danger show-rejection-reason" style="cursor:pointer;" data-reason="{}">'
+            '{} ({}) <i class="fas fa-info-circle"></i></span>',
+            _('Not Funded'), reason, _('previously rejected'), organization,
+        )
+
+    def get_climate_contribution(self, obj):
+        if obj.climate_contribution:
+            return obj.climate_contribution_text or ''
+        return ''
+
+    def get_actions(self, obj):
+        cart_items_id = self.context.get('cart_items_id') or set()
+        in_cart = obj.id in cart_items_id
+        # `in_cart` doit primer sur project_status : ajouter un investissement
+        # au panier le fait passer à FUNDED (signal m2m_changed), donc se fier
+        # uniquement à project_status masquerait le bouton "Retirer du panier"
+        # pour ce que l'utilisateur vient lui-même d'ajouter.
+        if not in_cart and obj.project_status != Investment.NOT_FUNDED:
+            return format_html('<span class="inv-muted">{}</span>', _('Is funded'))
+        label = _('Remove from cart') if in_cart else _('Add to cart')
+        css_class = 'btn-outline-danger' if in_cart else 'btn-outline-primary'
+        return format_html(
+            '<button type="button" class="btn btn-xs {} priority-cart-toggle" '
+            'data-investment-id="{}" data-in-cart="{}">{}</button>',
+            css_class, obj.id, 'true' if in_cart else 'false', label,
+        )

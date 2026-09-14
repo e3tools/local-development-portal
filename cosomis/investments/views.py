@@ -115,7 +115,7 @@ class IndexListView(
         kwargs = {
             "initial": self.get_initial(),
             "prefix": self.get_prefix(),
-            "context": {"user": self.request.user},
+            "context": {"user": self.request.user, "request": self.request},
         }
 
         if self.request.method in ("POST", "PUT"):

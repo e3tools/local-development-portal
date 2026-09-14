@@ -31,7 +31,7 @@
 		  onsubmit="return false;">
 		<div class="row align-items-end">
 
-			{# 1. Sector (Category) #}
+			{% comment %} {# 1. Sector (Category) #} {% endcomment %}
 			<div class="col-6 col-md-2">
 				<div class="form-group mb-2">
 					<label class="small font-weight-bold mb-1" for="category-select-id">
@@ -50,7 +50,7 @@
 				</div>
 			</div>
 
-			{# 2. Type (Sector) #}
+			{% comment %} {# 2. Type (Sector) #} {% endcomment %}
 			<div class="col-6 col-md-2">
 				<div class="form-group mb-2">
 					<label class="small font-weight-bold mb-1" for="sector-select-id">
@@ -72,7 +72,7 @@
 				</div>
 			</div>
 
-			{# 3. Endorsed by #}
+			{% comment %} {# 3. Endorsed by #} {% endcomment %}
 			<div class="col-6 col-md-2">
 				<div class="form-group mb-2">
 					<label class="small font-weight-bold mb-1" for="endorse-by-select-id">
@@ -91,7 +91,7 @@
 				</div>
 			</div>
 
-			{# 4. Climate Contribution #}
+			{% comment %} {# 4. Climate Contribution #} {% endcomment %}
 			<div class="col-6 col-md-2">
 				<div class="form-group mb-2">
 					<label class="small font-weight-bold mb-1" for="climate-contribution-select-id">
@@ -115,7 +115,7 @@
 				</div>
 			</div>
 
-			{# 5. Funding Status #}
+			{% comment %} {# 5. Funding Status #} {% endcomment %}
 			<div class="col-6 col-md-2">
 				<div class="form-group mb-2">
 					<label class="small font-weight-bold mb-1" for="funding-status-select-id">
@@ -137,7 +137,7 @@
 				</div>
 			</div>
 
-			{# Apply / Reset #}
+			{% comment %} {# Apply / Reset #} {% endcomment %}
 			<div class="col-6 col-md-2 mb-2">
 				<div class="d-flex flex-wrap" style="gap: 4px;">
 					<button type="button" id="priorities-apply-btn" class="btn btn-primary btn-sm">
@@ -154,7 +154,7 @@
 
 	<div class="tab-content" id="priorityTabsContent">
 
-		{# Tab: Investment Types #}
+		{% comment %} {# Tab: Investment Types #} {% endcomment %}
 		<div class="tab-pane fade {% if active_tab != 'villages' %}show active{% endif %}"
 			 id="priorities-investments-type-tab" role="tabpanel" aria-labelledby="priorities-investments-type-tab">
 			{% if investments.count == 0 %}
@@ -252,7 +252,7 @@
 			{% endif %}
 		</div>
 
-		{# Tab: Individual Villages #}
+		{% comment %} {# Tab: Individual Villages #} {% endcomment %}
 		<div class="tab-pane fade {% if active_tab == 'villages' %}show active{% endif %}" id="priorities-villages-tab"
 			 role="tabpanel" aria-labelledby="priorities-villages-tab">
 			{% if investments.count == 0 %}
@@ -349,7 +349,8 @@
 			{% endif %}
 		</div>
 
-	</div>{# /tab-content #}
+	</div>
+	{% comment %} {# /tab-content #} {% endcomment %}
 
 {% endwith %}
 

@@ -8,10 +8,14 @@ from .views import (
     InvestorPackageReviewView,
 )
 from .views_anomalies import AnomaliesReportView, AnomalyObjectDeleteView, AnomalyObjectEditView
-from .ajax_views import FillAdmLevelsSelectFilters, FillSectorsSelectFilters, InvestmentModelViewSet
+from .ajax_views import (
+    FillAdmLevelsSelectFilters, FillSectorsSelectFilters, InvestmentModelViewSet,
+    SubtreeInvestmentsViewSet,
+)
 
 router = routers.DefaultRouter()
 router.register(r'datatable', InvestmentModelViewSet)
+router.register(r'priorities-datatable', SubtreeInvestmentsViewSet, basename='priorities-datatable')
 
 app_name = 'investments'
 urlpatterns = [

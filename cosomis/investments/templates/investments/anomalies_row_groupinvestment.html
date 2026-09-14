@@ -1,5 +1,5 @@
 {% load i18n %}
-{# One <tr> for a GroupInvestment anomaly row. Needs: gi, tab_key, current_path (side is optional, for A/B pairs). #}
+{% comment %} {# One <tr> for a GroupInvestment anomaly row. Needs: gi, tab_key, current_path (side is optional, for A/B pairs). #} {% endcomment %}
 <tr>
     <td>{{ gi.title }}</td>
     <td>{{ gi.administrative_level|default:"—" }}</td>

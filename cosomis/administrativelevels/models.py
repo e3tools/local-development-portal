@@ -218,7 +218,36 @@ class AdministrativeLevel(BaseModel):
         for child in children:
             all_descendants += child.get_all_descendants()
         return all_descendants
-    
+
+    def get_descendant_ids(self, include_self=True):
+        """All descendant ids, walked one tree level (one query) at a time
+        instead of one query per node like get_all_descendants()."""
+        level_ids = [self.id] if include_self else []
+        frontier = [self.id]
+        while frontier:
+            next_ids = list(
+                AdministrativeLevel.objects.filter(parent_id__in=frontier)
+                .values_list('id', flat=True)
+            )
+            if not next_ids:
+                break
+            level_ids.extend(next_ids)
+            frontier = next_ids
+        return level_ids
+
+    def get_descendant_village_ids(self):
+        """Ids of every Village-type node under this one (self included if it
+        is itself a village)."""
+        if self.is_village():
+            return [self.id]
+        return list(
+            AdministrativeLevel.objects.filter(
+                id__in=self.get_descendant_ids(include_self=False)
+            ).filter(
+                AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
+            ).values_list('id', flat=True)
+        )
+
     def get_list_geographical_unit(self):
         """Method to get the list of the all Geographical Unit that the administrative is linked"""
         return self.geographicalunit_set.get_queryset()

@@ -1,15 +1,16 @@
 {% load i18n %}
-{# ============================================================ #}
+{% comment %} {# ============================================================ #}
 {# canton/tabs/map_tab.html                                     #}
 {# Map tab – Canton Profile                                     #}
 {# Requires context:                                            #}
 {#   mapbox_access_token  (str)                                 #}
 {#   villages_map_data    (dict – from CantonMapService)        #}
-{# ============================================================ #}{% load static i18n %}
+{# ============================================================ #} {% endcomment %}
+{% load static i18n %}
 
 <div class="row mt-3" id="canton-map-container">
 
-	{# ---- Left column: Map + layer controls + legend ---- #}
+	{% comment %} {# ---- Left column: Map + layer controls + legend ---- #} {% endcomment %}
 	<div class="col-lg-8 col-12">
 		<div class="card shadow-sm">
 			<div class="card-header d-flex align-items-center justify-content-between py-2">
@@ -17,7 +18,7 @@
                     <i class="fas fa-map-marked-alt mr-1 text-primary"></i>
                     {% translate "Geographic Distribution" %}
                 </span>
-				{# Layer toggle buttons #}
+				{% comment %} {# Layer toggle buttons #} {% endcomment %}
 				<div class="btn-group btn-group-sm" role="group" aria-label="{% translate 'Map layers' %}">
 					<button type="button" class="map-layer-btn btn btn-primary" data-layer="priorities"
 							title="{% translate 'Show priority locations' %}">
@@ -35,10 +36,10 @@
 			</div>
 
 			<div class="card-body p-0 position-relative">
-				{# The Mapbox container #}
+				{% comment %} {# The Mapbox container #} {% endcomment %}
 				<div id="canton-map" style="height: 450px; width: 100%;"></div>
 
-				{# Legend overlay – bottom-left of map #}
+				{% comment %} {# Legend overlay – bottom-left of map #} {% endcomment %}
 				<div id="map-legend" style="position:absolute;bottom:24px;left:10px;z-index:10;
                             background:rgba(255,255,255,.92);border-radius:6px;
                             padding:8px 12px;min-width:140px;box-shadow:0 1px 4px rgba(0,0,0,.15);">
@@ -47,14 +48,14 @@
 						{% translate "Legend" %}
 					</div>
 					<div id="map-legend-content">
-						{# Populated by canton_map.js #}
+						{% comment %} {# Populated by canton_map.js #} {% endcomment %}
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	{# ---- Right column: Subprojects sidebar ---- #}
+	{% comment %} {# ---- Right column: Subprojects sidebar ---- #} {% endcomment %}
 	<div class="col-lg-4 col-12 mt-3 mt-lg-0">
 		<div class="card shadow-sm h-100">
 			<div class="card-header py-2">
@@ -66,7 +67,7 @@
 			</div>
 			<div class="card-body p-2" style="overflow-y:auto; max-height:420px;">
 				<div id="map-subprojects-list">
-					{# Populated by canton_map.js #}
+					{% comment %} {# Populated by canton_map.js #} {% endcomment %}
 					<div class="text-center py-3">
 						<i class="fas fa-circle-notch fa-spin text-secondary"></i>
 					</div>
@@ -77,9 +78,9 @@
 
 </div>
 
-{# ============================================================ #}
+{% comment %} {# ============================================================ #}
 {# Mapbox CSS + JS                                              #}
-{# ============================================================ #}
+{# ============================================================ #} {% endcomment %}
 {% block map_css %}
 
 	<link href="{% static 'plugins/mapbox-gl-js/v3.2.0/mapbox-gl.css' %}" rel="stylesheet">
@@ -107,9 +108,9 @@
 	</style>
 {% endblock %}
 
-{# ============================================================ #}
+{% comment %} {# ============================================================ #}
 {# Data injection (JSON-safe via |safe, already escaped in view) #}
-{# ============================================================ #}
+{# ============================================================ #} {% endcomment %}
 <script>
     window.MAPBOX_TOKEN = "{{ mapbox_access_token }}";
     window.CANTON_MAP_DATA = {{ villages_map_data_json|safe }};

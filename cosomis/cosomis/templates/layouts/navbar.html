@@ -64,7 +64,7 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-{#        <li class="nav-item">#}
+{% comment %} {#        <li class="nav-item">#}
 {#            <a class="nav-link" href="#" role="button">#}
 {#                {% translate 'Resources' %}#}
 {#            </a>#}
@@ -73,7 +73,7 @@
 {#            <a class="nav-link" href="#" role="button">#}
 {#                {% translate 'Help / FAQ' %}#}
 {#            </a>#}
-{#        </li>#}
+{#        </li>#} {% endcomment %}
         {% if user.is_moderator or user.is_superuser %}
         <li class="nav-item">
             <a href="{% url 'investments:notifications' %}" class="nav-link">

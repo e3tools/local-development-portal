@@ -7,13 +7,14 @@ from django.views import View
 
 from rest_framework import generics
 from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
 
 from administrativelevels.models import AdministrativeLevel, Sector, Project, GeoSegment
-from .models import Investment, PackageFundedInvestment, Attachment
-from .serializers import InvestmentSerializer
+from .models import Investment, Package, PackageFundedInvestment, Attachment
+from .serializers import InvestmentSerializer, PriorityInvestmentSerializer
 from cosomis.constants import IMAGE_EXTENSIONS
+from utils.mixpanel.utils import track_user_activity
 
 
 def apply_climate_filters(queryset, get_params):
@@ -90,31 +91,120 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
         })
 
 
+def get_selectable_investments_base_queryset():
+    """Investissements prioritaires non encore financés, hors paquets actifs (en attente ou approuvés).
+    Les investissements rejetés (tous leurs items dans un paquet sont REJECTED) sont réintégrés
+    afin qu'un autre partenaire puisse les sélectionner."""
+    rejected_investment_ids = PackageFundedInvestment.objects.filter(
+        status=PackageFundedInvestment.REJECTED
+    ).values_list("investment_id", flat=True)
+
+    active_investment_ids = PackageFundedInvestment.objects.filter(
+        status__in=[PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED]
+    ).values_list("investment_id", flat=True)
+
+    return Investment.objects.filter(
+        investment_status=Investment.PRIORITY,
+    ).filter(
+        # funded_by nul (jamais soumis) OU tous les items du paquet ont été rejetés
+        Q(funded_by__isnull=True) | Q(id__in=rejected_investment_ids)
+    ).exclude(
+        # Exclure les items actuellement en attente ou approuvés dans un paquet actif
+        id__in=active_investment_ids
+    )
+
+
+def get_selectable_investments_queryset(get_params):
+    """Applique à `get_selectable_investments_base_queryset()` tous les filtres GET
+    utilisés par la page /investments/ (region/prefecture/.../is-funded-filter).
+
+    Cette fonction est LA source unique de vérité pour "quels investissements
+    l'utilisateur voit et peut sélectionner" : elle est utilisée à la fois par
+    le datatable (InvestmentModelViewSet.get_queryset) et par la soumission du
+    panier en mode "tout sélectionner" (InvestmentsForm.clean). Les deux doivent
+    rester synchronisés, sans quoi "Ajouter au panier" en mode select-all peut
+    ajouter des investissements qui ne correspondent pas aux filtres affichés.
+    """
+    queryset = get_selectable_investments_base_queryset()
+
+    if "region-filter" in get_params and get_params["region-filter"] not in ["", None]:
+        queryset = queryset.filter(
+            AdministrativeLevel.type_filter_q(
+                AdministrativeLevel.REGION,
+                field="administrative_level__parent__parent__parent__parent__type",
+            ),
+            administrative_level__parent__parent__parent__parent__id=get_params["region-filter"],
+        )
+    if "prefecture-filter" in get_params and get_params["prefecture-filter"] not in ["", None]:
+        queryset = queryset.filter(
+            AdministrativeLevel.type_filter_q(
+                AdministrativeLevel.PREFECTURE,
+                field="administrative_level__parent__parent__parent__type",
+            ),
+            administrative_level__parent__parent__parent__id=get_params["prefecture-filter"],
+        )
+    if "commune-filter" in get_params and get_params["commune-filter"] not in ["", None]:
+        queryset = queryset.filter(
+            AdministrativeLevel.type_filter_q(
+                AdministrativeLevel.COMMUNE,
+                field="administrative_level__parent__parent__type",
+            ),
+            administrative_level__parent__parent__id=get_params["commune-filter"],
+        )
+    if "canton-filter" in get_params and get_params["canton-filter"] not in ["", None]:
+        queryset = queryset.filter(
+            AdministrativeLevel.type_filter_q(
+                AdministrativeLevel.CANTON,
+                field="administrative_level__parent__type",
+            ),
+            administrative_level__parent__id=get_params["canton-filter"],
+        )
+    if "village-filter" in get_params and get_params["village-filter"] not in ["", None]:
+        queryset = queryset.filter(
+            AdministrativeLevel.type_filter_q(
+                AdministrativeLevel.VILLAGE,
+                field="administrative_level__type",
+            ),
+            administrative_level__id=get_params["village-filter"],
+        )
+
+    if "sector-filter" in get_params and get_params["sector-filter"] not in ["", None]:
+        queryset = queryset.filter(sector__id=get_params["sector-filter"])
+    if "category-filter" in get_params and get_params["category-filter"] not in ["", None]:
+        queryset = queryset.filter(sector__category__id=get_params["category-filter"])
+
+    if "subpopulation-filter" in get_params and get_params["subpopulation-filter"] not in ["", None]:
+        queryset = queryset.filter(**{get_params["subpopulation-filter"]: True})
+
+    if "climate-contribution-filter" in get_params and get_params["climate-contribution-filter"] not in ["", None]:
+        queryset = queryset.filter(climate_contribution=get_params["climate-contribution-filter"])
+
+    if "priorities-filter" in get_params and get_params["priorities-filter"] not in ["", None]:
+        priorities = [1]
+        if get_params["priorities-filter"] == '2':
+            priorities.append(2)
+        elif get_params["priorities-filter"] == '3':
+            priorities.append(2)
+            priorities.append(3)
+        queryset = queryset.filter(ranking__in=priorities)
+
+    if "is-funded-filter" in get_params and get_params["is-funded-filter"] not in ["", None]:
+        if get_params["is-funded-filter"] == 'true':
+            queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
+        else:
+            queryset = queryset.exclude(project_status=Investment.FUNDED)
+
+    queryset = apply_climate_filters(queryset, get_params)
+
+    return queryset
+
+
 class InvestmentModelViewSet(ModelViewSet):
-    # Investissements prioritaires non encore financés, hors paquets actifs (en attente ou approuvés).
-    # Les investissements rejetés (tous leurs items dans un paquet sont REJECTED) sont réintégrés
-    # afin qu'un autre partenaire puisse les sélectionner.
     queryset = Investment.objects.none()  # Requis par DRF ; surchargé par get_queryset()
     serializer_class = InvestmentSerializer
 
     def get_base_queryset(self):
-        rejected_investment_ids = PackageFundedInvestment.objects.filter(
-            status=PackageFundedInvestment.REJECTED
-        ).values_list("investment_id", flat=True)
-
-        active_investment_ids = PackageFundedInvestment.objects.filter(
-            status__in=[PackageFundedInvestment.PENDING_APPROVAL, PackageFundedInvestment.APPROVED]
-        ).values_list("investment_id", flat=True)
-
-        return Investment.objects.filter(
-            investment_status=Investment.PRIORITY,
-        ).filter(
-            # funded_by nul (jamais soumis) OU tous les items du paquet ont été rejetés
-            Q(funded_by__isnull=True) | Q(id__in=rejected_investment_ids)
-        ).exclude(
-            # Exclure les items actuellement en attente ou approuvés dans un paquet actif
-            id__in=active_investment_ids
-        )
+        return get_selectable_investments_base_queryset()
 
     @action(detail=False, methods=['POST'], url_path='results', url_name='results')
     def selected_investments_data(self, request, *args, **kwargs):
@@ -183,116 +273,73 @@ class InvestmentModelViewSet(ModelViewSet):
         return context
 
     def get_queryset(self):
-        queryset = self.get_base_queryset()
+        return get_selectable_investments_queryset(self.request.GET)
 
-        if "region-filter" in self.request.GET and self.request.GET[
-            "region-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.REGION,
-                    field="administrative_level__parent__parent__parent__parent__type",
-                ),
-                administrative_level__parent__parent__parent__parent__id=self.request.GET[
-                    "region-filter"
-                ],
-            )
-        if "prefecture-filter" in self.request.GET and self.request.GET[
-            "prefecture-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.PREFECTURE,
-                    field="administrative_level__parent__parent__parent__type",
-                ),
-                administrative_level__parent__parent__parent__id=self.request.GET[
-                    "prefecture-filter"
-                ],
-            )
-        if "commune-filter" in self.request.GET and self.request.GET[
-            "commune-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.COMMUNE,
-                    field="administrative_level__parent__parent__type",
-                ),
-                administrative_level__parent__parent__id=self.request.GET[
-                    "commune-filter"
-                ],
-            )
-        if "canton-filter" in self.request.GET and self.request.GET[
-            "canton-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.CANTON,
-                    field="administrative_level__parent__type",
-                ),
-                administrative_level__parent__id=self.request.GET["canton-filter"],
-            )
-        if "village-filter" in self.request.GET and self.request.GET[
-            "village-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.VILLAGE,
-                    field="administrative_level__type",
-                ),
-                administrative_level__id=self.request.GET["village-filter"],
-            )
 
-        if "sector-filter" in self.request.GET and self.request.GET[
-            "sector-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
-        if "category-filter" in self.request.GET and self.request.GET[
-            "category-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                sector__category__id=self.request.GET["category-filter"]
+class SubtreeInvestmentsViewSet(ReadOnlyModelViewSet):
+    """Investissements de tout le sous-arbre d'un niveau administratif (région,
+    préfecture, ...) jusqu'aux villages : alimente l'onglet "Priorités" avec
+    une pagination server-side (DataTables), comme /investments/, au lieu du
+    tableau HTML unique et non paginé que rendait `shared/priorities_table.html`.
+    """
+    queryset = Investment.objects.none()  # Requis par DRF ; surchargé par get_queryset()
+    serializer_class = PriorityInvestmentSerializer
+
+    def get_queryset(self):
+        admin_level = AdministrativeLevel.objects.filter(
+            id=self.request.GET.get('adm_id')
+        ).first()
+        if admin_level is None:
+            return Investment.objects.none()
+
+        village_ids = admin_level.get_descendant_village_ids()
+        return Investment.objects.filter(
+            administrative_level_id__in=village_ids
+        ).select_related(
+            'administrative_level', 'funded_by', 'component', 'group_investment'
+        ).annotate(
+            status_order=Case(
+                When(project_status=Investment.NOT_FUNDED, then=0),
+                When(project_status=Investment.PAUSED, then=1),
+                When(project_status=Investment.FUNDED, then=2),
+                When(project_status=Investment.IN_PROGRESS, then=3),
+                When(project_status=Investment.COMPLETED, then=4),
+                output_field=IntegerField(),
             )
+        ).order_by('status_order', 'ranking')
 
-        if "subpopulation-filter" in self.request.GET and self.request.GET[
-            "subpopulation-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                **{self.request.GET["subpopulation-filter"]: True}
-            )
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        package = Package.objects.get_active_cart(user=self.request.user)
+        context['cart_items_id'] = set(
+            package.funded_investments.values_list('id', flat=True)
+        )
+        return context
 
-        if "climate-contribution-filter" in self.request.GET and self.request.GET[
-            "climate-contribution-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                climate_contribution=self.request.GET["climate-contribution-filter"]
-            )
+    @action(detail=False, methods=['POST'], url_path='cart-toggle', url_name='cart_toggle')
+    def cart_toggle(self, request, *args, **kwargs):
+        investment = Investment.objects.filter(id=request.data.get('investment_id')).first()
+        if investment is None:
+            return Response({'error': 'not_found'}, status=404)
 
-        if "priorities-filter" in self.request.GET and self.request.GET[
-            "priorities-filter"
-        ] not in ["", None]:
-            priorities = [1]
-            if self.request.GET["priorities-filter"] == '2':
-                priorities.append(2)
-            elif self.request.GET["priorities-filter"] == '3':
-                priorities.append(2)
-                priorities.append(3)
-            queryset = queryset.filter(
-                ranking__in=priorities
-            )
+        package = Package.objects.get_active_cart(user=request.user)
+        already_in_cart = package.funded_investments.filter(id=investment.id).exists()
+        # Cf. AdministrativeLevelDetailView.post() : le retrait doit toujours
+        # être possible pour un investissement déjà dans CE panier, même si
+        # son project_status est passé à FUNDED entre-temps (signal
+        # m2m_changed dès l'ajout).
+        if already_in_cart:
+            package.funded_investments.remove(investment)
+            track_user_activity(request, 'RemoveInvestmentInPackage')
+            in_cart = False
+        elif investment.project_status == Investment.NOT_FUNDED:
+            package.funded_investments.add(investment)
+            track_user_activity(request, 'AddInvestmentInPackage')
+            in_cart = True
+        else:
+            in_cart = already_in_cart
 
-        if "is-funded-filter" in self.request.GET and self.request.GET[
-            "is-funded-filter"
-        ] not in ["", None]:
-            if self.request.GET["is-funded-filter"] == 'true':
-                queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
-            else:
-                queryset = queryset.exclude(
-                    project_status=Investment.FUNDED
-                )
-
-        queryset = apply_climate_filters(queryset, self.request.GET)
-
-        return queryset
+        return Response({'investment_id': investment.id, 'in_cart': in_cart})
 
 
 class StatisticsView(View):

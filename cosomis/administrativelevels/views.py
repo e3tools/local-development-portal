@@ -267,14 +267,19 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
         self.object = self.get_object()
         if 'cart-toggle' in request.POST:
             investment = Investment.objects.get(id=request.POST['cart-toggle'])
-            if investment.project_status == Investment.NOT_FUNDED:
-                package = Package.objects.get_active_cart(user=self.request.user)
-                if package.funded_investments.filter(id=investment.id).exists():
-                    package.funded_investments.remove(investment)
-                    track_user_activity(request, 'RemoveInvestmentInPackage')
-                else:
-                    package.funded_investments.add(investment)
-                    track_user_activity(request, 'AddInvestmentInPackage')
+            package = Package.objects.get_active_cart(user=self.request.user)
+            already_in_cart = package.funded_investments.filter(id=investment.id).exists()
+            # Le retrait doit toujours être possible pour un investissement déjà
+            # dans CE panier : dès l'ajout, le signal m2m_changed bascule son
+            # project_status sur FUNDED, donc filtrer sur NOT_FUNDED avant de
+            # décider add/remove rendait "Retirer du panier" silencieusement
+            # inopérant au second clic.
+            if already_in_cart:
+                package.funded_investments.remove(investment)
+                track_user_activity(request, 'RemoveInvestmentInPackage')
+            elif investment.project_status == Investment.NOT_FUNDED:
+                package.funded_investments.add(investment)
+                track_user_activity(request, 'AddInvestmentInPackage')
             return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -335,22 +340,11 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
         }
 
         images_number = 5
-        # Walk the subtree iteratively (one query per tree level) so the
-        # carousel on region/prefecture pages can surface images attached to
-        # descendant villages, not just the level itself. is_village() is the
-        # fast path — no descendants to walk.
-        level_ids = [admin_level.id]
-        if not admin_level.is_village():
-            frontier = [admin_level.id]
-            while frontier:
-                next_ids = list(
-                    AdministrativeLevel.objects.filter(parent_id__in=frontier)
-                    .values_list('id', flat=True)
-                )
-                if not next_ids:
-                    break
-                level_ids.extend(next_ids)
-                frontier = next_ids
+        # Walk the subtree (one query per tree level) so the carousel on
+        # region/prefecture pages can surface images attached to descendant
+        # villages, not just the level itself. is_village() is the fast path
+        # — no descendants to walk.
+        level_ids = admin_level.get_descendant_ids()
 
         subtree_q = (
             Q(adm_id__in=level_ids) |
@@ -384,25 +378,24 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
             "first_image": images[0] if len(images) > 0 else None,
         }
 
-        # Always display village priorities in ranking order, regardless of
-        # funding state. NULL rankings sink to the bottom so legacy rows
-        # without a ranking don't jump to the top.
-        context["investments"] = self.__investment_repository.find_by_criteria(
-            InvestmentCriteria(administrative_level=self.object)
-        ).order_by(F('ranking').asc(nulls_last=True), 'id')
+        if admin_level.is_village():
+            # Always display village priorities in ranking order, regardless
+            # of funding state. NULL rankings sink to the bottom so legacy
+            # rows without a ranking don't jump to the top.
+            context["investments"] = self.__investment_repository.find_by_criteria(
+                InvestmentCriteria(administrative_level=self.object)
+            ).order_by(F('ranking').asc(nulls_last=True), 'id')
 
         # Non-village levels (region/prefecture/etc.) have no direct
         # population, planning, or investment rows of their own — every
         # data point lives on descendant villages. Aggregate from the
-        # subtree we already walked above for the carousel.
+        # subtree we already walked above for the carousel. Their "Priorités"
+        # tab is paginated server-side (see SubtreeInvestmentsViewSet) instead
+        # of pulling every investment into the context here.
         if not admin_level.is_village():
+            descendant_village_ids = admin_level.get_descendant_village_ids()
             descendant_villages = AdministrativeLevel.objects.filter(
-                id__in=level_ids
-            ).filter(
-                AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
-            )
-            descendant_village_ids = list(
-                descendant_villages.values_list('id', flat=True)
+                id__in=descendant_village_ids
             )
             village_count = len(descendant_village_ids)
 
@@ -468,18 +461,35 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
                 child.computed_total_population = s["total_population"]
             context["children_list"] = children
 
-            context["investments"] = Investment.objects.filter(
-                administrative_level_id__in=descendant_village_ids
-            ).select_related('administrative_level', 'funded_by').annotate(
-                status_order=Case(
-                    When(project_status=Investment.NOT_FUNDED, then=0),
-                    When(project_status=Investment.PAUSED, then=1),
-                    When(project_status=Investment.FUNDED, then=2),
-                    When(project_status=Investment.IN_PROGRESS, then=3),
-                    When(project_status=Investment.COMPLETED, then=4),
-                    output_field=IntegerField(),
-                )
-            ).order_by('status_order', 'ranking')
+            # Onglet "Priorités" paginé côté serveur (DataTables), comme sur
+            # /investments/ : les lignes ne sont plus toutes poussées dans le
+            # contexte, elles sont chargées page par page via cet endpoint AJAX.
+            priorities_dt_config = get_datatable_config()
+            priorities_dt_config["serverSide"] = "true"
+            priorities_dt_config["processing"] = "true"
+            priorities_dt_config["searching"] = "false"
+            priorities_dt_config["ordering"] = "false"
+            priorities_dt_config["pageLength"] = 10
+            priorities_dt_config["pagingType"] = "full_numbers"
+            priorities_dt_config["lengthMenu"] = [
+                [10, 20, 50, 100, -1],
+                [10, 20, 50, 100, _("Tout afficher")],
+            ]
+            priorities_dt_config["columns"] = [
+                {"data": "ranking", "searchable": "false"},
+                {"data": "title", "searchable": "false"},
+                {"data": "population_priority", "searchable": "false"},
+                {"data": "estimated_cost", "searchable": "false"},
+                {"data": "funded_by", "searchable": "false"},
+                {"data": "climate_contribution", "searchable": "false"},
+                {"data": "actions", "searchable": "false"},
+            ]
+            priorities_dt_config["ajax"] = (
+                self.request.scheme + '://' + self.request.get_host()
+                + reverse('investments:priorities-datatable-list')
+                + '?format=datatables&adm_id=' + str(admin_level.id)
+            )
+            context["priorities_datatable_config"] = priorities_dt_config
 
         context["mapbox_access_token"] = os.environ.get("MAPBOX_ACCESS_TOKEN")
 
@@ -817,14 +827,19 @@ class CommuneDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, 
         self.object = self.get_object()
         if 'cart-toggle' in request.POST:
             investment = Investment.objects.get(id=request.POST['cart-toggle'])
-            if investment.project_status == Investment.NOT_FUNDED:
-                package = Package.objects.get_active_cart(user=self.request.user)
-                if package.funded_investments.filter(id=investment.id).exists():
-                    package.funded_investments.remove(investment)
-                    track_user_activity(request, 'RemoveInvestmentInPackage')
-                else:
-                    package.funded_investments.add(investment)
-                    track_user_activity(request, 'AddInvestmentInPackage')
+            package = Package.objects.get_active_cart(user=self.request.user)
+            already_in_cart = package.funded_investments.filter(id=investment.id).exists()
+            # Le retrait doit toujours être possible pour un investissement déjà
+            # dans CE panier : dès l'ajout, le signal m2m_changed bascule son
+            # project_status sur FUNDED, donc filtrer sur NOT_FUNDED avant de
+            # décider add/remove rendait "Retirer du panier" silencieusement
+            # inopérant au second clic.
+            if already_in_cart:
+                package.funded_investments.remove(investment)
+                track_user_activity(request, 'RemoveInvestmentInPackage')
+            elif investment.project_status == Investment.NOT_FUNDED:
+                package.funded_investments.add(investment)
+                track_user_activity(request, 'AddInvestmentInPackage')
 
             if request.headers.get('x-hx-request'):
                 context = self.get_context_data(**kwargs)
@@ -920,7 +935,15 @@ class CommuneDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, 
             "first_image": images[0] if len(images) > 0 else None,
         }
 
-        # Aggregate population data from descendant villages
+        # Aggregate population data from descendant villages.
+        # NOTE: this MUST stay in its own .aggregate() call, separate from any
+        # Sum() over `investments` (a reverse FK). Combining a plain field sum
+        # with a Sum() across a joined one-to-many relation in a single
+        # .aggregate() call makes Django join AdministrativeLevel to Investment
+        # without a GROUP BY, so every village row is duplicated once per
+        # linked Investment row and its population gets summed that many
+        # times over (a village with 30 investments had its population
+        # counted 30x). Estimated cost is summed in a second, separate query.
         population_aggregation = descendant_villages.aggregate(
             agg_total_population=Coalesce(Sum('total_population'), 0),
             agg_population_men=Coalesce(Sum('population_men'), 0),
@@ -931,6 +954,8 @@ class CommuneDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, 
             agg_population_agriculturist=Coalesce(Sum('population_agriculturist'), 0),
             agg_population_pastoralist=Coalesce(Sum('population_pastoralist'), 0),
             agg_population_minorities=Coalesce(Sum('population_minorities'), 0),
+        )
+        cost_aggregation = descendant_villages.aggregate(
             agg_total_estimated_cost=Coalesce(Sum('investments__estimated_cost'), 0),
         )
         context["population"] = {
@@ -943,7 +968,7 @@ class CommuneDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, 
             "agriculturist": population_aggregation['agg_population_agriculturist'],
             "pastoralist": population_aggregation['agg_population_pastoralist'],
             "minorities": population_aggregation['agg_population_minorities'],
-            "total_estimated_cost": population_aggregation['agg_total_estimated_cost'],
+            "total_estimated_cost": cost_aggregation['agg_total_estimated_cost'],
             "village_count": descendant_villages.count(),
             "canton_count": child_cantons.count(),
         }
@@ -1158,14 +1183,19 @@ class CantonDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, C
         self.object = self.get_object()
         if 'cart-toggle' in request.POST:
             investment = Investment.objects.get(id=request.POST['cart-toggle'])
-            if investment.project_status == Investment.NOT_FUNDED:
-                package = Package.objects.get_active_cart(user=self.request.user)
-                if package.funded_investments.filter(id=investment.id).exists():
-                    package.funded_investments.remove(investment)
-                    track_user_activity(request, 'RemoveInvestmentInPackage')
-                else:
-                    package.funded_investments.add(investment)
-                    track_user_activity(request, 'AddInvestmentInPackage')
+            package = Package.objects.get_active_cart(user=self.request.user)
+            already_in_cart = package.funded_investments.filter(id=investment.id).exists()
+            # Le retrait doit toujours être possible pour un investissement déjà
+            # dans CE panier : dès l'ajout, le signal m2m_changed bascule son
+            # project_status sur FUNDED, donc filtrer sur NOT_FUNDED avant de
+            # décider add/remove rendait "Retirer du panier" silencieusement
+            # inopérant au second clic.
+            if already_in_cart:
+                package.funded_investments.remove(investment)
+                track_user_activity(request, 'RemoveInvestmentInPackage')
+            elif investment.project_status == Investment.NOT_FUNDED:
+                package.funded_investments.add(investment)
+                track_user_activity(request, 'AddInvestmentInPackage')
 
             if request.headers.get('x-hx-request'):
                 context = self.get_context_data(**kwargs)

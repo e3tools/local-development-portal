@@ -1,9 +1,9 @@
 {% load i18n %}
-
+{% comment %}
 {# Template de composants d'alertes réutilisables #}
 
 {# Alerte de Succès #}
-{% comment %}
+
 Usage:
 {% include 'common/alerts.html' with alert_type='success' alert_message='Votre opération a réussi' %}
 {% endcomment %}
@@ -20,7 +20,7 @@ Usage:
 </div>
 {% endif %}
 
-{# Alerte d'Information #}
+{% comment %} {# Alerte d'Information #} {% endcomment %}
 {% if alert_type == 'info' %}
 <div class="alert alert-info alert-dismissible fade show" role="alert">
     <i class="icon fas fa-info-circle"></i>
@@ -33,7 +33,7 @@ Usage:
 </div>
 {% endif %}
 
-{# Alerte d'Avertissement #}
+{% comment %} {# Alerte d'Avertissement #} {% endcomment %}
 {% if alert_type == 'warning' %}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <i class="icon fas fa-exclamation-circle"></i>
@@ -46,7 +46,7 @@ Usage:
 </div>
 {% endif %}
 
-{# Alerte de Danger/Erreur #}
+{% comment %} {# Alerte de Danger/Erreur #} {% endcomment %}
 {% if alert_type == 'danger' %}
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
     <i class="icon fas fa-exclamation-triangle"></i>
@@ -59,7 +59,7 @@ Usage:
 </div>
 {% endif %}
 
-{# Alerte avec liste de détails #}
+{% comment %} {# Alerte avec liste de détails #} {% endcomment %}
 {% if alert_type == 'warning' and alert_details %}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <i class="icon fas fa-exclamation-circle"></i>
@@ -79,7 +79,7 @@ Usage:
 </div>
 {% endif %}
 
-{# Alerte personnalisée avec style avancé #}
+{% comment %} {# Alerte personnalisée avec style avancé #} {% endcomment %}
 {% if alert_type == 'custom' %}
 <div class="alert alert-{{ alert_style|default:'info' }} alert-dismissible fade show" role="alert" style="{{ alert_custom_style }}">
     {% if alert_icon %}

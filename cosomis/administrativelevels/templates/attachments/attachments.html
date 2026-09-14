@@ -437,7 +437,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% if single_region %}
-                                    {# Single-root dataset: hide the redundant top-level select but keep it in the DOM for the JS cascade. #}
+                                    {% comment %} {# Single-root dataset: hide the redundant top-level select but keep it in the DOM for the JS cascade. #} {% endcomment %}
                                     <div class="form-group" style="display: none;">
                                         <select class="form-control" name="region" id="id_region" style="width: 100%;">
                                             <option value="{{ single_region.id }}" selected>{{ single_region.name }}</option>

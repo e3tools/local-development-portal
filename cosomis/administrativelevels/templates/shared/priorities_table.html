@@ -1,153 +1,273 @@
 {% load static i18n humanize custom_tags %}
-{% if investments.count == 0 %}
-    <h5>{% translate 'You have no priorities' %}</h5>
-{% else %}
-    <table class="table datatable table-bordered">
-    <thead>
-    <tr>
-        <th class="align-middle" rowspan="2">{% translate 'Ranking' %} [{% translate 'Component' %}]</th>
-        <th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
-        <th class="align-middle" colspan="4">{%  translate 'Priorities' %}</th>
-        <th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
-        <th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
-        <th class="align-middle" rowspan="2">{% translate 'Climate contribution' %}</th>
-        <th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
-    </tr>
-    <tr>
-        <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
-            title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top"
-        >
-            <span>J</span>
-        </th>
-        <th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
-            title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top"
-        >
-            <span>F</span>
-        </th>
-        <th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
-            title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip" data-placement="top"
-        >
-            <span>ME</span>
-        </th>
-        <th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
-            title="{% translate 'Agriculturist' %}" data-toggle="tooltip" data-placement="top"
-        >
-            <span>AE</span>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for investment in investments %}
+{% if object.is_village %}
+    {% if investments.count == 0 %}
+        <h5>{% translate 'You have no priorities' %}</h5>
+    {% else %}
+        <table class="table datatable table-bordered">
+        <thead>
         <tr>
-            <td>
-                {% if investment.ranking %}
-                    {{ investment.ranking }}
-                {% else %}
-                    -
-                {% endif %}
-                {% if investment.component.get_short_name %} [{{ investment.component.get_short_name }}]{% endif %}
-            </td>
-            {% comment %} {% if investment.title == "Autre" %}
-            <td class="border-sides--light">
-                <a 
-                        href="" data-container="body" data-toggle="popover" 
-                        data-placement="top" data-trigger="hover" 
-                        data-content="{% if investment.description %}{{ investment.description }}{% else %}-{% endif %}">
-                    {{ investment.title }}
-                </a>
-            </td>
-            {% else %}
-            <td class="border-sides--light">{{ investment.title }}</td>
-            {% endif %} {% endcomment %}
-            <td class="border-sides--light">
-                
-                {% if investment.group_investment %}
-                    {{ investment.group_investment.title }} | 
-                {% endif %}
-
-                {% if investment.title == "Autre" and investment.description %}
-                    <a href="#"
-                    class="inv-title-link"
-                    data-container="body"
-                    data-toggle="popover"
-                    data-placement="top"
-                    data-trigger="hover"
-                    data-content="{{ investment.description }}"
-                    >
-                        <span class="inv-title"
-                            title="{{ investment.description }}">
-                            {{ investment.title }}
-                            <span class="inv-title-extra text-muted">[{{ investment.description }}]</span>
-                        </span>
-                    </a>
-                {% else %}
-                    <span class="inv-title"
-                        title="{{ investment.title }}{% if investment.description %} {{ investment.description }}{% endif %}">
-                        {{ investment.title }}
-                    </span>
-                {% endif %}
-            </td>
-            <td class="border-sides--light">
-                {% if investment.endorsed_by_youth %}✓{% endif %}</td>
-            <td class="border-sides--light">
-                {% if investment.endorsed_by_women %}✓{% endif %}</td>
-            <td class="border-sides--light">
-                {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
-            <td class="border-sides--light">
-                {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
-        {% if investment.estimated_cost < 1000000 %}
-            <td class="border-sides--light">{% translate "Not available" %}</td>
-        {% else %}
-            <td class="border-sides--light">
-                {% if investment.estimated_cost %}
-                    {{ investment.estimated_cost|intcomma }}
-                {% else %}
-                    -
-                {% endif %}
-            </td>
-        {% endif %}
-            <td class="border-sides--light">
-                {% if investment.funded_by %}
-                    {{ investment.funded_by.name }}
-                {% else %}
-                    {% with investment.get_last_rejection as rejection %}
-                    {% if rejection %}
-                        {% translate "Not Funded" %} -
-                        <span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
-                              data-reason="{{ rejection.reason|default:_('No reason provided') }}">
-                            {% translate "previously rejected" %} ({{ rejection.organization|default:_('Unknown organization') }})
-                            <i class="fas fa-info-circle"></i>
-                        </span>
-                    {% else %}
-                        {% translate "Not Funded" %}
-                    {% endif %}
-                    {% endwith %}
-                {% endif %}
-            </td>
-            <td class="border-sides--light">
-                {% if investment.climate_contribution %}
-                    {{ investment.climate_contribution_text }}
-                {% else %}
-                    {% comment %} {% translate "No" %} {% endcomment %}
-                {% endif %}
-            </td>
-            <td>
-                {% if investment.project_status == investment.NOT_FUNDED %}
-                <form method="post">
-                    {% csrf_token %}
-                    {% if investment.id not in cart_items_id %}
-                    <input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
-                    {% else %}
-                    <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
-                    {% endif %}
-                    <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
-                </form>
-                {% else %}
-                    {% translate "Is funded" %}
-                {% endif %}
-            </td>
+            <th class="align-middle" rowspan="2">{% translate 'Ranking' %} [{% translate 'Component' %}]</th>
+            <th class="align-middle" rowspan="2">{% translate 'Sub-project priorities' %}</th>
+            <th class="align-middle" colspan="4">{%  translate 'Priorities' %}</th>
+            <th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
+            <th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
+            <th class="align-middle" rowspan="2">{% translate 'Climate contribution' %}</th>
+            <th class="align-middle" rowspan="2">{% translate 'Actions' %}</th>
         </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        <tr>
+            <th class="bg-yellow rounded-0 border-sides-0 white-font pointer-event align-content-center"
+                title="{% translate 'Youth' %}" data-toggle="tooltip" data-placement="top"
+            >
+                <span>J</span>
+            </th>
+            <th class="bg-blue rounded-0 border-sides-0 white-font pointer-event align-content-center"
+                title="{% translate 'Women' %}" data-toggle="tooltip" data-placement="top"
+            >
+                <span>F</span>
+            </th>
+            <th class="bg-orange rounded-0 border-sides-0 white-font pointer-event align-content-center"
+                title="{% translate 'Ethnic minorities' %}" data-toggle="tooltip" data-placement="top"
+            >
+                <span>ME</span>
+            </th>
+            <th class="bg-green rounded-0 border-sides-0 white-font pointer-event align-content-center"
+                title="{% translate 'Agriculturist' %}" data-toggle="tooltip" data-placement="top"
+            >
+                <span>AE</span>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for investment in investments %}
+            <tr>
+                <td>
+                    {% if investment.ranking %}
+                        {{ investment.ranking }}
+                    {% else %}
+                        -
+                    {% endif %}
+                    {% if investment.component.get_short_name %} [{{ investment.component.get_short_name }}]{% endif %}
+                </td>
+                <td class="border-sides--light">
+
+                    {% if investment.group_investment %}
+                        {{ investment.group_investment.title }} |
+                    {% endif %}
+
+                    {% if investment.title == "Autre" and investment.description %}
+                        <a href="#"
+                        class="inv-title-link"
+                        data-container="body"
+                        data-toggle="popover"
+                        data-placement="top"
+                        data-trigger="hover"
+                        data-content="{{ investment.description }}"
+                        >
+                            <span class="inv-title"
+                                title="{{ investment.description }}">
+                                {{ investment.title }}
+                                <span class="inv-title-extra text-muted">[{{ investment.description }}]</span>
+                            </span>
+                        </a>
+                    {% else %}
+                        <span class="inv-title"
+                            title="{{ investment.title }}{% if investment.description %} {{ investment.description }}{% endif %}">
+                            {{ investment.title }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="border-sides--light">
+                    {% if investment.endorsed_by_youth %}✓{% endif %}</td>
+                <td class="border-sides--light">
+                    {% if investment.endorsed_by_women %}✓{% endif %}</td>
+                <td class="border-sides--light">
+                    {% if investment.endorsed_by_pastoralist %}✓{% endif %}</td>
+                <td class="border-sides--light">
+                    {% if investment.endorsed_by_agriculturist %}✓{% endif %}</td>
+            {% if investment.estimated_cost < 1000000 %}
+                <td class="border-sides--light">{% translate "Not available" %}</td>
+            {% else %}
+                <td class="border-sides--light">
+                    {% if investment.estimated_cost %}
+                        {{ investment.estimated_cost|intcomma }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            {% endif %}
+                <td class="border-sides--light">
+                    {% if investment.funded_by %}
+                        {{ investment.funded_by.name }}
+                    {% else %}
+                        {% with investment.get_last_rejection as rejection %}
+                        {% if rejection %}
+                            {% translate "Not Funded" %} -
+                            <span class="badge badge-danger show-rejection-reason" style="cursor:pointer;"
+                                  data-reason="{{ rejection.reason|default:_('No reason provided') }}">
+                                {% translate "previously rejected" %} ({{ rejection.organization|default:_('Unknown organization') }})
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        {% else %}
+                            {% translate "Not Funded" %}
+                        {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                </td>
+                <td class="border-sides--light">
+                    {% if investment.climate_contribution %}
+                        {{ investment.climate_contribution_text }}
+                    {% else %}
+                        {% comment %} {% translate "No" %} {% endcomment %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if investment.project_status == investment.NOT_FUNDED %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if investment.id not in cart_items_id %}
+                        <input type="submit" class="btn btn-xs btn-outline-primary" value="{% translate 'Add to cart' %}">
+                        {% else %}
+                        <input type="submit" class="btn btn-xs btn-outline-danger" value="{% translate 'Remove from cart' %}">
+                        {% endif %}
+                        <input type="hidden" name="cart-toggle" value="{{ investment.id }}">
+                    </form>
+                    {% else %}
+                        {% translate "Is funded" %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+{% else %}
+    {% comment %}
+    Région/préfecture : le sous-arbre peut contenir des milliers d'investissements,
+    donc pagination server-side (DataTables) comme /investments/, au lieu de tout
+    rendre d'un coup. Les classes inv-* rendues par PriorityInvestmentSerializer
+    sont les mêmes que sur /investments/, mais leur CSS n'existe que dans le
+    <style> de investments/list.html — on la reprend ici pour un rendu identique.
+    {% endcomment %}
+    <style>
+        .inv-title {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.4;
+            font-size: 13px;
+        }
+        .inv-title-extra { color: #6b7280; font-weight: 400; }
+        .inv-title-link { text-decoration: none !important; color: inherit !important; }
+        .inv-title-link:hover .inv-title { color: #4f46e5; }
+
+        .inv-cost {
+            display: inline-block;
+            font-weight: 700;
+            color: #047857;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        .inv-cost-currency { color: #6b7280; font-size: 11px; font-weight: 500; margin-left: 2px; letter-spacing: .03em; }
+        .inv-cost-na { color: #9ca3af !important; font-style: italic; font-weight: 500; }
+
+        .inv-muted { color: #d1d5db; font-weight: 500; }
+
+        .inv-rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+        }
+        .inv-rank-1 { background: #fef3c7; color: #b45309; box-shadow: inset 0 0 0 1.5px #f59e0b; }
+        .inv-rank-2 { background: #e5e7eb; color: #4b5563; box-shadow: inset 0 0 0 1.5px #9ca3af; }
+        .inv-rank-3 { background: #fed7aa; color: #c2410c; box-shadow: inset 0 0 0 1.5px #ea580c; }
+        .inv-rank-other { background: #f3f4f6; color: #6b7280; }
+        .inv-rank-none { color: #d1d5db; font-weight: 500; background: transparent; box-shadow: none; }
+
+        /* Puces de priorité population (J/F/AG/ME) — le point demandé */
+        .inv-endorse-wrap { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+        .inv-endorse-chip {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 24px; padding: 3px 7px;
+            border-radius: 6px; font-size: 11px; font-weight: 700;
+            letter-spacing: .03em; line-height: 1;
+        }
+        .inv-endorse-J  { background: #dbeafe; color: #1d4ed8; }
+        .inv-endorse-F  { background: #fce7f3; color: #be185d; }
+        .inv-endorse-AG { background: #d1fae5; color: #047857; }
+        .inv-endorse-ME { background: #fef3c7; color: #92400e; }
+    </style>
+    <table id="priorities-datatable" class="table table-bordered" style="width: 100%;">
+        <thead>
+        <tr>
+            <th>{% translate 'Ranking' %} [{% translate 'Component' %}]</th>
+            <th>{% translate 'Sub-project priorities' %}</th>
+            <th>{% translate 'Population priority' %}</th>
+            <th>{% translate 'Estimated cost' %}</th>
+            <th>{% translate 'Funded by' %}</th>
+            <th>{% translate 'Climate contribution' %}</th>
+            <th>{% translate 'Actions' %}</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script type="text/javascript">
+        {% comment %} {# jQuery/DataTables ne sont chargés que dans {% block javascript %} de la      #}
+        {# page qui étend celle-ci (via layouts/foot.html), donc APRÈS ce {% block content %}. #}
+        {# document.addEventListener ne référence $ qu'à l'exécution du callback, pas    #}
+        {# à l'analyse du script, contrairement à $(document).ready(...) qui échouerait  #}
+        {# ici avec "$ is not defined" et casserait silencieusement tout ce script.       #} {% endcomment %}
+        document.addEventListener('DOMContentLoaded', function () {
+            function initPrioritiesDataTable() {
+                var $table = $('#priorities-datatable');
+                if (!$table.length || $.fn.DataTable.isDataTable($table)) {
+                    if ($table.length) {
+                        $table.DataTable().columns.adjust();
+                    }
+                    return;
+                }
+
+                var table = $table.DataTable({{ priorities_datatable_config|safe }});
+
+                $table.on('click', '.priority-cart-toggle', function (e) {
+                    e.preventDefault();
+                    var $btn = $(this);
+                    $btn.prop('disabled', true);
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'investments:priorities-datatable-cart_toggle' %}",
+                        data: {
+                            investment_id: $btn.data('investment-id'),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function () {
+                            // Conserve la page/le tri courants (2e argument false)
+                            // pour ne pas ramener l'utilisateur en page 1.
+                            table.ajax.reload(null, false);
+                        },
+                        error: function () {
+                            $btn.prop('disabled', false);
+                        }
+                    });
+                });
+            }
+
+            if ($('#priorities').hasClass('active')) {
+                initPrioritiesDataTable();
+            }
+            $('a[data-toggle="tab"][href="#priorities"]').on('shown.bs.tab', function () {
+                initPrioritiesDataTable();
+            });
+        });
+    </script>
 {% endif %}

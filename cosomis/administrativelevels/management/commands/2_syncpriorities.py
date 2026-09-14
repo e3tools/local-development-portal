@@ -166,7 +166,7 @@ FLAT_COMPONENT_CONFIG = {
     },
     'Composante2': {
         'sector_map': PRIORITE_PURS_C2_TO_CATEGORY,
-        'default_category': 'Appui économique',
+        'default_category': 'Appui Economique',
         'contribution_field': 'contributionEconomique',
         'is_climate': False,
         'extra_note_field': 'groupementsConcernes',
@@ -372,7 +372,7 @@ def sync_socioeconomic_needs(payload, administrative_level, component, project,
         if g.get('principalGroupeSocioeconomique')
     ]
     contribution_text = payload.get('contributionClimatique')
-    sector = resolve_sector('Besoin socio-économique', 'Appui économique')
+    sector = resolve_sector('Besoin socio-économique', 'Appui Economique')
 
     besoin_sources = [
         payload.get('principauxbesoinsSociauxEconomiques') or [],
