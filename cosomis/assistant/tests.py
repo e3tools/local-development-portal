@@ -139,15 +139,53 @@ class AgentLoopTests(SeededTestCase):
 
 
 class ViewTests(SeededTestCase):
-    def test_chat_page_requires_login(self):
+    def test_chat_and_panel_require_login(self):
         self.assertEqual(self.client.get(reverse("assistant:chat")).status_code, 302)
+        self.assertEqual(self.client.get(reverse("assistant:panel")).status_code, 302)
 
-    @override_settings(OPENAI_API_KEY="")
-    def test_chat_page_explains_when_unconfigured(self):
+    def test_chat_url_opens_the_drawer_on_the_home_page(self):
+        """The assistant is a drawer, not a page: /assistant/ lands on home with it open."""
         self.client.login(email=self.partner.email, password=PASSWORD)
         response = self.client.get(reverse("assistant:chat"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("investments:home_investments") + "?assistant=open")
+
+    def test_every_page_carries_the_drawer_and_the_navbar_toggle(self):
+        self.client.login(email=self.partner.email, password=PASSWORD)
+        response = self.client.get(reverse("investments:home_investments"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'id="assistant-drawer"')
+        self.assertContains(response, 'id="assistant-toggle"')
+        self.assertContains(response, f'data-panel-url="{reverse("assistant:panel")}"')
+        self.assertNotContains(response, reverse("assistant:chat") + '"')  # no sidebar entry
+        # The drawer body is fetched on first open, not rendered with the page.
+        self.assertNotContains(response, 'id="assistant-form"')
+
+    @override_settings(OPENAI_API_KEY="")
+    def test_panel_explains_when_unconfigured(self):
+        self.client.login(email=self.partner.email, password=PASSWORD)
+        response = self.client.get(reverse("assistant:panel"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "OPENAI_API_KEY")
+        self.assertContains(response, 'id="assistant-question" name="question" rows="1" maxlength="2000" required')
+        self.assertContains(response, "disabled")
+
+    @override_settings(OPENAI_API_KEY="test-key")
+    def test_panel_shows_suggestions_first_and_history_afterwards(self):
+        self.client.login(email=self.partner.email, password=PASSWORD)
+        fresh = self.client.get(reverse("assistant:panel"))
+        self.assertContains(fresh, 'id="assistant-welcome"')
+        self.assertContains(fresh, "Où en sont mes paquets")          # partner chips
+        self.assertNotContains(fresh, "attendent une validation")    # staff chips
+
+        conversation = Conversation.objects.create(user=self.partner, title="t")
+        Message.objects.create(conversation=conversation, role=Message.USER, content="Bonjour ?")
+        Message.objects.create(conversation=conversation, role=Message.ASSISTANT,
+                               content="Bonjour **vous**.", tool_trace=[])
+        again = self.client.get(reverse("assistant:panel"))
+        self.assertNotContains(again, 'id="assistant-welcome"')
+        self.assertContains(again, "Bonjour ?")
+        self.assertContains(again, "<strong>vous</strong>")
 
     @override_settings(OPENAI_API_KEY="test-key")
     def test_send_persists_the_exchange_and_returns_htmx_partial(self):
@@ -165,6 +203,15 @@ class ViewTests(SeededTestCase):
         self.assertEqual(conversation.messages.last().tool_trace[0]["tool"], "list_programmes")
         self.assertEqual(conversation.title, "Quels programmes ?")
 
+    def test_send_ignores_an_empty_question(self):
+        self.client.login(email=self.partner.email, password=PASSWORD)
+        response = self.client.post(reverse("assistant:send"), {"question": "   "},
+                                    HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 204)  # nothing for HTMX to swap
+        self.assertFalse(Conversation.objects.filter(user=self.partner).exists())
+        plain = self.client.post(reverse("assistant:send"), {"question": ""})
+        self.assertEqual(plain.status_code, 302)
+
     @override_settings(OPENAI_API_KEY="")
     def test_send_without_key_shows_error_and_keeps_only_the_question(self):
         self.client.login(email=self.moderator.email, password=PASSWORD)
@@ -176,5 +223,16 @@ class ViewTests(SeededTestCase):
     def test_new_conversation_archives_the_active_one(self):
         self.client.login(email=self.partner.email, password=PASSWORD)
         Conversation.objects.create(user=self.partner, title="old")
-        self.client.post(reverse("assistant:new"))
+        response = self.client.post(reverse("assistant:new"))
+        self.assertEqual(response.status_code, 302)
         self.assertFalse(Conversation.objects.filter(user=self.partner, is_active=True).exists())
+
+    def test_new_conversation_over_htmx_returns_a_fresh_panel(self):
+        self.client.login(email=self.partner.email, password=PASSWORD)
+        conversation = Conversation.objects.create(user=self.partner, title="old")
+        Message.objects.create(conversation=conversation, role=Message.USER, content="Ancienne question")
+        response = self.client.post(reverse("assistant:new"), HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'id="assistant-welcome"')
+        self.assertContains(response, 'id="assistant-form"')
+        self.assertNotContains(response, "Ancienne question")

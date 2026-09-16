@@ -89,7 +89,8 @@ class Command(BaseCommand):
             ("Dashboard localities", "/fr/dashboard/administrativelevels/"),
             ("CDD funnel", "/fr/cdd-funnel/"),
             ("Django admin", "/fr/admin/"),
-            ("Assistant", "/fr/assistant/"),
+            ("Assistant (redirect)", "/fr/assistant/"),
+            ("Assistant drawer", "/fr/assistant/panel/"),
         ]
 
         # (name, url, session) — most pages are checked as the administrator.
@@ -99,7 +100,7 @@ class Command(BaseCommand):
             ("Investor approvals",
              "/fr/investments/investor/notifications", investor),
             ("Programmes", "/fr/administrative-levels/projects/", investor),
-            ("Assistant (partner)", "/fr/assistant/", investor),
+            ("Assistant drawer (partner)", "/fr/assistant/panel/", investor),
         ]
 
         failures = []

@@ -111,6 +111,8 @@
 
 <script src="{% static 'js/notifications.js' %}"></script>
 <script src="{% static 'js/htmx.min.js' %}"></script>
+<!-- Portal assistant drawer (assistant/_drawer.html in base.html) -->
+<script src="{% static 'js/assistant.js' %}"></script>
 <script type="text/javascript">
     {% if user.is_authenticated and user.password_changed_once == False %}
         pushNotify("{% translate 'Veuillez aller changer votre mot de passe dans la session Utilisateur.' %}", "error");

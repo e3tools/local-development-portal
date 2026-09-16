@@ -1,8 +1,7 @@
 from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, resolve_url
 from django.urls import reverse
-from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import TemplateView
 
@@ -35,24 +34,46 @@ def _active_conversation(user, create=False):
     return conversation
 
 
-class ChatView(LoginRequiredApproveRequiredMixin, PageMixin, TemplateView):
-    template_name = "assistant/chat.html"
-    title = _("Assistant")
-    active_level1 = "assistant"
+def panel_context(user):
+    """Everything the drawer body needs: the active thread and the chips."""
+    conversation = _active_conversation(user)
+    return {
+        "conversation": conversation,
+        "chat_messages": conversation.messages.all() if conversation else [],
+        "assistant_enabled": agent.is_configured(),
+        "assistant_model": settings.ASSISTANT_MODEL,
+        "role": scope.role_of(user),
+        "suggestions": SUGGESTIONS_ALL + (
+            SUGGESTIONS_STAFF if scope.is_staff_role(user) else SUGGESTIONS_PARTNER),
+    }
+
+
+def _home_with_drawer_open():
+    """The assistant has no page of its own: it is a drawer on every page.
+
+    Bookmarks and links to /assistant/ land on the home page with the drawer
+    open (assistant.js reads the `assistant=open` query parameter).
+    """
+    return HttpResponseRedirect(f"{resolve_url(settings.LOGIN_REDIRECT_URL)}?assistant=open")
+
+
+class ChatView(LoginRequiredApproveRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return _home_with_drawer_open()
+
+
+class PanelView(LoginRequiredApproveRequiredMixin, PageMixin, TemplateView):
+    """The drawer body, fetched by HTMX the first time the drawer is opened.
+
+    Loading it lazily keeps the assistant off the critical path of every
+    page: the drawer shell in layouts/base.html is static markup.
+    """
+
+    template_name = "assistant/_panel.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        conversation = _active_conversation(self.request.user)
-        context.update({
-            "conversation": conversation,
-            "chat_messages": conversation.messages.all() if conversation else [],
-            "assistant_enabled": agent.is_configured(),
-            "assistant_model": settings.ASSISTANT_MODEL,
-            "role": scope.role_of(self.request.user),
-            "suggestions": SUGGESTIONS_ALL + (
-                SUGGESTIONS_STAFF if scope.is_staff_role(self.request.user)
-                else SUGGESTIONS_PARTNER),
-        })
+        context.update(panel_context(self.request.user))
         return context
 
 
@@ -60,9 +81,11 @@ class SendView(LoginRequiredApproveRequiredMixin, View):
     """Answer one question. HTMX gets the two new bubbles; others get redirected."""
 
     def post(self, request, *args, **kwargs):
+        is_htmx = bool(getattr(request, "htmx", False))
         question = (request.POST.get("question") or "").strip()[:2000]
         if not question:
-            return HttpResponseRedirect(reverse("assistant:chat"))
+            # 204 tells HTMX there is nothing to swap into the log.
+            return HttpResponse(status=204) if is_htmx else _home_with_drawer_open()
 
         conversation = _active_conversation(request.user, create=True)
         if not conversation.title:
@@ -85,8 +108,8 @@ class SendView(LoginRequiredApproveRequiredMixin, View):
                 prompt_tokens=reply.prompt_tokens,
                 completion_tokens=reply.completion_tokens)
 
-        if not getattr(request, "htmx", False):
-            return HttpResponseRedirect(reverse("assistant:chat"))
+        if not is_htmx:
+            return _home_with_drawer_open()
         return render(request, "assistant/_exchange.html", {
             "user_message": user_message,
             "assistant_message": assistant_message,
@@ -95,6 +118,10 @@ class SendView(LoginRequiredApproveRequiredMixin, View):
 
 
 class NewConversationView(LoginRequiredApproveRequiredMixin, View):
+    """Archive the active thread. HTMX gets a fresh panel (suggestions again)."""
+
     def post(self, request, *args, **kwargs):
         Conversation.objects.filter(user=request.user, is_active=True).update(is_active=False)
-        return HttpResponseRedirect(reverse("assistant:chat"))
+        if not getattr(request, "htmx", False):
+            return _home_with_drawer_open()
+        return render(request, "assistant/_panel.html", panel_context(request.user))

@@ -74,6 +74,15 @@
 {#                {% translate 'Help / FAQ' %}#}
 {#            </a>#}
 {#        </li>#}
+        {% if user.is_approved %}
+        <li class="nav-item">
+            <button type="button" class="nav-link assistant-toggle" id="assistant-toggle"
+                    aria-controls="assistant-drawer" aria-expanded="false"
+                    aria-label="{% translate 'Assistant' %}" title="{% translate 'Ask the portal' %}">
+                <i class="fas fa-robot" aria-hidden="true"></i>
+            </button>
+        </li>
+        {% endif %}
         {% if user.is_moderator %}
         <li class="nav-item">
             <a href="{% url 'investments:notifications' %}" class="nav-link" aria-label="{% translate 'Notifications' %}">
