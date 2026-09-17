@@ -93,9 +93,13 @@ body.assistant-open .assistant-drawer {
     body.assistant-open .main-header,
     body.assistant-open .main-footer { margin-right: var(--assistant-width); }
 }
+/* Below the push breakpoint the page must not scroll behind the drawer:
+   on iOS a scrolled page drags the fixed drawer away from the keyboard. */
+@media (max-width: 1199.98px) {
+    body.assistant-open { overflow: hidden; }
+}
 @media (max-width: 575.98px) {
-    :root { --assistant-width: 100vw; }
-    .assistant-drawer { border-left: 0; }
+    .assistant-drawer { left: 0; width: auto; max-width: none; border-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
     .assistant-drawer, .content-wrapper, .main-header { transition: none !important; }
@@ -357,4 +361,12 @@ body.assistant-open .assistant-drawer {
     margin: .4rem 0 0;
     font-size: .72rem;
     color: var(--brand-muted);
+}
+
+/* ---- Phones and tablets ------------------------------------------------- */
+@media (max-width: 991.98px) {
+    /* iOS Safari zooms the whole page into any field whose font is under
+       16px, which pushes the send button and the chips off-screen. */
+    .assistant-form__input { font-size: 16px; }
+    .assistant-form__foot { display: none; }
 }
