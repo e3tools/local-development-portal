@@ -42,6 +42,10 @@ format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   model works, failures surface as toasts, and a dot on the icon flags a
   reply that arrived while the drawer was closed. `/assistant/` redirects to
   the home page with the drawer open so old links still work.
+- **Assistant drawer on phones.** The question field is 16 px so iOS Safari
+  no longer zooms the page on focus (which pushed the send button off-screen),
+  the drawer is sized to the visual viewport so it follows the on-screen
+  keyboard, and the page behind it no longer scrolls while it is open.
 
 - **Breadcrumb tag (`adm_breadcrumb`) is name-agnostic.** Was looking up the
   detail URL by `item.type` against the Togo English constants — every

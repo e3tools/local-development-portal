@@ -51,6 +51,29 @@
         if (el) { el.scrollTop = el.scrollHeight; }
     }
 
+    // On phones the on-screen keyboard shrinks the *visual* viewport but not
+    // the layout viewport a fixed drawer is sized against, so the form would
+    // sit behind the keyboard. Size the drawer to the visual viewport instead
+    // while it is open in overlay mode (below the 1200px push breakpoint).
+    var viewport = window.visualViewport;
+    function fitToViewport() {
+        if (!viewport || !isOpen() || window.innerWidth >= 1200) {
+            drawer.style.top = "";
+            drawer.style.bottom = "";
+            drawer.style.height = "";
+            return;
+        }
+        drawer.style.top = viewport.offsetTop + "px";
+        drawer.style.bottom = "auto";
+        drawer.style.height = viewport.height + "px";
+        scrollToBottom();
+    }
+    if (viewport) {
+        viewport.addEventListener("resize", fitToViewport);
+        viewport.addEventListener("scroll", fitToViewport);
+    }
+    window.addEventListener("resize", fitToViewport);
+
     function autosize(box) {
         box.style.height = "auto";
         box.style.height = Math.min(box.scrollHeight, MAX_INPUT_HEIGHT) + "px";
@@ -67,6 +90,7 @@
         remember(true);
         focusWhenLoaded = !!options.focus;
         loadPanel();
+        fitToViewport();
         if (options.focus) { focusInput(); }
     }
 
@@ -76,6 +100,7 @@
         drawer.setAttribute("aria-hidden", "true");
         if (toggle) { toggle.setAttribute("aria-expanded", "false"); }
         remember(false);
+        fitToViewport();
         if (hadFocus && toggle) { toggle.focus(); }
     }
 
