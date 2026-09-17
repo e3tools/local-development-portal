@@ -43,10 +43,15 @@ Moderators and investors see different modules — the cart, the profile page
 and the partner approvals are deliberately closed to moderators
 (`IsInvestorMixin`), so demo both roles.
 
-## The assistant (`/fr/assistant/`)
+## The assistant (robot icon in the header)
 
-A read-only chat over the portal's data, in the sidebar for every approved
-user. It is built as tool calling over typed query functions — the model
+A read-only chat over the portal's data, available to every approved user as
+a drawer on every page: the robot icon in the header opens it next to the
+page being read (it pushes the content on wide screens, overlays it below
+1200 px), it stays open across navigation, and "+" starts a new thread.
+The drawer body is fetched once on first open (`/fr/assistant/panel/`);
+`/fr/assistant/` only redirects to the home page with the drawer open.
+It is built as tool calling over typed query functions — the model
 never sees the database, only what `assistant/tools.py` returns, and each of
 those functions applies the caller's rights (`assistant/scope.py`) exactly as
 the views do: partners get their own packages and their organisation's
@@ -58,7 +63,7 @@ Provider: OpenAI Chat Completions with function calling (`openai` SDK).
 
 | Variable | Purpose |
 |---|---|
-| `OPENAI_API_KEY` | required; without it the page renders but says it is not configured |
+| `OPENAI_API_KEY` | required; without it the drawer opens but says it is not configured |
 | `ASSISTANT_MODEL` | default `gpt-5-mini` |
 | `OPENAI_BASE_URL` | optional, for an OpenAI-compatible proxy |
 

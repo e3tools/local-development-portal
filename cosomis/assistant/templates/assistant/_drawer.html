@@ -1,0 +1,35 @@
+{% load i18n %}
+{# The assistant drawer, on every page for approved users (layouts/base.html). #}
+{# Opened from the robot icon in the navbar; the body is fetched once, on first #}
+{# open, from assistant:panel. Behaviour lives in static/js/assistant.js. #}
+<div class="assistant-backdrop" id="assistant-backdrop" aria-hidden="true"></div>
+<aside class="assistant-drawer" id="assistant-drawer" role="complementary"
+       aria-labelledby="assistant-drawer-title" aria-hidden="true"
+       data-panel-url="{% url 'assistant:panel' %}"
+       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <header class="assistant-drawer__head">
+        <div class="assistant-drawer__title">
+            <span class="assistant-drawer__logo" aria-hidden="true"><i class="fas fa-robot"></i></span>
+            <div>
+                <h2 id="assistant-drawer-title">{% translate "Ask the portal" %}</h2>
+                <p>{% translate "Read-only. Answers are computed from portal data and are not an official UCP statement." %}</p>
+            </div>
+        </div>
+        <div class="assistant-drawer__actions">
+            <button type="button" class="assistant-iconbtn" id="assistant-new"
+                    hx-post="{% url 'assistant:new' %}" hx-target="#assistant-panel" hx-swap="innerHTML"
+                    title="{% translate 'New conversation' %}" aria-label="{% translate 'New conversation' %}">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="assistant-iconbtn" id="assistant-close"
+                    title="{% translate 'Close' %}" aria-label="{% translate 'Close' %}">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+    </header>
+    <div class="assistant-drawer__body" id="assistant-panel">
+        <div class="assistant-loading" role="status">
+            <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i> {% translate "Loading…" %}
+        </div>
+    </div>
+</aside>

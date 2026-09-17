@@ -32,6 +32,17 @@ format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **The assistant is a drawer, not a page.** The chat that lived at
+  `/assistant/` (sidebar entry) now opens from a robot icon in the header on
+  every page, as a right-hand drawer: it pushes the content on wide screens
+  and overlays it below 1200 px, stays open while navigating (state kept in
+  `localStorage`), loads its body lazily through HTMX on first open
+  (`assistant:panel`), and has a "+" for a new thread. Suggested questions
+  are stacked in the drawer, Enter sends, a typing indicator shows while the
+  model works, failures surface as toasts, and a dot on the icon flags a
+  reply that arrived while the drawer was closed. `/assistant/` redirects to
+  the home page with the drawer open so old links still work.
+
 - **Breadcrumb tag (`adm_breadcrumb`) is name-agnostic.** Was looking up the
   detail URL by `item.type` against the Togo English constants — every
   ancestor link broke on the Benin dataset. Now maps each ancestor to one of

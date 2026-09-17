@@ -72,6 +72,10 @@
 </div>
 <!-- ./wrapper -->
 
+{% if user.is_authenticated and user.is_approved %}
+    {% include 'assistant/_drawer.html' %}
+{% endif %}
+
 <div id="push-notification-container" role="region" aria-live="polite"
     aria-label="{% translate 'Notifications' %}">
 </div>

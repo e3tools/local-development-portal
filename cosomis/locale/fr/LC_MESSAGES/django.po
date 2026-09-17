@@ -4214,3 +4214,12 @@ msgstr "Données utilisées"
 
 msgid "The assistant is unavailable right now."
 msgstr "L'assistant est indisponible pour le moment."
+
+msgid "Try one of these"
+msgstr "Essayez l'une de ces questions"
+
+msgid "The assistant is thinking…"
+msgstr "L'assistant réfléchit…"
+
+msgid "Enter to send, Shift+Enter for a new line"
+msgstr "Entrée pour envoyer, Maj+Entrée pour un retour à la ligne"
