@@ -1,5 +1,8 @@
+import uuid
+
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 from cosomis.models_base import BaseModel
 
@@ -44,3 +47,32 @@ class Message(BaseModel):
 
     def __str__(self):
         return f"{self.role}: {self.content[:60]}"
+
+
+class Report(BaseModel):
+    """A report the assistant wrote on request, kept as Markdown.
+
+    The Word and PDF files are rendered on download (assistant/reports.py),
+    so nothing binary is stored and portal links can be made absolute for
+    the host the user downloads from. The token is the only handle in the
+    URL; the owner check is on `user`.
+    """
+
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                             related_name="assistant_reports")
+    conversation = models.ForeignKey(Conversation, null=True, blank=True,
+                                     on_delete=models.SET_NULL, related_name="reports")
+    message = models.ForeignKey(Message, null=True, blank=True,
+                                on_delete=models.SET_NULL, related_name="reports")
+    title = models.CharField(max_length=200)
+    body = models.TextField()
+
+    class Meta:
+        ordering = ["created_date", "id"]
+
+    def __str__(self):
+        return self.title
+
+    def url(self, fmt):
+        return reverse("assistant:report", kwargs={"token": self.token, "fmt": fmt})

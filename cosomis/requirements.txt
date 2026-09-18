@@ -89,3 +89,7 @@ setuptools<81
 # Portal assistant (assistant/): OpenAI Chat Completions with function calling.
 # Pinned to the newest line that ships Linux/3.12 wheels for the Vercel bundle.
 openai==2.54.0
+
+# Word export of assistant answers and reports (assistant/reports.py); PDF
+# reuses xhtml2pdf above.
+python-docx==1.2.0

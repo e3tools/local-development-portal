@@ -4223,3 +4223,15 @@ msgstr "L'assistant réfléchit…"
 
 msgid "Enter to send, Shift+Enter for a new line"
 msgstr "Entrée pour envoyer, Maj+Entrée pour un retour à la ligne"
+
+msgid "%(program)s · %(date)s · %(name)s"
+msgstr "%(program)s · %(date)s · %(name)s"
+
+msgid "Generated from Local Development Portal data. This is not an official UCP statement."
+msgstr "Généré à partir des données du Portail de développement local. Ceci n'est pas une déclaration officielle de l'UCP."
+
+msgid "The file could not be generated."
+msgstr "Le fichier n'a pas pu être généré."
+
+msgid "Assistant answer"
+msgstr "Réponse de l'assistant"

@@ -6,6 +6,24 @@
     <div class="assistant-msg__bubble">
         {% if message.role == 'assistant' %}
             <div class="assistant-msg__body">{{ message.content|assistant_markdown }}</div>
+            {% for report in message.reports.all %}
+                <div class="assistant-file">
+                    <span class="assistant-file__icon" aria-hidden="true"><i class="fas fa-file-alt"></i></span>
+                    <span class="assistant-file__title">{{ report.title }}</span>
+                    <span class="assistant-file__links">
+                        <a href="{% url 'assistant:report' report.token 'docx' %}" download title="{% translate 'Download' %} Word"><i class="fas fa-file-word" aria-hidden="true"></i> Word</a>
+                        <a href="{% url 'assistant:report' report.token 'pdf' %}" download title="{% translate 'Download' %} PDF"><i class="fas fa-file-pdf" aria-hidden="true"></i> PDF</a>
+                    </span>
+                </div>
+            {% endfor %}
+            {% if message.pk and not message.reports.all %}
+                <div class="assistant-msg__export">
+                    <span>{% translate "Download" %} :</span>
+                    <a href="{% url 'assistant:export' message.pk 'docx' %}" download>Word</a>
+                    <span aria-hidden="true">·</span>
+                    <a href="{% url 'assistant:export' message.pk 'pdf' %}" download>PDF</a>
+                </div>
+            {% endif %}
             {% if message.tool_trace %}
                 <details class="assistant-msg__trace">
                     <summary>{% translate "Data used" %} · {{ message.tool_trace|length }}</summary>

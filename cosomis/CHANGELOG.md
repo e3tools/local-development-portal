@@ -7,6 +7,18 @@ format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Assistant reports in Word and PDF.** Ask the assistant for a report, a
+  Word document or a PDF and it gathers the figures with its query tools,
+  then calls a new `generate_report` tool with the full report in Markdown.
+  The answer shows the report as a file chip with Word and PDF downloads
+  (`assistant:report`, owner only, portal links made absolute); any other
+  answer can be exported the same way from the "Download: Word · PDF" links
+  under it (`assistant:export`). Word is built with python-docx (headings,
+  lists, tables, real hyperlinks), PDF with the xhtml2pdf already in the
+  stack. Reports are kept as text on a new `assistant.Report` model and
+  rendered on download; the audit trace records the report's size, not its
+  body.
+
 - **Live summary card on `/administrative-levels/search/`.** Selecting any level
   in the cascading filter (or a leaf radio) now fades in a sticky card on the
   right with the entity's name, type badge, ancestor breadcrumb, direct-child
