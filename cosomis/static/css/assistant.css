@@ -282,6 +282,50 @@ body.assistant-open .assistant-drawer {
 .assistant-msg__trace ul { margin: .35rem 0 0; padding-left: 1.1rem; }
 .assistant-msg__trace code { font-size: .76rem; }
 
+/* Files the assistant produced (reports) and the export links on answers. */
+.assistant-file {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-top: .6rem;
+    padding: .45rem .6rem;
+    border: 1px solid var(--brand-primary-border);
+    border-radius: 10px;
+    background: var(--brand-primary-soft);
+    font-size: .84rem;
+}
+.assistant-file__icon { color: var(--brand-primary-darker); flex: 0 0 auto; }
+.assistant-file__title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+}
+.assistant-file__links { display: flex; gap: .3rem; flex: 0 0 auto; }
+.assistant-file__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: .2rem .5rem;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--brand-primary-border);
+    color: var(--brand-primary-darker);
+    text-decoration: none !important;
+    font-size: .78rem;
+}
+.assistant-file__links a:hover { background: var(--brand-primary-darker); color: #fff; border-color: var(--brand-primary-darker); }
+.assistant-msg__export {
+    margin-top: .45rem;
+    font-size: .74rem;
+    color: var(--brand-muted);
+    display: flex;
+    gap: .3rem;
+}
+.assistant-msg__export a { color: var(--brand-primary-darker); }
+
 /* Typing indicator: shown while the send request is in flight (hx-indicator). */
 .assistant-typing {
     display: none;

@@ -17,7 +17,8 @@ from django.urls import reverse
 
 from administrativelevels.models import AdministrativeLevel, Sector, Task
 from investments.models import Attachment, Investment, Package
-from assistant import scope
+from assistant import reports, scope
+from assistant.models import Report
 
 MAX_ROWS = 50
 DEFAULT_ROWS = 25
@@ -504,6 +505,27 @@ def list_packages(user, status=None, limit=None):
     }
 
 
+def generate_report(user, title, body_markdown, formats=None):
+    """Turn a finished report into downloadable Word and PDF files. Call it once, at the end, after gathering every figure with the other tools, with the complete report text in Markdown: a short introduction, sections with headings, Markdown tables for figures, a 'Sources' section listing the portal links used, and the data date. Returns the download links to give the user."""
+    title = (title or "").strip()[:200]
+    if not title:
+        raise ToolError("title is required.")
+    if not (body_markdown or "").strip():
+        raise ToolError("body_markdown is empty; write the full report first.")
+    wanted = [f for f in (formats or reports.DEFAULT_FORMATS) if f in reports.FORMATS]
+    if not wanted:
+        raise ToolError(f"formats must be among {list(reports.FORMATS)}.")
+    report = Report.objects.create(user=user, title=title, body=body_markdown)
+    return {
+        "report_id": report.id,
+        "title": title,
+        "downloads": [{"format": fmt, "filename": reports.filename(title, fmt),
+                       "url": report.url(fmt)} for fmt in wanted],
+        "note": "Tell the user the report is ready and give each download as a "
+                "Markdown link with the url above; do not repeat the whole report.",
+    }
+
+
 # -- registry ----------------------------------------------------------------
 
 _LOCALITY_FILTERS = {
@@ -579,6 +601,14 @@ TOOLS = [
                                                     "Approved, Rejected, Partially Approved."},
         "limit": _LIMIT,
     }),
+    _spec("generate_report", generate_report, {
+        "title": {"type": "string", "description": "Report title, in the user's language."},
+        "body_markdown": {"type": "string",
+                          "description": "The whole report in Markdown (headings, paragraphs, "
+                                         "tables, a Sources section with portal links)."},
+        "formats": {"type": "array", "items": {"type": "string", "enum": list(reports.FORMATS)},
+                    "description": "Files to offer; both when the user did not specify."},
+    }, required=["title", "body_markdown"]),
 ]
 TOOLS_BY_NAME = {t["name"]: t for t in TOOLS}
 TOOL_SCHEMAS = [t["schema"] for t in TOOLS]

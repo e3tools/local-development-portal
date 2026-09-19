@@ -1,12 +1,14 @@
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, resolve_url
+from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, resolve_url
 from django.urls import reverse
+from django.utils import formats, timezone
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import TemplateView
 
-from assistant import agent, scope
-from assistant.models import Conversation, Message
+from assistant import agent, reports, scope
+from assistant.models import Conversation, Message, Report
 from cosomis.mixins import LoginRequiredApproveRequiredMixin, PageMixin
 
 # Suggested questions, per role, in the portal's primary language.
@@ -16,6 +18,7 @@ SUGGESTIONS_ALL = [
     "Résume le profil du village de Tamlou.",
     "Quels secteurs concentrent le plus de priorités de rang 1 ?",
     "Où en est le cycle de planification dans la préfecture de Kozah ?",
+    "Prépare un rapport Word et PDF sur la région des Savanes.",
 ]
 SUGGESTIONS_PARTNER = [
     "Où en sont mes paquets d'investissement ?",
@@ -39,7 +42,7 @@ def panel_context(user):
     conversation = _active_conversation(user)
     return {
         "conversation": conversation,
-        "chat_messages": conversation.messages.all() if conversation else [],
+        "chat_messages": conversation.messages.prefetch_related("reports") if conversation else [],
         "assistant_enabled": agent.is_configured(),
         "assistant_model": settings.ASSISTANT_MODEL,
         "role": scope.role_of(user),
@@ -107,6 +110,11 @@ class SendView(LoginRequiredApproveRequiredMixin, View):
                 content=reply.answer, tool_trace=reply.tool_trace, model=reply.model,
                 prompt_tokens=reply.prompt_tokens,
                 completion_tokens=reply.completion_tokens)
+            if reply.report_ids:
+                # Written by the generate_report tool during this turn; the
+                # download chips hang off the answer they came with.
+                Report.objects.filter(id__in=reply.report_ids, user=request.user).update(
+                    conversation=conversation, message=assistant_message)
 
         if not is_htmx:
             return _home_with_drawer_open()
@@ -125,3 +133,44 @@ class NewConversationView(LoginRequiredApproveRequiredMixin, View):
         if not getattr(request, "htmx", False):
             return _home_with_drawer_open()
         return render(request, "assistant/_panel.html", panel_context(request.user))
+
+
+def _file_response(request, title, body, fmt):
+    if fmt not in reports.FORMATS:
+        raise Http404
+    who = scope.describe(request.user)
+    meta = _("%(program)s · %(date)s · %(name)s") % {
+        "program": settings.PROGRAM_NAME,
+        "date": formats.date_format(timezone.localdate(), "SHORT_DATE_FORMAT"),
+        "name": who["name"],
+    }
+    footer = _("Generated from Local Development Portal data. This is not an official UCP statement.")
+    try:
+        data = reports.render(title, body, fmt, base_url=request.build_absolute_uri("/"),
+                              meta=meta, footer=footer)
+    except reports.ReportError:
+        return HttpResponse(_("The file could not be generated."), status=500)
+    response = HttpResponse(data, content_type=reports.content_type(fmt))
+    response["Content-Disposition"] = f'attachment; filename="{reports.filename(title, fmt)}"'
+    return response
+
+
+class ReportDownloadView(LoginRequiredApproveRequiredMixin, View):
+    """A report the assistant wrote, as Word or PDF. Owner only."""
+
+    def get(self, request, token, fmt, *args, **kwargs):
+        report = get_object_or_404(Report, token=token, user=request.user)
+        return _file_response(request, report.title, report.body, fmt)
+
+
+class MessageExportView(LoginRequiredApproveRequiredMixin, View):
+    """Any assistant answer as Word or PDF, for the ones that were not a report."""
+
+    def get(self, request, pk, fmt, *args, **kwargs):
+        message = get_object_or_404(Message, pk=pk, role=Message.ASSISTANT,
+                                    conversation__user=request.user)
+        # Name the file after the question this answer replies to.
+        question = Message.objects.filter(conversation=message.conversation, role=Message.USER,
+                                          id__lt=message.id).last()
+        title = (question.content[:160] if question else "") or _("Assistant answer")
+        return _file_response(request, title, message.content, fmt)

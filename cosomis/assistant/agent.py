@@ -50,9 +50,17 @@ Rules:
   say the list is truncated and suggest a narrower filter.
 - End with one line: "Calculé à partir des données du portail — ceci n'est pas
   une déclaration officielle de l'UCP." (or its English equivalent).
+- Reports: when the user asks for a report, a document, a Word file or a PDF,
+  first gather every figure with the query tools, then call `generate_report`
+  once with the complete report in Markdown (title, short introduction,
+  sections with headings, Markdown tables for the figures, a "Sources" section
+  with the portal links used, the data date and the disclaimer line). Offer
+  both formats unless the user asked for one. Then answer in two or three
+  lines: what the report covers and the download links the tool returned, as
+  Markdown links. Do not paste the report into the answer.
 """
 
-MAX_TOOL_ROUNDS = 6
+MAX_TOOL_ROUNDS = 8
 MAX_HISTORY = 12
 
 
@@ -63,6 +71,7 @@ class Reply:
     prompt_tokens: int = 0
     completion_tokens: int = 0
     model: str = ""
+    report_ids: list = field(default_factory=list)
 
 
 class AssistantUnavailable(Exception):
@@ -153,7 +162,10 @@ def run_turn(user, history, question, client=None):
                 except Exception:  # noqa: BLE001 — a tool bug must not kill the turn
                     log.exception("assistant tool %s failed", call.function.name)
                     result = {"error": f"{call.function.name} failed unexpectedly."}
-            reply.tool_trace.append({"tool": call.function.name, "arguments": arguments,
+            if isinstance(result, dict) and isinstance(result.get("report_id"), int):
+                reply.report_ids.append(result["report_id"])
+            reply.tool_trace.append({"tool": call.function.name,
+                                     "arguments": _trace_arguments(arguments),
                                      "rows": _size(result)})
             messages.append({"role": "tool", "tool_call_id": call.id,
                              "content": json.dumps(result, ensure_ascii=False, default=str)})
@@ -161,6 +173,16 @@ def run_turn(user, history, question, client=None):
     reply.answer = ("I could not finish computing an answer within the allowed "
                     "number of steps. Please narrow the question.")
     return reply
+
+
+def _trace_arguments(arguments):
+    """Keep the audit trace readable: a report body is stored on the Report."""
+    return {
+        key: (f"<{len(value)} chars>"
+              if isinstance(value, str) and (key == "body_markdown" or len(value) > 200)
+              else value)
+        for key, value in arguments.items()
+    }
 
 
 def _size(result):

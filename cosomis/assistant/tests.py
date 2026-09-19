@@ -15,8 +15,8 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from assistant import agent, tools
-from assistant.models import Conversation, Message
+from assistant import agent, reports, tools
+from assistant.models import Conversation, Message, Report
 from investments.models import Package
 from usermanager.models import User
 
@@ -236,3 +236,105 @@ class ViewTests(SeededTestCase):
         self.assertContains(response, 'id="assistant-welcome"')
         self.assertContains(response, 'id="assistant-form"')
         self.assertNotContains(response, "Ancienne question")
+
+
+REPORT_MD = """Introduction avec un [lien](/fr/administrative-levels/region/1/).
+
+## Chiffres
+
+| Région | Villages |
+|---|---|
+| Savanes | 5 |
+
+- Point un
+"""
+
+
+class ReportRenderingTests(TestCase):
+    def test_docx_keeps_headings_tables_and_absolute_links(self):
+        import io
+
+        import docx
+
+        data = reports.render("Rapport Savanes", REPORT_MD, "docx",
+                              base_url="https://demo.example/", meta="meta", footer="foot")
+        document = docx.Document(io.BytesIO(data))
+        texts = [p.text for p in document.paragraphs]
+        self.assertEqual(texts[0], "Rapport Savanes")
+        self.assertIn("Chiffres", texts)
+        self.assertIn("Point un", texts)
+        self.assertEqual([c.text for c in document.tables[0].rows[1].cells], ["Savanes", "5"])
+        links = [r.target_ref for r in document.part.rels.values() if "hyperlink" in r.reltype]
+        self.assertEqual(links, ["https://demo.example/fr/administrative-levels/region/1/"])
+
+    def test_pdf_is_produced(self):
+        data = reports.render("Rapport", REPORT_MD, "pdf", base_url="https://demo.example/")
+        self.assertTrue(data.startswith(b"%PDF"))
+
+    def test_model_markup_is_not_trusted(self):
+        html = reports.to_html("<script>alert(1)</script> **ok**")
+        self.assertNotIn("<script>", html)
+        self.assertIn("<strong>ok</strong>", html)
+
+    def test_unknown_format_is_refused(self):
+        with self.assertRaises(reports.ReportError):
+            reports.render("x", "y", "xlsx")
+
+
+@override_settings(OPENAI_API_KEY="test-key")
+class ReportFlowTests(SeededTestCase):
+    def test_generate_report_tool_stores_the_report_and_returns_links(self):
+        result = tools.call_tool(self.partner, "generate_report",
+                                 {"title": "Rapport", "body_markdown": REPORT_MD, "formats": ["pdf"]})
+        report = Report.objects.get(id=result["report_id"], user=self.partner)
+        self.assertEqual([d["format"] for d in result["downloads"]], ["pdf"])
+        self.assertTrue(result["downloads"][0]["url"].endswith(f"/assistant/reports/{report.token}/pdf/"))
+        self.assertIn("error", tools.call_tool(self.partner, "generate_report", {"title": "", "body_markdown": "x"}))
+
+    def test_send_attaches_the_report_to_the_answer_with_download_chips(self):
+        self.client.login(email=self.partner.email, password=PASSWORD)
+        fake = scripted([tool_call("generate_report", {"title": "Rapport Savanes", "body_markdown": REPORT_MD})],
+                        "Votre rapport est prêt.")
+        with mock.patch.object(agent, "build_client", return_value=fake):
+            response = self.client.post(reverse("assistant:send"), {"question": "Un rapport"},
+                                        HTTP_HX_REQUEST="true")
+        self.assertEqual(response.status_code, 200)
+        report = Report.objects.get(user=self.partner)
+        answer = Message.objects.get(role=Message.ASSISTANT)
+        self.assertEqual(report.message, answer)
+        self.assertEqual(report.conversation, answer.conversation)
+        self.assertContains(response, "assistant-file")
+        self.assertContains(response, report.url("docx"))
+        self.assertContains(response, report.url("pdf"))
+        # The audit trace keeps the arguments readable, not the whole body.
+        self.assertNotIn("Chiffres", answer.tool_trace[0]["arguments"]["body_markdown"])
+        self.assertIn("chars", answer.tool_trace[0]["arguments"]["body_markdown"])
+
+    def test_report_download_is_scoped_to_its_owner(self):
+        report = Report.objects.create(user=self.partner, title="Rapport Savanes", body=REPORT_MD)
+        self.assertEqual(self.client.get(report.url("docx")).status_code, 302)  # anonymous
+
+        self.client.login(email=self.other_partner.email, password=PASSWORD)
+        self.assertEqual(self.client.get(report.url("docx")).status_code, 404)
+
+        self.client.login(email=self.partner.email, password=PASSWORD)
+        for fmt, ctype in (("docx", "officedocument"), ("pdf", "application/pdf")):
+            response = self.client.get(report.url(fmt))
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(ctype, response["Content-Type"])
+            self.assertIn(f'filename="rapport-savanes.{fmt}"', response["Content-Disposition"])
+        self.assertEqual(self.client.get(report.url("xlsx")).status_code, 404)
+
+    def test_any_answer_can_be_exported_by_its_owner(self):
+        conversation = Conversation.objects.create(user=self.partner, title="Question")
+        answer = Message.objects.create(conversation=conversation, role=Message.ASSISTANT,
+                                        content=REPORT_MD)
+        url = reverse("assistant:export", kwargs={"pk": answer.pk, "fmt": "pdf"})
+        self.client.login(email=self.other_partner.email, password=PASSWORD)
+        self.assertEqual(self.client.get(url).status_code, 404)
+        self.client.login(email=self.partner.email, password=PASSWORD)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.content.startswith(b"%PDF"))
+        panel = self.client.get(reverse("assistant:panel"))
+        self.assertContains(panel, url)

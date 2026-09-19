@@ -61,6 +61,16 @@ the page the figure came from; row counts are capped at 50.
 
 Provider: OpenAI Chat Completions with function calling (`openai` SDK).
 
+Reports: ask for "un rapport", "a Word document" or "a PDF" and the model
+gathers the figures, then calls the `generate_report` tool with the whole
+report in Markdown. The report is stored as text (`assistant.Report`) and
+rendered on download as Word (python-docx) or PDF (xhtml2pdf) at
+`/fr/assistant/reports/<token>/<docx|pdf>/`, owner only, with the portal
+links made absolute. Any other answer can be exported the same way from the
+"Download: Word · PDF" links under it. That tool is the one thing in the
+loop that writes to the database, and it only writes the assistant's own
+report row.
+
 | Variable | Purpose |
 |---|---|
 | `OPENAI_API_KEY` | required; without it the drawer opens but says it is not configured |
