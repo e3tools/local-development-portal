@@ -81,7 +81,7 @@ Shape of v1:
 - **Data protection:** partner scope enforced in the query API, not the prompt. Sensitive GRM categories and complainant fields never leave the database layer. Users module excluded entirely.
 - **Wrong answers:** mitigated by typed queries plus a golden set of 50 question/answer pairs run before each release. Target: 95 % exact-figure match.
 - **Over-reliance:** answers carry "computed from LDP data on <date>, not an official UCP statement". Official reporting stays with UCP.
-- **Cost:** budget cap per user per day; typical question should be well under 10 tool calls. We measure in the pilot before committing to a plan.
+- **Cost:** one platform-wide daily token cap, set by the UCP administrator in the portal (`/administration/ia`, default 2 M tokens/day) and reset at 00:00 UTC (midnight in Lomé). The agent checks the cap before every model call; once reached it answers with a fixed "daily budget reached, try again after midnight" message and makes no call. Input, output and cache tokens all count, so the cap tracks the invoice. Implemented in `src/lib/ai-budget.ts` (tested, storage-agnostic). Per-user caps are v2. Typical question should be well under 10 tool calls; we measure in the pilot before committing to a plan.
 - **Language quality:** French is primary; we test French prompts first, English second.
 - **Adoption risk:** partners may still email. Mitigation: UCP replies to data emails with a link to the chat and the answer it gave.
 

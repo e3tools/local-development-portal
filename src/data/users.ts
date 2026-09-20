@@ -9,6 +9,7 @@ export const PERMISSIONS: { module: string; roles: Partial<Record<Role, "Lecture
   { module: "Mécanisme de gestion des plaintes", roles: { "Administrateur UCP": "Admin", "Coordonnateur régional": "Validation", "Chargé de suivi-évaluation": "Lecture", "Point focal communal": "Écriture", "Animateur cantonal": "Écriture", "Agent de terrain": "Écriture" } },
   { module: "Vue partenaires", roles: { "Administrateur UCP": "Admin", "Coordonnateur régional": "Écriture", "Chargé de suivi-évaluation": "Écriture", "Point focal communal": "Lecture", "Partenaire (lecture seule)": "Lecture" } },
   { module: "Gestion des utilisateurs", roles: { "Administrateur UCP": "Admin", "Coordonnateur régional": "Écriture" } },
+  { module: "Assistant IA (budget quotidien)", roles: { "Administrateur UCP": "Admin", "Chargé de suivi-évaluation": "Lecture" } },
 ];
 
 export const USERS: User[] = [
