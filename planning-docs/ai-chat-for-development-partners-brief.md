@@ -81,9 +81,35 @@ Shape of v1:
 - **Data protection:** partner scope enforced in the query API, not the prompt. Sensitive GRM categories and complainant fields never leave the database layer. Users module excluded entirely.
 - **Wrong answers:** mitigated by typed queries plus a golden set of 50 question/answer pairs run before each release. Target: 95 % exact-figure match.
 - **Over-reliance:** answers carry "computed from LDP data on <date>, not an official UCP statement". Official reporting stays with UCP.
-- **Cost:** budget cap per user per day; typical question should be well under 10 tool calls. We measure in the pilot before committing to a plan.
+- **Cost:** one platform-wide daily token cap, set by the UCP administrator in the portal (`/administration/ia`, default 2 M tokens/day) and reset at 00:00 UTC (midnight in Lomé). The agent checks the cap before every model call; once reached it answers with a fixed "daily budget reached, try again after midnight" message and makes no call. Input, output and cache tokens all count, so the cap tracks the invoice. Implemented in `src/lib/ai-budget.ts` (tested, storage-agnostic). Per-user caps are v2. Typical question should be well under 10 tool calls; we measure in the pilot before committing to a plan.
 - **Language quality:** French is primary; we test French prompts first, English second.
 - **Adoption risk:** partners may still email. Mitigation: UCP replies to data emails with a link to the chat and the answer it gave.
+
+### Access control for the daily token cap (phase 1, Django)
+
+The mockup only declares the rule (permissions matrix on `/utilisateurs`); nothing enforces it. In COSO-MIS the check goes on the views that read and write the setting, using the existing mixins in `cosomis/usermanager/permissions.py`. Decided mapping:
+
+| Action | Portal role (mockup) | Django group | Mixin on the view |
+|---|---|---|---|
+| Change the cap (POST) | Administrateur UCP | `Admin` (or superuser) | `LoginRequiredApproveRequiredMixin` + `AdminPermissionRequiredMixin` |
+| See today's usage and the cap (GET) | Administrateur UCP, Chargé de suivi-évaluation (read) | `Admin`, `Evaluator` | `LoginRequiredApproveRequiredMixin` + `EvaluatorPermissionRequiredMixin` (already lets `Admin` through) |
+| Anyone else, partners included | no access | — | same mixins; they answer 404 to a signed-in user without the group, which is the app's convention |
+
+Sketch, so the implementer only fills in the store:
+
+```python
+class AiBudgetView(PageMixin, LoginRequiredApproveRequiredMixin, EvaluatorPermissionRequiredMixin, TemplateView):
+    """GET: today's usage, cap, next reset. Evaluator and Admin."""
+
+class AiBudgetUpdateView(LoginRequiredApproveRequiredMixin, AdminPermissionRequiredMixin, FormView):
+    """POST: set the cap. Admin only. Validates like validateDailyTokenLimit, stores who/when."""
+```
+
+Rules that go with it:
+
+- The agent endpoint itself never exposes the cap for writing; it only reads it through the store.
+- The write view records `updated_by` and `updated_at`; the GET shows them. Same audit fields as the mockup.
+- Regional coordinators are out on purpose: the cap is a project spending decision, not a regional one. If they need to see why the assistant is off, add `RegionalCoordinatorPermissionRequiredMixin` to the GET view only, never to the POST. Existing mixins do not compose with OR, so that case needs a small `UserPassesTestMixin` that accepts `Evaluator`, `RegionalCoordinator` and `Admin`.
 
 ## 7. Success metrics (pilot, 8 weeks, 3 partners)
 

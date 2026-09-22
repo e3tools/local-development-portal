@@ -12,6 +12,7 @@ const NAV = [
   { href: "/partenaires", label: "Vue partenaires", icon: "◫", hint: "Positions d'investissement" },
   { href: "/renforcement", label: "Renforcement des capacités", icon: "✎" },
   { href: "/utilisateurs", label: "Utilisateurs & rôles", icon: "⚙" },
+  { href: "/administration/ia", label: "Assistant IA", icon: "✦", hint: "Budget quotidien de jetons" },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {

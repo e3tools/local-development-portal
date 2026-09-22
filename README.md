@@ -15,6 +15,7 @@ Toutes les données (villages, personnes, montants, plaintes) sont synthétiques
 | `/partenaires` | Competitive view: partners & investment positions |
 | `/renforcement` | Capacity-building interfaces |
 | `/utilisateurs` | User management & roles |
+| `/administration/ia` | AI assistant: daily token budget (admin setting, see `planning-docs/ai-chat-for-development-partners-brief.md`) |
 
 ## Stack
 
@@ -24,7 +25,20 @@ Next.js 16 (App Router, 100 % statique via `generateStaticParams`), React 19, Ta
 npm install
 npm run dev     # http://localhost:3000
 npm run build   # prérend ~625 pages
+npm test        # tests unitaires (node --test) : budget quotidien de jetons de l'assistant IA
 ```
+
+## Assistant IA : budget quotidien de jetons
+
+L'assistant conversationnel décrit dans `planning-docs/ai-chat-for-development-partners-brief.md`
+n'est pas encore branché, mais son garde-fou de coût l'est : `src/lib/ai-budget.ts`
+impose un plafond de jetons par jour, commun à toute la plateforme, fixé par
+l'administrateur UCP sur `/administration/ia` et remis à zéro chaque jour à 00:00 UTC
+(minuit à Lomé). La boucle d'agent doit encadrer chaque appel au modèle avec
+`withDailyBudget` (ou `assertBudget` avant, `recordUsage` après) ; au-delà du plafond,
+`DailyTokenLimitExceededError` est levée et aucun appel n'est effectué. Le stockage
+passe par l'interface `BudgetStore` : mémoire pour les tests, `localStorage` pour la
+maquette, base de données en production.
 
 ## Déploiement Vercel (CI)
 
