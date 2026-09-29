@@ -81,6 +81,7 @@ class RegisterUsersByUploadingExcelAPIView(APIView):
                                     email=email,
                                     username=username,
                                     password=password,
+                                    phone=row.get('TELEPHONE').strip() if row.get('TELEPHONE') else None
                                     
                                 )
                             user.first_name = first_name
@@ -110,6 +111,9 @@ class RegisterUsersByUploadingExcelAPIView(APIView):
                             users_cant_see_organization.append(email)
 
                     else:
+                        if row.get('TELEPHONE'):
+                            user = User.objects.filter(email=email).update(phone=row.get('TELEPHONE').strip())
+                        
                         users_emails_already_exist.append(email)
 
 
