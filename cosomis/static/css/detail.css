@@ -25,7 +25,7 @@
 }
 
 .nav-tabs .nav-link.active {
-    border-bottom: 5px solid #009639;
+    border-bottom: 5px solid var(--brand-primary);
 }
 
 .rounded-table {

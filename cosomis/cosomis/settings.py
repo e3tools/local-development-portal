@@ -62,12 +62,12 @@ PROGRAM_NAME = env(
 if not PROGRAM_NAME:
     PROGRAM_NAME = _('Emergency program to strengthen community resilience and security')
 
-# UI colour variant: "green" follows the brand palette, "blue" restores the former
-# blue/indigo look. Drives info alerts/callouts (static/css/custom.css) and the
-# village CDD planning-cycle tab (planning_cycle.html). Exposed to templates as
-# data-ui-color on <html>.
+# Brand colour theme: "green" (default), "blue" (the former indigo look) or "red".
+# Switches the --brand-* tokens in static/css/custom.css (buttons, links, sidebar,
+# tabs, headers...) through data-ui-color on <html>; server-side output (reports,
+# <meta> colours) reads cosomis/ui_theme.py. Status colours stay unchanged.
 UI_COLOR = env('UI_COLOR', default='green')
-if UI_COLOR not in ('green', 'blue'):
+if UI_COLOR not in ('green', 'blue', 'red'):
     UI_COLOR = 'green'
 
 

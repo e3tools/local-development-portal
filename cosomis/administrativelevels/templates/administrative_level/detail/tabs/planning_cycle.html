@@ -16,16 +16,16 @@
 
 <style>
     .cdd-cycle {
-        /* Palette — green by default, blue when settings.UI_COLOR = "blue"
-           (see [data-ui-color="blue"] .cdd-cycle below). */
-        --cdd-done: var(--brand-primary, #009639);
-        --cdd-done-soft: var(--brand-primary-soft, #eaf4ec);
-        --cdd-strong: var(--brand-primary-darker, #00562f);
-        --cdd-border: var(--brand-primary-border, #a7d7b6);
-        --cdd-bar: #9be7b6;
-        --cdd-glow: rgba(0, 150, 57, .12);
-        --cdd-shadow: rgba(0, 86, 47, .08);
-        --cdd-phases-bg: linear-gradient(135deg, #00a651, #007a2e);
+        /* Brand palette — follows settings.UI_COLOR via the --brand-* tokens
+           (static/css/custom.css). */
+        --cdd-done: var(--brand-primary);
+        --cdd-done-soft: var(--brand-primary-soft);
+        --cdd-strong: var(--brand-primary-darker);
+        --cdd-border: var(--brand-primary-border);
+        --cdd-bar: var(--brand-primary-border);
+        --cdd-glow: rgba(var(--brand-primary-rgb), .12);
+        --cdd-shadow: rgba(var(--brand-primary-darker-rgb), .08);
+        --cdd-phases-bg: linear-gradient(135deg, var(--brand-primary-light), var(--brand-primary-dark));
         --cdd-progress: #f59e0b;
         --cdd-progress-soft: #fef3e2;
         --cdd-idle: #adb5bd;
@@ -34,18 +34,6 @@
         --cdd-error-soft: #fdecee;
         --cdd-line: #e6e9ec;
         color: #3a4750;
-    }
-
-    /* settings.UI_COLOR = "blue": the indigo palette this tab originally shipped with. */
-    [data-ui-color="blue"] .cdd-cycle {
-        --cdd-done: #4f46e5;
-        --cdd-done-soft: #eef2ff;
-        --cdd-strong: #3730a3;
-        --cdd-border: #c7d2fe;
-        --cdd-bar: #c7d2fe;
-        --cdd-glow: rgba(79, 70, 229, .14);
-        --cdd-shadow: rgba(79, 70, 229, .08);
-        --cdd-phases-bg: linear-gradient(135deg, #4f46e5, #4338ca);
     }
 
     /* ---------- Overview header ---------- */

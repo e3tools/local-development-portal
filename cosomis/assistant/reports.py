@@ -18,12 +18,16 @@ import markdown
 from bs4 import BeautifulSoup, NavigableString, Tag
 from django.utils.text import slugify
 
+from cosomis.ui_theme import brand_palette
+
 FORMATS = {
     "docx": ("application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx"),
     "pdf": ("application/pdf", ".pdf"),
 }
 DEFAULT_FORMATS = ["docx", "pdf"]
-LINK_COLOUR = "00562F"  # --brand-primary-darker
+def _link_colour():
+    """--brand-primary-darker for the configured UI_COLOR, as Word expects it."""
+    return brand_palette()["primary_darker"].lstrip("#").upper()
 
 
 class ReportError(Exception):
@@ -177,7 +181,7 @@ def _docx_hyperlink(paragraph, text, url):
     run = OxmlElement("w:r")
     props = OxmlElement("w:rPr")
     colour = OxmlElement("w:color")
-    colour.set(qn("w:val"), LINK_COLOUR)
+    colour.set(qn("w:val"), _link_colour())
     underline = OxmlElement("w:u")
     underline.set(qn("w:val"), "single")
     props.append(colour)
@@ -193,30 +197,36 @@ def _docx_hyperlink(paragraph, text, url):
 
 # -- PDF --------------------------------------------------------------------
 
-PDF_CSS = """
-@page { size: A4; margin: 2cm 1.8cm; }
-body { font-family: Helvetica, Arial, sans-serif; font-size: 10.5pt; color: #111827; line-height: 1.4; }
-h1.report-title { font-size: 20pt; color: #00562f; margin: 0 0 4pt; }
-p.report-meta { color: #6b7280; font-size: 9pt; margin: 0 0 14pt; }
-h1 { font-size: 15pt; color: #00562f; margin: 14pt 0 6pt; }
-h2 { font-size: 13pt; color: #00562f; margin: 12pt 0 5pt; }
-h3, h4 { font-size: 11pt; color: #00562f; margin: 10pt 0 4pt; }
-p { margin: 0 0 6pt; }
-ul, ol { margin: 0 0 6pt 14pt; }
-table { width: 100%; border-collapse: collapse; margin: 4pt 0 8pt; font-size: 9.5pt; }
-th, td { border: 1px solid #cbd5d1; padding: 3pt 5pt; text-align: left; vertical-align: top; }
-th { background-color: #eaf4ec; color: #00562f; }
-a { color: #00562f; text-decoration: underline; }
-code { font-family: Courier, monospace; font-size: 9pt; }
-p.report-footer { color: #6b7280; font-size: 8.5pt; margin-top: 16pt; }
+# Brand colours are filled in from the UI_COLOR palette (xhtml2pdf has no CSS
+# variables); literal braces are doubled for str.format.
+PDF_CSS_TEMPLATE = """
+@page {{ size: A4; margin: 2cm 1.8cm; }}
+body {{ font-family: Helvetica, Arial, sans-serif; font-size: 10.5pt; color: #111827; line-height: 1.4; }}
+h1.report-title {{ font-size: 20pt; color: {primary_darker}; margin: 0 0 4pt; }}
+p.report-meta {{ color: #6b7280; font-size: 9pt; margin: 0 0 14pt; }}
+h1 {{ font-size: 15pt; color: {primary_darker}; margin: 14pt 0 6pt; }}
+h2 {{ font-size: 13pt; color: {primary_darker}; margin: 12pt 0 5pt; }}
+h3, h4 {{ font-size: 11pt; color: {primary_darker}; margin: 10pt 0 4pt; }}
+p {{ margin: 0 0 6pt; }}
+ul, ol {{ margin: 0 0 6pt 14pt; }}
+table {{ width: 100%; border-collapse: collapse; margin: 4pt 0 8pt; font-size: 9.5pt; }}
+th, td {{ border: 1px solid #cbd5d1; padding: 3pt 5pt; text-align: left; vertical-align: top; }}
+th {{ background-color: {primary_soft}; color: {primary_darker}; }}
+a {{ color: {primary_darker}; text-decoration: underline; }}
+code {{ font-family: Courier, monospace; font-size: 9pt; }}
+p.report-footer {{ color: #6b7280; font-size: 8.5pt; margin-top: 16pt; }}
 """
+
+
+def _pdf_css():
+    return PDF_CSS_TEMPLATE.format(**brand_palette())
 
 
 def _pdf(title, soup, meta, footer):
     from xhtml2pdf import pisa
 
     document = (
-        "<html><head><meta charset='utf-8'><style>" + PDF_CSS + "</style></head><body>"
+        "<html><head><meta charset='utf-8'><style>" + _pdf_css() + "</style></head><body>"
         f"<h1 class='report-title'>{html.escape(title)}</h1>"
         + (f"<p class='report-meta'>{html.escape(meta)}</p>" if meta else "")
         + str(soup)

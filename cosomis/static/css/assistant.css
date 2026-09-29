@@ -381,7 +381,7 @@ body.assistant-open .assistant-drawer {
 .assistant-form__input:focus {
     outline: none;
     border-color: var(--brand-primary);
-    box-shadow: 0 0 0 3px rgba(0, 150, 57, .15);
+    box-shadow: 0 0 0 3px rgba(var(--brand-primary-rgb), .15);
 }
 .assistant-form__input:disabled { background: #f3f4f6; }
 .assistant-send {
@@ -396,7 +396,7 @@ body.assistant-open .assistant-drawer {
     cursor: pointer;
 }
 .assistant-send:hover:not(:disabled) { background: var(--brand-primary-dark); }
-.assistant-send:focus-visible { outline: 3px solid rgba(0, 150, 57, .35); outline-offset: 1px; }
+.assistant-send:focus-visible { outline: 3px solid rgba(var(--brand-primary-rgb), .35); outline-offset: 1px; }
 .assistant-send:disabled { opacity: .55; cursor: default; }
 .assistant-send__spin { display: none; }
 .assistant-send.htmx-request .assistant-send__icon { display: none; }

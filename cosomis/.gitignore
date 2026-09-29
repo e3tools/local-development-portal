@@ -34,3 +34,5 @@ _uv/
 .agents/
 .claude/skills/
 skills-lock.json
+
+../context/

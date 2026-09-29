@@ -1,7 +1,7 @@
 {% load bootstrap4 static i18n %}
 
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" data-ui-color="{{ UI_COLOR|default:'green' }}">
 
 <head>
 	<meta charset="utf-8"/>
@@ -11,7 +11,7 @@
 	<meta name="author" content=""/>
 	<link rel="icon" type="image/jpeg" href="{% static 'images/logos/PURS.png' %}">
 	<link rel="apple-touch-icon" href="{% static 'images/logos/PURS.png' %}">
-	<meta name="msapplication-TileColor" content="#009639">
+	<meta name="msapplication-TileColor" content="{{ UI_PRIMARY_COLOR|default:'#009639' }}">
 	<title>{% translate 'Log in' %}</title>
 
 	<!-- Google Font: Source Sans Pro -->
@@ -25,7 +25,7 @@
 	<link rel="stylesheet" href="{% static 'AdminLTE/dist/css/adminlte.css' %}"/>
 	<link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
 	<style>
-		.login-page { background: linear-gradient(135deg, #f5f8f5 0%, #eaf4ec 100%); }
+		.login-page { background: linear-gradient(135deg, var(--brand-primary-faint) 0%, var(--brand-primary-soft) 100%); }
 		.login-box { width: 420px; max-width: 92vw; }
 		.login-logo { margin-bottom: 1rem; }
 		.login-logo .brand-mark {
@@ -37,19 +37,19 @@
 			border-radius: 16px;
 			background: #ffffff;
 			padding: 12px;
-			box-shadow: 0 8px 24px rgba(0, 86, 47, .12);
+			box-shadow: 0 8px 24px rgba(var(--brand-primary-darker-rgb), .12);
 		}
 		.login-logo .structure_name {
 			font-family: 'Inter', 'Source Sans Pro', sans-serif;
 			font-weight: 600;
 			font-size: 1.1rem;
 			line-height: 1.35;
-			color: #00562f;
+			color: var(--brand-primary-darker);
 			margin: 0;
 			text-align: center;
 			letter-spacing: .2px;
 		}
-		.card { border: 0; border-radius: 14px; box-shadow: 0 12px 32px rgba(0, 86, 47, .10); }
+		.card { border: 0; border-radius: 14px; box-shadow: 0 12px 32px rgba(var(--brand-primary-darker-rgb), .10); }
 		.login-card-body { border-radius: 14px; }
 		{% comment %} .btn-primary is now brand green from custom.css; no inline override needed. {% endcomment %}
 	</style>

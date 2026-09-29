@@ -47,7 +47,7 @@
         .stat-card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
         .stat-card .card-body { padding: 16px 18px; }
         .stat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .stat-icon { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #eaf4ec; color: #009639; border-radius: 8px; flex-shrink: 0; }
+        .stat-icon { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: var(--brand-primary-soft); color: var(--brand-primary); border-radius: 8px; flex-shrink: 0; }
         .stat-icon svg { width: 18px; height: 18px; }
         .stat-title { font-size: 12px; font-weight: 600; color: #6b7280; margin: 0; text-transform: uppercase; letter-spacing: .04em; }
         .stat-value { font-size: 30px; font-weight: 700; color: #111827; line-height: 1.1; margin: 0; word-break: break-word; }
@@ -184,7 +184,7 @@
                                     </div>
                                 </div>
                                 <div id="adm-filter-loading" class="adm-filter-loading" role="status" aria-live="polite"
-                                     style="align-items:center; gap:8px; padding:4px 2px; color:var(--brand-muted,#6c757d); font-size:13px;" hidden>
+                                     style="align-items:center; gap:8px; padding:4px 2px; color:var(--brand-muted); font-size:13px;" hidden>
                                     <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                                     <span>{% translate 'Loading the next level…' %}</span>
                                 </div>
@@ -565,7 +565,7 @@
                         'source-layer': 'country_boundaries',
                         'type': 'fill',
                         'paint': {
-                            'fill-color': '#009639',
+                            'fill-color': '{{ UI_PRIMARY_COLOR|default:"#009639" }}',
                             'fill-opacity': 0.2,
                         },
                     },

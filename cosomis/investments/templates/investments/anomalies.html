@@ -29,14 +29,14 @@
         }
         .anomaly-tab:hover {
             background: #ffffff;
-            color: #3730a3;
+            color: var(--brand-primary-darker);
             text-decoration: none;
             box-shadow: 0 2px 8px rgba(15, 23, 42, .07);
         }
         .anomaly-tab.is-active {
             background: #ffffff;
-            color: #3730a3;
-            box-shadow: 0 4px 14px rgba(55, 48, 163, .16);
+            color: var(--brand-primary-darker);
+            box-shadow: 0 4px 14px rgba(var(--brand-primary-darker-rgb), .16);
         }
         .anomaly-tab-icon {
             width: 26px;
@@ -45,19 +45,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #e6e8fb;
-            color: #4f46e5;
+            background: var(--brand-primary-soft);
+            color: var(--brand-primary);
             font-size: 11.5px;
             flex: 0 0 auto;
             transition: background .15s ease, color .15s ease;
         }
         .anomaly-tab.is-active .anomaly-tab-icon {
-            background: #4f46e5;
+            background: var(--brand-primary);
             color: #ffffff;
         }
         .anomaly-count { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #fee2e2; color: #b91c1c; }
         .anomaly-count.is-zero { background: #dcfce7; color: #15803d; }
-        .anomaly-tab.is-active .anomaly-count { background: #ede9fe; color: #4f46e5; }
+        .anomaly-tab.is-active .anomaly-count { background: var(--brand-primary-soft-2); color: var(--brand-primary); }
         .anomaly-tab.is-active .anomaly-count.is-zero { background: #dcfce7; color: #15803d; }
         .anomaly-table { width: 100%; font-size: 13px; }
         .anomaly-table th { white-space: nowrap; color: #6b7280; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: .03em; }
@@ -73,7 +73,7 @@
         .anomaly-group-card .anomaly-group-header { padding: 8px 12px; background: #f8f9fa; font-weight: 700; font-size: 13px; border-bottom: 1px solid #f1f3f5; }
         .anomaly-pair-side b { display: block; }
         .anomaly-pair-side .anomaly-actions { margin-top: 4px; }
-        .anomaly-panel-title { font-weight: 700; font-size: 1.05rem; color: #3730a3; margin: 0 0 1rem; display: flex; align-items: center; gap: 10px; }
+        .anomaly-panel-title { font-weight: 700; font-size: 1.05rem; color: var(--brand-primary-darker); margin: 0 0 1rem; display: flex; align-items: center; gap: 10px; }
     </style>
 {% endblock %}
 

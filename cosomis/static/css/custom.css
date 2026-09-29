@@ -21,6 +21,10 @@
     --brand-primary-soft: #eaf4ec;   /* tints / hover backgrounds */
     --brand-primary-soft-2: #d6ecdc; /* slightly stronger green tint */
     --brand-primary-border: #a7d7b6; /* green hairline / hover borders */
+    --brand-primary-faint: #f0f8f2;  /* near-white tint (gradient ends) */
+    /* RGB triplets for translucent shadows/rings: rgba(var(--…-rgb), .2) */
+    --brand-primary-rgb: 0, 150, 57;
+    --brand-primary-darker-rgb: 0, 86, 47;
 
     /* Secondary — deep forest green for emphasis, headers, dark surfaces. */
     --brand-secondary: #00562f;
@@ -38,9 +42,9 @@
     --color-success: #2e7d32;
     --color-danger: #dc3545;
     --color-warning: #f59e0b;
-    --color-info: #00562f;
-    /* Info alerts/callouts — green by default; switched to blue by
-       settings.UI_COLOR (see :root[data-ui-color="blue"] below). */
+    --color-info: var(--brand-primary-darker);
+    /* Info alerts/callouts — brand green by default; classic info blue on
+       the other UI_COLOR themes (see the theme blocks below). */
     --alert-info-bg: var(--brand-primary-soft);
     --alert-info-border: var(--brand-primary-border);
     --alert-info-accent: var(--brand-primary);
@@ -49,8 +53,49 @@
                   'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* Opt-in classic blue for info alerts/callouts (UI_COLOR=blue). */
+/* -------------------------------------------------------------------------
+   UI_COLOR themes (settings.UI_COLOR -> data-ui-color on <html>). Green is
+   the :root default above. Only the brand identity switches: status colours
+   (success / danger / warning), the accent and data-viz palettes stay put.
+   ------------------------------------------------------------------------- */
+/* Blue — the indigo look the platform had before the green rebrand. */
 :root[data-ui-color="blue"] {
+    --brand-primary: #4f46e5;
+    --brand-primary-light: #6366f1;
+    --brand-primary-dark: #4338ca;
+    --brand-primary-darker: #3730a3;
+    --brand-primary-soft: #eef2ff;
+    --brand-primary-soft-2: #e0e7ff;
+    --brand-primary-border: #c7d2fe;
+    --brand-primary-faint: #f5f7ff;
+    --brand-primary-rgb: 79, 70, 229;
+    --brand-primary-darker-rgb: 55, 48, 163;
+    --brand-secondary: #3730a3;
+    --brand-secondary-dark: #312e81;
+    --brand-secondary-soft: #e0e7ff;
+}
+
+/* Red — deeper than --color-danger so primary actions don't read as errors. */
+:root[data-ui-color="red"] {
+    --brand-primary: #b91c1c;
+    --brand-primary-light: #dc2626;
+    --brand-primary-dark: #991b1b;
+    --brand-primary-darker: #7f1d1d;
+    --brand-primary-soft: #fef2f2;
+    --brand-primary-soft-2: #fee2e2;
+    --brand-primary-border: #fca5a5;
+    --brand-primary-faint: #fff7f7;
+    --brand-primary-rgb: 185, 28, 28;
+    --brand-primary-darker-rgb: 127, 29, 29;
+    --brand-secondary: #7f1d1d;
+    --brand-secondary-dark: #450a0a;
+    --brand-secondary-soft: #fee2e2;
+    --color-info: #1e40af; /* info must not look like an error on red */
+}
+
+/* Info alerts/callouts keep the classic info blue on non-green themes. */
+:root[data-ui-color="blue"],
+:root[data-ui-color="red"] {
     --alert-info-bg: #eff6ff;
     --alert-info-border: #93c5fd;
     --alert-info-accent: #3b82f6;
@@ -109,7 +154,7 @@ h1, h2, h3, h4, h5, h6,
 
 .btn:focus,
 .btn.focus {
-    box-shadow: 0 0 0 3px rgba(0, 150, 57, 0.18);
+    box-shadow: 0 0 0 3px rgba(var(--brand-primary-rgb), 0.18);
 }
 
 /* Visible keyboard focus — a real outline, not box-shadow alone, so focus
@@ -123,7 +168,7 @@ button:focus-visible,
 [role="button"]:focus-visible,
 .form-control:focus-visible,
 .custom-select:focus-visible {
-    outline: 2px solid var(--brand-primary-darker, #00562f);
+    outline: 2px solid var(--brand-primary-darker);
     outline-offset: 2px;
 }
 
@@ -148,7 +193,7 @@ button:focus-visible,
     color: #ffffff !important;
     opacity: 1;
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 150, 57, 0.25);
+    box-shadow: 0 4px 10px rgba(var(--brand-primary-rgb), 0.25);
 }
 .btn-primary:disabled,
 .btn-primary.disabled {
@@ -820,7 +865,7 @@ blockquote.quote-blue h6 {
 .nav-sidebar .nav-treeview > .nav-item > .nav-link.active {
     background-color: var(--brand-primary) !important;
     color: #ffffff !important;
-    box-shadow: 0 1px 4px rgba(0, 150, 57, 0.25);
+    box-shadow: 0 1px 4px rgba(var(--brand-primary-rgb), 0.25);
 }
 /* Sidebar hover — subtle green tint instead of the default gray/blue. */
 .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link:not(.active):hover {
@@ -860,6 +905,44 @@ a:not(.btn):not(.nav-link):not(.dropdown-item):not(.page-link):not(.brand-link).
 .text-info { color: var(--color-info) !important; }
 .border-info { border-color: var(--color-info) !important; }
 /* .alert-info lives with the other alert variants (Enhanced Alert System). */
+
+/* Remaining Bootstrap/AdminLTE blue (#007bff / #80bdff) surfaces → brand. */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: var(--brand-primary);
+    color: #ffffff;
+}
+.form-control:focus,
+.custom-select:focus,
+.custom-file-input:focus ~ .custom-file-label {
+    border-color: var(--brand-primary-border);
+    box-shadow: 0 0 0 0.2rem rgba(var(--brand-primary-rgb), 0.25);
+}
+.custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 0.2rem rgba(var(--brand-primary-rgb), 0.25);
+}
+.custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+    border-color: var(--brand-primary-border);
+}
+/* Select2 — the plugin's [aria-selected] rule outranks AdminLTE's, so match it. */
+.select2-container--default .select2-results__option--highlighted,
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--brand-primary);
+    color: #ffffff;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary-dark);
+    color: #ffffff;
+}
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default .select2-selection--multiple:focus,
+.select2-container--default .select2-dropdown .select2-search__field:focus,
+.select2-container--default .select2-search--inline .select2-search__field:focus {
+    border-color: var(--brand-primary-border);
+}
 
 /*# sourceMappingURL=../AdminLTE/dist/css/adminlte.css.map */
 .main-title {
@@ -1043,7 +1126,7 @@ a:not(.btn):not(.nav-link):not(.dropdown-item):not(.page-link):not(.brand-link).
 
 .chevron-circle {
     margin: 15px 15px 15px 0;
-    background-color: rgba(0, 86, 47, 0.58);
+    background-color: rgba(var(--brand-primary-darker-rgb), 0.58);
 }
 
 .nav-profile-buttons a {

@@ -47,3 +47,5 @@ cosomis/.claude/worktrees/
 
 # Static files collected at build time
 cosomis/staticfiles/
+
+context/
