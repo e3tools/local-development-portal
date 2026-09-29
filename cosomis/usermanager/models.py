@@ -13,6 +13,8 @@ from cosomis.models_base import BaseModel
 def upload_to_user_photo(instance, filename):
     return f'users/{instance.pk}'
 
+def default_token_expiry():
+    return timezone.now() + TOKEN_LIFETIME
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -152,14 +154,14 @@ class UserToken(BaseModel):
     
     refresh_token = models.TextField(
         null=True, blank=True,
-        default=timezone.now() + TOKEN_LIFETIME,
+        default=default_token_expiry,
         verbose_name="Jeton de Rafraîchissement",
         help_text="Permet d'obtenir un nouveau jeton d'accès sans reconnexion."
     )
     
     service_name = models.CharField(max_length=100,default='External_API',verbose_name="Nom du Service Tiers")
     
-    expires_at = models.DateTimeField(default=timezone.now() + TOKEN_LIFETIME)
+    expires_at = models.DateTimeField(default=default_token_expiry)
 
 
     def __str__(self):
