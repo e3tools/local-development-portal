@@ -22,10 +22,15 @@
                         </div>
                         <div class="row justify-content-center">
                             <div class ="col-4">
-                                <form action="" method="post" enctype="multipart/form-data">
+                                <form action="" method="post" enctype="multipart/form-data" id="bulk-upload-form">
                                     {% csrf_token %}
                                     {% bootstrap_field form.xlsx_file %}
-                                    <input type="submit" class="btn btn-primary btn-block" value="{% translate 'Upload' %}">
+                                    <div class="invalid-feedback d-block" id="bulkUploadError" role="alert" style="display:none !important;"></div>
+                                    <button type="submit" class="btn btn-primary btn-block" id="bulkUploadSubmit" data-loading-text="{% translate 'Importing… this can take a moment' %}">
+                                        <span class="submit-spin spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        <span class="submit-label">{% translate 'Upload' %}</span>
+                                    </button>
+                                    <small class="form-text text-muted text-center mt-2">{% translate 'Excel .xlsx only, up to 5 MB. Large files may take a few seconds to import.' %}</small>
                                 </form>
                             </div>
                         </div>
@@ -33,4 +38,55 @@
                 </div>
             </div>
         </div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript">
+    // Client-side validation for the bulk XLSX upload (§3.9): catch the wrong file
+    // type or an oversized file before the round-trip.
+    (function () {
+        var form = document.getElementById('bulk-upload-form');
+        if (!form) return;
+        var input = form.querySelector('input[type="file"]');
+        var submit = document.getElementById('bulkUploadSubmit');
+        var errorBox = document.getElementById('bulkUploadError');
+        var MAX_BYTES = 5 * 1024 * 1024;
+        var I18N = {
+            type: "{% translate 'Please choose an Excel .xlsx file (not a CSV or .xls).' %}",
+            size: "{% translate 'This file is larger than 5 MB. Please split it or compress it.' %}"
+        };
+
+        function setError(msg) {
+            if (!errorBox) return;
+            if (msg) {
+                errorBox.textContent = msg;
+                errorBox.style.setProperty('display', 'block', 'important');
+                if (submit) submit.disabled = true;
+            } else {
+                errorBox.textContent = '';
+                errorBox.style.setProperty('display', 'none', 'important');
+                if (submit) submit.disabled = false;
+            }
+        }
+
+        function validate() {
+            var file = input && input.files && input.files[0];
+            if (!file) { setError(null); return true; }
+            var name = (file.name || '').toLowerCase();
+            if (!name.endsWith('.xlsx')) { setError(I18N.type); return false; }
+            if (file.size > MAX_BYTES) { setError(I18N.size); return false; }
+            setError(null);
+            return true;
+        }
+
+        if (input) input.addEventListener('change', validate);
+        form.addEventListener('submit', function (e) {
+            if (!validate()) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+        });
+    })();
+</script>
 {% endblock %}

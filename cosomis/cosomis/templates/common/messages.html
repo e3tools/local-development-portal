@@ -1,9 +1,20 @@
 {% load i18n %}
+{% comment %} <<<<<<< HEAD
 
+======= {% endcomment %}
+{% comment %}
+    S7: danger/error messages stay inline + prominent (they scroll into view via
+    grm.js). Everything else is emitted as a hidden .js-server-toast node that
+    notifications.js turns into an accessible toast — both on full-page load and
+    on the AJAX-injected path (showPopupMessage). The toast type falls back to
+    'info' when extra_tags is missing, so a blank tag never yields a broken class.
+{% endcomment %}
+{% comment %} >>>>>>> 09b5212653f30928a540d08a7f8fd73ec7bb8f68 {% endcomment %}
 {% if messages %}
-    {% if messages|length > 1 %}
-        {% for message in messages %}
+    {% for message in messages %}
+        {% if message.extra_tags == 'danger' or message.extra_tags == 'error' or message.level >= 40 %}
             <div class="row">
+{% comment %} <<<<<<< HEAD
                 <div class="col-md-12">
                     <div class="alert alert-{{ message.extra_tags }} alert-dismissible fade show" role="alert">
                         {% if message.extra_tags == 'success' %}
@@ -26,6 +37,13 @@
                                 {% translate 'Information' %} :
                             {% endif %}
                         </strong>
+======= {% endcomment %}
+                <div class="col-md-12 text-center">
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="{% translate 'Close' %}">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+{% comment %} >>>>>>> 09b5212653f30928a540d08a7f8fd73ec7bb8f68 {% endcomment %}
                         {{ message | safe }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -33,6 +51,7 @@
                     </div>
                 </div>
             </div>
+{% comment %} <<<<<<< HEAD
         {% endfor %}
     {% else %}
         {% for message in messages %}
@@ -71,4 +90,10 @@
             {% endif %}
         {% endfor %}
     {% endif %}
+======= {% endcomment %}
+        {% else %}
+            <div class="js-server-toast" data-toast-type="{{ message.extra_tags|default:'info' }}" hidden>{{ message | safe }}</div>
+        {% endif %}
+    {% endfor %}
+{% comment %} >>>>>>> 09b5212653f30928a540d08a7f8fd73ec7bb8f68 {% endcomment %}
 {% endif %}

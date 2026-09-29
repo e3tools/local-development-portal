@@ -1,4 +1,5 @@
 import math
+from collections import defaultdict
 from xml.sax.handler import property_interning_dict
 
 from django.db.models import Count, Q, Subquery, F, Sum, Case, When, Value, IntegerField
@@ -484,26 +485,38 @@ class StatisticsView(View):
         for ext in IMAGE_EXTENSIONS:
             images_extensions_query |= Q(url__icontains=ext)
 
-        for subproject in filtered_subprojects:
-            # Chercher des photos dans les moments du processus,
-            # en priorisant : Achevé > En cours
-            attachments = []
-            for moment in [
+        # Fetch all completed-infrastructure image attachments in a single query
+        # and group them in Python. The previous per-subproject query was an N+1
+        # that fired one DB hit per pin (~12k queries, ~37s on the full dataset).
+        attachments_by_investment = defaultdict(list)
+        attachment_rows = (
+            Attachment.objects.filter(
+                investment__id__in=[sp['id'] for sp in filtered_subprojects],
+                process_moment__in=[
                 Attachment.COMPLETED_INFRASTRUCTURE,
                 Attachment.INFRASTRUCTURE_IN_PROGRESS,
-            ]:
-                attachments = list(
-                    Attachment.objects.filter(
-                        investment__id=subproject['id'],
-                        process_moment=moment,
-                    ).filter(images_extensions_query)
-                    .values_list('url', flat=True)[:3]
+            ],
+            )
+            .filter(images_extensions_query)
+            .annotate(
+                process_moment_order=Case(
+                    When(process_moment=Attachment.COMPLETED_INFRASTRUCTURE, then=Value(0)),
+                    When(process_moment=Attachment.INFRASTRUCTURE_IN_PROGRESS, then=Value(1)),
+                    output_field=IntegerField(),
                 )
-                if attachments:
-                    break  # On a trouvé des photos, inutile de chercher plus loin
+            )
+            .order_by("investment__id", "process_moment_order", "-id")
+            .values_list('investment__id', 'url')
+        )
+        for investment_id, url in attachment_rows:
+            urls = attachments_by_investment[investment_id]
+            if len(urls) < 3:
+                urls.append(url)
 
-            if attachments:
-                subproject['attachments'] = attachments
+        for subproject in filtered_subprojects:
+            urls = attachments_by_investment.get(subproject['id'])
+            if urls:
+                subproject['attachments'] = urls
 
         data = {
             'total_communities': total_communities,

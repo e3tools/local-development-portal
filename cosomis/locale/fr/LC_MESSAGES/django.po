@@ -136,6 +136,34 @@ msgstr "Source de financement"
 msgid "Collaborators"
 msgstr "Collaborateurs"
 
+msgid "XLSX File"
+msgstr "Fichier XLSX"
+
+msgid ""
+"This file could not be read as an Excel (.xlsx) workbook. Make sure you "
+"upload the .xlsx template — not a CSV or an older .xls file."
+msgstr ""
+"Ce fichier n'a pas pu être lu comme un classeur Excel (.xlsx). Assurez-vous "
+"de téléverser le modèle .xlsx — et non un CSV ou un ancien fichier .xls."
+
+#, python-format
+msgid ""
+"The file is missing required column(s): %(cols)s. Please use the provided "
+"template and keep its header row unchanged."
+msgstr ""
+"Le fichier ne contient pas la ou les colonnes requises : %(cols)s. Veuillez "
+"utiliser le modèle fourni et conserver sa ligne d'en-tête inchangée."
+
+#, python-format
+msgid ""
+"There was a problem with row %(row)s: check that the village ID and sector "
+"ID exist and that the cost, dates and rates are valid numbers. (Technical "
+"detail: %(err)s)"
+msgstr ""
+"Un problème est survenu à la ligne %(row)s : vérifiez que l'ID du village et"
+" l'ID du secteur existent et que le coût, les dates et les taux sont des "
+"nombres valides. (Détail technique : %(err)s)"
+
 #: .\administrativelevels\forms.py:193
 msgid "All regions"
 msgstr "Toutes les régions"
@@ -450,6 +478,18 @@ msgstr "Niveaux administratifs"
 msgid "Submit"
 msgstr "Soumettre"
 
+msgid "Some information is invalid. Please review the form and try again."
+msgstr ""
+"Certaines informations sont invalides. Veuillez vérifier le formulaire et "
+"réessayer.Certaines informations sont invalides. Veuillez vérifier le "
+"formulaire et réessayer."
+
+msgid "Something went wrong."
+msgstr "Une erreur s'est produite."
+
+msgid "Loading images…"
+msgstr "Chargement des images…"
+
 #: .\administrativelevels\templates\administrative_level\detail\index.html:67
 #: .\administrativelevels\templates\canton\canton_detail.html:61
 #: .\administrativelevels\templates\canton\canton_detail.html:213
@@ -680,6 +720,17 @@ msgstr "Bientôt disponible"
 msgid "We're building the Infrastructure and Services view for this village. Check back shortly."
 msgstr "Nous développons la vue Infrastructures et Services pour ce village. Revenez bientôt."
 
+#, python-format
+msgid "Photo of %(name)s"
+msgstr "Photo de %(name)s"
+
+msgid "Image unavailable"
+msgstr "Image indisponible"
+
+#, python-format
+msgid "No photo available for %(name)s"
+msgstr "Aucune photo disponible pour %(name)s"
+
 #: .\administrativelevels\templates\administrative_level\detail\index.html:278
 #: .\administrativelevels\templates\project\list.html:70
 #: .\investments\templates\investments\cart.html:64
@@ -770,6 +821,57 @@ msgstr "Pas encore de cycle de planification"
 msgid "Phases, activities and tasks for this village will appear here once the CDD cycle starts."
 msgstr "Les phases, activités et tâches de ce village apparaîtront ici dès le démarrage du cycle DCC."
 
+msgid "Assistant"
+msgstr "Assistant"
+
+msgid "Ask the portal"
+msgstr "Interroger le portail"
+
+msgid "Ask a question in French or English about villages, priorities, sub-projects, the planning cycle, programmes and packages. The assistant only reads the data you are allowed to see and can change nothing."
+msgstr "Posez une question, en français ou en anglais, sur les villages, les priorités, les sous-projets, le cycle de planification, les programmes et les paquets. L'assistant ne lit que les données auxquelles vous avez accès et ne peut rien modifier."
+
+msgid "The assistant is not configured on this deployment (missing OPENAI_API_KEY)."
+msgstr "L'assistant n'est pas configuré sur ce déploiement (OPENAI_API_KEY manquante)."
+
+msgid "Your question…"
+msgstr "Votre question…"
+
+msgid "Send"
+msgstr "Envoyer"
+
+msgid "Read-only. Answers are computed from portal data and are not an official UCP statement."
+msgstr "Lecture seule. Les réponses sont calculées à partir des données du portail et ne constituent pas une déclaration officielle de l'UCP."
+
+msgid "New conversation"
+msgstr "Nouvelle conversation"
+
+msgid "Data used"
+msgstr "Données utilisées"
+
+msgid "The assistant is unavailable right now."
+msgstr "L'assistant est indisponible pour le moment."
+
+msgid "Try one of these"
+msgstr "Essayez l'une de ces questions"
+
+msgid "The assistant is thinking…"
+msgstr "L'assistant réfléchit…"
+
+msgid "Enter to send, Shift+Enter for a new line"
+msgstr "Entrée pour envoyer, Maj+Entrée pour un retour à la ligne"
+
+msgid "%(program)s · %(date)s · %(name)s"
+msgstr "%(program)s · %(date)s · %(name)s"
+
+msgid "Generated from Local Development Portal data. This is not an official UCP statement."
+msgstr "Généré à partir des données du Portail de développement local. Ceci n'est pas une déclaration officielle de l'UCP."
+
+msgid "The file could not be generated."
+msgstr "Le fichier n'a pas pu être généré."
+
+msgid "Assistant answer"
+msgstr "Réponse de l'assistant"
+
 #: .\administrativelevels\templates\administrative_level\detail\task_detail.html:150
 msgid "Download all"
 msgstr "Téléchargez tout"
@@ -785,6 +887,9 @@ msgstr "N'a pas"
 #: .\administrativelevels\templates\administrative_level\list.html:134
 msgid "Search a level"
 msgstr "Rechercher un niveau"
+
+msgid "Loading the next level…"
+msgstr "Chargement du niveau suivant…"
 
 #: .\administrativelevels\templates\administrative_level\list.html:157
 #, python-format
@@ -998,6 +1103,17 @@ msgstr "Télécharger la sélection"
 #: .\dashboard\templates\dashboard_map.html:159
 msgid "More filters"
 msgstr "Plus de filtres"
+
+msgid "Loading more attachments…"
+msgstr "Chargement d'autres pièces jointes…"
+
+msgid "Could not load more attachments. Check your connection and try again."
+msgstr ""
+"Impossible de charger d'autres pièces jointes. Vérifiez votre connexion et "
+"réessayez."
+
+msgid "Retry"
+msgstr "Réessayer"
 
 #: .\administrativelevels\templates\attachments\attachments.html:429
 msgid "Choose attachments to view"
@@ -1361,6 +1477,12 @@ msgstr "Aucune donnée disponible."
 msgid "Loading…"
 msgstr "Chargement…"
 
+msgid "No priorities yet"
+msgstr "Aucune priorité pour le moment"
+
+msgid "No investment priorities have been recorded here yet."
+msgstr "Aucune priorité d'investissement n'a encore été enregistrée ici."
+
 #: .\administrativelevels\templates\canton\tabs\priorities.html:16
 #: .\administrativelevels\templates\commune\tabs\priorities.html:17
 msgid "Investment Types"
@@ -1607,7 +1729,7 @@ msgstr "Sous-projets par Secteur"
 #: .\administrativelevels\templates\canton_detail.html:136
 #, python-format
 msgid "Subprojects as %% of Total Financing"
-msgstr "Sous‑projets en %% du Financement Fotal"
+msgstr "Sous‑projets en %% du Financement Total"
 
 #: .\administrativelevels\templates\canton_detail.html:176
 msgid "Population and community details"
@@ -1631,6 +1753,12 @@ msgid ""
 "\t\t%(name)s in <u>PDF</u> or <u>MS-Word</u> format.\n"
 "\t"
 msgstr ""
+"\n"
+"\t\tCette section décrit la zone centrée sur %(latitude)s / %(longitude)s,\n"
+"\t\tqui comprend %(name)s. Vous pouvez consulter les données d’autres zones à\n"
+"\t\tl’aide du <u>Climate Cluster Vulnerability Tool</u> et télécharger un résumé de\n"
+"\t\t%(name)s au format <u>PDF</u> ou <u>MS-Word</u>.\n"
+"\t"
 
 #: .\administrativelevels\templates\climate\tabs\mapbox.html:24
 msgid "Ecosystem Classifications"
@@ -2237,6 +2365,21 @@ msgstr "Pour des instructions supplémentaires, veuillez télécharger le manuel
 msgid "here"
 msgstr "ici"
 
+msgid "Importing… this can take a moment"
+msgstr "Importation… cela peut prendre un instant"
+
+msgid ""
+"Excel .xlsx only, up to 5 MB. Large files may take a few seconds to import."
+msgstr ""
+"Excel .xlsx uniquement, jusqu'à 5 Mo. Les fichiers volumineux peuvent "
+"prendre quelques secondes à importer."
+
+msgid "Please choose an Excel .xlsx file (not a CSV or .xls)."
+msgstr "Veuillez choisir un fichier Excel .xlsx (et non un CSV ou un .xls)."
+
+msgid "This file is larger than 5 MB. Please split it or compress it."
+msgstr "Ce fichier dépasse 5 Mo. Veuillez le diviser ou le compresser."
+
 #: .\administrativelevels\templates\project\create\index.html:48
 #: .\administrativelevels\templates\project\list.html:9
 #: .\administrativelevels\views.py:1610
@@ -2371,6 +2514,9 @@ msgstr "Coût réel estimé"
 msgid "Actual Cost Spent"
 msgstr "Coût réel dépensé"
 
+msgid "Saving…"
+msgstr "Enregistrement…"
+
 #: .\administrativelevels\templates\project\detail.html:375
 msgid "Image"
 msgstr "Image"
@@ -2378,6 +2524,18 @@ msgstr "Image"
 #: .\administrativelevels\templates\project\detail.html:380
 msgid "Choose image"
 msgstr "Choisir une image"
+
+msgid "JPG or PNG, up to 5 MB."
+msgstr "JPG ou PNG, jusqu'à 5 Mo."
+
+msgid "Uploading…"
+msgstr "Téléversement…"
+
+msgid "Please choose a JPG or PNG image."
+msgstr "Veuillez choisir une image JPG ou PNG."
+
+msgid "This image is larger than 5 MB. Please choose a smaller file."
+msgstr "Cette image dépasse 5 Mo. Veuillez choisir un fichier plus petit."
 
 #: .\administrativelevels\templates\project\detail.html:433
 #: .\cdd_funnel\views.py:32 .\dashboard\templates\dashboard_map.html:582
@@ -2421,6 +2579,25 @@ msgstr "Nombre d'investissements"
 msgid "Total Funds"
 msgstr "Total des fonds"
 
+msgid "Project list pages"
+msgstr "Pages de la liste des projets"
+
+#, python-format
+msgid "Page %(num)s of %(total)s"
+msgstr "Page %(num)s sur %(total)s"
+
+msgid "No projects found"
+msgstr "Aucun projet trouvé"
+
+msgid "No projects match your search. Try a different term."
+msgstr "Aucun projet ne correspond à votre recherche. Essayez un autre terme."
+
+msgid "No projects yet"
+msgstr "Aucun projet pour le moment"
+
+msgid "Create your first project to get started."
+msgstr "Créez votre premier projet pour commencer."
+
 #: .\administrativelevels\templates\region\region_detail.html:32
 msgid "Region Overview"
 msgstr "Vue d'ensemble du canton"
@@ -2428,6 +2605,11 @@ msgstr "Vue d'ensemble du canton"
 #: .\administrativelevels\templates\shared\children_list_table.html:29
 msgid "No sub-levels under this administrative level."
 msgstr "Aucun sous‑niveau sous ce niveau administratif."
+
+msgid "Complaints could not be loaded right now. Please try again later."
+msgstr ""
+"Les plaintes n'ont pas pu être chargées pour le moment. Veuillez réessayer "
+"plus tard."
 
 #: .\administrativelevels\templates\shared\grm_table.html:3
 msgid "There are no complaints"
@@ -2551,6 +2733,17 @@ msgstr "Toutes les priorités"
 msgid "Projects"
 msgstr "Projets"
 
+msgid "Investment image uploaded."
+msgstr "Image de l'investissement téléversée."
+
+#, python-format
+msgid ""
+"The image could not be uploaded. Please use a JPG or PNG under 5 MB and try "
+"again. (Technical detail: %(reason)s)"
+msgstr ""
+"L'image n'a pas pu être téléversée. Veuillez utiliser un JPG ou un PNG de "
+"moins de 5 Mo et réessayer. (Détail technique : %(reason)s)"
+
 #: .\administrativelevels\views.py:1441 .\administrativelevels\views.py:1462
 msgid "Investment updated."
 msgstr "Investissement mis à jour."
@@ -2563,6 +2756,10 @@ msgstr "L'investissement n'a pas pu être mis à jour."
 #: .\administrativelevels\views.py:1587
 msgid "Project updated."
 msgstr "Projet mis à jour."
+
+#, python-format
+msgid "Successfully imported %(count)s investment(s) into the project."
+msgstr "%(count)s investissement(s) importé(s) avec succès dans le projet."
 
 #: .\administrativelevels\views.py:1681
 #: .\cosomis\templates\layouts\sidebar.html:85
@@ -2653,6 +2850,13 @@ msgstr "Villages avec infrastructures achevées"
 msgid "Unspecified"
 msgstr "Non spécifié"
 
+msgid ""
+"This stage no longer exists. It may have been renamed or removed — please "
+"reload the funnel."
+msgstr ""
+"Ce stade n’existe plus. Il a peut‑être été renommé ou supprimé — veuillez "
+"recharger l’entonnoir."
+
 #: .\cdd_funnel\templates\_stage_villages.html:6
 #, python-format
 msgid "%(counter)s village currently at this stage"
@@ -2680,6 +2884,9 @@ msgstr "Entonnoir du processus DCC"
 #: .\cdd_funnel\templates\cdd_funnel.html:132
 msgid "How villages progress through the Community-Driven Development pipeline — from initial engagement to delivered infrastructure. Click any stage to drill into the villages."
 msgstr "Comment les villages progressent dans le pipeline du Développement Communautaire — de l’engagement initial à la livraison des infrastructures. Cliquez sur une étape pour explorer les villages."
+
+msgid "recently"
+msgstr "récemment"
 
 #: .\cdd_funnel\templates\cdd_funnel.html:135
 msgid "Updated"
@@ -2725,6 +2932,10 @@ msgstr "Chaque bande représente le nombre de villages ayant atteint cette étap
 msgid "CDD funnel"
 msgstr "Processus DCC"
 
+#, python-format
+msgid "View villages at stage: %(name)s"
+msgstr "Voir les villages à l'étape : %(name)s"
+
 #: .\cdd_funnel\templates\cdd_funnel.html:235
 msgid "No villages found in the dataset."
 msgstr "Aucun village trouvé dans le jeu de données."
@@ -2736,6 +2947,13 @@ msgstr "référence"
 #: .\cdd_funnel\templates\cdd_funnel.html:263
 msgid "View villages"
 msgstr "Voir les villages"
+
+msgid "No stages configured"
+msgstr "Aucune étape configurée"
+
+msgid "The funnel has no stages to display for this dataset yet."
+msgstr ""
+"L'entonnoir n'a encore aucune étape à afficher pour ce jeu de données."
 
 #: .\cdd_funnel\templates\cdd_funnel.html:279
 msgid "Villages at the selected stage"
@@ -2952,6 +3170,26 @@ msgstr "Erreur interne du serveur"
 msgid "We track these errors automatically, but if the problem persists feel free to contact us. In the meantime, try refreshing."
 msgstr "Nous suivons ces erreurs automatiquement, mais si le problème persiste, n’hésitez pas à nous contacter. En attendant, essayez d’actualiser."
 
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Breadcrumb"
+msgstr "Fil d'Ariane"
+
+msgid "Home"
+msgstr "Accueil"
+
+msgid "Network error — please check your connection and try again."
+msgstr "Erreur réseau — veuillez vérifier votre connexion et réessayer."
+
+msgid "Your session has expired. Please reload the page and sign in again."
+msgstr ""
+"Votre session a expiré. Veuillez recharger la page et vous reconnecter."
+
+msgid "The server ran into a problem. Please try again in a moment."
+msgstr ""
+"Le serveur a rencontré un problème. Veuillez réessayer dans un instant."
+
 #: .\cosomis\templates\common\alerts.html:14
 #: .\cosomis\templates\common\messages.html:20
 msgid "Success"
@@ -3000,15 +3238,24 @@ msgstr "Version"
 msgid "Close this tab?"
 msgstr "Fermer cet onglet ?"
 
+msgid "Back"
+msgstr "Retour"
+
 #: .\cosomis\templates\layouts\navbar.html:24
 msgid "Project Cycle"
 msgstr "Cycle du projet"
+
+msgid "Toggle navigation menu"
+msgstr "Afficher/masquer le menu de navigation"
 
 #: .\cosomis\templates\layouts\navbar.html:56
 #: .\cosomis\templates\layouts\navbar.html:58
 #: .\usermanager\templates\email\confirmation_email.html:74
 msgid "Welcome"
 msgstr "Bienvenu(e)"
+
+msgid "Cart"
+msgstr "Panier"
 
 #: .\cosomis\templates\layouts\sidebar.html:38
 msgid "Fund a project"
@@ -3073,6 +3320,16 @@ msgstr "Une erreur est survenue..."
 #: .\cosomis\views.py:104
 msgid "The Step was successfully removed."
 msgstr "L'étape a été supprimée avec succès."
+
+msgid "No data to display"
+msgstr "Aucune donnée à afficher"
+
+msgid ""
+"No results match the selected administrative level. Try a different "
+"selection."
+msgstr ""
+"Aucun résultat ne correspond au niveau administratif sélectionné. Essayez "
+"une autre sélection."
 
 #: .\dashboard\templates\dashboard_administrativelevels.html:27
 #: .\dashboard\templates\dashboard_subprojects.html:27
@@ -3230,6 +3487,10 @@ msgstr "Sousprojets par étape en cours"
 #: .\dashboard\templates\dashboard_subprojects.html:83
 msgid "Number of sub-projects by administrative level, sector and step"
 msgstr "Montant de sous-projets par niveau administratif, secteur et étape"
+
+#, python-format
+msgid "Choose a %(level)s first to enable this filter."
+msgstr "Choisissez d'abord un %(level)s pour activer ce filtre."
 
 #: .\dashboard\templates\dashboard_summary.html:227
 msgid "Total Priorities"
@@ -3618,6 +3879,9 @@ msgstr "En attente d'approbation"
 msgid "Under Execution"
 msgstr "En construction"
 
+msgid "Partially Approved"
+msgstr "Approbation Partielle"
+
 #: .\investments\models.py:220
 #: .\investments\templates\investments\investor\approvals_list.html:94
 #: .\investments\templates\investments\investor\package_review.html:52
@@ -3725,6 +3989,565 @@ msgstr "Investissement B"
 #: .\investments\templates\investments\anomalies_delete_form.html:13
 msgid "Delete"
 msgstr "Supprimer"
+
+#, fuzzy, python-format
+#| msgid "Please correct the error below."
+msgid "Please correct the duplicate data for %(field)s."
+msgstr "Veuillez corriger l'erreur ci-dessous."
+
+#, python-format
+msgid "Please correct the duplicate data for %(field)s, which must be unique."
+msgstr ""
+
+#, python-format
+msgid ""
+"Please correct the duplicate data for %(field_name)s which must be unique "
+"for the %(lookup)s in %(date_field)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Please correct the errors below."
+msgid "Please correct the duplicate values below."
+msgstr "Veuillez corriger les erreurs ci-dessous."
+
+msgid "The inline value did not match the parent instance."
+msgstr ""
+
+msgid ""
+"Select a valid choice. That choice is not one of the available choices."
+msgstr ""
+
+#, python-format
+msgid "“%(pk)s” is not a valid value."
+msgstr ""
+
+#, python-format
+msgid ""
+"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
+"may be ambiguous or it may not exist."
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Currently"
+msgstr ""
+
+#, fuzzy
+#| msgid "Orange"
+msgid "Change"
+msgstr "Orange"
+
+msgid "Unknown"
+msgstr ""
+
+#. Translators: Please do not add spaces around commas.
+msgid "yes,no,maybe"
+msgstr ""
+
+#, python-format
+msgid "%(size)d byte"
+msgid_plural "%(size)d bytes"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%s KB"
+msgstr ""
+
+#, python-format
+msgid "%s MB"
+msgstr ""
+
+#, python-format
+msgid "%s GB"
+msgstr ""
+
+#, python-format
+msgid "%s TB"
+msgstr ""
+
+#, python-format
+msgid "%s PB"
+msgstr ""
+
+msgid "p.m."
+msgstr ""
+
+msgid "a.m."
+msgstr ""
+
+msgid "PM"
+msgstr ""
+
+msgid "AM"
+msgstr ""
+
+msgid "midnight"
+msgstr ""
+
+msgid "noon"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "Tuesday"
+msgstr ""
+
+msgid "Wednesday"
+msgstr ""
+
+msgid "Thursday"
+msgstr ""
+
+msgid "Friday"
+msgstr ""
+
+msgid "Saturday"
+msgstr ""
+
+msgid "Sunday"
+msgstr ""
+
+#, fuzzy
+#| msgid "Men"
+msgid "Mon"
+msgstr "Hommes"
+
+msgid "Tue"
+msgstr ""
+
+#, fuzzy
+#| msgid "Red"
+msgid "Wed"
+msgstr "Rouge"
+
+msgid "Thu"
+msgstr ""
+
+msgid "Fri"
+msgstr ""
+
+#, fuzzy
+#| msgid "Status"
+msgid "Sat"
+msgstr "Statut"
+
+msgid "Sun"
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+#, fuzzy
+#| msgid "Search"
+msgid "March"
+msgstr "Rechercher"
+
+msgid "April"
+msgstr ""
+
+#, fuzzy
+#| msgid "Map"
+msgid "May"
+msgstr "Carte"
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+#, fuzzy
+#| msgid "Number"
+msgid "November"
+msgstr "Nombre"
+
+msgid "December"
+msgstr ""
+
+#, fuzzy
+#| msgid "Man"
+msgid "jan"
+msgstr "Homme"
+
+msgid "feb"
+msgstr ""
+
+#, fuzzy
+#| msgid "max"
+msgid "mar"
+msgstr "max"
+
+#, fuzzy
+#| msgid "Map"
+msgid "apr"
+msgstr "Carte"
+
+#, fuzzy
+#| msgid "max"
+msgid "may"
+msgstr "max"
+
+msgid "jun"
+msgstr ""
+
+msgid "jul"
+msgstr ""
+
+msgid "aug"
+msgstr ""
+
+#, fuzzy
+#| msgid "sex"
+msgid "sep"
+msgstr "Sexe"
+
+#, fuzzy
+#| msgid "Project"
+msgid "oct"
+msgstr "Projet"
+
+msgid "nov"
+msgstr ""
+
+msgid "dec"
+msgstr ""
+
+msgctxt "abbrev. month"
+msgid "Jan."
+msgstr ""
+
+msgctxt "abbrev. month"
+msgid "Feb."
+msgstr ""
+
+#, fuzzy
+#| msgid "Search"
+msgctxt "abbrev. month"
+msgid "March"
+msgstr "Rechercher"
+
+msgctxt "abbrev. month"
+msgid "April"
+msgstr ""
+
+#, fuzzy
+#| msgid "Map"
+msgctxt "abbrev. month"
+msgid "May"
+msgstr "Carte"
+
+msgctxt "abbrev. month"
+msgid "June"
+msgstr ""
+
+msgctxt "abbrev. month"
+msgid "July"
+msgstr ""
+
+msgctxt "abbrev. month"
+msgid "Aug."
+msgstr ""
+
+msgctxt "abbrev. month"
+msgid "Sept."
+msgstr ""
+
+msgctxt "abbrev. month"
+msgid "Oct."
+msgstr ""
+
+msgctxt "abbrev. month"
+msgid "Nov."
+msgstr ""
+
+msgctxt "abbrev. month"
+msgid "Dec."
+msgstr ""
+
+msgctxt "alt. month"
+msgid "January"
+msgstr ""
+
+msgctxt "alt. month"
+msgid "February"
+msgstr ""
+
+#, fuzzy
+#| msgid "Search"
+msgctxt "alt. month"
+msgid "March"
+msgstr "Rechercher"
+
+msgctxt "alt. month"
+msgid "April"
+msgstr ""
+
+#, fuzzy
+#| msgid "Map"
+msgctxt "alt. month"
+msgid "May"
+msgstr "Carte"
+
+msgctxt "alt. month"
+msgid "June"
+msgstr ""
+
+msgctxt "alt. month"
+msgid "July"
+msgstr ""
+
+msgctxt "alt. month"
+msgid "August"
+msgstr ""
+
+msgctxt "alt. month"
+msgid "September"
+msgstr ""
+
+msgctxt "alt. month"
+msgid "October"
+msgstr ""
+
+#, fuzzy
+#| msgid "Number"
+msgctxt "alt. month"
+msgid "November"
+msgstr "Nombre"
+
+msgctxt "alt. month"
+msgid "December"
+msgstr ""
+
+msgid "This is not a valid IPv6 address."
+msgstr ""
+
+#, python-format
+msgctxt "String to return when truncating text"
+msgid "%(truncated_text)s…"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+#. Translators: This string is used as a separator between list elements
+msgid ", "
+msgstr ""
+
+#, python-format
+msgid "%(num)d year"
+msgid_plural "%(num)d years"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)d week"
+msgid_plural "%(num)d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Forbidden"
+msgstr ""
+
+msgid "CSRF verification failed. Request aborted."
+msgstr ""
+
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
+msgstr ""
+
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please re-"
+"enable them, at least for this site, or for HTTPS connections, or for “same-"
+"origin” requests."
+msgstr ""
+
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or"
+" including the “Referrer-Policy: no-referrer” header, please remove them. "
+"The CSRF protection requires the “Referer” header to do strict referer "
+"checking. If you’re concerned about privacy, use alternatives like <a "
+"rel=\"noreferrer\" …> for links to third-party sites."
+msgstr ""
+
+msgid ""
+"You are seeing this message because this site requires a CSRF cookie when "
+"submitting forms. This cookie is required for security reasons, to ensure "
+"that your browser is not being hijacked by third parties."
+msgstr ""
+
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
+msgstr ""
+
+msgid "More information is available with DEBUG=True."
+msgstr ""
+
+msgid "No year specified"
+msgstr ""
+
+msgid "Date out of range"
+msgstr ""
+
+#, fuzzy
+#| msgid "No priority identified"
+msgid "No month specified"
+msgstr "Aucune priorité identifiée"
+
+msgid "No day specified"
+msgstr ""
+
+msgid "No week specified"
+msgstr ""
+
+#, python-format
+msgid "No %(verbose_name_plural)s available"
+msgstr ""
+
+#, python-format
+msgid ""
+"Future %(verbose_name_plural)s not available because "
+"%(class_name)s.allow_future is False."
+msgstr ""
+
+#, python-format
+msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+msgstr ""
+
+msgid "Page is not “last”, nor can it be converted to an int."
+msgstr ""
+
+#, python-format
+msgid "Invalid page (%(page_number)s): %(message)s"
+msgstr ""
+
+#, python-format
+msgid "Empty list and “%(class_name)s.allow_empty” is False."
+msgstr ""
+
+msgid "Directory indexes are not allowed here."
+msgstr ""
+
+#, python-format
+msgid "“%(path)s” does not exist"
+msgstr ""
+
+#, python-format
+msgid "Index of %(directory)s"
+msgstr ""
+
+msgid "The install worked successfully! Congratulations!"
+msgstr ""
+
+#, python-format
+msgid ""
+"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
+"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"You are seeing this page because <a "
+"href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" "
+"target=\"_blank\" rel=\"noopener\">DEBUG=True</a> is in your settings file "
+"and you have not configured any URLs."
+msgstr ""
+
+msgid "Django Documentation"
+msgstr ""
+
+msgid "Topics, references, &amp; how-to’s"
+msgstr ""
+
+msgid "Tutorial: A Polling App"
+msgstr ""
+
+msgid "Get started with Django"
+msgstr ""
+
+msgid "Django Community"
+msgstr ""
+
+msgid "Connect, get help, or contribute"
+msgstr ""
+
+#, fuzzy
+#| msgid "No reason"
+msgid "No response body"
+msgstr "Aucune raison"
+
+msgid "Unspecified response body"
+msgstr ""
+
+#, python-format
+msgid "Token-based authentication with required prefix \"%s\""
+msgstr ""
+
+msgid ""
+"\n"
+"    OpenApi3 schema for this API. Format can be selected via content negotiation.\n"
+"\n"
+"    - YAML: application/vnd.oai.openapi\n"
+"    - JSON: application/vnd.oai.openapi+json\n"
+"    "
+msgstr ""
+
+#, python-format
+msgid "Attempting to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+#, python-format
+msgid "Connected to qpid with SASL mechanism %s"
+msgstr ""
+
+#, python-format
+msgid "Unable to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+msgid "A short UUID field."
+msgstr ""
 
 #: .\investments\templates\investments\anomalies_delete_form.html:10
 msgid "This cannot be undone."
@@ -3838,6 +4661,24 @@ msgstr "Pagination"
 msgid "Cancel"
 msgstr "Annuler"
 
+msgid "Approve this package?"
+msgstr "Approuver ce paquet ?"
+
+msgid "All selected investments in this package will be approved."
+msgstr "Tous les investissements sélectionnés de ce paquet seront approuvés."
+
+msgid "Approve this investment?"
+msgstr "Approuver cet investissement ?"
+
+msgid "Reject this investment?"
+msgstr "Rejeter cet investissement ?"
+
+msgid "No investments added yet"
+msgstr "Aucun investissement ajouté pour le moment"
+
+msgid "This package has no funded investments."
+msgstr "Ce package ne contient aucun investissement financé."
+
 #: .\investments\templates\investments\cart.html:34
 #: .\investments\templates\investments\cart.html:108
 #: .\investments\templates\investments\moderator\package_review.html:356
@@ -3875,6 +4716,16 @@ msgstr "Résumé"
 msgid "# Subprojects"
 msgstr "# Sous-projets"
 
+msgid "Project budget"
+msgstr "Budget du projet"
+
+msgid ""
+"Not enough funds: the selected funding exceeds the project budget. Remove "
+"investments before submitting."
+msgstr ""
+"Fonds insuffisants : le financement sélectionné dépasse le budget du projet."
+" Retirez des investissements avant de soumettre."
+
 #: .\investments\templates\investments\cart.html:140
 #: .\investments\templates\investments\cart.html:342
 msgid "Submit For Approval"
@@ -3906,6 +4757,14 @@ msgstr "Type de sous-projet"
 #: .\investments\templates\investments\package.html:188
 msgid "Population priority"
 msgstr "Priorité de la population"
+
+msgid "Your cart is empty"
+msgstr "Votre panier est vide"
+
+msgid "Add investments to your cart to build a funding package."
+msgstr ""
+"Ajoutez des investissements à votre panier pour constituer un colis de "
+"financement."
 
 #: .\investments\templates\investments\cart.html:257
 msgid "Are you sure do you want to clear the package?"
@@ -3967,6 +4826,12 @@ msgstr "# de projets"
 msgid "Total amount"
 msgstr "Total des fonds"
 
+msgid "Partially Approve"
+msgstr "Approbation partielle"
+
+msgid "No reason"
+msgstr "Aucune raison"
+
 #: .\investments\templates\investments\investor\approvals_list.html:93
 msgid "Some items were rejected. Click View details to see individual reasons."
 msgstr "Certains éléments ont été rejetés. Cliquez sur Voir les détails pour connaître les raisons individuelles."
@@ -4011,6 +4876,9 @@ msgstr "entrées"
 #: .\investments\templates\investments\moderator\package_review.html:34
 msgid "Choose filters"
 msgstr "Choisir les filtres"
+
+msgid "Choose a Sector first to enable this filter."
+msgstr "Choisissez d'abord un secteur pour activer ce filtre."
 
 #: .\investments\templates\investments\list.html:724
 #: .\investments\templates\investments\list.html:725
@@ -4159,6 +5027,12 @@ msgstr "Dépassement"
 msgid "User approval requests"
 msgstr "Demandes d’approbations de comptes utilisateurs"
 
+msgid "Awaiting review beyond the response deadline"
+msgstr "En attente de revue au-delà du délai de réponse"
+
+msgid "Overdue"
+msgstr "En retard"
+
 #: .\investments\templates\investments\moderator\approvals_list.html:83
 #: .\investments\templates\investments\moderator\package_review.html:384
 #: .\investments\templates\investments\moderator\package_review.html:460
@@ -4192,9 +5066,18 @@ msgstr "Traité par"
 msgid "# Villages:"
 msgstr "# Villages:"
 
+msgid "Partially Approval"
+msgstr "Approbation Partielle"
+
 #: .\investments\templates\investments\moderator\package_review.html:512
 msgid "Request resubmission of package"
 msgstr "Demande de nouvelle soumission du colis"
+
+msgid "Confirm action"
+msgstr "Confirmer l’action"
+
+msgid "This action cannot be undone."
+msgstr "Cette action est irréversible."
 
 #: .\investments\templates\investments\moderator\package_review.html:541
 msgid "Reject this investment"
@@ -4413,6 +5296,9 @@ msgstr "Modifier %(label)s"
 msgid "Show _MENU_ registers"
 msgstr "Afficher _MENU_ enregistrements"
 
+msgid "Loading data..."
+msgstr "Chargement des données..."
+
 #: .\static\config\datatable.py:12
 msgid "No matching records found"
 msgstr "Aucun résultat ne correspond à votre recherche"
@@ -4613,6 +5499,9 @@ msgstr "Page non trouvée"
 msgid "Registration confirmation - PURS"
 msgstr "Confirmation d'inscription - PURS"
 
+msgid "Your email was successfully confirmed!"
+msgstr "Votre email a été confirmé avec succès !"
+
 #: .\usermanager\templates\email_confirmed_successfully.html:33
 msgid "Your email was successfully confirm!"
 msgstr "Votre email a été confirmé avec succès !"
@@ -4624,6 +5513,9 @@ msgstr "Aller à la page d'accueil"
 #: .\usermanager\templates\login.html:78
 msgid "Log in to start your session"
 msgstr "Connectez-vous pour démarrer votre session"
+
+msgid "Logging in…"
+msgstr "Connexion…"
 
 #: .\usermanager\templates\login.html:96
 msgid "I forgot my password"
@@ -4679,6 +5571,9 @@ msgstr "Nous vous avons envoyé les instructions pour définir votre mot de pass
 #: .\usermanager\templates\password_reset_done.html:51
 msgid "If you don’t receive an email, please make sure you’ve entered the address you registered with, and check your spam folder."
 msgstr "Si vous ne recevez pas d’e‑mail, assurez‑vous d’avoir saisi l’adresse avec laquelle vous vous êtes inscrit et vérifiez votre dossier de courrier indésirable."
+
+msgid "Signing up…"
+msgstr "Inscription…"
 
 #: .\usermanager\templates\register.html:65
 msgid "Sign up"
@@ -4752,6 +5647,729 @@ msgstr "Le mot de passe actuel ne correspond pas."
 msgid "The password has been successfully changed."
 msgstr "Le mot de passe a été changé avec succès."
 
+#, fuzzy
+#| msgid "Close"
+msgid "close"
+msgstr "Fermer"
+
+#, python-brace-format
+msgid "{editor}: Editing failed"
+msgstr ""
+
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr ""
+
+msgid "Aborted!"
+msgstr ""
+
+msgid "Show this message and exit."
+msgstr ""
+
+#, python-brace-format
+msgid "(Deprecated) {text}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Actions"
+msgid "Options"
+msgstr "Actions"
+
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "DeprecationWarning: The command {name!r} is deprecated."
+msgstr ""
+
+#, fuzzy
+#| msgid "Commune"
+msgid "Commands"
+msgstr "Commune"
+
+msgid "Missing command."
+msgstr ""
+
+msgid "No such command {name!r}."
+msgstr ""
+
+msgid "Value must be an iterable."
+msgstr ""
+
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+msgid "(dynamic)"
+msgstr ""
+
+#, python-brace-format
+msgid "default: {default}"
+msgstr ""
+
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+msgid "Show the version and exit."
+msgstr ""
+
+#, python-brace-format
+msgid "Error: {message}"
+msgstr ""
+
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Management"
+msgid "Missing argument"
+msgstr "Gestion"
+
+msgid "Missing option"
+msgstr ""
+
+msgid "Missing parameter"
+msgstr ""
+
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "unknown error"
+msgstr ""
+
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+msgid "Usage:"
+msgstr ""
+
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#, fuzzy
+#| msgid "Password confirmation"
+msgid "Repeat for confirmation"
+msgstr "Confirmation du mot de passe"
+
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#, python-brace-format
+msgid "Error: {e.message}"
+msgstr ""
+
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+msgid "Error: invalid input"
+msgstr ""
+
+msgid "Press any key to continue..."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+msgid "{value!r} is not a valid boolean."
+msgstr ""
+
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#, fuzzy
+#| msgid "profile"
+msgid "file"
+msgstr "profil"
+
+#, fuzzy
+#| msgid "Director"
+msgid "directory"
+msgstr "Directeur(trice)"
+
+msgid "path"
+msgstr ""
+
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#, python-brace-format
+msgid "{name} '{filename}' is a directory."
+msgstr ""
+
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Messages"
+msgstr ""
+
+#, fuzzy
+#| msgid "Sites"
+msgid "Site Maps"
+msgstr "Sites"
+
+msgid "Static Files"
+msgstr ""
+
+#, fuzzy
+#| msgid "Organization"
+msgid "Syndication"
+msgstr "Organisation"
+
+#. Translators: String used to replace omitted page numbers in elided page
+#. range generated by paginators, e.g. [1, 2, '…', 5, 6, 7, '…', 9, 10].
+msgid "…"
+msgstr ""
+
+msgid "That page number is not an integer"
+msgstr ""
+
+msgid "That page number is less than 1"
+msgstr ""
+
+msgid "That page contains no results"
+msgstr ""
+
+msgid "Enter a valid value."
+msgstr ""
+
+msgid "Enter a valid URL."
+msgstr ""
+
+msgid "Enter a valid integer."
+msgstr ""
+
+#, fuzzy
+#| msgid "email address"
+msgid "Enter a valid email address."
+msgstr "Adresse e-mail"
+
+#. Translators: "letters" means latin letters: a-z and A-Z.
+msgid ""
+"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgstr ""
+
+msgid ""
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or"
+" hyphens."
+msgstr ""
+
+msgid "Enter a valid IPv4 address."
+msgstr ""
+
+msgid "Enter a valid IPv6 address."
+msgstr ""
+
+msgid "Enter a valid IPv4 or IPv6 address."
+msgstr ""
+
+msgid "Enter only digits separated by commas."
+msgstr ""
+
+#, python-format
+msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+msgstr ""
+
+#, python-format
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr ""
+
+#, python-format
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr ""
+
+#, python-format
+msgid "Ensure this value is a multiple of step size %(limit_value)s."
+msgstr ""
+
+#, python-format
+msgid ""
+"Ensure this value has at least %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Enter a number."
+msgstr ""
+
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit in total."
+msgid_plural "Ensure that there are no more than %(max)s digits in total."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "Ensure that there are no more than %(max)s decimal place."
+msgid_plural "Ensure that there are no more than %(max)s decimal places."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid ""
+"Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural ""
+"Ensure that there are no more than %(max)s digits before the decimal point."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid ""
+"File extension “%(extension)s” is not allowed. Allowed extensions are: "
+"%(allowed_extensions)s."
+msgstr ""
+
+msgid "Null characters are not allowed."
+msgstr ""
+
+#, python-format
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr ""
+
+#, python-format
+msgid "Constraint “%(name)s” is violated."
+msgstr ""
+
+#, python-format
+msgid "Value %(value)r is not a valid choice."
+msgstr ""
+
+msgid "This field cannot be null."
+msgstr ""
+
+msgid "This field cannot be blank."
+msgstr ""
+
+#, python-format
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr ""
+
+#. Translators: The 'lookup_type' is one of 'date', 'year' or
+#. 'month'. Eg: "Title must be unique for pub_date year"
+#, python-format
+msgid ""
+"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr ""
+
+#, python-format
+msgid "Field of type: %(field_type)s"
+msgstr ""
+
+#, python-format
+msgid "“%(value)s” value must be either True or False."
+msgstr ""
+
+#, python-format
+msgid "“%(value)s” value must be either True, False, or None."
+msgstr ""
+
+msgid "Boolean (Either True or False)"
+msgstr ""
+
+#, python-format
+msgid "String (up to %(max_length)s)"
+msgstr ""
+
+msgid "Comma-separated integers"
+msgstr ""
+
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
+"format."
+msgstr ""
+
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
+"date."
+msgstr ""
+
+msgid "Date (without time)"
+msgstr ""
+
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD "
+"HH:MM[:ss[.uuuuuu]][TZ] format."
+msgstr ""
+
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD "
+"HH:MM[:ss[.uuuuuu]][TZ]) but it is an invalid date/time."
+msgstr ""
+
+msgid "Date (with time)"
+msgstr ""
+
+#, python-format
+msgid "“%(value)s” value must be a decimal number."
+msgstr ""
+
+msgid "Decimal number"
+msgstr ""
+
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in [DD] "
+"[[HH:]MM:]ss[.uuuuuu] format."
+msgstr ""
+
+#, fuzzy
+#| msgid "Duration (Days)"
+msgid "Duration"
+msgstr "Durée (jours)"
+
+#, fuzzy
+#| msgid "email address"
+msgid "Email address"
+msgstr "Adresse e-mail"
+
+#, fuzzy
+#| msgid "File Type"
+msgid "File path"
+msgstr "Type de fichier"
+
+#, python-format
+msgid "“%(value)s” value must be a float."
+msgstr ""
+
+msgid "Floating point number"
+msgstr ""
+
+#, python-format
+msgid "“%(value)s” value must be an integer."
+msgstr ""
+
+msgid "Integer"
+msgstr ""
+
+msgid "Big (8 byte) integer"
+msgstr ""
+
+msgid "Small integer"
+msgstr ""
+
+#, fuzzy
+#| msgid "email address"
+msgid "IPv4 address"
+msgstr "Adresse e-mail"
+
+#, fuzzy
+#| msgid "email address"
+msgid "IP address"
+msgstr "Adresse e-mail"
+
+#, python-format
+msgid "“%(value)s” value must be either None, True or False."
+msgstr ""
+
+msgid "Boolean (Either True, False or None)"
+msgstr ""
+
+msgid "Positive big integer"
+msgstr ""
+
+msgid "Positive integer"
+msgstr ""
+
+msgid "Positive small integer"
+msgstr ""
+
+#, python-format
+msgid "Slug (up to %(max_length)s)"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
+"format."
+msgstr ""
+
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
+"invalid time."
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+msgid "Raw binary data"
+msgstr ""
+
+#, python-format
+msgid "“%(value)s” is not a valid UUID."
+msgstr ""
+
+msgid "Universally unique identifier"
+msgstr ""
+
+#, fuzzy
+#| msgid "File Type"
+msgid "File"
+msgstr "Type de fichier"
+
+msgid "A JSON object"
+msgstr ""
+
+msgid "Value must be valid JSON."
+msgstr ""
+
+#, python-format
+msgid "%(model)s instance with %(field)s %(value)r does not exist."
+msgstr ""
+
+msgid "Foreign Key (type determined by related field)"
+msgstr ""
+
+msgid "One-to-one relationship"
+msgstr ""
+
+#, python-format
+msgid "%(from)s-%(to)s relationship"
+msgstr ""
+
+#, python-format
+msgid "%(from)s-%(to)s relationships"
+msgstr ""
+
+msgid "Many-to-many relationship"
+msgstr ""
+
+#. Translators: If found as last label character, these punctuation
+#. characters will prevent the default label_suffix to be appended to the
+#. label
+msgid ":?.!"
+msgstr ""
+
+#, fuzzy
+#| msgid "This field is mandatory"
+msgid "This field is required."
+msgstr "Ce champs est obligatoire"
+
+msgid "Enter a whole number."
+msgstr ""
+
+msgid "Enter a valid date."
+msgstr ""
+
+msgid "Enter a valid time."
+msgstr ""
+
+msgid "Enter a valid date/time."
+msgstr ""
+
+msgid "Enter a valid duration."
+msgstr ""
+
+#, python-brace-format
+msgid "The number of days must be between {min_days} and {max_days}."
+msgstr ""
+
+msgid "No file was submitted. Check the encoding type on the form."
+msgstr ""
+
+#, fuzzy
+#| msgid "Package submitted."
+msgid "No file was submitted."
+msgstr "Paquet soumis."
+
+msgid "The submitted file is empty."
+msgstr ""
+
+#, python-format
+msgid ""
+"Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid_plural ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Please either submit a file or check the clear checkbox, not both."
+msgstr ""
+
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr ""
+
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr ""
+
+msgid "Enter a list of values."
+msgstr ""
+
+msgid "Enter a complete value."
+msgstr ""
+
+msgid "Enter a valid UUID."
+msgstr ""
+
+msgid "Enter a valid JSON."
+msgstr ""
+
+#. Translators: This is the default suffix added to form field labels
+msgid ":"
+msgstr ""
+
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"ManagementForm data is missing or has been tampered with. Missing fields: "
+"%(field_names)s. You may need to file a bug report if the issue persists."
+msgstr ""
+
+#, python-format
+msgid "Please submit at most %(num)d form."
+msgid_plural "Please submit at most %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "Please submit at least %(num)d form."
+msgid_plural "Please submit at least %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Order"
+msgstr ""
+
+msgid "You have no complaints"
+msgstr "Vous n'avez aucune plainte"
+
+msgid "Total Investments Amount"
+msgstr "Montant total des investissements"
+
+msgid "Type of subproject"
+msgstr "Type de sous-projet"
+
+#, python-format
+msgid "%(len_cantons)s cantons in the %(region_name)s region"
+msgstr "%(len_cantons)s cantons dans la région %(region_name)s"
+
+msgid "Part"
+msgstr "Partie"
+
+msgid "Not enough funds"
+msgstr "Pas assez de fonds"
+
+#~ msgid "Total sub-projects available"
+#~ msgstr "Total priorités sous-projets communautaires"
+
+#~ msgid "Total funding required"
+#~ msgstr "Financement total requis"
+
+#~ msgid "# Sub-projects selected"
+#~ msgstr "# Sous-projets sélectionnés"
+
+#~ msgid "See village"
+#~ msgstr "Voir le village"
+
 #~ msgid "GroupInvestment without a canton (administrative_level)"
 #~ msgstr "GroupInvestment sans canton (administrative_level)"
 
@@ -4781,9 +6399,6 @@ msgstr "Le mot de passe a été changé avec succès."
 #~ msgid "Village porteur"
 #~ msgstr "Priorité du village"
 
-#~ msgid "You have no complaints"
-#~ msgstr "Vous n'avez aucune plainte"
-
 #, fuzzy
 #~| msgid "Code"
 #~ msgid "Code d\\"
@@ -4803,22 +6418,6 @@ msgstr "Le mot de passe a été changé avec succès."
 #~| msgid "Reject"
 #~ msgid "Rejeté"
 #~ msgstr "Rejeter"
-
-#~ msgid "Total Investments Amount"
-#~ msgstr "Montant total des investissements"
-
-#~ msgid "Type of subproject"
-#~ msgstr "Type de sous-project"
-
-#, python-format
-#~ msgid "%(len_cantons)s cantons in the %(region_name)s region"
-#~ msgstr "%(len_cantons)s cantons dans la région %(region_name)s"
-
-#~ msgid "Part"
-#~ msgstr "Partie"
-
-#~ msgid "Not enough funds"
-#~ msgstr "Pas assez de fonds"
 
 #~ msgid "not started"
 #~ msgstr "non démarré"

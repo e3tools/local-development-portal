@@ -90,6 +90,10 @@ class RestChangePassword(APIView):
             email = request.POST.get('email', None)
             csrfmiddlewaretoken = request.POST.get('csrfmiddlewaretoken', None)
             
+            # `reason` is a stable machine code so the frontend can distinguish
+            # failure categories (expired vs. invalid vs. weak password vs. ...)
+            # without parsing the human message — see UX finding §1.8.
+            reason = 'missing_fields'
             if email and confirm_code and current_password and password_new and password_new_confirm:
 
                 is_validate_password = validate_password(password_new)
@@ -97,20 +101,26 @@ class RestChangePassword(APIView):
 
                 if not validation_code:
                     msg = _("Code invalide")
+                    reason = 'invalid_code'
                 elif not validation_code.filter(validation_code_ending_datetime__gt=timezone.now()).exists():
                     msg = _("Code expired")
+                    reason = 'expired_code'
                 elif not validation_code.filter(validation_code_ending_datetime__gt=timezone.now(), already_use=False).exists():
                     msg = _("Code already used")
+                    reason = 'used_code'
                 elif not is_validate_password:
                     msg = is_validate_password
+                    reason = 'weak_password'
                 elif password_new != password_new_confirm:
                     msg = _("The password must be the same as the previous one.")
+                    reason = 'password_mismatch'
                 else:
-                    
+
                     user = User.objects.filter(email=email, is_active=True).first()
-                    
+
                     if not user or not check_password(current_password, user.password):
                         msg = _('Current password does not match.')
+                        reason = 'wrong_current_password'
                     else:
                         password_new_hashed = make_password(password_new)
 
@@ -120,17 +130,24 @@ class RestChangePassword(APIView):
 
                         msg = _('The password has been successfully changed.')
                         ok = True
+                        reason = 'ok'
                         validation_code.update(already_use=True)
 
             else:
                 msg = _('You have to fill all the fields')
-            
-            messages.add_message(self.request, messages.INFO, msg, extra_tags='info')
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS if ok else messages.ERROR,
+                msg,
+                extra_tags='success' if ok else 'danger',
+            )
 
             context = {
                 'msg': render(self.request, 'common/messages.html').content.decode("utf-8"),
                 'msg_text': msg,
                 'ok': ok,
+                'reason': reason,
                 # 'redirection_url': request.POST.get('redirection_url_origin_after_user_manage', None)
             }
             return Response(

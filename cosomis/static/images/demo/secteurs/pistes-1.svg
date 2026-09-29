@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img">
+  <defs>
+    <linearGradient id="sky-pistes-24" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3c98d"/>
+      <stop offset="100%" stop-color="#fae4c4"/>
+    </linearGradient>
+    <linearGradient id="ground-pistes-24" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b9b183"/>
+      <stop offset="100%" stop-color="#a09a68"/>
+    </linearGradient>
+    <radialGradient id="sun-pistes-24" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fff3dc" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#fff3dc" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vig-pistes-24" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.10"/>
+      <stop offset="35%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.14"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky-pistes-24)"/>
+  <circle cx="306" cy="190" r="140" fill="url(#sun-pistes-24)"/>
+  <circle cx="306" cy="190" r="26" fill="#fff3dc" opacity="0.9"/>
+  <rect y="230" width="800" height="70" fill="#f6d9ae" opacity="0.35"/>
+  <path d="M0 500 L0 260 Q 50 241 100 247 Q 150 249 200 247 Q 250 240 300 253 Q 350 260 400 259 Q 450 253 500 251 Q 550 234 600 253 Q 650 254 700 252 Q 750 262 800 261 L800 500 Z" fill="#b9b183" opacity="0.55"/><path d="M0 500 L0 274 Q 50 262 100 279 Q 150 264 200 282 Q 250 272 300 277 Q 350 256 400 269 Q 450 278 500 281 Q 550 278 600 269 Q 650 259 700 278 Q 750 278 800 272 L800 500 Z" fill="#b9b183" opacity="0.75"/><path d="M0 500 L0 290 Q 50 270 100 295 Q 150 295 200 289 Q 250 284 300 288 Q 350 297 400 295 Q 450 289 500 289 Q 550 278 600 292 Q 650 272 700 297 Q 750 285 800 288 L800 500 Z" fill="#a09a68" opacity="0.9"/>
+  <rect y="300" width="800" height="200" fill="url(#ground-pistes-24)"/>
+  <g opacity="0.76">
+      <rect x="747.63" y="305.02" width="2.74" height="11.98" fill="#5a6a3c"/>
+      <ellipse cx="749" cy="294.74" rx="18.69" ry="11.59" fill="#6f7f4a"/>
+      <ellipse cx="740.59" cy="298.48" rx="11.21" ry="7.85" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.87">
+      <rect x="773.67" y="303.33" width="2.67" height="11.67" fill="#5a6a3c"/>
+      <ellipse cx="775" cy="292.7" rx="19.33" ry="11.98" fill="#6f7f4a"/>
+      <ellipse cx="766.3" cy="296.56" rx="11.6" ry="8.12" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.92">
+      <rect x="327.97" y="288.98" width="2.06" height="9.02" fill="#5a6a3c"/>
+      <ellipse cx="329" cy="280.01" rx="16.31" ry="10.11" fill="#6f7f4a"/>
+      <ellipse cx="321.66" cy="283.27" rx="9.79" ry="6.85" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.93">
+      <rect x="741.88" y="293.2" width="2.24" height="9.8" fill="#5a6a3c"/>
+      <ellipse cx="743" cy="283.74" rx="17.2" ry="10.66" fill="#6f7f4a"/>
+      <ellipse cx="735.26" cy="287.18" rx="10.32" ry="7.22" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.99">
+      <rect x="311.63" y="305.02" width="2.74" height="11.98" fill="#5a6a3c"/>
+      <ellipse cx="313" cy="297.49" rx="13.69" ry="8.49" fill="#6f7f4a"/>
+      <ellipse cx="306.84" cy="300.23" rx="8.21" ry="5.75" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.81">
+      <rect x="235.58" y="307.56" width="2.84" height="12.44" fill="#5a6a3c"/>
+      <ellipse cx="237" cy="298.64" rx="16.22" ry="10.06" fill="#6f7f4a"/>
+      <ellipse cx="229.7" cy="301.88" rx="9.73" ry="6.81" fill="#5a6a3c" opacity="0.5"/>
+    </g>
+  <path d="M320 300 L120 500 L560 500 L430 300 Z" fill="#b98f5e"/>
+    <path d="M320 300 L120 500 L172 500 L346 300 Z" fill="#fff" opacity="0.12"/>
+    <path d="M430 300 L560 500 L506 500 L404 300 Z" fill="#000" opacity="0.07"/>
+    <ellipse cx="390" cy="330" rx="18" ry="3" fill="#000" opacity="0.06"/><ellipse cx="384" cy="374" rx="27" ry="4" fill="#000" opacity="0.06"/><ellipse cx="378" cy="418" rx="36" ry="5" fill="#000" opacity="0.06"/><ellipse cx="372" cy="462" rx="45" ry="6" fill="#000" opacity="0.06"/>
+    <g>
+      <rect x="286" y="392" width="228" height="16" fill="#b9b3a4"/>
+      <rect x="286" y="408" width="228" height="10" fill="#8f8a7d"/>
+      <rect x="300" y="418" width="18" height="34" fill="#a7a294"/>
+      <rect x="482" y="418" width="18" height="34" fill="#a7a294"/>
+      <path d="M318 418 h164 v22 h-164 Z" fill="#4a5a52" opacity="0.55"/>
+    </g>
+    <rect x="292" y="374" width="6" height="20" fill="#e8e2d4"/><rect x="292" y="374" width="6" height="7" fill="#c8443c"/><rect x="346" y="374" width="6" height="20" fill="#e8e2d4"/><rect x="346" y="374" width="6" height="7" fill="#c8443c"/><rect x="400" y="374" width="6" height="20" fill="#e8e2d4"/><rect x="400" y="374" width="6" height="7" fill="#c8443c"/><rect x="454" y="374" width="6" height="20" fill="#e8e2d4"/><rect x="454" y="374" width="6" height="7" fill="#c8443c"/><rect x="508" y="374" width="6" height="20" fill="#e8e2d4"/><rect x="508" y="374" width="6" height="7" fill="#c8443c"/>
+    <g fill="#2f3a33" opacity="0.85">
+    <circle cx="600" cy="407" r="6.3"/>
+    <path d="M593.25 413 h13.5 l3 21 h-19.5 Z"/>
+    <rect x="594" y="434" width="4.5" height="18"/>
+    <rect x="601.5" y="434" width="4.5" height="18"/>
+  </g>
+    <path d="M110 448 q 3 -4.8 -1 -8" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M276 441 q 1 -3.5999999999999996 -5 -6" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M626 404 q -2 -8.4 -6 -14" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M264 459 q 2 -5.3999999999999995 1 -9" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M227 420 q -4 -7.199999999999999 6 -12" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M447 443 q -3 -9.6 -4 -16" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M542 413 q -1 -6 4 -10" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M187 448 q -4 -6.6 -5 -11" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M347 483 q 1 -6.6 -1 -11" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M443 429 q 3 -8.4 1 -14" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/>
+  <rect width="800" height="500" fill="url(#vig-pistes-24)"/>
+</svg>

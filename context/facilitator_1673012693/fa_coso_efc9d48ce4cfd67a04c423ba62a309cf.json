@@ -1,0 +1,1350 @@
+{
+  "_id": "efc9d48ce4cfd67a04c423ba62a309cf",
+  "_rev": "1-32c7bb5fb6897dfa4ed7fa4db6a0b40b",
+  "type": "task",
+  "project_id": "58660287a4a18a4fdd82579233411488",
+  "project_name": "FA-COSO",
+  "phase_id": "efc9d48ce4cfd67a04c423ba62622fa2",
+  "phase_name": "PLANIFICATION",
+  "activity_id": "efc9d48ce4cfd67a04c423ba6262308f",
+  "activity_name": "Troisième réunion de village",
+  "name": "Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage",
+  "order": 8,
+  "task_order": 31,
+  "description": "Une fois que tous les groupes ont hiérarchisé leurs besoins par sous-composante, une réunion communautaire doit avoir lieu pour consolider la liste des investissements potentiels. Chaque groupe devrait présenter la liste de ses priorités. Ensuite, à l'aide d'un classement par paire, le village sélectionnera les 3 premières priorités ayant reçu le plus de votes pour la sous-composante 1.1. Pour la sous composante 1.2, seul le marché le plus important sera sélectionné avec les groupes qui pourraient potentiellement en bénéficier. Pour la composante 1.3, rappelez à la communauté que seul le vote des jeunes hommes et des jeunes femmes compte et que trois priorités seront sélectionnées en utilisant le classement par paires. Les jeunes peuvent également voter pour les autres composantes.",
+  "completed": true,
+  "capacity_attachments": [],
+  "support_attachments": true,
+  "attachments": [
+    {
+      "name": "PV de la conduite de l'évaluation sociale participative",
+      "type": "application/pdf",
+      "order": 0,
+      "attachment": {
+        "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/1761039029.468455-7055c342-a0fa-4c32-bcc1-088c9db00763.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=%2BU%2FGRQ8PrwEzcgiFS0JiqzSGbXk%3D&Expires=1761042629"
+      }
+    }
+  ],
+  "form": [
+    {
+      "options": {
+        "fields": {
+          "sousComposante11": {
+            "label": "SOUS-COMPOSANTE 1.1",
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "fields": {
+              "prioritesDuVillage": {
+                "label": "Les priorités du village",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter une priorité",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                },
+                "item": {
+                  "fields": {
+                    "priorite": {
+                      "label": "Priorité"
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "label": "Si autre, veuillez mentionner"
+                    },
+                    "IntituleDuSousprojet": {
+                      "label": "Intitulé du sous-projet",
+                      "multiline": true
+                    },
+                    "proposePar": {
+                      "label": "Proposé par quel groupe ?",
+                      "fields": {
+                        "groupeDesAgriculteursEtEleveurs": {
+                          "label": "Groupe des agriculteurs et éleveurs"
+                        },
+                        "groupeDesJeunes": {
+                          "label": "Groupe des jeunes"
+                        },
+                        "groupeDesFemmes": {
+                          "label": "Groupe des femmes"
+                        },
+                        "groupeDesRefugiesEtDesDeplacesInternes": {
+                          "label": "Groupe des réfugiés et des déplacés internes"
+                        },
+                        "groupeDesMinoritesEthniques": {
+                          "label": "Groupe des minorités ethniques"
+                        }
+                      }
+                    },
+                    "coutEstime": {
+                      "label": "Coût estimé en FCFA"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "label": "Nombre estimé de bénéficiaires"
+                    },
+                    "contributionClimatique": {
+                      "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                      "multiline": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "sousComposante11": {
+            "type": "object",
+            "properties": {
+              "prioritesDuVillage": {
+                "type": "array",
+                "minItems": 3,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "priorite": {
+                      "label": "Priorité",
+                      "type": "string",
+                      "enum": [
+                        "Amenagement Piste",
+                        "Construction Bâtiment scolaire CEG",
+                        "Construction Bâtiment scolaire EPP",
+                        "Construction Bâtiment scolaire Lycée",
+                        "Construction Centre communautaire",
+                        "Construction CMS",
+                        "Construction Latrine communautaire",
+                        "Construction magasin de stockage",
+                        "Construction Maison des jeunes",
+                        "Construction Ponceaux",
+                        "Construction Ponts",
+                        "Construction Radier",
+                        "Construction USP",
+                        "Electrification avec Panneaux solaires",
+                        "Extention réseau électrique",
+                        "Réhabilitation Bâtiment scolaire CEG",
+                        "Réhabilitation Bâtiment scolaire EPP",
+                        "Réhabilitation Bâtiment scolaire Lycée",
+                        "Réalisation Forage photovoltaïque AEP",
+                        "Réalisation Forage photovoltaïque Agri",
+                        "Réhabilitation CHP",
+                        "Réhabilitation CMS",
+                        "Réhabilitation magasin de stockage",
+                        "Réhabilitation USP",
+                        "Autre"
+                      ]
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "label": "Si autre, veuillez mentionner",
+                      "type": "string"
+                    },
+                    "IntituleDuSousprojet ": {
+                      "label": "Intitulé du sous-projet",
+                      "type": "string"
+                    },
+                    "proposePar": {
+                      "label": "Proposé par quel groupe ?",
+                      "type": "object",
+                      "properties": {
+                        "groupeDesAgriculteursEtEleveurs": {
+                          "label": "Groupe des agriculteurs et éleveurs",
+                          "type": "string",
+                          "enum": [
+                            "Oui",
+                            "Non"
+                          ]
+                        },
+                        "groupeDesJeunes": {
+                          "label": "Groupe des jeunes",
+                          "type": "string",
+                          "enum": [
+                            "Oui",
+                            "Non"
+                          ]
+                        },
+                        "groupeDesFemmes": {
+                          "label": "Groupe des femmes",
+                          "type": "string",
+                          "enum": [
+                            "Oui",
+                            "Non"
+                          ]
+                        },
+                        "groupeDesRefugiesEtDesDeplacesInternes": {
+                          "label": "Groupe des réfugiés et des déplacés internes",
+                          "type": "string",
+                          "enum": [
+                            "Oui",
+                            "Non"
+                          ]
+                        },
+                        "groupeDesMinoritesEthniques": {
+                          "label": "Groupe des minorités ethniques",
+                          "type": "string",
+                          "enum": [
+                            "Oui",
+                            "Non"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "groupeDesAgriculteursEtEleveurs",
+                        "groupeDesJeunes",
+                        "groupeDesFemmes",
+                        "groupeDesRefugiesEtDesDeplacesInternes"
+                      ]
+                    },
+                    "coutEstime": {
+                      "label": "Coût estimé en FCFA",
+                      "type": "number"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "label": "Nombre estimé de bénéficiaires",
+                      "type": "number"
+                    },
+                    "contributionClimatique": {
+                      "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "priorite",
+                    "IntituleDuSousprojet",
+                    "proposePar",
+                    "coutEstime",
+                    "nombreEstimeDeBeneficiaires"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "prioritesDuVillage"
+            ]
+          }
+        },
+        "required": [
+          "sousComposante11"
+        ]
+      }
+    },
+    {
+      "options": {
+        "fields": {
+          "sousComposante12a": {
+            "label": "SOUS-COMPOSANTE 1.2a",
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "fields": {
+              "nomDuMarcheLePlusImportant": {
+                "label": "Nom du marché le plus important du canton pour le village",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                }
+              },
+              "lieuDuMarcheLePlusImportant": {
+                "label": "Lieu du marché le plus important du canton pour le village",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                }
+              },
+              "typesInfrastructuresEtEquipements": {
+                "label": "Quels types d'infrastructure/équipement la communauté souhaiterait-elle voir dans ce marché ?",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter un type",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              },
+              "proposePar": {
+                "label": "Proposé par quel groupe ?",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "groupeDesAgriculteursEtEleveurs": {
+                    "label": "Groupe des agriculteurs et éleveurs",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  },
+                  "groupeDesJeunes": {
+                    "label": "Groupe des jeunes",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  },
+                  "groupeDesFemmes": {
+                    "label": "Groupe des femmes",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  },
+                  "groupeDesRefugiesEtDesDeplacesInternes": {
+                    "label": "Groupe des réfugiés et des déplacés internes",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  },
+                  "groupeDesMinoritesEthniques": {
+                    "label": "Groupe des minorités ethniques",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "sousComposante12a": {
+            "type": "object",
+            "properties": {
+              "nomDuMarcheLePlusImportant": {
+                "type": "string"
+              },
+              "lieuDuMarcheLePlusImportant": {
+                "type": "string"
+              },
+              "typesInfrastructuresEtEquipements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "typeDeDeveloppement": {
+                      "label": "Type d'infrastructure/équipement",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "typeDeDeveloppement"
+                  ]
+                }
+              },
+              "proposePar": {
+                "type": "object",
+                "properties": {
+                  "groupeDesAgriculteursEtEleveurs": {
+                    "type": "string",
+                    "enum": [
+                      "Oui",
+                      "Non"
+                    ]
+                  },
+                  "groupeDesJeunes": {
+                    "type": "string",
+                    "enum": [
+                      "Oui",
+                      "Non"
+                    ]
+                  },
+                  "groupeDesFemmes": {
+                    "type": "string",
+                    "enum": [
+                      "Oui",
+                      "Non"
+                    ]
+                  },
+                  "groupeDesRefugiesEtDesDeplacesInternes": {
+                    "type": "string",
+                    "enum": [
+                      "Oui",
+                      "Non"
+                    ]
+                  },
+                  "groupeDesMinoritesEthniques": {
+                    "type": "string",
+                    "enum": [
+                      "Oui",
+                      "Non"
+                    ]
+                  }
+                },
+                "required": [
+                  "groupeDesAgriculteursEtEleveurs",
+                  "groupeDesJeunes",
+                  "groupeDesFemmes",
+                  "groupeDesRefugiesEtDesDeplacesInternes"
+                ]
+              }
+            },
+            "required": [
+              "nomDuMarcheLePlusImportant",
+              "lieuDuMarcheLePlusImportant",
+              "typesInfrastructuresEtEquipements"
+            ]
+          }
+        },
+        "required": [
+          "sousComposante12a"
+        ]
+      }
+    },
+    {
+      "options": {
+        "fields": {
+          "sousComposante12b": {
+            "label": "SOUS-COMPOSANTE 1.2b",
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "fields": {
+              "principauxGroupesSocioeconomiques": {
+                "label": "Les principaux groupements /coopératives du village qui sont liées au marche identifié en 1.2a",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter un groupe",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              },
+              "principauxbesoinsSociauxEconomiques": {
+                "label": "Quels sont les principaux besoins de ces groupes sociaux économiques (SE) du village ?",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter un besoin SE",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              },
+              "principauxBesoinsEnRenforcementDeCapacites": {
+                "label": "Quels sont leurs principaux besoins en renforcement de capacités et appuis à le restructuration (RCAR) ?",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter un besoin RCAR",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              },
+              "contributionClimatique": {
+                "label": "Comment l'activité contribue à l'adaptation au changement climatique ?",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "multiline": true
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "sousComposante12b": {
+            "type": "object",
+            "properties": {
+              "principauxGroupesSocioeconomiques": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "principalGroupeSocioeconomique": {
+                      "type": "string",
+                      "enum": [
+                        "anacarde",
+                        "artisans",
+                        "commerçants de produits agricoles/élevages",
+                        "commerçants de produits transformés",
+                        "commerçants de produits artisanaux",
+                        "éleveurs",
+                        "karité",
+                        "maïs",
+                        "maraîchers",
+                        "riz",
+                        "sesame",
+                        "soja",
+                        "transformation de produits agricoles (soja, riz, sesame, karité, anacarde)"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "principalGroupeSocioeconomique"
+                  ]
+                }
+              },
+              "principauxbesoinsSociauxEconomiques": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "besoin": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "besoin"
+                  ]
+                }
+              },
+              "principauxBesoinsEnRenforcementDeCapacites": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "besoin": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "besoin"
+                  ]
+                }
+              },
+              "contributionClimatique": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "principauxGroupesSocioeconomiques",
+              "principauxbesoinsSociauxEconomiques",
+              "principauxBesoinsEnRenforcementDeCapacites"
+            ]
+          }
+        },
+        "required": [
+          "sousComposante12b"
+        ]
+      }
+    },
+    {
+      "options": {
+        "fields": {
+          "sousComposante13": {
+            "label": "SOUS-COMPOSANTE 1.3",
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "fields": {
+              "classement": {
+                "label": "Les priorités des jeunes du village",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter une priorité",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                },
+                "item": {
+                  "fields": {
+                    "priorite": {
+                      "label": "Priorité"
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "label": "Si autre, veuillez mentionner"
+                    },
+                    "IntituleDuSousprojet": {
+                      "label": "Intitulé du sous-projet",
+                      "multiline": true
+                    },
+                    "proposePar": {
+                      "label": "Proposé par qui ?"
+                    },
+                    "coutEstime": {
+                      "label": "Coût estimé en FCFA"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "label": "Nombre estimé de bénéficiaires"
+                    },
+                    "contributionClimatique": {
+                      "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                      "multiline": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "sousComposante13": {
+            "type": "object",
+            "properties": {
+              "classement": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "priorite": {
+                      "label": "Priorité",
+                      "type": "string",
+                      "enum": [
+                        "Réhabilitation/équipement terrain foot",
+                        "Aménagement/équipement terrain de foot",
+                        "Appui groupements maraichers",
+                        "Appui groupements éleveurs",
+                        "Appui groupements producteurs de Maïs",
+                        "Appui groupements producteurs de Riz",
+                        "Appui aux jeunes producteurs de Soja",
+                        "Appui groupements transformateurs",
+                        "Appui groupements artisans",
+                        "Appui commerçants produits Agricoles/élevages",
+                        "Appui Commerçants produits transformés",
+                        "Appui Commerçant produit artisanaux",
+                        "Autre"
+                      ]
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "label": "Si autre, veuillez mentionner",
+                      "type": "string"
+                    },
+                    "IntituleDuSousprojet ": {
+                      "label": "Intitulé du sous-projet",
+                      "type": "string"
+                    },
+                    "proposePar": {
+                      "label": "proposé par qui ?",
+                      "type": "string",
+                      "enum": [
+                        "jeunes hommes",
+                        "jeunes femmes",
+                        "jeunes hommes et femmes"
+                      ]
+                    },
+                    "coutEstime": {
+                      "label": "Coût estimé en FCFA",
+                      "type": "number"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "label": "Nombre estimé de bénéficiaires",
+                      "type": "number"
+                    },
+                    "contributionClimatique": {
+                      "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "priorite",
+                    "proposePar",
+                    "IntituleDuSousprojet",
+                    "coutEstime",
+                    "nombreEstimeDeBeneficiaires"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "classement"
+            ]
+          }
+        },
+        "required": [
+          "sousComposante13"
+        ]
+      }
+    }
+  ],
+  "form_response": [
+    {
+      "sousComposante11": {
+        "prioritesDuVillage": [
+          {
+            "priorite": "Autre",
+            "siAutreVeuillezDecrire": "Construction et équipements de l'EPP Poissongui de JEP",
+            "IntituleDuSousprojet ": "Construction et équipements de l'EPP poissongui de JEP",
+            "proposePar": {
+              "groupeDesAgriculteursEtEleveurs": "Oui",
+              "groupeDesJeunes": "Oui",
+              "groupeDesFemmes": "Oui",
+              "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+              "groupeDesMinoritesEthniques": "Non"
+            },
+            "coutEstime": 35000000,
+            "nombreEstimeDeBeneficiaires": 497,
+            "contributionClimatique": "Respect des normes environnementales et sociales"
+          },
+          {
+            "priorite": "Réalisation Forage photovoltaïque AEP",
+            "siAutreVeuillezDecrire": null,
+            "IntituleDuSousprojet ": "Réalisation d'un forage photovoltaïque pour eau de boisson communautaire ",
+            "proposePar": {
+              "groupeDesAgriculteursEtEleveurs": "Oui",
+              "groupeDesJeunes": "Oui",
+              "groupeDesFemmes": "Oui",
+              "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+              "groupeDesMinoritesEthniques": "Non"
+            },
+            "coutEstime": 20000000,
+            "nombreEstimeDeBeneficiaires": 497,
+            "contributionClimatique": "Respect des normes environnementales et sociales"
+          },
+          {
+            "priorite": "Construction Latrine communautaire",
+            "siAutreVeuillezDecrire": null,
+            "IntituleDuSousprojet ": "Construction de deux blocs de latrines communautaire",
+            "proposePar": {
+              "groupeDesAgriculteursEtEleveurs": "Oui",
+              "groupeDesJeunes": "Oui",
+              "groupeDesFemmes": "Oui",
+              "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+              "groupeDesMinoritesEthniques": "Non"
+            },
+            "coutEstime": 30000000,
+            "nombreEstimeDeBeneficiaires": 497,
+            "contributionClimatique": "Respect des normes environnementales et sociales"
+          }
+        ]
+      }
+    },
+    {
+      "sousComposante12a": {
+        "nomDuMarcheLePlusImportant": "Marché de Songouman ",
+        "lieuDuMarcheLePlusImportant": "Songouman ",
+        "typesInfrastructuresEtEquipements": [
+          {
+            "typeDeDeveloppement": "Construction des Latrines publiques "
+          },
+          {
+            "typeDeDeveloppement": "Réalisation d'un forage photovoltaïque "
+          },
+          {
+            "typeDeDeveloppement": "Construction des hangars"
+          }
+        ],
+        "proposePar": {
+          "groupeDesAgriculteursEtEleveurs": "Oui",
+          "groupeDesJeunes": "Oui",
+          "groupeDesFemmes": "Oui",
+          "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+          "groupeDesMinoritesEthniques": "Non"
+        }
+      }
+    },
+    {
+      "sousComposante12b": {
+        "principauxGroupesSocioeconomiques": [
+          {
+            "principalGroupeSocioeconomique": "maraîchers"
+          },
+          {
+            "principalGroupeSocioeconomique": "transformation de produits agricoles (soja, riz, sesame, karité, anacarde)"
+          }
+        ],
+        "principauxbesoinsSociauxEconomiques": [
+          {
+            "besoin": "Appui technique et financier"
+          },
+          {
+            "besoin": "Appui technique et financier"
+          }
+        ],
+        "principauxBesoinsEnRenforcementDeCapacites": [
+          {
+            "besoin": "Formation sur la fabrication de savon"
+          },
+          {
+            "besoin": "Formation sur la transformation des produits locaux"
+          }
+        ],
+        "contributionClimatique": "Respect des normes environnementales et sociales"
+      }
+    },
+    {
+      "sousComposante13": {
+        "classement": []
+      }
+    }
+  ],
+  "sql_id": 128,
+  "cycles": [
+    "58660287a4a18a4fdd82579233410950"
+  ],
+  "administrative_level_id": "3915",
+  "administrative_level_name": "POISSONGUI 1",
+  "phase_sql_id": 15,
+  "activity_sql_id": 36,
+  "cycle_id": "58660287a4a18a4fdd82579233410950",
+  "cycle_name": "Cycle 1",
+  "canton_sql_id": "3216",
+  "last_updated": "2026-7-19 2:54:13",
+  "last_updated_moment": "2026-07-19T02:54:12.687Z",
+  "users_involved_in_task": [
+    {
+      "name": "NABAGOU Pagueyendou",
+      "email": "nabagoupascaline@gmail.com",
+      "phone": "22890121112",
+      "sex": "Mme",
+      "sql_id": 126,
+      "type": "facilitator",
+      "first_intervention_date": "2025-10-21T09:28:00.401Z",
+      "last_intervention_date": "2026-07-19T02:54:12.687Z"
+    }
+  ],
+  "updated_history": [
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {},
+        "fields_updated": [],
+        "attachments_updated": [],
+        "page": 2
+      },
+      "date": "2025-10-21T09:29:40.544Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {},
+        "fields_updated": [],
+        "attachments_updated": [
+          "PV de la conduite de l'évaluation sociale participative"
+        ],
+        "page": 4
+      },
+      "date": "2025-10-21T09:30:25.047Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {},
+        "fields_updated": [],
+        "attachments_updated": [
+          "PV de la conduite de l'évaluation sociale participative"
+        ],
+        "page": 4
+      },
+      "date": "2025-10-21T09:30:32.931Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {},
+        "fields_updated": [],
+        "attachments_updated": [],
+        "page": 4
+      },
+      "date": "2025-10-21T09:30:51.331Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {
+          "sousComposante11": {
+            "old": {
+              "prioritesDuVillage": [
+                {
+                  "priorite": "Autre",
+                  "siAutreVeuillezDecrire": "Construction et équipements de l'EPP Poissongui de JEP",
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 35000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Réalisation Forage photovoltaïque AEP",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 20000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Construction Latrine communautaire",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 30000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                }
+              ]
+            },
+            "new": {
+              "prioritesDuVillage": [
+                {
+                  "priorite": "Autre",
+                  "siAutreVeuillezDecrire": "Construction et équipements de l'EPP Poissongui de JEP",
+                  "IntituleDuSousprojet ": "Construction et équipements de l'EPP poissongui de JEP",
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 35000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Réalisation Forage photovoltaïque AEP",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": "Réalisation d'un forage photovoltaïque pour eau de boisson communautaire ",
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 20000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Construction Latrine communautaire",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": "Construction de deux blocs de latrines communautaire",
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 30000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                }
+              ]
+            }
+          }
+        },
+        "fields_updated": [
+          "sousComposante11"
+        ],
+        "attachments_updated": [],
+        "attachments_updated_response": {},
+        "page": 0
+      },
+      "date": "2026-07-19T02:53:54.409Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {},
+        "fields_updated": [],
+        "attachments_updated": [],
+        "attachments_updated_response": {},
+        "page": 1
+      },
+      "date": "2026-07-19T02:54:01.886Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {},
+        "fields_updated": [],
+        "attachments_updated": [],
+        "attachments_updated_response": {},
+        "page": 2
+      },
+      "date": "2026-07-19T02:54:07.780Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {},
+        "fields_updated": [],
+        "attachments_updated": [],
+        "attachments_updated_response": {},
+        "page": 3
+      },
+      "date": "2026-07-19T02:54:12.687Z"
+    }
+  ],
+  "completed_date": "2025-10-21 9:30:51",
+  "completed_date_moment": "2025-10-21T09:30:51.331Z",
+  "completed_history": [
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "form_response": [
+          {
+            "sousComposante11": {
+              "prioritesDuVillage": [
+                {
+                  "priorite": "Autre",
+                  "siAutreVeuillezDecrire": "Construction et équipements de l'EPP Poissongui de JEP",
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 35000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Réalisation Forage photovoltaïque AEP",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 20000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Construction Latrine communautaire",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 30000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                }
+              ]
+            }
+          },
+          {
+            "sousComposante12a": {
+              "nomDuMarcheLePlusImportant": "Marché de Songouman ",
+              "lieuDuMarcheLePlusImportant": "Songouman ",
+              "typesInfrastructuresEtEquipements": [
+                {
+                  "typeDeDeveloppement": "Construction des Latrines publiques "
+                },
+                {
+                  "typeDeDeveloppement": "Réalisation d'un forage photovoltaïque "
+                },
+                {
+                  "typeDeDeveloppement": "Construction des hangars"
+                }
+              ],
+              "proposePar": {
+                "groupeDesAgriculteursEtEleveurs": "Oui",
+                "groupeDesJeunes": "Oui",
+                "groupeDesFemmes": "Oui",
+                "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                "groupeDesMinoritesEthniques": "Non"
+              }
+            }
+          },
+          {
+            "sousComposante12b": {
+              "principauxGroupesSocioeconomiques": [
+                {
+                  "principalGroupeSocioeconomique": "maraîchers"
+                },
+                {
+                  "principalGroupeSocioeconomique": "transformation de produits agricoles (soja, riz, sesame, karité, anacarde)"
+                }
+              ],
+              "principauxbesoinsSociauxEconomiques": [
+                {
+                  "besoin": "Appui technique et financier"
+                },
+                {
+                  "besoin": "Appui technique et financier"
+                }
+              ],
+              "principauxBesoinsEnRenforcementDeCapacites": [
+                {
+                  "besoin": "Formation sur la fabrication de savon"
+                },
+                {
+                  "besoin": "Formation sur la transformation des produits locaux"
+                }
+              ],
+              "contributionClimatique": "Respect des normes environnementales et sociales"
+            }
+          },
+          {
+            "sousComposante13": {
+              "classement": []
+            }
+          }
+        ],
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "type": "application/pdf",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/1761039029.468455-7055c342-a0fa-4c32-bcc1-088c9db00763.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=%2BU%2FGRQ8PrwEzcgiFS0JiqzSGbXk%3D&Expires=1761042629"
+            }
+          }
+        ]
+      },
+      "date": "2025-10-21T09:30:51.331Z"
+    }
+  ],
+  "validated": true,
+  "date_validated": "2026-7-24 9:56:43",
+  "action_by": {
+    "type": "Validated",
+    "user_name": "nalobiyandja.yetagme",
+    "user_id": 45,
+    "user_last_name": "NALOBI",
+    "user_first_name": "YANDJA Yétagme",
+    "user_email": "nalobiy@gmail.com",
+    "action_date": "2026-7-24 9:56:43",
+    "comment": ""
+  },
+  "actions_by": [
+    {
+      "type": "Validated",
+      "user_name": "nalobiyandja.yetagme",
+      "user_id": 45,
+      "user_last_name": "NALOBI",
+      "user_first_name": "YANDJA Yétagme",
+      "user_email": "nalobiy@gmail.com",
+      "action_date": "2026-7-24 9:56:43",
+      "comment": ""
+    },
+    {
+      "type": "Invalidated",
+      "user_name": "nalobiyandja.yetagme",
+      "user_id": 45,
+      "user_last_name": "NALOBI",
+      "user_first_name": "YANDJA Yétagme",
+      "user_email": "nalobiy@gmail.com",
+      "action_date": "2026-7-17 5:29:54",
+      "comment": "Prière de joindre renseigner les intitulers des sous projets"
+    }
+  ],
+  "updated_after_invalidation": true,
+  "updated_after_invalidation_history": [
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "fields_updated_response": {
+          "sousComposante11": {
+            "old": {
+              "prioritesDuVillage": [
+                {
+                  "priorite": "Autre",
+                  "siAutreVeuillezDecrire": "Construction et équipements de l'EPP Poissongui de JEP",
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 35000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Réalisation Forage photovoltaïque AEP",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 20000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Construction Latrine communautaire",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": null,
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 30000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                }
+              ]
+            },
+            "new": {
+              "prioritesDuVillage": [
+                {
+                  "priorite": "Autre",
+                  "siAutreVeuillezDecrire": "Construction et équipements de l'EPP Poissongui de JEP",
+                  "IntituleDuSousprojet ": "Construction et équipements de l'EPP poissongui de JEP",
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 35000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Réalisation Forage photovoltaïque AEP",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": "Réalisation d'un forage photovoltaïque pour eau de boisson communautaire ",
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 20000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                },
+                {
+                  "priorite": "Construction Latrine communautaire",
+                  "siAutreVeuillezDecrire": null,
+                  "IntituleDuSousprojet ": "Construction de deux blocs de latrines communautaire",
+                  "proposePar": {
+                    "groupeDesAgriculteursEtEleveurs": "Oui",
+                    "groupeDesJeunes": "Oui",
+                    "groupeDesFemmes": "Oui",
+                    "groupeDesRefugiesEtDesDeplacesInternes": "Oui",
+                    "groupeDesMinoritesEthniques": "Non"
+                  },
+                  "coutEstime": 30000000,
+                  "nombreEstimeDeBeneficiaires": 497,
+                  "contributionClimatique": "Respect des normes environnementales et sociales"
+                }
+              ]
+            }
+          }
+        },
+        "fields_updated": [
+          "sousComposante11"
+        ],
+        "attachments_updated": [],
+        "attachments_updated_response": {},
+        "page": 0
+      },
+      "date": "2026-07-19T02:53:54.409Z"
+    }
+  ]
+}

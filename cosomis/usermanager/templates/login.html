@@ -51,8 +51,7 @@
 		}
 		.card { border: 0; border-radius: 14px; box-shadow: 0 12px 32px rgba(0, 86, 47, .10); }
 		.login-card-body { border-radius: 14px; }
-		.btn-primary { background-color: #009639; border-color: #009639; }
-		.btn-primary:hover, .btn-primary:focus { background-color: #007a2e; border-color: #007a2e; }
+		{% comment %} .btn-primary is now brand green from custom.css; no inline override needed. {% endcomment %}
 	</style>
 </head>
 
@@ -84,19 +83,22 @@
 				<div class="row">
 					<!-- /.col -->
 					<div class="col-12">
-						<button type="submit" class="btn btn-primary btn-block">
-							{% translate "Log in" %}
+						<button type="submit" class="btn btn-primary btn-block"
+								data-loading-text="{% translate 'Logging in…' %}">
+							<span class="submit-spin spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" style="display: none;"></span>
+							<span class="submit-label">{% translate "Log in" %}</span>
 						</button>
 					</div>
 					<!-- /.col -->
 				</div>
 			</form>
-			<p class="mt-3">
+			<p class="mt-3 text-center">
 				<a href="{% url 'usermanager:password_reset' %}">{% translate 'I forgot my password' %}</a>
 			</p>
-			<p class="mt-3 mb-0">
-				<a href="{% url 'usermanager:signup' %}" class="text-center">{% translate 'Sign up as a partner' %}</a>
-			</p>
+			<hr>
+			<a href="{% url 'usermanager:signup' %}" class="btn btn-outline-primary btn-block">
+				{% translate 'Sign up as a partner' %}
+			</a>
 		</div>
 		<!-- /.login-card-body -->
 	</div>
@@ -111,5 +113,19 @@
 <script src="{% static 'AdminLTE/dist/js/adminlte.js' %}"></script>
 <!-- Django Translation -->
 <script src="{% static 'js/setLanguajeDjangoTranslation.js' %}"></script>
+<!-- Submit feedback (spinner + disabled state) -->
+<script src="{% static 'js/disableOnSubmit.js' %}"></script>
+<!-- Inline validation feedback -->
+<script>
+	(function () {
+		var form = document.querySelector("form");
+		if (!form) { return; }
+		form.addEventListener("submit", function () {
+			// Reveal Bootstrap's :valid/:invalid styling once the user tries to
+			// submit; native browser messages still surface required/email errors.
+			form.classList.add("was-validated");
+		}, false);
+	})();
+</script>
 </body>
 </html>

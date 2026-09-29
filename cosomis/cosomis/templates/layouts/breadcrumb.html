@@ -1,0 +1,22 @@
+{% load i18n custom_tags %}
+{% comment %}
+S16 — section breadcrumb. Gives every standard page a "Home / <Section>"
+trail so users keep hierarchy context. Object/detail pages that set
+`object_tile` render their own back-chevron context in the navbar and skip the
+content-header entirely, so this never double-renders there. Admin-level detail
+pages additionally show an in-section adm_breadcrumb within their own content.
+{% endcomment %}
+{% current_section as section %}
+{% if section %}
+<nav aria-label="{% translate 'Breadcrumb' %}" class="adl-section-breadcrumb mb-2">
+    <ol class="breadcrumb bg-transparent p-0 m-0 small">
+        <li class="breadcrumb-item">
+            <a href="{% url 'investments:home_investments' %}">
+                <i class="fas fa-home" aria-hidden="true"></i>
+                <span class="sr-only">{% translate 'Home' %}</span>
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ section.label }}</li>
+    </ol>
+</nav>
+{% endif %}

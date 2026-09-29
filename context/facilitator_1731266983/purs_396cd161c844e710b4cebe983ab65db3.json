@@ -1,0 +1,1173 @@
+{
+  "_id": "396cd161c844e710b4cebe983ab65db3",
+  "_rev": "1-55f7be4244e76739a1b61081fc877e6b",
+  "type": "task",
+  "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+  "phase_id": "396cd161c844e710b4cebe983a946bde",
+  "phase_name": "PLANIFICATION",
+  "activity_id": "396cd161c844e710b4cebe983a9472ae",
+  "activity_name": "Troisième réunion de village",
+  "name": "Soutenir la communauté dans la sélection des priorités par composante (1, 2 et 3) à soumettre à la discussion du CCD.",
+  "order": 8,
+  "description": "Une fois que tous les groupes ont hiérarchisé leurs besoins par composante, une réunion communautaire doit avoir lieu pour consolider la liste des investissements potentiels. Chaque groupe devrait présenter la liste de ses priorités. Ensuite, à l'aide d'un classement par paire, le village fera la priorisation par composante.",
+  "completed": true,
+  "completed_date": "2025-5-27 18:38:8",
+  "capacity_attachments": [],
+  "attachments": [
+    {
+      "name": "PV de la conduite de l'évaluation sociale participative",
+      "order": 0,
+      "attachment": {
+        "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/1748371076.3829243-833cce99-ecbb-46fe-bfde-7bd6dc724295.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=5Qry%2Bw1J5np89QWbyt52%2F%2FBYnRE%3D&Expires=1748374676"
+      },
+      "type": "application/pdf"
+    }
+  ],
+  "form": [
+    {
+      "page": {
+        "type": "object",
+        "required": [
+          "Composante1"
+        ],
+        "properties": {
+          "Composante1": {
+            "type": "object",
+            "required": [
+              "prioritesDuVillage"
+            ],
+            "properties": {
+              "prioritesDuVillage": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "priorite",
+                    "proposePar",
+                    "coutEstime",
+                    "nombreEstimeDeBeneficiaires",
+                    "contributionClimatique"
+                  ],
+                  "properties": {
+                    "priorite": {
+                      "enum": [
+                        "Réalisation Forage photovoltaïque AEP",
+                        "Construction Bâtiment scolaire EPP",
+                        "Construction Bâtiment scolaire CEG",
+                        "Construction Bâtiment scolaire Lycée",
+                        "Réhabilitation Bâtiment scolaire EPP",
+                        "Réhabilitation Bâtiment scolaire CEG",
+                        "Réhabilitation Bâtiment scolaire Lycée",
+                        "Aménagement Piste",
+                        "Construction Radier",
+                        "Construction Ponceaux",
+                        "Construction Maison des jeunes",
+                        "Construction Ponts",
+                        "Construction USP",
+                        "Construction CMS",
+                        "Réhabilitation USP",
+                        "Réhabilitation CMS",
+                        "Réhabilitation CHP",
+                        "Equipement USP",
+                        "Equipement CMS",
+                        "Equipement de forage",
+                        "Electrification avec Panneaux solaires",
+                        "Extension réseau électrique",
+                        "Construction Latrine communautaire",
+                        "Construction Centre communautaire",
+                        "Construction Maison des jeunes",
+                        "Construction de dalots multiple",
+                        "Contrôle et surveillance des travaux",
+                        "Réalisation d'étude technique détaillé",
+                        "Travaux d'adduction et de distribution d'eau",
+                        "Travaux de renouvellement et d'extension",
+                        "Fourniture et pose de canalisation",
+                        "Acquisition de photocopieurs pour écoles",
+                        "Acquisition d'ordinateur",
+                        "Formation des enseignants",
+                        "Fournitures des repas chauds dans les écoles",
+                        "Fournitures des repas chauds aux élèves",
+                        "Transfère monétaire",
+                        "Construction de marché y compris les blocs latrines",
+                        "Réhabilitation des plateformes",
+                        "Renforcement et financement des coopératives de femmes et de jeunes",
+                        "Equipement des jeunes en kits d'outillage",
+                        "Extension de la couverture des services voix et internet",
+                        "Autre"
+                      ],
+                      "type": "string",
+                      "label": "Priorité"
+                    },
+                    "coutEstime": {
+                      "type": "number",
+                      "label": "Coût estimé en FCFA"
+                    },
+                    "proposePar": {
+                      "enum": [
+                        "Hommes",
+                        "Femmes",
+                        "Hommes et Femmes",
+                        "Groupe des réfugiés et des déplacés internes"
+                      ],
+                      "type": "string",
+                      "label": "Proposé par qui ?"
+                    },
+                    "contributionClimatique": {
+                      "type": "string",
+                      "label": "Comment le projet contribue à l'amélioration de l'acces aux services sociaux de base?"
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "type": "string",
+                      "label": "Si autre, veuillez décrire"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "type": "number",
+                      "label": "Nombre estimé de bénéficiaires"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "fields": {
+          "Composante1": {
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "label": "COMPOSANTE 1",
+            "fields": {
+              "prioritesDuVillage": {
+                "i18n": {
+                  "up": "",
+                  "add": "Ajouter une priorité",
+                  "down": "",
+                  "remove": "x",
+                  "optional": "",
+                  "required": "*"
+                },
+                "label": "Les priorités du village",
+                "disableOrder": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "page": {
+        "type": "object",
+        "required": [
+          "Composante2"
+        ],
+        "properties": {
+          "Composante2": {
+            "type": "object",
+            "required": [
+              "prioritesDuVillage"
+            ],
+            "properties": {
+              "prioritesDuVillage": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "priorite",
+                    "proposePar",
+                    "coutEstime",
+                    "nombreEstimeDeBeneficiaires",
+                    "contributionEconomique",
+                    "groupementsConcernes",
+                    "Autre"
+                  ],
+                  "properties": {
+                    "priorite": {
+                      "enum": [
+                        "Réalisation Forage photovoltaïque Agri",
+                        "Construction magasin de stockage",
+                        "Construction d'infrastructures de marché",
+                        "Aménagement des routes pour faciliter l'accès au marché",
+                        "Aménagement de ZAAP",
+                        "Réhabilitation magasin de stockage",
+                        "Construction de zones de stockage",
+                        "Installation de systèmes d'irrigation",
+                        "Formation en techniques agricoles modernes",
+                        "Réhabilitation/équipement terrain foot",
+                        "Aménagement/équipement terrain de foot",
+                        "Appui groupements maraichers",
+                        "Appui groupements éleveurs",
+                        "Appui groupements producteurs de Maïs",
+                        "Appui groupements producteurs de Riz",
+                        "Appui aux jeunes producteurs de Soja",
+                        "Appui groupements transformateurs",
+                        "Appui groupements artisans",
+                        "Appui commerçants de produits Agricoles/élevages",
+                        "Appui Commerçants de produits transformés",
+                        "Appui Commerçant produit artisanaux",
+                        "Aménagement des bas-fonds",
+                        "Réhabiliter des barrages et retenu d'eau",
+                        "Mise en place de parcs agroforestiers",
+                        "Appui aux semences certifiées",
+                        "Appui aux fertilisants et biopesticides",
+                        "Appui aux équipements d'élevage",
+                        "Renforcer les capacités des éleveurs",
+                        "Appui à la sensibilisation",
+                        "Appui matériel et technique",
+                        "Autre"
+                      ],
+                      "type": "string",
+                      "label": "Priorité"
+                    },
+                    "coutEstime": {
+                      "type": "number",
+                      "label": "Coût estimé en FCFA"
+                    },
+                    "proposePar": {
+                      "enum": [
+                        "Groupe des minorités ethniques",
+                        "Groupe des leaders/chefferie",
+                        "Groupe des réfugiés et des déplacés internes",
+                        "Groupe des agriculteurs et éleveurs",
+                        "Groupe des jeunes",
+                        "Groupe des femmes"
+                      ],
+                      "type": "string",
+                      "label": "Proposé par qui ?"
+                    },
+                    "groupementsConcernes": {
+                      "type": "string",
+                      "label": "Ajoutez les groupements agricoles/coopératives concernés"
+                    },
+                    "contributionEconomique": {
+                      "type": "string",
+                      "label": "Comment le projet contribue au développement économique et a améliorer la capacitédes communautés a générer des revenus?"
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "type": "string",
+                      "label": "Si autre, veuillez décrire"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "type": "number",
+                      "label": "Nombre estimé de bénéficiaires"
+                    },
+                    "siAutreGroupeVeuillezDecrire": {
+                      "type": "string",
+                      "label": "Si autre, veuillez décrire"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "fields": {
+          "Composante2": {
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "label": "COMPOSANTE 2",
+            "fields": {
+              "prioritesDuVillage": {
+                "i18n": {
+                  "up": "",
+                  "add": "Ajouter une priorité",
+                  "down": "",
+                  "remove": "x",
+                  "optional": "",
+                  "required": "*"
+                },
+                "label": "Les priorités du village",
+                "disableOrder": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "page": {
+        "type": "object",
+        "required": [
+          "Composante3"
+        ],
+        "properties": {
+          "Composante3": {
+            "type": "object",
+            "required": [
+              "classement"
+            ],
+            "properties": {
+              "classement": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "priorite",
+                    "proposePar",
+                    "coutEstime",
+                    "nombreEstimeDeBeneficiaires",
+                    "contributionSecurite"
+                  ],
+                  "properties": {
+                    "priorite": {
+                      "enum": [
+                        "Mise en place d’une maison de justice",
+                        "Reconnaissance de chef traditionnel",
+                        "Sensibilisation sur la cohésion sociale",
+                        "Formation des magistrats",
+                        "Construction des commissariats de Police",
+                        "Construction des Brigades de Gendarmerie",
+                        "Autre"
+                      ],
+                      "type": "string",
+                      "label": "Priorité"
+                    },
+                    "coutEstime": {
+                      "type": "number",
+                      "label": "Coût estimé en FCFA"
+                    },
+                    "proposePar": {
+                      "enum": [
+                        "Groupe des minorités ethniques",
+                        "Groupe des leaders/chefferie",
+                        "Groupe des réfugiés et des déplacés internes",
+                        "Groupe des agriculteurs et éleveurs",
+                        "Groupe des jeunes",
+                        "Groupe des femmes",
+                        "Autre"
+                      ],
+                      "type": "string",
+                      "label": "Proposé par qui ?"
+                    },
+                    "contributionSecurite": {
+                      "type": "string",
+                      "label": "Comment le projet contribue à la sécurité ou une meilleure gouvernance?"
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "type": "string",
+                      "label": "Si autre, veuillez décrire"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "type": "number",
+                      "label": "Nombre estimé de bénéficiaires"
+                    },
+                    "siAutreGroupeVeuillezDecrire": {
+                      "type": "string",
+                      "label": "Si autre, veuillez décrire"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "fields": {
+          "Composante3": {
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "label": "COMPOSANTE 3",
+            "fields": {
+              "classement": {
+                "i18n": {
+                  "up": "",
+                  "add": "Ajouter une priorité",
+                  "down": "",
+                  "remove": "x",
+                  "optional": "",
+                  "required": "*"
+                },
+                "label": "Les priorités des jeunes du village",
+                "disableOrder": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "form_response": [
+    {
+      "Composante1": {
+        "prioritesDuVillage": [
+          {
+            "priorite": "Construction CMS",
+            "coutEstime": 50000000,
+            "proposePar": "Hommes et Femmes",
+            "contributionClimatique": "Va contribuer à décarboniser l'économie ",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 294
+          },
+          {
+            "priorite": "Réalisation Forage photovoltaïque AEP",
+            "coutEstime": 15000000,
+            "proposePar": "Hommes et Femmes",
+            "contributionClimatique": "Va contribuer à décarboniser l'économie ",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 294
+          },
+          {
+            "priorite": "Construction Centre communautaire",
+            "coutEstime": 50000000,
+            "proposePar": "Hommes et Femmes",
+            "contributionClimatique": "Va contribuer à décarboniser l'économie ",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 294
+          },
+          {
+            "priorite": "Electrification avec Panneaux solaires",
+            "coutEstime": 150000000,
+            "proposePar": "Hommes et Femmes",
+            "contributionClimatique": "Va contribuer à décarboniser l'économie ",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 294
+          },
+          {
+            "priorite": "Aménagement Piste",
+            "coutEstime": 200000000,
+            "proposePar": "Hommes et Femmes",
+            "contributionClimatique": "Va contribuer à décarboniser l'économie ",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 294
+          },
+          {
+            "priorite": "Autre",
+            "coutEstime": 45000000,
+            "proposePar": "Hommes et Femmes",
+            "contributionClimatique": "Va contribuer à décarboniser l'économie ",
+            "siAutreVeuillezDecrire": "Construction d'une EPP ",
+            "nombreEstimeDeBeneficiaires": 294
+          },
+          {
+            "priorite": "Autre",
+            "coutEstime": 10000000,
+            "proposePar": "Hommes et Femmes",
+            "contributionClimatique": "Va contribuer à décarboniser l'économie ",
+            "siAutreVeuillezDecrire": "Réalisation de hangars au marché ",
+            "nombreEstimeDeBeneficiaires": 294
+          }
+        ]
+      }
+    },
+    {
+      "Composante2": {
+        "prioritesDuVillage": [
+          {
+            "priorite": "Appui aux fertilisants et biopesticides",
+            "coutEstime": 10000000,
+            "proposePar": "Groupe des agriculteurs et éleveurs",
+            "groupementsConcernes": "Néant ",
+            "contributionEconomique": "Va permettre d'accroître la production agricole ",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 294,
+            "siAutreGroupeVeuillezDecrire": null
+          },
+          {
+            "priorite": "Renforcer les capacités des éleveurs",
+            "coutEstime": 5000000,
+            "proposePar": "Groupe des jeunes",
+            "groupementsConcernes": "Néant ",
+            "contributionEconomique": "Va permettre une augmentation de têtes en élevage et une baisse d'epizouties",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 50,
+            "siAutreGroupeVeuillezDecrire": null
+          },
+          {
+            "priorite": "Réhabiliter des barrages et retenu d'eau",
+            "coutEstime": 100000000,
+            "proposePar": "Groupe des jeunes",
+            "groupementsConcernes": "Néant ",
+            "contributionEconomique": "Va permettre aux jeunes de faire le jardinage ",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 294,
+            "siAutreGroupeVeuillezDecrire": null
+          },
+          {
+            "priorite": "Réhabilitation magasin de stockage",
+            "coutEstime": 6000000,
+            "proposePar": "Groupe des agriculteurs et éleveurs",
+            "groupementsConcernes": "Néant ",
+            "contributionEconomique": "Ba permettre de bien conserver les produits agricoles et garder les instants agricoles ",
+            "siAutreVeuillezDecrire": null,
+            "nombreEstimeDeBeneficiaires": 294,
+            "siAutreGroupeVeuillezDecrire": null
+          },
+          {
+            "priorite": "Autre",
+            "coutEstime": 5000000,
+            "proposePar": "Groupe des femmes",
+            "groupementsConcernes": "Néant ",
+            "contributionEconomique": "Va permettre aux femmes d'exercer des AGR ",
+            "siAutreVeuillezDecrire": "Formation des femmes pour la fabrication des foyers améliorer ",
+            "nombreEstimeDeBeneficiaires": 50,
+            "siAutreGroupeVeuillezDecrire": null
+          }
+        ]
+      }
+    },
+    {
+      "Composante3": {
+        "classement": [
+          {
+            "priorite": "Autre",
+            "coutEstime": 1500000,
+            "proposePar": "Groupe des leaders/chefferie",
+            "contributionSecurite": "Va renforcer la sécurité du village ",
+            "siAutreVeuillezDecrire": "Présence des FDS dans le village : patrouille ",
+            "nombreEstimeDeBeneficiaires": 294,
+            "siAutreGroupeVeuillezDecrire": null
+          }
+        ]
+      }
+    }
+  ],
+  "sql_id": 92,
+  "support_attachments": true,
+  "administrative_level_id": "6394",
+  "administrative_level_name": "TERITE-MAISON",
+  "phase_sql_id": 12,
+  "activity_sql_id": 26,
+  "project_name": "PURS",
+  "last_updated": "2025-5-27 18:38:13",
+  "canton_sql_id": "5800",
+  "updated_history": [
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true
+          }
+        ]
+      },
+      "date": "2025-01-20T02:41:20.322Z"
+    },
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true
+          }
+        ]
+      },
+      "date": "2025-01-20T02:41:20.587Z"
+    },
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true
+          }
+        ]
+      },
+      "date": "2025-01-20T02:41:34.860Z"
+    },
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          }
+        ]
+      },
+      "date": "2025-05-27T18:24:20.229Z"
+    },
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          }
+        ]
+      },
+      "date": "2025-05-27T18:33:52.242Z"
+    },
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          }
+        ]
+      },
+      "date": "2025-05-27T18:36:46.157Z"
+    },
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          }
+        ]
+      },
+      "date": "2025-05-27T18:37:02.453Z"
+    },
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          }
+        ]
+      },
+      "date": "2025-05-27T18:37:57.871Z"
+    },
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          }
+        ]
+      },
+      "date": "2025-05-27T18:38:13.181Z"
+    }
+  ],
+  "cycle_id": "58660287a4a18a4fdd8257923340fbc4",
+  "cycle_name": "Cycle 1",
+  "completed_history": [
+    {
+      "facilitator": {
+        "name": "TETOU Mataklenoyou",
+        "email": "tmichael9065@gmail.com",
+        "phone": "90654094",
+        "sex": "M.",
+        "sql_id": 488,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "TERITE-MAISON",
+            "id": "6394",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "TCHITCHIRA-MAISON",
+            "id": "6387",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "KANTE-TAR",
+            "id": "6045",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "ATETOU",
+            "id": "5855",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "DEOUTE",
+            "id": "5926",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          },
+          {
+            "name": "AWANDA",
+            "id": "5861",
+            "is_headquarters_village": true,
+            "project_name": "PURS",
+            "project_id": "6de9471a306ef411a8fdc57ecb71a730",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340fbc4"
+          }
+        ]
+      },
+      "date": "2025-05-27T18:38:08.251Z"
+    }
+  ],
+  "validated": true,
+  "date_validated": "2025-10-14 15:1:7",
+  "action_by": {
+    "type": "Validated",
+    "user_name": "TOUKA-Ange",
+    "user_id": 67,
+    "user_last_name": "TOUKA",
+    "user_first_name": "Ange",
+    "user_email": "angetouka72@gmail.com",
+    "action_date": "2025-10-14 15:1:7",
+    "comment": "correct"
+  },
+  "actions_by": [
+    {
+      "type": "Validated",
+      "user_name": "TOUKA-Ange",
+      "user_id": 67,
+      "user_last_name": "TOUKA",
+      "user_first_name": "Ange",
+      "user_email": "angetouka72@gmail.com",
+      "action_date": "2025-10-14 15:1:7",
+      "comment": "correct"
+    }
+  ]
+}

@@ -82,12 +82,13 @@ class GRMMixin(object):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['complaints'] = self.get_grm_complaints()
+        ctx['complaints'], ctx['complaints_error'] = self.get_grm_complaints()
         return ctx
 
     def get_grm_complaints(self):
         # GRM Call
         complaints = []
+        complaints_error = False
         if hasattr(self, 'object') and self.object and hasattr(self.object, 'type') and self.object.type in [AdministrativeLevel.VILLAGE, AdministrativeLevel.CANTON, AdministrativeLevel.COMMUNE, AdministrativeLevel.PREFECTURE, AdministrativeLevel.REGION]:
             try:
                 GRM_SECRET_KEY_GENRATE = settings.GRM_SECRET_KEY_GENRATE
@@ -100,8 +101,9 @@ class GRMMixin(object):
                 }
                 complaints, links_error = get_api_datas(f"{GRM_URL}/api/issue/get-issues/", payload)
             except Exception as e:
+                complaints_error = True
                 print(f"Error fetching data from GRM API: {str(e)}")
 
         # End GRM Call
 
-        return complaints
+        return complaints, complaints_error

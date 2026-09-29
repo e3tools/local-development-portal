@@ -43,6 +43,7 @@ urlpatterns += i18n_patterns(
     path('dashboard/', include('dashboard.urls')),
     path('cdd-funnel/', include('cdd_funnel.urls')),
     path('alert-examples/', views.alert_examples, name='alert_examples'),
+    path('assistant/', include('assistant.urls')),
 )
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

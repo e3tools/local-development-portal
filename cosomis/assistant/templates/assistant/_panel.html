@@ -1,0 +1,54 @@
+{% load i18n %}
+{# Drawer body: history, suggestions and the question form. Swapped whole on #}
+{# first open and on "New conversation"; assistant:send appends to #assistant-log. #}
+{% if not assistant_enabled %}
+    <div class="assistant-notice" role="status">
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+        <span>{% translate "The assistant is not configured on this deployment (missing OPENAI_API_KEY)." %}</span>
+    </div>
+{% endif %}
+
+<div class="assistant-log" id="assistant-log" aria-live="polite">
+    {% if not chat_messages %}
+        <div class="assistant-welcome" id="assistant-welcome">
+            <p>{% translate "Ask a question in French or English about villages, priorities, sub-projects, the planning cycle, programmes and packages. The assistant only reads the data you are allowed to see and can change nothing." %}</p>
+            <p class="assistant-welcome__label">{% translate "Try one of these" %}</p>
+            <div class="assistant-chips">
+                {% for question in suggestions %}
+                    <button type="button" class="assistant-chip" data-question="{{ question }}"
+                            {% if not assistant_enabled %}disabled{% endif %}>{{ question }}</button>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    {% for message in chat_messages %}
+        {% include "assistant/_message.html" with message=message %}
+    {% endfor %}
+</div>
+
+<div class="assistant-typing" id="assistant-typing" role="status">
+    <span class="assistant-msg__avatar" aria-hidden="true"><i class="fas fa-robot"></i></span>
+    <span class="assistant-typing__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="sr-only">{% translate "The assistant is thinking…" %}</span>
+</div>
+
+<form id="assistant-form" class="assistant-form"
+      method="post" action="{% url 'assistant:send' %}"
+      hx-post="{% url 'assistant:send' %}" hx-target="#assistant-log" hx-swap="beforeend"
+      hx-indicator="#assistant-typing, #assistant-send"
+      hx-disabled-elt="#assistant-send, #assistant-question">
+    {% csrf_token %}
+    <div class="assistant-form__row">
+        <label for="assistant-question" class="sr-only">{% translate "Your question…" %}</label>
+        <textarea class="assistant-form__input" id="assistant-question" name="question" rows="1" maxlength="2000" required
+                  placeholder="{% translate 'Your question…' %}" {% if not assistant_enabled %}disabled{% endif %}></textarea>
+        <button class="assistant-send" type="submit" id="assistant-send"
+                title="{% translate 'Send' %}" aria-label="{% translate 'Send' %}" {% if not assistant_enabled %}disabled{% endif %}>
+            <span class="assistant-send__icon"><i class="fas fa-paper-plane" aria-hidden="true"></i></span>
+            <span class="assistant-send__spin"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i></span>
+        </button>
+    </div>
+    <p class="assistant-form__foot">
+        {% translate "Enter to send, Shift+Enter for a new line" %}{% if assistant_enabled %} · {{ assistant_model }}{% endif %}
+    </p>
+</form>

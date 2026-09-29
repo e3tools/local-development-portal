@@ -31,12 +31,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env(
+    'SECRET_KEY',
+    default='pl&dkqrq0rj+#n747=@#a-0b(bgb2j#%@f7v4_vp1q84cr7r#$',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', False)
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', list, ['localhost'])
+
+# Vercel (and any other TLS-terminating proxy) forwards the original scheme in
+# this header. Without it Django builds http:// absolute URLs behind https and
+# rejects same-origin POSTs as CSRF failures.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
+# Preview deployments get a fresh sub-domain per commit, so the whole
+# *.vercel.app space is trusted rather than a single fixed host.
+CSRF_TRUSTED_ORIGINS = env(
+    'CSRF_TRUSTED_ORIGINS', list, ['https://*.vercel.app'],
+)
 
 # Per-deployment program name shown on login and other branded surfaces.
 # Defaults to the Togo wording; override per country via the PROGRAM_NAME env var.
@@ -46,6 +61,14 @@ PROGRAM_NAME = env(
 )
 if not PROGRAM_NAME:
     PROGRAM_NAME = _('Emergency program to strengthen community resilience and security')
+
+# UI colour variant: "green" follows the brand palette, "blue" restores the former
+# blue/indigo look. Drives info alerts/callouts (static/css/custom.css) and the
+# village CDD planning-cycle tab (planning_cycle.html). Exposed to templates as
+# data-ui-color on <html>.
+UI_COLOR = env('UI_COLOR', default='green')
+if UI_COLOR not in ('green', 'blue'):
+    UI_COLOR = 'green'
 
 
 # Application definition
@@ -68,6 +91,7 @@ CREATED_APPS = [
     'dashboard',
     'cdd_funnel',
     'utils',
+    'assistant',
 ]
 
 THIRD_PARTY_APPS = [
@@ -88,6 +112,7 @@ INSTALLED_APPS += CREATED_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware', #tries to determine user's language using URL language prefix
     'corsheaders.middleware.CorsMiddleware',
@@ -130,7 +155,7 @@ WSGI_APPLICATION = 'cosomis.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 EXTERNAL_DATABASE_NAME = 'cddp'
-ENVIRONNEMENT_EXECUTION = env('env')
+ENVIRONNEMENT_EXECUTION = env('env', default='')
 
 if ENVIRONNEMENT_EXECUTION in ('dev', 'test'):
     DATABASES = {
@@ -162,13 +187,15 @@ MAX_RESPONSE_DAYS = 3
 
 # Email configuration
 
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS = env('EMAIL_USE_TLS')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-RECIPIENT_EMAIL_DEFAULT = env('RECIPIENT_EMAIL_DEFAULT')
+EMAIL_BACKEND = env(
+    'EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend',
+)
+EMAIL_HOST = env('EMAIL_HOST', default='localhost')
+EMAIL_PORT = env('EMAIL_PORT', default='25')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=False)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+RECIPIENT_EMAIL_DEFAULT = env('RECIPIENT_EMAIL_DEFAULT', default='')
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -199,10 +226,20 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Serverless builds cannot always run `collectstatic`, so let WhiteNoise fall
+# back to the staticfiles finders when STATIC_ROOT was never populated.
+WHITENOISE_USE_FINDERS = not os.path.isdir(STATIC_ROOT)
+if WHITENOISE_USE_FINDERS:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-FRONTEND_URL_ROOT = env('FRONTEND_URL_ROOT')
+FRONTEND_URL_ROOT = env('FRONTEND_URL_ROOT', default='')
 
 
 LOGIN_URL = '/'
@@ -211,38 +248,45 @@ LOGIN_REDIRECT_URL = 'investments:home_investments'
 
 LOGOUT_REDIRECT_URL = LOGIN_URL
 # Mapbox
-MAPBOX_ACCESS_TOKEN = env('MAPBOX_ACCESS_TOKEN')
+MAPBOX_ACCESS_TOKEN = env('MAPBOX_ACCESS_TOKEN', default='')
 
-DIAGNOSTIC_MAP_LATITUDE = env('DIAGNOSTIC_MAP_LATITUDE')
+DIAGNOSTIC_MAP_LATITUDE = env('DIAGNOSTIC_MAP_LATITUDE', default='8.770198211475261')
 
-DIAGNOSTIC_MAP_LONGITUDE = env('DIAGNOSTIC_MAP_LONGITUDE')
+DIAGNOSTIC_MAP_LONGITUDE = env('DIAGNOSTIC_MAP_LONGITUDE', default='0.8332327892880187')
 
-DIAGNOSTIC_MAP_ZOOM = env('DIAGNOSTIC_MAP_ZOOM')
+DIAGNOSTIC_MAP_ZOOM = env('DIAGNOSTIC_MAP_ZOOM', default='6.29')
 
-DIAGNOSTIC_MAP_WS_BOUND = env('DIAGNOSTIC_MAP_WS_BOUND')
+DIAGNOSTIC_MAP_WS_BOUND = env(
+    'DIAGNOSTIC_MAP_WS_BOUND', default='[-1.6405819530436645, 6.032835821531734]',
+)
 
-DIAGNOSTIC_MAP_EN_BOUND = env('DIAGNOSTIC_MAP_EN_BOUND')
+DIAGNOSTIC_MAP_EN_BOUND = env(
+    'DIAGNOSTIC_MAP_EN_BOUND', default='[3.226379659586371, 11.303021230048657]',
+)
 
-DIAGNOSTIC_MAP_ISO_CODE = env('DIAGNOSTIC_MAP_ISO_CODE')
+DIAGNOSTIC_MAP_ISO_CODE = env('DIAGNOSTIC_MAP_ISO_CODE', default='TGO')
 
 
 # CouchDB
 
-NO_SQL_USER = env('NO_SQL_USER')
+NO_SQL_USER = env('NO_SQL_USER', default='')
 
-NO_SQL_PASS = env('NO_SQL_PASS')
+NO_SQL_PASS = env('NO_SQL_PASS', default='')
 
-NO_SQL_URL = env('NO_SQL_URL')
+NO_SQL_URL = env('NO_SQL_URL', default='')
 
 
 # S3
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_STORAGE_BUCKET_NAME = env('S3_BUCKET', default='')
 
-AWS_STORAGE_BUCKET_NAME = env('S3_BUCKET')
+AWS_ACCESS_KEY_ID = env('S3_ACCESS', default='')
 
-AWS_ACCESS_KEY_ID = env('S3_ACCESS')
+AWS_SECRET_ACCESS_KEY = env('S3_SECRET', default='')
 
-AWS_SECRET_ACCESS_KEY = env('S3_SECRET')
+# Demo/preview deployments run without S3 credentials; uploads then use
+# Django's default filesystem storage instead of failing at request time.
+if AWS_STORAGE_BUCKET_NAME and AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
 #REST API & TOKEN
@@ -269,9 +313,11 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),  # 10 ans aussi si besoin
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
-    'UPDATE_LAST_LOGIN': False,
+    'UPDATE_LAST_LOGIN': True,
 }
-AUTHORIZED_USERS_FOR_USER_REGISTRATION_VIA_API=env('AUTHORIZED_USERS_FOR_USER_REGISTRATION_VIA_API')
+AUTHORIZED_USERS_FOR_USER_REGISTRATION_VIA_API = env(
+    'AUTHORIZED_USERS_FOR_USER_REGISTRATION_VIA_API', default='',
+)
 
 
 
@@ -284,14 +330,21 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # MIXPANEL
-MIXPANEL_TOKEN = env('MIXPANEL_TOKEN')
-MIXPANEL_API_SECRET = env('MIXPANEL_API_SECRET')
+MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
+MIXPANEL_API_SECRET = env('MIXPANEL_API_SECRET', default='')
 
 
 # MIS API
-MIS_API_KEY = env('MIS_API_KEY')
-MIS_URL = env('MIS_URL')
+MIS_API_KEY = env('MIS_API_KEY', default='')
+MIS_URL = env('MIS_URL', default='')
 
 # GRM API
-GRM_SECRET_KEY_GENRATE = env('GRM_SECRET_KEY_GENRATE')
-GRM_URL = env('GRM_URL')
+GRM_SECRET_KEY_GENRATE = env('GRM_SECRET_KEY_GENRATE', default='')
+GRM_URL = env('GRM_URL', default='')
+
+
+# Portal assistant (assistant/) — read-only chat over the portal's data.
+# Without OPENAI_API_KEY the page renders but explains it is not configured.
+OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
+OPENAI_BASE_URL = env('OPENAI_BASE_URL', default='')  # optional, OpenAI-compatible proxy
+ASSISTANT_MODEL = env('ASSISTANT_MODEL', default='gpt-5-mini')

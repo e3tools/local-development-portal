@@ -7,6 +7,18 @@ format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Assistant reports in Word and PDF.** Ask the assistant for a report, a
+  Word document or a PDF and it gathers the figures with its query tools,
+  then calls a new `generate_report` tool with the full report in Markdown.
+  The answer shows the report as a file chip with Word and PDF downloads
+  (`assistant:report`, owner only, portal links made absolute); any other
+  answer can be exported the same way from the "Download: Word · PDF" links
+  under it (`assistant:export`). Word is built with python-docx (headings,
+  lists, tables, real hyperlinks), PDF with the xhtml2pdf already in the
+  stack. Reports are kept as text on a new `assistant.Report` model and
+  rendered on download; the audit trace records the report's size, not its
+  body.
+
 - **Live summary card on `/administrative-levels/search/`.** Selecting any level
   in the cascading filter (or a leaf radio) now fades in a sticky card on the
   right with the entity's name, type badge, ancestor breadcrumb, direct-child
@@ -31,6 +43,21 @@ format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   investments…" copy, wired to the `processing.dt` event.
 
 ### Changed
+
+- **The assistant is a drawer, not a page.** The chat that lived at
+  `/assistant/` (sidebar entry) now opens from a robot icon in the header on
+  every page, as a right-hand drawer: it pushes the content on wide screens
+  and overlays it below 1200 px, stays open while navigating (state kept in
+  `localStorage`), loads its body lazily through HTMX on first open
+  (`assistant:panel`), and has a "+" for a new thread. Suggested questions
+  are stacked in the drawer, Enter sends, a typing indicator shows while the
+  model works, failures surface as toasts, and a dot on the icon flags a
+  reply that arrived while the drawer was closed. `/assistant/` redirects to
+  the home page with the drawer open so old links still work.
+- **Assistant drawer on phones.** The question field is 16 px so iOS Safari
+  no longer zooms the page on focus (which pushed the send button off-screen),
+  the drawer is sized to the visual viewport so it follows the on-screen
+  keyboard, and the page behind it no longer scrolls while it is open.
 
 - **Breadcrumb tag (`adm_breadcrumb`) is name-agnostic.** Was looking up the
   detail URL by `item.type` against the Togo English constants — every

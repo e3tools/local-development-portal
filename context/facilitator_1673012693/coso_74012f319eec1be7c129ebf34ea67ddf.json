@@ -1,0 +1,4281 @@
+{
+  "_id": "74012f319eec1be7c129ebf34ea67ddf",
+  "_rev": "1-670b20997a71fd2719b210a4d76d10e2",
+  "type": "task",
+  "project_id": "1057e0a41198a35ac379602ff7135282",
+  "phase_id": "74012f319eec1be7c129ebf34ea43002",
+  "phase_name": "PLANIFICATION",
+  "activity_id": "74012f319eec1be7c129ebf34ea4366a",
+  "activity_name": "Troisième réunion de village",
+  "name": "Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage",
+  "order": 8,
+  "description": "Une fois que tous les groupes ont hiérarchisé leurs besoins par sous-composante, une réunion communautaire doit avoir lieu pour consolider la liste des investissements potentiels. Chaque groupe devrait présenter la liste de ses priorités. Ensuite, à l'aide d'un classement par paire, le village sélectionnera les 3 premières priorités ayant reçu le plus de votes pour la sous-composante 1.1. Pour la composante 1.2Ab, seul le marché le plus important sera sélectionné avec les groupes qui pourraient potentiellement en bénéficier. Pour la composante 1.3, rappelez à la communauté que seul le vote des jeunes hommes et des jeunes femmes compte et que trois priorités seront sélectionnées en utilisant le classement par paires. Les jeunes peuvent également voter pour les autres composantes.",
+  "completed": true,
+  "capacity_attachments": [],
+  "attachments": [
+    {
+      "name": "PV de la conduite de l'évaluation sociale participative",
+      "order": 0,
+      "attachment": {
+        "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+      },
+      "type": "application/pdf"
+    }
+  ],
+  "support_attachments": true,
+  "form": [
+    {
+      "options": {
+        "fields": {
+          "sousComposante11": {
+            "label": "SOUS-COMPOSANTE 1.1",
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "fields": {
+              "prioritesDuVillage": {
+                "label": "Les priorités du village",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter une priorité",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "sousComposante11": {
+            "type": "object",
+            "properties": {
+              "prioritesDuVillage": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "priorite": {
+                      "label": "Priorité",
+                      "type": "string",
+                      "enum": [
+                        "Réalisation Forage photovoltaïque AEP",
+                        "Réalisation Forage photovoltaïque Agri",
+                        "Construction Bâtiment scolaire EPP",
+                        "Construction Bâtiment scolaire CEG",
+                        "Construction Bâtiment scolaire Lycée",
+                        "Réhabilitation Bâtiment scolaire EPP",
+                        "Réhabilitation Bâtiment scolaire CEG",
+                        "Réhabilitation Bâtiment scolaire Lycée",
+                        "Amenagement Piste",
+                        "Construction Radier",
+                        "Construction Ponceaux",
+                        "Construction Ponts",
+                        "Construction USP",
+                        "Construction CMS",
+                        "Réhabilitation USP",
+                        "Réhabilitation CMS",
+                        "Réhabilitation CHP",
+                        "Construction magasin de stockage",
+                        "Réhabilitation magasin de stockage",
+                        "Electrification avec Panneaux solaires",
+                        "Extention réseau électrique",
+                        "Construction Latrine communautaire",
+                        "Construction Centre communautaire",
+                        "Construction Maison des jeunes",
+                        "Autre"
+                      ]
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "label": "Si autre, veuillez décrire",
+                      "type": "string"
+                    },
+                    "proposePar": {
+                      "label": "proposé par qui ?",
+                      "type": "string",
+                      "enum": [
+                        "Hommes",
+                        "Femmes",
+                        "Hommes et Femmes"
+                      ]
+                    },
+                    "coutEstime": {
+                      "label": "Coût estimé en FCFA",
+                      "type": "number"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "label": "Nombre estimé de bénéficiaires",
+                      "type": "number"
+                    },
+                    "contributionClimatique": {
+                      "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "priorite",
+                    "proposePar",
+                    "coutEstime",
+                    "nombreEstimeDeBeneficiaires"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "prioritesDuVillage"
+            ]
+          }
+        },
+        "required": [
+          "sousComposante11"
+        ]
+      }
+    },
+    {
+      "options": {
+        "fields": {
+          "sousComposante12a": {
+            "label": "SOUS-COMPOSANTE 1.2a",
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "fields": {
+              "nomDuMarcheLePlusImportant": {
+                "label": "Nom du marché le plus important du canton pour le village",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                }
+              },
+              "lieuDuMarcheLePlusImportant": {
+                "label": "Lieu du marché le plus important du canton pour le village",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                }
+              },
+              "typesInfrastructuresEtEquipements": {
+                "label": "Quels types d'infrastructure/équipement la communauté souhaiterait-elle voir dans ce marché ?",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter un type",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "sousComposante12a": {
+            "type": "object",
+            "properties": {
+              "nomDuMarcheLePlusImportant": {
+                "type": "string"
+              },
+              "lieuDuMarcheLePlusImportant": {
+                "type": "string"
+              },
+              "typesInfrastructuresEtEquipements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "typeDeDeveloppement": {
+                      "label": "Type d'infrastructure/équipement",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "typeDeDeveloppement"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "nomDuMarcheLePlusImportant",
+              "lieuDuMarcheLePlusImportant",
+              "typesInfrastructuresEtEquipements"
+            ]
+          }
+        },
+        "required": [
+          "sousComposante12a"
+        ]
+      }
+    },
+    {
+      "options": {
+        "fields": {
+          "sousComposante12b": {
+            "label": "SOUS-COMPOSANTE 1.2b",
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "fields": {
+              "principauxGroupesSocioeconomiques": {
+                "label": "Les principaux groupements /coopératives du village qui sont liées au marche identifié en 1.2a",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter un groupe",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              },
+              "principauxbesoinsSociauxEconomiques": {
+                "label": "Quels sont les principaux besoins de ces groupes sociaux économiques (SE) du village ?",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter un besoin SE",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              },
+              "principauxBesoinsEnRenforcementDeCapacites": {
+                "label": "Quels sont leurs principaux besoins en renforcement de capacités et appuis à le restructuration (RCAR) ?",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter un besoin RCAR",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              },
+              "contributionClimatique": {
+                "label": "Comment l'activité contribue à l'adaptation au changement climatique ?",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                }
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "sousComposante12b": {
+            "type": "object",
+            "properties": {
+              "principauxGroupesSocioeconomiques": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "principalGroupeSocioeconomique": {
+                      "type": "string",
+                      "enum": [
+                        "maraîchers",
+                        "éleveurs",
+                        "maïs",
+                        "riz",
+                        "soja",
+                        "sesame",
+                        "anacarde",
+                        "karité",
+                        "transformation de produits agricoles (soja, riz, sesame, karité, anacarde)",
+                        "artisans",
+                        "commerçants de produits agricoles/élevages",
+                        "commerçants de produits transformés",
+                        "commerçants de produits artisanaux"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "principalGroupeSocioeconomique"
+                  ]
+                }
+              },
+              "principauxbesoinsSociauxEconomiques": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "besoin": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "besoin"
+                  ]
+                }
+              },
+              "principauxBesoinsEnRenforcementDeCapacites": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "besoin": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "besoin"
+                  ]
+                }
+              },
+              "contributionClimatique": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "principauxGroupesSocioeconomiques",
+              "principauxbesoinsSociauxEconomiques",
+              "principauxBesoinsEnRenforcementDeCapacites"
+            ]
+          }
+        },
+        "required": [
+          "sousComposante12b"
+        ]
+      }
+    },
+    {
+      "options": {
+        "fields": {
+          "sousComposante13": {
+            "label": "SOUS-COMPOSANTE 1.3",
+            "help": "",
+            "i18n": {
+              "optional": "",
+              "required": "*"
+            },
+            "fields": {
+              "classement": {
+                "label": "Les priorités des jeunes du village",
+                "disableOrder": true,
+                "i18n": {
+                  "remove": "x",
+                  "add": "Ajouter une priorité",
+                  "optional": "",
+                  "required": "*",
+                  "up": "",
+                  "down": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "properties": {
+          "sousComposante13": {
+            "type": "object",
+            "properties": {
+              "classement": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "priorite": {
+                      "label": "Priorité",
+                      "type": "string",
+                      "enum": [
+                        "Réhabilitation/équipement terrain foot",
+                        "Aménagement/équipement terrain de foot",
+                        "Appui groupements maraichers",
+                        "Appui groupements éleveurs",
+                        "Appui groupements producteurs de Maïs",
+                        "Appui groupements producteurs de Riz",
+                        "Appui aux jeunes producteurs de Soja",
+                        "Appui groupements transformateurs",
+                        "Appui groupements artisans",
+                        "Appui commerçants produits Agricoles/élevages",
+                        "Appui Commerçants produits transformés",
+                        "Appui Commerçant produit artisanaux",
+                        "Autre"
+                      ]
+                    },
+                    "siAutreVeuillezDecrire": {
+                      "label": "Si autre, veuillez décrire",
+                      "type": "string"
+                    },
+                    "proposePar": {
+                      "label": "proposé par qui ?",
+                      "type": "string",
+                      "enum": [
+                        "jeunes hommes",
+                        "jeunes femmes",
+                        "jeunes hommes et femmes"
+                      ]
+                    },
+                    "coutEstime": {
+                      "label": "Coût estimé en FCFA",
+                      "type": "number"
+                    },
+                    "nombreEstimeDeBeneficiaires": {
+                      "label": "Nombre estimé de bénéficiaires",
+                      "type": "number"
+                    },
+                    "contributionClimatique": {
+                      "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "priorite",
+                    "proposePar",
+                    "coutEstime",
+                    "nombreEstimeDeBeneficiaires"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "classement"
+            ]
+          }
+        },
+        "required": [
+          "sousComposante13"
+        ]
+      }
+    }
+  ],
+  "form_response": [
+    {
+      "sousComposante11": {
+        "prioritesDuVillage": [
+          {
+            "priorite": "Réalisation Forage photovoltaïque Agri",
+            "siAutreVeuillezDecrire": null,
+            "proposePar": "Hommes et Femmes",
+            "coutEstime": 20000000,
+            "nombreEstimeDeBeneficiaires": 1000,
+            "contributionClimatique": "Le sous projet contribue à la résilience climatique "
+          },
+          {
+            "priorite": "Construction Bâtiment scolaire EPP",
+            "siAutreVeuillezDecrire": null,
+            "proposePar": "Hommes et Femmes",
+            "coutEstime": 30000000,
+            "nombreEstimeDeBeneficiaires": 1000,
+            "contributionClimatique": "Contribue à la résilience climatique "
+          },
+          {
+            "priorite": "Electrification avec Panneaux solaires",
+            "siAutreVeuillezDecrire": null,
+            "proposePar": "Hommes et Femmes",
+            "coutEstime": 20000000,
+            "nombreEstimeDeBeneficiaires": 1000,
+            "contributionClimatique": "Contribue à la résilience climatique "
+          }
+        ]
+      }
+    },
+    {
+      "sousComposante12a": {
+        "nomDuMarcheLePlusImportant": "Marché de naki-ouest ",
+        "lieuDuMarcheLePlusImportant": "A naki-ouest centre ",
+        "typesInfrastructuresEtEquipements": [
+          {
+            "typeDeDeveloppement": "Construction des hangars de marché "
+          },
+          {
+            "typeDeDeveloppement": "Construction des ateliers pour les jeunes artisans "
+          },
+          {
+            "typeDeDeveloppement": "Réalisation d'un forage photovoltaïque pour la boisson "
+          }
+        ]
+      }
+    },
+    {
+      "sousComposante12b": {
+        "principauxGroupesSocioeconomiques": [
+          {
+            "principalGroupeSocioeconomique": "maraîchers"
+          },
+          {
+            "principalGroupeSocioeconomique": "éleveurs"
+          },
+          {
+            "principalGroupeSocioeconomique": "commerçants de produits transformés"
+          },
+          {
+            "principalGroupeSocioeconomique": "artisans"
+          }
+        ],
+        "principauxbesoinsSociauxEconomiques": [
+          {
+            "besoin": "Appui technique à la mise en place des AVE "
+          },
+          {
+            "besoin": "Appui technique et financier aux groupements maraîchers "
+          },
+          {
+            "besoin": "Appui à l'organisation et à l'immatriculation des groupements féminins ( Monfante,Todlhan,Todman,Moinibe,Montote)"
+          }
+        ],
+        "principauxBesoinsEnRenforcementDeCapacites": [
+          {
+            "besoin": "Renforcement de capacités des AVE "
+          },
+          {
+            "besoin": "Renforcement de capacités du groupements Montote en technique culturale durable "
+          }
+        ],
+        "contributionClimatique": "L'activité permet la réduction de la pauvreté et la résilience climatique "
+      }
+    },
+    {
+      "sousComposante13": {
+        "classement": [
+          {
+            "priorite": "Autre",
+            "siAutreVeuillezDecrire": "Construction et équipement d'un centre communautaire ",
+            "proposePar": "jeunes hommes et femmes",
+            "coutEstime": 50000000,
+            "nombreEstimeDeBeneficiaires": 1000,
+            "contributionClimatique": "Contribue à la résilience climatique "
+          },
+          {
+            "priorite": "Autre",
+            "siAutreVeuillezDecrire": "Renforcement de capacités des jeunes dans la technique de pépinière ",
+            "proposePar": "jeunes hommes et femmes",
+            "coutEstime": 15000000,
+            "nombreEstimeDeBeneficiaires": 1000,
+            "contributionClimatique": "Contribue à la résilience climatique "
+          },
+          {
+            "priorite": "Autre",
+            "siAutreVeuillezDecrire": "Construction et équipement d'un centre d'informatique ",
+            "proposePar": "jeunes hommes et femmes",
+            "coutEstime": 60000000,
+            "nombreEstimeDeBeneficiaires": 1000,
+            "contributionClimatique": "Contribue à la résilience climatique "
+          }
+        ]
+      }
+    }
+  ],
+  "sql_id": 59,
+  "task_order": 31,
+  "administrative_level_id": "4668",
+  "administrative_level_name": "DJEWOUGUE",
+  "canton_sql_id": "4500",
+  "last_updated": "2025-10-15 15:32:41",
+  "completed_date": "2024-4-6 4:5:22",
+  "project_name": "COSO",
+  "validated": true,
+  "action_by": {
+    "type": "Validated",
+    "user_name": "nalobiyandja.yetagme",
+    "user_id": 45,
+    "user_last_name": "NALOBI",
+    "user_first_name": "YANDJA Yétagme",
+    "user_email": "nalobiy@gmail.com",
+    "action_date": "2025-10-29 5:46:20",
+    "comment": ""
+  },
+  "actions_by": [
+    {
+      "type": "Validated",
+      "user_name": "nalobiyandja.yetagme",
+      "user_id": 45,
+      "user_last_name": "NALOBI",
+      "user_first_name": "YANDJA Yétagme",
+      "user_email": "nalobiy@gmail.com",
+      "action_date": "2025-10-29 5:46:20",
+      "comment": ""
+    },
+    {
+      "type": "Invalidated",
+      "user_name": "nalobiyandja.yetagme",
+      "user_id": 45,
+      "user_last_name": "NALOBI YANDJA",
+      "user_first_name": "Yétagme",
+      "user_email": "nalobiy@gmail.com",
+      "action_date": "2024-11-13 11:22:16",
+      "comment": "cout estimatif de la 3e priorité de la sous composante 1.1 estimé à 72000000 pour l'électrification à base de lampadaires ce qui est anormale, ca doit être 20000000"
+    }
+  ],
+  "cvd": {
+    "sql_id": "727",
+    "name": "DJEWOUGUE / BIANKOURI",
+    "village_cvd": 4668,
+    "villages": [
+      {
+        "name": "DJEWOUGUE",
+        "id": "4668",
+        "is_headquarters_village": true
+      },
+      {
+        "name": "BIANKOURI",
+        "id": "4669"
+      }
+    ],
+    "village": {
+      "name": "DJEWOUGUE",
+      "id": "4668",
+      "is_headquarters_village": true
+    },
+    "unit": "DJEWOUGUE/BIANKOURI"
+  },
+  "last_updated_moment": "2025-10-15T15:32:39.668Z",
+  "updated_history": [
+    {
+      "facilitator": {
+        "form_response": {
+          "sousComposante11": {
+            "prioritesDuVillage": [
+              {
+                "priorite": "Réalisation Forage photovoltaïque Agri",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Le sous projet contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Construction Bâtiment scolaire EPP",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 30000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Electrification avec Panneaux solaires",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "sousComposante11": {
+            "prioritesDuVillage": [
+              {
+                "priorite": "Réalisation Forage photovoltaïque Agri",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Le sous projet contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Construction Bâtiment scolaire EPP",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 30000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Electrification avec Panneaux solaires",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        }
+      },
+      "date": "2024-11-13T20:49:26.547Z"
+    },
+    {
+      "facilitator": {
+        "form_response": {
+          "sousComposante12a": {
+            "nomDuMarcheLePlusImportant": "Marché de naki-ouest ",
+            "lieuDuMarcheLePlusImportant": "A naki-ouest centre ",
+            "typesInfrastructuresEtEquipements": [
+              {
+                "typeDeDeveloppement": "Construction des hangars de marché "
+              },
+              {
+                "typeDeDeveloppement": "Construction des ateliers pour les jeunes artisans "
+              },
+              {
+                "typeDeDeveloppement": "Réalisation d'un forage photovoltaïque pour la boisson "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "sousComposante12a": {
+            "nomDuMarcheLePlusImportant": "Marché de naki-ouest ",
+            "lieuDuMarcheLePlusImportant": "A naki-ouest centre ",
+            "typesInfrastructuresEtEquipements": [
+              {
+                "typeDeDeveloppement": "Construction des hangars de marché "
+              },
+              {
+                "typeDeDeveloppement": "Construction des ateliers pour les jeunes artisans "
+              },
+              {
+                "typeDeDeveloppement": "Réalisation d'un forage photovoltaïque pour la boisson "
+              }
+            ]
+          }
+        }
+      },
+      "date": "2024-11-13T20:49:29.607Z"
+    },
+    {
+      "facilitator": {
+        "form_response": {
+          "sousComposante12b": {
+            "principauxGroupesSocioeconomiques": [
+              {
+                "principalGroupeSocioeconomique": "maraîchers"
+              },
+              {
+                "principalGroupeSocioeconomique": "éleveurs"
+              },
+              {
+                "principalGroupeSocioeconomique": "commerçants de produits transformés"
+              },
+              {
+                "principalGroupeSocioeconomique": "artisans"
+              }
+            ],
+            "principauxbesoinsSociauxEconomiques": [
+              {
+                "besoin": "Appui technique à la mise en place des AVE "
+              },
+              {
+                "besoin": "Appui technique et financier aux groupements maraîchers "
+              },
+              {
+                "besoin": "Appui à l'organisation et à l'immatriculation des groupements féminins ( Monfante,Todlhan,Todman,Moinibe,Montote)"
+              }
+            ],
+            "principauxBesoinsEnRenforcementDeCapacites": [
+              {
+                "besoin": "Renforcement de capacités des AVE "
+              },
+              {
+                "besoin": "Renforcement de capacités du groupements Montote en technique culturale durable "
+              }
+            ],
+            "contributionClimatique": "L'activité permet la réduction de la pauvreté et la résilience climatique "
+          }
+        },
+        "form_fields": {
+          "sousComposante12b": {
+            "principauxGroupesSocioeconomiques": [
+              {
+                "principalGroupeSocioeconomique": "maraîchers"
+              },
+              {
+                "principalGroupeSocioeconomique": "éleveurs"
+              },
+              {
+                "principalGroupeSocioeconomique": "commerçants de produits transformés"
+              },
+              {
+                "principalGroupeSocioeconomique": "artisans"
+              }
+            ],
+            "principauxbesoinsSociauxEconomiques": [
+              {
+                "besoin": "Appui technique à la mise en place des AVE "
+              },
+              {
+                "besoin": "Appui technique et financier aux groupements maraîchers "
+              },
+              {
+                "besoin": "Appui à l'organisation et à l'immatriculation des groupements féminins ( Monfante,Todlhan,Todman,Moinibe,Montote)"
+              }
+            ],
+            "principauxBesoinsEnRenforcementDeCapacites": [
+              {
+                "besoin": "Renforcement de capacités des AVE "
+              },
+              {
+                "besoin": "Renforcement de capacités du groupements Montote en technique culturale durable "
+              }
+            ],
+            "contributionClimatique": "L'activité permet la réduction de la pauvreté et la résilience climatique "
+          }
+        }
+      },
+      "date": "2024-11-13T20:49:33.126Z"
+    },
+    {
+      "facilitator": {
+        "form_response": {
+          "sousComposante13": {
+            "classement": [
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Construction et équipement d'un centre communautaire ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 50000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Renforcement de capacités des jeunes dans la technique de pépinière ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 15000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Construction et équipement d'un centre d'informatique ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 60000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "sousComposante13": {
+            "classement": [
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Construction et équipement d'un centre communautaire ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 50000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Renforcement de capacités des jeunes dans la technique de pépinière ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 15000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Construction et équipement d'un centre d'informatique ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 60000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        }
+      },
+      "date": "2024-11-13T20:49:36.147Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante11": {
+            "prioritesDuVillage": [
+              {
+                "priorite": "Réalisation Forage photovoltaïque Agri",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 200000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Le sous projet contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Construction Bâtiment scolaire EPP",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 30000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Electrification avec Panneaux solaires",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante11": {
+                "label": "SOUS-COMPOSANTE 1.1",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "prioritesDuVillage": {
+                    "label": "Les priorités du village",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter une priorité",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante11": {
+                "type": "object",
+                "properties": {
+                  "prioritesDuVillage": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "priorite": {
+                          "label": "Priorité",
+                          "type": "string",
+                          "enum": [
+                            "Réalisation Forage photovoltaïque AEP",
+                            "Réalisation Forage photovoltaïque Agri",
+                            "Construction Bâtiment scolaire EPP",
+                            "Construction Bâtiment scolaire CEG",
+                            "Construction Bâtiment scolaire Lycée",
+                            "Réhabilitation Bâtiment scolaire EPP",
+                            "Réhabilitation Bâtiment scolaire CEG",
+                            "Réhabilitation Bâtiment scolaire Lycée",
+                            "Amenagement Piste",
+                            "Construction Radier",
+                            "Construction Ponceaux",
+                            "Construction Ponts",
+                            "Construction USP",
+                            "Construction CMS",
+                            "Réhabilitation USP",
+                            "Réhabilitation CMS",
+                            "Réhabilitation CHP",
+                            "Construction magasin de stockage",
+                            "Réhabilitation magasin de stockage",
+                            "Electrification avec Panneaux solaires",
+                            "Extention réseau électrique",
+                            "Construction Latrine communautaire",
+                            "Construction Centre communautaire",
+                            "Construction Maison des jeunes",
+                            "Autre"
+                          ]
+                        },
+                        "siAutreVeuillezDecrire": {
+                          "label": "Si autre, veuillez décrire",
+                          "type": "string"
+                        },
+                        "proposePar": {
+                          "label": "proposé par qui ?",
+                          "type": "string",
+                          "enum": [
+                            "Hommes",
+                            "Femmes",
+                            "Hommes et Femmes"
+                          ]
+                        },
+                        "coutEstime": {
+                          "label": "Coût estimé en FCFA",
+                          "type": "number"
+                        },
+                        "nombreEstimeDeBeneficiaires": {
+                          "label": "Nombre estimé de bénéficiaires",
+                          "type": "number"
+                        },
+                        "contributionClimatique": {
+                          "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "priorite",
+                        "proposePar",
+                        "coutEstime",
+                        "nombreEstimeDeBeneficiaires"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "prioritesDuVillage"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante11"
+            ]
+          }
+        },
+        "fields_updated": [
+          "sousComposante11"
+        ],
+        "attachments_updated": [],
+        "page": 0,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:31:52.371Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante12a": {
+            "nomDuMarcheLePlusImportant": "Marché de naki-ouest ",
+            "lieuDuMarcheLePlusImportant": "A naki-ouest centre ",
+            "typesInfrastructuresEtEquipements": [
+              {
+                "typeDeDeveloppement": "Construction des hangars de marché "
+              },
+              {
+                "typeDeDeveloppement": "Construction des ateliers pour les jeunes artisans "
+              },
+              {
+                "typeDeDeveloppement": "Réalisation d'un forage photovoltaïque pour la boisson "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante12a": {
+                "label": "SOUS-COMPOSANTE 1.2a",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "nomDuMarcheLePlusImportant": {
+                    "label": "Nom du marché le plus important du canton pour le village",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  },
+                  "lieuDuMarcheLePlusImportant": {
+                    "label": "Lieu du marché le plus important du canton pour le village",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  },
+                  "typesInfrastructuresEtEquipements": {
+                    "label": "Quels types d'infrastructure/équipement la communauté souhaiterait-elle voir dans ce marché ?",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter un type",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante12a": {
+                "type": "object",
+                "properties": {
+                  "nomDuMarcheLePlusImportant": {
+                    "type": "string"
+                  },
+                  "lieuDuMarcheLePlusImportant": {
+                    "type": "string"
+                  },
+                  "typesInfrastructuresEtEquipements": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "typeDeDeveloppement": {
+                          "label": "Type d'infrastructure/équipement",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "typeDeDeveloppement"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "nomDuMarcheLePlusImportant",
+                  "lieuDuMarcheLePlusImportant",
+                  "typesInfrastructuresEtEquipements"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante12a"
+            ]
+          }
+        },
+        "fields_updated": [],
+        "attachments_updated": [],
+        "page": 1,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:31:54.675Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante12b": {
+            "principauxGroupesSocioeconomiques": [
+              {
+                "principalGroupeSocioeconomique": "maraîchers"
+              },
+              {
+                "principalGroupeSocioeconomique": "éleveurs"
+              },
+              {
+                "principalGroupeSocioeconomique": "commerçants de produits transformés"
+              },
+              {
+                "principalGroupeSocioeconomique": "artisans"
+              }
+            ],
+            "principauxbesoinsSociauxEconomiques": [
+              {
+                "besoin": "Appui technique à la mise en place des AVE "
+              },
+              {
+                "besoin": "Appui technique et financier aux groupements maraîchers "
+              },
+              {
+                "besoin": "Appui à l'organisation et à l'immatriculation des groupements féminins ( Monfante,Todlhan,Todman,Moinibe,Montote)"
+              }
+            ],
+            "principauxBesoinsEnRenforcementDeCapacites": [
+              {
+                "besoin": "Renforcement de capacités des AVE "
+              },
+              {
+                "besoin": "Renforcement de capacités du groupements Montote en technique culturale durable "
+              }
+            ],
+            "contributionClimatique": "L'activité permet la réduction de la pauvreté et la résilience climatique "
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante12b": {
+                "label": "SOUS-COMPOSANTE 1.2b",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "principauxGroupesSocioeconomiques": {
+                    "label": "Les principaux groupements /coopératives du village qui sont liées au marche identifié en 1.2a",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter un groupe",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  },
+                  "principauxbesoinsSociauxEconomiques": {
+                    "label": "Quels sont les principaux besoins de ces groupes sociaux économiques (SE) du village ?",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter un besoin SE",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  },
+                  "principauxBesoinsEnRenforcementDeCapacites": {
+                    "label": "Quels sont leurs principaux besoins en renforcement de capacités et appuis à le restructuration (RCAR) ?",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter un besoin RCAR",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  },
+                  "contributionClimatique": {
+                    "label": "Comment l'activité contribue à l'adaptation au changement climatique ?",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante12b": {
+                "type": "object",
+                "properties": {
+                  "principauxGroupesSocioeconomiques": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "principalGroupeSocioeconomique": {
+                          "type": "string",
+                          "enum": [
+                            "maraîchers",
+                            "éleveurs",
+                            "maïs",
+                            "riz",
+                            "soja",
+                            "sesame",
+                            "anacarde",
+                            "karité",
+                            "transformation de produits agricoles (soja, riz, sesame, karité, anacarde)",
+                            "artisans",
+                            "commerçants de produits agricoles/élevages",
+                            "commerçants de produits transformés",
+                            "commerçants de produits artisanaux"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "principalGroupeSocioeconomique"
+                      ]
+                    }
+                  },
+                  "principauxbesoinsSociauxEconomiques": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "besoin": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "besoin"
+                      ]
+                    }
+                  },
+                  "principauxBesoinsEnRenforcementDeCapacites": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "besoin": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "besoin"
+                      ]
+                    }
+                  },
+                  "contributionClimatique": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "principauxGroupesSocioeconomiques",
+                  "principauxbesoinsSociauxEconomiques",
+                  "principauxBesoinsEnRenforcementDeCapacites"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante12b"
+            ]
+          }
+        },
+        "fields_updated": [],
+        "attachments_updated": [],
+        "page": 2,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:31:58.202Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante11": {
+            "prioritesDuVillage": [
+              {
+                "priorite": "Réalisation Forage photovoltaïque Agri",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Le sous projet contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Construction Bâtiment scolaire EPP",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 30000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Electrification avec Panneaux solaires",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante11": {
+                "label": "SOUS-COMPOSANTE 1.1",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "prioritesDuVillage": {
+                    "label": "Les priorités du village",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter une priorité",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante11": {
+                "type": "object",
+                "properties": {
+                  "prioritesDuVillage": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "priorite": {
+                          "label": "Priorité",
+                          "type": "string",
+                          "enum": [
+                            "Réalisation Forage photovoltaïque AEP",
+                            "Réalisation Forage photovoltaïque Agri",
+                            "Construction Bâtiment scolaire EPP",
+                            "Construction Bâtiment scolaire CEG",
+                            "Construction Bâtiment scolaire Lycée",
+                            "Réhabilitation Bâtiment scolaire EPP",
+                            "Réhabilitation Bâtiment scolaire CEG",
+                            "Réhabilitation Bâtiment scolaire Lycée",
+                            "Amenagement Piste",
+                            "Construction Radier",
+                            "Construction Ponceaux",
+                            "Construction Ponts",
+                            "Construction USP",
+                            "Construction CMS",
+                            "Réhabilitation USP",
+                            "Réhabilitation CMS",
+                            "Réhabilitation CHP",
+                            "Construction magasin de stockage",
+                            "Réhabilitation magasin de stockage",
+                            "Electrification avec Panneaux solaires",
+                            "Extention réseau électrique",
+                            "Construction Latrine communautaire",
+                            "Construction Centre communautaire",
+                            "Construction Maison des jeunes",
+                            "Autre"
+                          ]
+                        },
+                        "siAutreVeuillezDecrire": {
+                          "label": "Si autre, veuillez décrire",
+                          "type": "string"
+                        },
+                        "proposePar": {
+                          "label": "proposé par qui ?",
+                          "type": "string",
+                          "enum": [
+                            "Hommes",
+                            "Femmes",
+                            "Hommes et Femmes"
+                          ]
+                        },
+                        "coutEstime": {
+                          "label": "Coût estimé en FCFA",
+                          "type": "number"
+                        },
+                        "nombreEstimeDeBeneficiaires": {
+                          "label": "Nombre estimé de bénéficiaires",
+                          "type": "number"
+                        },
+                        "contributionClimatique": {
+                          "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "priorite",
+                        "proposePar",
+                        "coutEstime",
+                        "nombreEstimeDeBeneficiaires"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "prioritesDuVillage"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante11"
+            ]
+          }
+        },
+        "fields_updated": [
+          "sousComposante11"
+        ],
+        "attachments_updated": [],
+        "page": 0,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:32:23.281Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante12a": {
+            "nomDuMarcheLePlusImportant": "Marché de naki-ouest ",
+            "lieuDuMarcheLePlusImportant": "A naki-ouest centre ",
+            "typesInfrastructuresEtEquipements": [
+              {
+                "typeDeDeveloppement": "Construction des hangars de marché "
+              },
+              {
+                "typeDeDeveloppement": "Construction des ateliers pour les jeunes artisans "
+              },
+              {
+                "typeDeDeveloppement": "Réalisation d'un forage photovoltaïque pour la boisson "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante12a": {
+                "label": "SOUS-COMPOSANTE 1.2a",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "nomDuMarcheLePlusImportant": {
+                    "label": "Nom du marché le plus important du canton pour le village",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  },
+                  "lieuDuMarcheLePlusImportant": {
+                    "label": "Lieu du marché le plus important du canton pour le village",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  },
+                  "typesInfrastructuresEtEquipements": {
+                    "label": "Quels types d'infrastructure/équipement la communauté souhaiterait-elle voir dans ce marché ?",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter un type",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante12a": {
+                "type": "object",
+                "properties": {
+                  "nomDuMarcheLePlusImportant": {
+                    "type": "string"
+                  },
+                  "lieuDuMarcheLePlusImportant": {
+                    "type": "string"
+                  },
+                  "typesInfrastructuresEtEquipements": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "typeDeDeveloppement": {
+                          "label": "Type d'infrastructure/équipement",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "typeDeDeveloppement"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "nomDuMarcheLePlusImportant",
+                  "lieuDuMarcheLePlusImportant",
+                  "typesInfrastructuresEtEquipements"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante12a"
+            ]
+          }
+        },
+        "fields_updated": [],
+        "attachments_updated": [],
+        "page": 1,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:32:27.950Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante12b": {
+            "principauxGroupesSocioeconomiques": [
+              {
+                "principalGroupeSocioeconomique": "maraîchers"
+              },
+              {
+                "principalGroupeSocioeconomique": "éleveurs"
+              },
+              {
+                "principalGroupeSocioeconomique": "commerçants de produits transformés"
+              },
+              {
+                "principalGroupeSocioeconomique": "artisans"
+              }
+            ],
+            "principauxbesoinsSociauxEconomiques": [
+              {
+                "besoin": "Appui technique à la mise en place des AVE "
+              },
+              {
+                "besoin": "Appui technique et financier aux groupements maraîchers "
+              },
+              {
+                "besoin": "Appui à l'organisation et à l'immatriculation des groupements féminins ( Monfante,Todlhan,Todman,Moinibe,Montote)"
+              }
+            ],
+            "principauxBesoinsEnRenforcementDeCapacites": [
+              {
+                "besoin": "Renforcement de capacités des AVE "
+              },
+              {
+                "besoin": "Renforcement de capacités du groupements Montote en technique culturale durable "
+              }
+            ],
+            "contributionClimatique": "L'activité permet la réduction de la pauvreté et la résilience climatique "
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante12b": {
+                "label": "SOUS-COMPOSANTE 1.2b",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "principauxGroupesSocioeconomiques": {
+                    "label": "Les principaux groupements /coopératives du village qui sont liées au marche identifié en 1.2a",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter un groupe",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  },
+                  "principauxbesoinsSociauxEconomiques": {
+                    "label": "Quels sont les principaux besoins de ces groupes sociaux économiques (SE) du village ?",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter un besoin SE",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  },
+                  "principauxBesoinsEnRenforcementDeCapacites": {
+                    "label": "Quels sont leurs principaux besoins en renforcement de capacités et appuis à le restructuration (RCAR) ?",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter un besoin RCAR",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  },
+                  "contributionClimatique": {
+                    "label": "Comment l'activité contribue à l'adaptation au changement climatique ?",
+                    "help": "",
+                    "i18n": {
+                      "optional": "",
+                      "required": "*"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante12b": {
+                "type": "object",
+                "properties": {
+                  "principauxGroupesSocioeconomiques": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "principalGroupeSocioeconomique": {
+                          "type": "string",
+                          "enum": [
+                            "maraîchers",
+                            "éleveurs",
+                            "maïs",
+                            "riz",
+                            "soja",
+                            "sesame",
+                            "anacarde",
+                            "karité",
+                            "transformation de produits agricoles (soja, riz, sesame, karité, anacarde)",
+                            "artisans",
+                            "commerçants de produits agricoles/élevages",
+                            "commerçants de produits transformés",
+                            "commerçants de produits artisanaux"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "principalGroupeSocioeconomique"
+                      ]
+                    }
+                  },
+                  "principauxbesoinsSociauxEconomiques": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "besoin": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "besoin"
+                      ]
+                    }
+                  },
+                  "principauxBesoinsEnRenforcementDeCapacites": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "besoin": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "besoin"
+                      ]
+                    }
+                  },
+                  "contributionClimatique": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "principauxGroupesSocioeconomiques",
+                  "principauxbesoinsSociauxEconomiques",
+                  "principauxBesoinsEnRenforcementDeCapacites"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante12b"
+            ]
+          }
+        },
+        "fields_updated": [],
+        "attachments_updated": [],
+        "page": 2,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:32:31.551Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante13": {
+            "classement": [
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Construction et équipement d'un centre communautaire ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 50000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Renforcement de capacités des jeunes dans la technique de pépinière ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 15000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Autre",
+                "siAutreVeuillezDecrire": "Construction et équipement d'un centre d'informatique ",
+                "proposePar": "jeunes hommes et femmes",
+                "coutEstime": 60000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante13": {
+                "label": "SOUS-COMPOSANTE 1.3",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "classement": {
+                    "label": "Les priorités des jeunes du village",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter une priorité",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante13": {
+                "type": "object",
+                "properties": {
+                  "classement": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "priorite": {
+                          "label": "Priorité",
+                          "type": "string",
+                          "enum": [
+                            "Réhabilitation/équipement terrain foot",
+                            "Aménagement/équipement terrain de foot",
+                            "Appui groupements maraichers",
+                            "Appui groupements éleveurs",
+                            "Appui groupements producteurs de Maïs",
+                            "Appui groupements producteurs de Riz",
+                            "Appui aux jeunes producteurs de Soja",
+                            "Appui groupements transformateurs",
+                            "Appui groupements artisans",
+                            "Appui commerçants produits Agricoles/élevages",
+                            "Appui Commerçants produits transformés",
+                            "Appui Commerçant produit artisanaux",
+                            "Autre"
+                          ]
+                        },
+                        "siAutreVeuillezDecrire": {
+                          "label": "Si autre, veuillez décrire",
+                          "type": "string"
+                        },
+                        "proposePar": {
+                          "label": "proposé par qui ?",
+                          "type": "string",
+                          "enum": [
+                            "jeunes hommes",
+                            "jeunes femmes",
+                            "jeunes hommes et femmes"
+                          ]
+                        },
+                        "coutEstime": {
+                          "label": "Coût estimé en FCFA",
+                          "type": "number"
+                        },
+                        "nombreEstimeDeBeneficiaires": {
+                          "label": "Nombre estimé de bénéficiaires",
+                          "type": "number"
+                        },
+                        "contributionClimatique": {
+                          "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "priorite",
+                        "proposePar",
+                        "coutEstime",
+                        "nombreEstimeDeBeneficiaires"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "classement"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante13"
+            ]
+          }
+        },
+        "fields_updated": [],
+        "attachments_updated": [],
+        "page": 3,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:32:39.668Z"
+    }
+  ],
+  "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+  "cycle_name": "Cycle 1",
+  "users_involved_in_task": [
+    {
+      "name": "NABAGOU Pagueyendou",
+      "email": "nabagoupascaline@gmail.com",
+      "phone": "22890121112",
+      "sex": "Mme",
+      "sql_id": 126,
+      "type": "facilitator",
+      "first_intervention_date": "2025-10-15T15:31:52.371Z",
+      "last_intervention_date": "2025-10-15T15:32:39.668Z"
+    }
+  ],
+  "updated_after_invalidation": true,
+  "updated_after_invalidation_history": [
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante11": {
+            "prioritesDuVillage": [
+              {
+                "priorite": "Réalisation Forage photovoltaïque Agri",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 200000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Le sous projet contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Construction Bâtiment scolaire EPP",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 30000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Electrification avec Panneaux solaires",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante11": {
+                "label": "SOUS-COMPOSANTE 1.1",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "prioritesDuVillage": {
+                    "label": "Les priorités du village",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter une priorité",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante11": {
+                "type": "object",
+                "properties": {
+                  "prioritesDuVillage": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "priorite": {
+                          "label": "Priorité",
+                          "type": "string",
+                          "enum": [
+                            "Réalisation Forage photovoltaïque AEP",
+                            "Réalisation Forage photovoltaïque Agri",
+                            "Construction Bâtiment scolaire EPP",
+                            "Construction Bâtiment scolaire CEG",
+                            "Construction Bâtiment scolaire Lycée",
+                            "Réhabilitation Bâtiment scolaire EPP",
+                            "Réhabilitation Bâtiment scolaire CEG",
+                            "Réhabilitation Bâtiment scolaire Lycée",
+                            "Amenagement Piste",
+                            "Construction Radier",
+                            "Construction Ponceaux",
+                            "Construction Ponts",
+                            "Construction USP",
+                            "Construction CMS",
+                            "Réhabilitation USP",
+                            "Réhabilitation CMS",
+                            "Réhabilitation CHP",
+                            "Construction magasin de stockage",
+                            "Réhabilitation magasin de stockage",
+                            "Electrification avec Panneaux solaires",
+                            "Extention réseau électrique",
+                            "Construction Latrine communautaire",
+                            "Construction Centre communautaire",
+                            "Construction Maison des jeunes",
+                            "Autre"
+                          ]
+                        },
+                        "siAutreVeuillezDecrire": {
+                          "label": "Si autre, veuillez décrire",
+                          "type": "string"
+                        },
+                        "proposePar": {
+                          "label": "proposé par qui ?",
+                          "type": "string",
+                          "enum": [
+                            "Hommes",
+                            "Femmes",
+                            "Hommes et Femmes"
+                          ]
+                        },
+                        "coutEstime": {
+                          "label": "Coût estimé en FCFA",
+                          "type": "number"
+                        },
+                        "nombreEstimeDeBeneficiaires": {
+                          "label": "Nombre estimé de bénéficiaires",
+                          "type": "number"
+                        },
+                        "contributionClimatique": {
+                          "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "priorite",
+                        "proposePar",
+                        "coutEstime",
+                        "nombreEstimeDeBeneficiaires"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "prioritesDuVillage"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante11"
+            ]
+          }
+        },
+        "fields_updated": [
+          "sousComposante11"
+        ],
+        "attachments_updated": [],
+        "page": 0,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:31:52.371Z"
+    },
+    {
+      "facilitator": {
+        "name": "NABAGOU Pagueyendou",
+        "email": "nabagoupascaline@gmail.com",
+        "phone": "22890121112",
+        "sex": "Mme",
+        "sql_id": 126,
+        "type": "facilitator",
+        "administrative_levels": [
+          {
+            "name": "BIANKOURI",
+            "id": "4669",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NANDJAK 2",
+            "id": "4098",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ZONGO (NAMARE)",
+            "id": "3411",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KPEGUIDOUNE",
+            "id": "3389",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "ONAGBANGBONGUE",
+            "id": "3730",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "GBANGBANMONI",
+            "id": "4417",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "NATRE-KOANE",
+            "id": "4419",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3"
+          },
+          {
+            "name": "KOUNKONMONGUE",
+            "id": "4418",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NABOAGBANE",
+            "id": "4416",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KALIYATA (KORBONGOU)",
+            "id": "3707",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "GNABADJOUANI",
+            "id": "3870",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "KANLOGUE-GBANGBANG",
+            "id": "3706",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TOUONTONGOU",
+            "id": "4101",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "YALBONGBONGOU",
+            "id": "4099",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "NANDJAK 1",
+            "id": "4097",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "DJEWOUGUE",
+            "id": "4668",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BASSOUDOUGOU",
+            "id": "4667",
+            "project_name": "COSO",
+            "project_id": "1057e0a41198a35ac379602ff7135282",
+            "cycle_name": "Cycle 1",
+            "cycle_id": "58660287a4a18a4fdd8257923340f9a3",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "BOULKOUGUE",
+            "id": "6583",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "TCHIENLALLE",
+            "id": "6584",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 1",
+            "id": "3915",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI 2",
+            "id": "3916",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "POISSONGUI 3",
+            "id": "3917",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1"
+          },
+          {
+            "name": "FLINGBONG",
+            "id": "3231",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          },
+          {
+            "name": "POISSONGUI TALGUIMBOUNDE",
+            "id": "3243",
+            "project_id": "58660287a4a18a4fdd82579233411488",
+            "project_name": "FA-COSO",
+            "cycle_id": "58660287a4a18a4fdd82579233410950",
+            "cycle_name": "Cycle 1",
+            "is_headquarters_village": true
+          }
+        ],
+        "form_response": {
+          "sousComposante11": {
+            "prioritesDuVillage": [
+              {
+                "priorite": "Réalisation Forage photovoltaïque Agri",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Le sous projet contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Construction Bâtiment scolaire EPP",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 30000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              },
+              {
+                "priorite": "Electrification avec Panneaux solaires",
+                "siAutreVeuillezDecrire": null,
+                "proposePar": "Hommes et Femmes",
+                "coutEstime": 20000000,
+                "nombreEstimeDeBeneficiaires": 1000,
+                "contributionClimatique": "Contribue à la résilience climatique "
+              }
+            ]
+          }
+        },
+        "form_fields": {
+          "options": {
+            "fields": {
+              "sousComposante11": {
+                "label": "SOUS-COMPOSANTE 1.1",
+                "help": "",
+                "i18n": {
+                  "optional": "",
+                  "required": "*"
+                },
+                "fields": {
+                  "prioritesDuVillage": {
+                    "label": "Les priorités du village",
+                    "disableOrder": true,
+                    "i18n": {
+                      "remove": "x",
+                      "add": "Ajouter une priorité",
+                      "optional": "",
+                      "required": "*",
+                      "up": "",
+                      "down": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "sousComposante11": {
+                "type": "object",
+                "properties": {
+                  "prioritesDuVillage": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "priorite": {
+                          "label": "Priorité",
+                          "type": "string",
+                          "enum": [
+                            "Réalisation Forage photovoltaïque AEP",
+                            "Réalisation Forage photovoltaïque Agri",
+                            "Construction Bâtiment scolaire EPP",
+                            "Construction Bâtiment scolaire CEG",
+                            "Construction Bâtiment scolaire Lycée",
+                            "Réhabilitation Bâtiment scolaire EPP",
+                            "Réhabilitation Bâtiment scolaire CEG",
+                            "Réhabilitation Bâtiment scolaire Lycée",
+                            "Amenagement Piste",
+                            "Construction Radier",
+                            "Construction Ponceaux",
+                            "Construction Ponts",
+                            "Construction USP",
+                            "Construction CMS",
+                            "Réhabilitation USP",
+                            "Réhabilitation CMS",
+                            "Réhabilitation CHP",
+                            "Construction magasin de stockage",
+                            "Réhabilitation magasin de stockage",
+                            "Electrification avec Panneaux solaires",
+                            "Extention réseau électrique",
+                            "Construction Latrine communautaire",
+                            "Construction Centre communautaire",
+                            "Construction Maison des jeunes",
+                            "Autre"
+                          ]
+                        },
+                        "siAutreVeuillezDecrire": {
+                          "label": "Si autre, veuillez décrire",
+                          "type": "string"
+                        },
+                        "proposePar": {
+                          "label": "proposé par qui ?",
+                          "type": "string",
+                          "enum": [
+                            "Hommes",
+                            "Femmes",
+                            "Hommes et Femmes"
+                          ]
+                        },
+                        "coutEstime": {
+                          "label": "Coût estimé en FCFA",
+                          "type": "number"
+                        },
+                        "nombreEstimeDeBeneficiaires": {
+                          "label": "Nombre estimé de bénéficiaires",
+                          "type": "number"
+                        },
+                        "contributionClimatique": {
+                          "label": "Comment le projet contribue à l'adaptation au changement climatique",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "priorite",
+                        "proposePar",
+                        "coutEstime",
+                        "nombreEstimeDeBeneficiaires"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "prioritesDuVillage"
+                ]
+              }
+            },
+            "required": [
+              "sousComposante11"
+            ]
+          }
+        },
+        "fields_updated": [
+          "sousComposante11"
+        ],
+        "attachments_updated": [],
+        "page": 0,
+        "attachments": [
+          {
+            "name": "PV de la conduite de l'évaluation sociale participative",
+            "order": 0,
+            "attachment": {
+              "uri": "https://cddfiles.s3.amazonaws.com/proof_of_work/7e33a557-bac9-48a8-b23c-28b087ae724d.pdf?AWSAccessKeyId=AKIAVNBI2LQUFQ6X2VPO&Signature=IW2hNHZUdYlYhPD45%2FjuhMwmHDw%3D&Expires=1712379901"
+            },
+            "type": "application/pdf"
+          }
+        ]
+      },
+      "date": "2025-10-15T15:32:23.281Z"
+    }
+  ],
+  "date_validated": "2025-10-29 5:46:20"
+}

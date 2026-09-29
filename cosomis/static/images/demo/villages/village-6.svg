@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img">
+  <defs>
+    <linearGradient id="sky-village-36" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3c98d"/>
+      <stop offset="100%" stop-color="#fae4c4"/>
+    </linearGradient>
+    <linearGradient id="ground-village-36" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b9b183"/>
+      <stop offset="100%" stop-color="#a09a68"/>
+    </linearGradient>
+    <radialGradient id="sun-village-36" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fff3dc" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#fff3dc" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vig-village-36" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.10"/>
+      <stop offset="35%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.14"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky-village-36)"/>
+  <circle cx="656" cy="190" r="140" fill="url(#sun-village-36)"/>
+  <circle cx="656" cy="190" r="26" fill="#fff3dc" opacity="0.9"/>
+  <rect y="230" width="800" height="70" fill="#f6d9ae" opacity="0.35"/>
+  <path d="M0 500 L0 260 Q 50 240 100 248 Q 150 258 200 260 Q 250 251 300 262 Q 350 257 400 249 Q 450 249 500 252 Q 550 235 600 262 Q 650 234 700 260 Q 750 262 800 260 L800 500 Z" fill="#b9b183" opacity="0.55"/><path d="M0 500 L0 271 Q 50 283 100 282 Q 150 256 200 271 Q 250 256 300 270 Q 350 280 400 269 Q 450 252 500 275 Q 550 252 600 267 Q 650 274 700 270 Q 750 259 800 272 L800 500 Z" fill="#b9b183" opacity="0.75"/><path d="M0 500 L0 286 Q 50 297 100 285 Q 150 269 200 298 Q 250 277 300 294 Q 350 295 400 284 Q 450 294 500 296 Q 550 287 600 294 Q 650 278 700 292 Q 750 280 800 298 L800 500 Z" fill="#a09a68" opacity="0.9"/>
+  <rect y="300" width="800" height="200" fill="url(#ground-village-36)"/>
+  <g opacity="0.82">
+      <rect x="237.65" y="304.18" width="2.7" height="11.82" fill="#5a6a3c"/>
+      <ellipse cx="239" cy="294" rx="18.51" ry="11.48" fill="#6f7f4a"/>
+      <ellipse cx="230.67" cy="297.7" rx="11.11" ry="7.77" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.87">
+      <rect x="681.65" y="304.18" width="2.7" height="11.82" fill="#5a6a3c"/>
+      <ellipse cx="683" cy="294.55" rx="17.51" ry="10.86" fill="#6f7f4a"/>
+      <ellipse cx="675.12" cy="298.05" rx="10.51" ry="7.35" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.78">
+      <rect x="676.81" y="296.58" width="2.38" height="10.42" fill="#5a6a3c"/>
+      <ellipse cx="678" cy="287.28" rx="16.91" ry="10.48" fill="#6f7f4a"/>
+      <ellipse cx="670.39" cy="290.66" rx="10.15" ry="7.1" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.78">
+      <rect x="698.67" y="303.33" width="2.67" height="11.67" fill="#5a6a3c"/>
+      <ellipse cx="700" cy="296" rx="13.33" ry="8.26" fill="#6f7f4a"/>
+      <ellipse cx="694" cy="298.66" rx="8" ry="5.6" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.98">
+      <rect x="34.72" y="300.8" width="2.56" height="11.2" fill="#5a6a3c"/>
+      <ellipse cx="36" cy="291.01" rx="17.8" ry="11.04" fill="#6f7f4a"/>
+      <ellipse cx="27.99" cy="294.57" rx="10.68" ry="7.48" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.91">
+      <rect x="607.72" y="300.8" width="2.56" height="11.2" fill="#5a6a3c"/>
+      <ellipse cx="609" cy="292.66" rx="14.8" ry="9.18" fill="#6f7f4a"/>
+      <ellipse cx="602.34" cy="295.62" rx="8.88" ry="6.22" fill="#5a6a3c" opacity="0.5"/>
+    </g>
+  <ellipse cx="250" cy="430" rx="37.8" ry="4.91" fill="#000" opacity="0.13"/>
+      <path d="M214.3 428 a 35.7 35.7 0 0 1 71.4 0 Z" fill="#e6dcc8"/>
+      <path d="M214.3 428 a 35.7 35.7 0 0 1 71.4 0 Z" fill="#000" opacity="0.06"/>
+      <rect x="218.5" y="392.3" width="63" height="35.7" fill="#e6dcc8"/>
+      <rect x="218.5" y="417.5" width="63" height="10.5" fill="#cbbfa6"/>
+      <path d="M203.8 392.3 L250 348.2 L296.2 392.3 Z" fill="#8d5b3f"/>
+      <path d="M203.8 392.3 L250 348.2 L256.3 392.3 Z" fill="#fff" opacity="0.10"/>
+      <rect x="241.6" y="402.8" width="16.8" height="25.2" fill="#6f5a44"/><ellipse cx="392" cy="442" rx="45" ry="5.85" fill="#000" opacity="0.13"/>
+      <path d="M349.5 440 a 42.5 42.5 0 0 1 85 0 Z" fill="#e6dcc8"/>
+      <path d="M349.5 440 a 42.5 42.5 0 0 1 85 0 Z" fill="#000" opacity="0.06"/>
+      <rect x="354.5" y="397.5" width="75" height="42.5" fill="#e6dcc8"/>
+      <rect x="354.5" y="427.5" width="75" height="12.5" fill="#cbbfa6"/>
+      <path d="M337 397.5 L392 345 L447 397.5 Z" fill="#7d5138"/>
+      <path d="M337 397.5 L392 345 L399.5 397.5 Z" fill="#fff" opacity="0.10"/>
+      <rect x="382" y="410" width="20" height="30" fill="#6f5a44"/><ellipse cx="548" cy="426" rx="34.2" ry="4.45" fill="#000" opacity="0.13"/>
+      <path d="M515.7 424 a 32.3 32.3 0 0 1 64.6 0 Z" fill="#e6dcc8"/>
+      <path d="M515.7 424 a 32.3 32.3 0 0 1 64.6 0 Z" fill="#000" opacity="0.06"/>
+      <rect x="519.5" y="391.7" width="57" height="32.3" fill="#e6dcc8"/>
+      <rect x="519.5" y="414.5" width="57" height="9.5" fill="#cbbfa6"/>
+      <path d="M506.2 391.7 L548 351.8 L589.8 391.7 Z" fill="#8d5b3f"/>
+      <path d="M506.2 391.7 L548 351.8 L553.7 391.7 Z" fill="#fff" opacity="0.10"/>
+      <rect x="540.4" y="401.2" width="15.2" height="22.8" fill="#6f5a44"/>
+      <ellipse cx="468" cy="420" rx="20" ry="2.6" fill="#000" opacity="0.13"/>
+      <rect x="452" y="380" width="32" height="40" rx="6" fill="#c2a878"/>
+      <path d="M444 380 L468 354 L492 380 Z" fill="#8d5b3f"/>
+      <g fill="#2f3a33" opacity="0.85">
+    <circle cx="318" cy="406" r="5.88"/>
+    <path d="M311.7 411.6 h12.6 l2.8 19.6 h-18.2 Z"/>
+    <rect x="312.4" y="431.2" width="4.2" height="16.8"/>
+    <rect x="319.4" y="431.2" width="4.2" height="16.8"/>
+  </g><g fill="#3a4640" opacity="0.85">
+    <circle cx="342" cy="416" r="5.04"/>
+    <path d="M336.6 420.8 h10.8 l2.4 16.8 h-15.6 Z"/>
+    <rect x="337.2" y="437.6" width="3.6" height="14.4"/>
+    <rect x="343.2" y="437.6" width="3.6" height="14.4"/>
+  </g><g fill="#33403a" opacity="0.85">
+    <circle cx="614" cy="400.5" r="5.25"/>
+    <path d="M608.38 405.5 h11.25 l2.5 17.5 h-16.25 Z"/>
+    <rect x="609" y="423" width="3.75" height="15"/>
+    <rect x="615.25" y="423" width="3.75" height="15"/>
+  </g>
+      <g opacity="0.93">
+      <rect x="30.06" y="332.04" width="3.88" height="16.96" fill="#5a6a3c"/>
+      <ellipse cx="32" cy="319.18" rx="23.38" ry="14.5" fill="#6f7f4a"/>
+      <ellipse cx="21.48" cy="323.86" rx="14.03" ry="9.82" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.86">
+      <rect x="542.17" y="326.98" width="3.66" height="16.02" fill="#5a6a3c"/>
+      <ellipse cx="544" cy="315.26" rx="21.31" ry="13.21" fill="#6f7f4a"/>
+      <ellipse cx="534.41" cy="319.52" rx="12.79" ry="8.95" fill="#5a6a3c" opacity="0.5"/>
+    </g><g opacity="0.97">
+      <rect x="81.97" y="336.27" width="4.05" height="17.73" fill="#5a6a3c"/>
+      <ellipse cx="84" cy="322.37" rx="25.27" ry="15.67" fill="#6f7f4a"/>
+      <ellipse cx="72.63" cy="327.43" rx="15.16" ry="10.61" fill="#5a6a3c" opacity="0.5"/>
+    </g>
+      <path d="M114 457 q 4 -4.8 1 -8" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M231 434 q 0 -4.2 3 -7" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M543 417 q 1 -6 6 -10" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M710 458 q 4 -8.4 -2 -14" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M280 474 q 4 -6.6 -4 -11" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M418 393 q 2 -9 3 -15" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M614 428 q 1 -4.2 -5 -7" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M62 474 q -3 -6 5 -10" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M315 404 q 3 -7.8 -6 -13" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M637 482 q 3 -7.199999999999999 -1 -12" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M522 394 q -4 -6 0 -10" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M441 418 q 0 -3.5999999999999996 3 -6" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/>
+  <rect width="800" height="500" fill="url(#vig-village-36)"/>
+</svg>

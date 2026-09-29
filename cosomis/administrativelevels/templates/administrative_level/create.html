@@ -24,27 +24,39 @@
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-8">
-                            <form method="POST" enctype="multipart/form-data">
+                            <form method="POST" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
 
-                                {% if form.errors %}
-                                    <div class="alert alert-danger alert-sm form_alert">{{ form.errors }}</div>
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ form.non_field_errors }}
+                                    </div>
                                 {% endif %}
-                                
+
                                 {% for field in form %}
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                        <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">
+                                            {{ field.label }}{% if field.field.required %} <span class="text-danger" aria-hidden="true">*</span>{% endif %}
+                                        </label>
                                         <div class="col-sm-9">
                                             {{ field }}
+                                            {% if field.help_text %}
+                                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                            {% endif %}
+                                            {% if field.errors %}
+                                                <div class="invalid-feedback d-block" role="alert">
+                                                    {% for error in field.errors %}<div>{{ error }}</div>{% endfor %}
+                                                </div>
+                                            {% endif %}
                                         </div>
-                                        {% if field.errors %}
-                                            <div class="alert alert-danger alert-sm form_alert">{{ field.errors }}</div>
-                                        {% endif %}
                                         <div class="clearfix"></div>
                                     </div>
                                 {% endfor %}
 
-                                <button type="submit" class="btn btn-primary float-right" >{% translate 'Submit' %}</button>
+                                <button type="submit" class="btn btn-primary float-right js-create-submit">
+                                    <span class="submit-label">{% translate 'Submit' %}</span>
+                                    <span class="spinner-border spinner-border-sm d-none submit-spin" role="status" aria-hidden="true"></span>
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -83,6 +95,35 @@
 
         $(document).ready(function () {
             {% get_current_language as lang %}
+
+            // Inline per-field validation + submit loading state (S17).
+            $("form[method='POST']").on('submit', function () {
+                var $form = $(this);
+                var valid = true;
+                $form.find('[required]').each(function () {
+                    var $f = $(this);
+                    if (!$f.val()) {
+                        $f.addClass('is-invalid');
+                        valid = false;
+                    } else {
+                        $f.removeClass('is-invalid');
+                    }
+                });
+                if (!valid) {
+                    if (window.toast) {
+                        window.toast("{% translate 'Some information is invalid. Please review the form and try again.' %}", 'warning');
+                    }
+                    return false;
+                }
+                var $btn = $form.find('.js-create-submit');
+                $btn.prop('disabled', true);
+                $btn.find('.submit-spin').removeClass('d-none');
+                return true;
+            });
+            $(document).on('input change', '.is-invalid', function () {
+                if ($(this).val()) { $(this).removeClass('is-invalid'); }
+            });
+
             let headquarters_village = $("#id_headquarters_village");
             let villages = $("#id_villages");
 
@@ -109,7 +150,11 @@
                         }
                     },
                     error: function (data) {
-                        alert(error_server_message + "Error " + data.status);
+                        if (window.notifyAjaxError) {
+                            window.notifyAjaxError(data);
+                        } else {
+                            alert("{% translate 'Something went wrong.' %}");
+                        }
                         $("#id_geographical_unit").attr('disabled', false);
                     }
                 }).done(function () {

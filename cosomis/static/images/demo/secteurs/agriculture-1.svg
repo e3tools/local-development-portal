@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img">
+  <defs>
+    <linearGradient id="sky-agriculture-31" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9dc9e0"/>
+      <stop offset="100%" stop-color="#f0e4c8"/>
+    </linearGradient>
+    <linearGradient id="ground-agriculture-31" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8fae63"/>
+      <stop offset="100%" stop-color="#6f9350"/>
+    </linearGradient>
+    <radialGradient id="sun-agriculture-31" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fff6e0" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#fff6e0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vig-agriculture-31" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.10"/>
+      <stop offset="35%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.14"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky-agriculture-31)"/>
+  <circle cx="497" cy="130" r="140" fill="url(#sun-agriculture-31)"/>
+  <circle cx="497" cy="130" r="26" fill="#fff6e0" opacity="0.9"/>
+  <rect y="230" width="800" height="70" fill="#e2dcc0" opacity="0.35"/>
+  <path d="M0 500 L0 258 Q 50 256 100 246 Q 150 245 200 251 Q 250 234 300 261 Q 350 258 400 257 Q 450 242 500 258 Q 550 250 600 253 Q 650 255 700 246 Q 750 255 800 258 L800 500 Z" fill="#8fae63" opacity="0.55"/><path d="M0 500 L0 278 Q 50 261 100 280 Q 150 279 200 279 Q 250 278 300 282 Q 350 273 400 276 Q 450 253 500 268 Q 550 257 600 277 Q 650 261 700 270 Q 750 274 800 277 L800 500 Z" fill="#8fae63" opacity="0.75"/><path d="M0 500 L0 296 Q 50 295 100 296 Q 150 297 200 287 Q 250 280 300 288 Q 350 270 400 296 Q 450 268 500 288 Q 550 269 600 289 Q 650 297 700 298 Q 750 289 800 295 L800 500 Z" fill="#6f9350" opacity="0.9"/>
+  <rect y="300" width="800" height="200" fill="url(#ground-agriculture-31)"/>
+  <g opacity="0.99">
+      <rect x="427.83" y="295.73" width="2.35" height="10.27" fill="#3d5a2b"/>
+      <ellipse cx="429" cy="288.73" rx="12.73" ry="7.89" fill="#4f7038"/>
+      <ellipse cx="423.27" cy="291.27" rx="7.64" ry="5.35" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.82">
+      <rect x="569.56" y="308.4" width="2.88" height="12.6" fill="#3d5a2b"/>
+      <ellipse cx="571" cy="297.73" rx="19.4" ry="12.03" fill="#4f7038"/>
+      <ellipse cx="562.27" cy="301.61" rx="11.64" ry="8.15" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.95">
+      <rect x="626.81" y="296.58" width="2.38" height="10.42" fill="#3d5a2b"/>
+      <ellipse cx="628" cy="286.73" rx="17.91" ry="11.1" fill="#4f7038"/>
+      <ellipse cx="619.94" cy="290.31" rx="10.75" ry="7.52" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.97">
+      <rect x="718.79" y="297.42" width="2.42" height="10.58" fill="#3d5a2b"/>
+      <ellipse cx="720" cy="289.67" rx="14.09" ry="8.74" fill="#4f7038"/>
+      <ellipse cx="713.66" cy="292.49" rx="8.45" ry="5.92" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.95">
+      <rect x="188.65" y="304.18" width="2.7" height="11.82" fill="#3d5a2b"/>
+      <ellipse cx="190" cy="295.65" rx="15.51" ry="9.62" fill="#4f7038"/>
+      <ellipse cx="183.02" cy="298.75" rx="9.31" ry="6.51" fill="#3d5a2b" opacity="0.5"/>
+    </g><g opacity="0.96">
+      <rect x="101.56" y="308.4" width="2.88" height="12.6" fill="#3d5a2b"/>
+      <ellipse cx="103" cy="299.93" rx="15.4" ry="9.55" fill="#4f7038"/>
+      <ellipse cx="96.07" cy="303.01" rx="9.24" ry="6.47" fill="#3d5a2b" opacity="0.5"/>
+    </g>
+  <ellipse cx="400" cy="438" rx="172" ry="22.36" fill="#000" opacity="0.13"/>
+    <rect x="272" y="340" width="256" height="98" fill="#e6dcc8"/>
+    <rect x="272" y="412" width="256" height="26" fill="#cbbfa6"/>
+    <path d="M256 340 h288 l-24 -46 h-240 Z" fill="#9aa7ad"/>
+    <rect x="352" y="364" width="96" height="74" fill="#7c6a52"/>
+    <path d="M352 364 h96 v74 h-96 Z" fill="none" stroke="#5f5140" stroke-width="4"/>
+    <path d="M352 364 L448 438 M448 364 L352 438" stroke="#5f5140" stroke-width="3" opacity="0.6"/>
+    <g fill="#e2d4b4">
+      <ellipse cx="566" cy="424" rx="22" ry="15"/><ellipse cx="596" cy="430" rx="20" ry="14"/>
+      <ellipse cx="578" cy="404" rx="20" ry="14"/>
+    </g>
+    <g fill="#cbb98f"><ellipse cx="566" cy="418" rx="14" ry="7"/><ellipse cx="578" cy="398" rx="12" ry="6"/></g>
+    <g fill="#2f3a33" opacity="0.85">
+    <circle cx="232" cy="399" r="5.46"/>
+    <path d="M226.15 404.2 h11.7 l2.6 18.2 h-16.9 Z"/>
+    <rect x="226.8" y="422.4" width="3.9" height="15.6"/>
+    <rect x="233.3" y="422.4" width="3.9" height="15.6"/>
+  </g><g fill="#3a4640" opacity="0.85">
+    <circle cx="628" cy="406" r="5.04"/>
+    <path d="M622.6 410.8 h10.8 l2.4 16.8 h-15.6 Z"/>
+    <rect x="623.2" y="427.6" width="3.6" height="14.4"/>
+    <rect x="629.2" y="427.6" width="3.6" height="14.4"/>
+  </g>
+  <rect width="800" height="500" fill="url(#vig-agriculture-31)"/>
+</svg>

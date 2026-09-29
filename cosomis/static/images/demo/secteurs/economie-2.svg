@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img">
+  <defs>
+    <linearGradient id="sky-economie-58" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cdbfa2"/>
+      <stop offset="100%" stop-color="#e9e0cb"/>
+    </linearGradient>
+    <linearGradient id="ground-economie-58" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a8ab6f"/>
+      <stop offset="100%" stop-color="#8b9457"/>
+    </linearGradient>
+    <radialGradient id="sun-economie-58" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#f5ead0" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#f5ead0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vig-economie-58" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.10"/>
+      <stop offset="35%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.14"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#sky-economie-58)"/>
+  <circle cx="400" cy="150" r="140" fill="url(#sun-economie-58)"/>
+  <circle cx="400" cy="150" r="26" fill="#f5ead0" opacity="0.9"/>
+  <rect y="230" width="800" height="70" fill="#ded2b6" opacity="0.35"/>
+  <path d="M0 500 L0 256 Q 50 255 100 246 Q 150 260 200 254 Q 250 247 300 261 Q 350 258 400 253 Q 450 264 500 257 Q 550 237 600 248 Q 650 243 700 251 Q 750 234 800 260 L800 500 Z" fill="#a8ab6f" opacity="0.55"/><path d="M0 500 L0 270 Q 50 268 100 282 Q 150 269 200 274 Q 250 282 300 269 Q 350 259 400 273 Q 450 277 500 273 Q 550 271 600 272 Q 650 282 700 281 Q 750 269 800 274 L800 500 Z" fill="#a8ab6f" opacity="0.75"/><path d="M0 500 L0 292 Q 50 273 100 284 Q 150 295 200 287 Q 250 272 300 287 Q 350 274 400 294 Q 450 289 500 291 Q 550 294 600 296 Q 650 275 700 285 Q 750 277 800 293 L800 500 Z" fill="#8b9457" opacity="0.9"/>
+  <rect y="300" width="800" height="200" fill="url(#ground-economie-58)"/>
+  <g opacity="0.81">
+      <rect x="301" y="287.29" width="1.99" height="8.71" fill="#4c6234"/>
+      <ellipse cx="302" cy="279.61" rx="13.96" ry="8.66" fill="#617a42"/>
+      <ellipse cx="295.72" cy="282.4" rx="8.38" ry="5.86" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.85">
+      <rect x="270.81" y="296.58" width="2.38" height="10.42" fill="#4c6234"/>
+      <ellipse cx="272" cy="286.73" rx="17.91" ry="11.1" fill="#617a42"/>
+      <ellipse cx="263.94" cy="290.31" rx="10.75" ry="7.52" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.99">
+      <rect x="338.83" y="295.73" width="2.35" height="10.27" fill="#4c6234"/>
+      <ellipse cx="340" cy="288.18" rx="13.73" ry="8.51" fill="#617a42"/>
+      <ellipse cx="333.82" cy="290.92" rx="8.24" ry="5.77" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.93">
+      <rect x="253.79" y="297.42" width="2.42" height="10.58" fill="#4c6234"/>
+      <ellipse cx="255" cy="289.67" rx="14.09" ry="8.74" fill="#617a42"/>
+      <ellipse cx="248.66" cy="292.49" rx="8.45" ry="5.92" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.95">
+      <rect x="192.58" y="307.56" width="2.84" height="12.44" fill="#4c6234"/>
+      <ellipse cx="194" cy="298.09" rx="17.22" ry="10.68" fill="#617a42"/>
+      <ellipse cx="186.25" cy="301.53" rx="10.33" ry="7.23" fill="#4c6234" opacity="0.5"/>
+    </g><g opacity="0.87">
+      <rect x="697.58" y="307.56" width="2.84" height="12.44" fill="#4c6234"/>
+      <ellipse cx="699" cy="298.09" rx="17.22" ry="10.68" fill="#617a42"/>
+      <ellipse cx="691.25" cy="301.53" rx="10.33" ry="7.23" fill="#4c6234" opacity="0.5"/>
+    </g>
+  <ellipse cx="400" cy="440" rx="200" ry="26" fill="#000" opacity="0.13"/>
+    <path d="M212 336 h376 l-30 -44 h-316 Z" fill="#9aa7ad"/>
+    <path d="M212 336 h376 l-8 10 h-360 Z" fill="#78848a"/>
+    <rect x="232" y="346" width="10" height="94" fill="#a89878"/><rect x="316" y="346" width="10" height="94" fill="#a89878"/><rect x="400" y="346" width="10" height="94" fill="#a89878"/><rect x="484" y="346" width="10" height="94" fill="#a89878"/><rect x="568" y="346" width="10" height="94" fill="#a89878"/>
+    <g><rect x="258" y="398" width="58" height="10" rx="2" fill="#a2865f"/>
+        <rect x="262" y="408" width="50" height="30" fill="#8b7350" opacity="0.5"/>
+        <ellipse cx="274" cy="394" rx="12" ry="6" fill="#c8443c"/>
+        <ellipse cx="298" cy="394" rx="11" ry="6" fill="#c8443c" opacity="0.75"/></g><g><rect x="342" y="398" width="58" height="10" rx="2" fill="#a2865f"/>
+        <rect x="346" y="408" width="50" height="30" fill="#8b7350" opacity="0.5"/>
+        <ellipse cx="358" cy="394" rx="12" ry="6" fill="#2e7d4f"/>
+        <ellipse cx="382" cy="394" rx="11" ry="6" fill="#2e7d4f" opacity="0.75"/></g><g><rect x="426" y="398" width="58" height="10" rx="2" fill="#a2865f"/>
+        <rect x="430" y="408" width="50" height="30" fill="#8b7350" opacity="0.5"/>
+        <ellipse cx="442" cy="394" rx="12" ry="6" fill="#d9a441"/>
+        <ellipse cx="466" cy="394" rx="11" ry="6" fill="#d9a441" opacity="0.75"/></g><g><rect x="510" y="398" width="58" height="10" rx="2" fill="#a2865f"/>
+        <rect x="514" y="408" width="50" height="30" fill="#8b7350" opacity="0.5"/>
+        <ellipse cx="526" cy="394" rx="12" ry="6" fill="#4a63a8"/>
+        <ellipse cx="550" cy="394" rx="11" ry="6" fill="#4a63a8" opacity="0.75"/></g>
+    <g fill="#2f3a33" opacity="0.85">
+    <circle cx="226" cy="403.5" r="5.67"/>
+    <path d="M219.93 408.9 h12.15 l2.7 18.9 h-17.55 Z"/>
+    <rect x="220.6" y="427.8" width="4.05" height="16.2"/>
+    <rect x="227.35" y="427.8" width="4.05" height="16.2"/>
+  </g><g fill="#3a4640" opacity="0.85">
+    <circle cx="568" cy="407" r="5.46"/>
+    <path d="M562.15 412.2 h11.7 l2.6 18.2 h-16.9 Z"/>
+    <rect x="562.8" y="430.4" width="3.9" height="15.6"/>
+    <rect x="569.3" y="430.4" width="3.9" height="15.6"/>
+  </g><g fill="#2f3a33" opacity="0.85">
+    <circle cx="600" cy="407.5" r="4.83"/>
+    <path d="M594.83 412.1 h10.35 l2.3 16.1 h-14.95 Z"/>
+    <rect x="595.4" y="428.2" width="3.45" height="13.8"/>
+    <rect x="601.15" y="428.2" width="3.45" height="13.8"/>
+  </g>
+    <path d="M249 393 q 2 -7.199999999999999 -2 -12" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M380 463 q 2 -5.3999999999999995 -2 -9" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M106 489 q 0 -5.3999999999999995 -3 -9" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M332 426 q 3 -4.2 6 -7" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M489 488 q -2 -8.4 1 -14" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/><path d="M638 421 q -2 -9.6 4 -16" stroke="#5a6a3c" stroke-width="1.6" fill="none" opacity="0.5"/>
+  <rect width="800" height="500" fill="url(#vig-economie-58)"/>
+</svg>

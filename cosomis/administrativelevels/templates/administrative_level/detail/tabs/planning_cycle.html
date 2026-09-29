@@ -1,8 +1,8 @@
 {% load static i18n humanize custom_tags %}
 
 {% comment %}
-    CDD planning-cycle. Three nested levels of work — Phases > Activities >
-    Tasks — surfaced as a progress-aware journey:
+    CDD planning-cycle (redesigned). Three nested levels of work — Phases >
+    Activities > Tasks — surfaced as a progress-aware journey:
       • an overview header with an overall completion ring + roll-up counts,
       • a horizontal phase stepper you click to move through the cycle,
       • per-phase activity accordions whose tasks open the existing detail modal.
@@ -16,8 +16,16 @@
 
 <style>
     .cdd-cycle {
-        --cdd-done: var(--brand-primary, #4f46e5);
-        --cdd-done-soft: var(--brand-primary-soft, #eef2ff);
+        /* Palette — green by default, blue when settings.UI_COLOR = "blue"
+           (see [data-ui-color="blue"] .cdd-cycle below). */
+        --cdd-done: var(--brand-primary, #009639);
+        --cdd-done-soft: var(--brand-primary-soft, #eaf4ec);
+        --cdd-strong: var(--brand-primary-darker, #00562f);
+        --cdd-border: var(--brand-primary-border, #a7d7b6);
+        --cdd-bar: #9be7b6;
+        --cdd-glow: rgba(0, 150, 57, .12);
+        --cdd-shadow: rgba(0, 86, 47, .08);
+        --cdd-phases-bg: linear-gradient(135deg, #00a651, #007a2e);
         --cdd-progress: #f59e0b;
         --cdd-progress-soft: #fef3e2;
         --cdd-idle: #adb5bd;
@@ -26,6 +34,18 @@
         --cdd-error-soft: #fdecee;
         --cdd-line: #e6e9ec;
         color: #3a4750;
+    }
+
+    /* settings.UI_COLOR = "blue": the indigo palette this tab originally shipped with. */
+    [data-ui-color="blue"] .cdd-cycle {
+        --cdd-done: #4f46e5;
+        --cdd-done-soft: #eef2ff;
+        --cdd-strong: #3730a3;
+        --cdd-border: #c7d2fe;
+        --cdd-bar: #c7d2fe;
+        --cdd-glow: rgba(79, 70, 229, .14);
+        --cdd-shadow: rgba(79, 70, 229, .08);
+        --cdd-phases-bg: linear-gradient(135deg, #4f46e5, #4338ca);
     }
 
     /* ---------- Overview header ---------- */
@@ -37,8 +57,8 @@
         padding: 1.5rem 1.75rem;
         border-radius: 16px;
         background: linear-gradient(135deg, #ffffff 0%, var(--cdd-done-soft) 100%);
-        border: 1px solid var(--brand-primary-border, #c7d2fe);
-        box-shadow: 0 10px 28px rgba(79, 70, 229, .08);
+        border: 1px solid var(--cdd-border);
+        box-shadow: 0 10px 28px var(--cdd-shadow);
         margin-bottom: 1.75rem;
     }
     .cdd-ring {
@@ -64,11 +84,11 @@
         justify-content: center;
         box-shadow: inset 0 0 0 1px rgba(0,0,0,.03);
     }
-    .cdd-ring-pct { font-size: 1.65rem; font-weight: 700; line-height: 1; color: var(--brand-primary-darker, #3730a3); }
+    .cdd-ring-pct { font-size: 1.65rem; font-weight: 700; line-height: 1; color: var(--cdd-strong); }
     .cdd-ring-cap { font-size: .62rem; text-transform: uppercase; letter-spacing: .8px; color: #8a97a0; margin-top: 3px; }
 
     .cdd-overview-body { flex: 1 1 320px; min-width: 260px; }
-    .cdd-overview-title { font-weight: 700; font-size: 1.05rem; color: var(--brand-primary-darker, #3730a3); margin: 0 0 .9rem; }
+    .cdd-overview-title { font-weight: 700; font-size: 1.05rem; color: var(--cdd-strong); margin: 0 0 .9rem; }
     .cdd-stats { display: flex; flex-wrap: wrap; gap: .75rem; }
     .cdd-stat {
         flex: 1 1 130px;
@@ -85,7 +105,7 @@
         display: flex; align-items: center; justify-content: center;
         font-size: 1rem; color: #fff; flex: 0 0 auto;
     }
-    .cdd-stat-ic.phases { background: linear-gradient(135deg,#4f46e5,#4338ca); }
+    .cdd-stat-ic.phases { background: var(--cdd-phases-bg); }
     .cdd-stat-ic.activities { background: linear-gradient(135deg,#22b8cf,#1098ad); }
     .cdd-stat-ic.tasks { background: linear-gradient(135deg,#f59e0b,#d97706); }
     .cdd-stat-val { font-size: 1.1rem; font-weight: 700; color: #2b343b; line-height: 1.1; }
@@ -152,7 +172,7 @@
     .cdd-step.is-in-progress .cdd-step-dot { border-color: var(--cdd-progress); color: var(--cdd-progress); background: var(--cdd-progress-soft); }
     .cdd-step.is-error .cdd-step-dot { border-color: var(--cdd-error); color: var(--cdd-error); background: var(--cdd-error-soft); }
 
-    .cdd-step.is-active .cdd-step-dot { transform: scale(1.12); box-shadow: 0 0 0 5px rgba(79,70,229,.14); }
+    .cdd-step.is-active .cdd-step-dot { transform: scale(1.12); box-shadow: 0 0 0 5px var(--cdd-glow); }
     .cdd-step:hover .cdd-step-dot { transform: scale(1.08); }
 
     .cdd-step-name {
@@ -163,7 +183,7 @@
         color: #5a6671;
         line-height: 1.25;
     }
-    .cdd-step.is-active .cdd-step-name { color: var(--brand-primary-darker, #3730a3); }
+    .cdd-step.is-active .cdd-step-name { color: var(--cdd-strong); }
     .cdd-step-meta { display: block; font-size: .7rem; color: #9aa5ac; margin-top: .15rem; }
     .cdd-step-bar { display: block; height: 4px; border-radius: 4px; background: var(--cdd-line); margin: .55rem .9rem 0; overflow: hidden; }
     .cdd-step-bar > i { display: block; height: 100%; border-radius: 4px; background: var(--cdd-done); transition: width .5s ease; }
@@ -177,13 +197,13 @@
         display: flex; align-items: center; flex-wrap: wrap; gap: .75rem;
         padding: 1rem 1.25rem;
         border-radius: 14px 14px 0 0;
-        background: var(--brand-primary-darker, #3730a3);
+        background: var(--cdd-strong);
         color: #fff;
     }
     .cdd-panel-head h5 { margin: 0; font-weight: 700; font-size: 1.05rem; }
     .cdd-panel-badge { margin-left: auto; font-size: .8rem; opacity: .92; }
     .cdd-panel-bar { flex: 1 1 100%; height: 6px; border-radius: 6px; background: rgba(255,255,255,.22); overflow: hidden; }
-    .cdd-panel-bar > i { display: block; height: 100%; background: #c7d2fe; border-radius: 6px; transition: width .5s ease; }
+    .cdd-panel-bar > i { display: block; height: 100%; background: var(--cdd-bar); border-radius: 6px; transition: width .5s ease; }
 
     .cdd-activities {
         border: 1px solid #eef1f3;
@@ -253,7 +273,7 @@
         border-radius: 9px; padding: .55rem .8rem;
         cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .1s ease;
     }
-    .cdd-task:hover { border-color: var(--brand-primary-border, #c7d2fe); background: var(--cdd-done-soft); transform: translateX(2px); }
+    .cdd-task:hover { border-color: var(--cdd-border); background: var(--cdd-done-soft); transform: translateX(2px); }
     .cdd-task .cdd-status-ic { width: 26px; height: 26px; font-size: .72rem; }
     .cdd-task-name { flex: 1 1 auto; font-size: .85rem; color: #46525b; }
     .cdd-task.is-not-started .cdd-task-name { color: #9aa5ac; }
@@ -267,7 +287,7 @@
     .cdd-task.is-not-started .cdd-task-state { background: var(--cdd-idle-soft); color: #8a97a0; }
 
     .cdd-empty { text-align: center; padding: 3rem 1rem; color: #9aa5ac; }
-    .cdd-empty i { font-size: 2.5rem; margin-bottom: .75rem; color: var(--brand-primary-border, #c7d2fe); }
+    .cdd-empty i { font-size: 2.5rem; margin-bottom: .75rem; color: var(--cdd-border); }
 
     @media (max-width: 575.98px) {
         .cdd-overview { padding: 1.1rem; gap: 1.1rem; }

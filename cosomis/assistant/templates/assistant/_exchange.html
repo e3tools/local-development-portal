@@ -1,0 +1,15 @@
+{% load i18n %}
+{% include "assistant/_message.html" with message=user_message %}
+{% if assistant_message %}
+    {% include "assistant/_message.html" with message=assistant_message %}
+{% else %}
+    <div class="assistant-msg assistant-msg--assistant">
+        <div class="assistant-msg__avatar" aria-hidden="true"><i class="fas fa-robot"></i></div>
+        <div class="assistant-msg__bubble assistant-msg__bubble--error">
+            <div class="assistant-msg__body">
+                <strong>{% translate "The assistant is unavailable right now." %}</strong><br>
+                {{ error }}
+            </div>
+        </div>
+    </div>
+{% endif %}
