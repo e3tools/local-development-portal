@@ -6,6 +6,7 @@ from no_sql_client import NoSQLClient
 from investments.models import Investment, Project
 from administrativelevels.models import AdministrativeLevel
 from administrativelevels.libraries.functions import safe_parse_date
+from administrativelevels.management.commands._couch_sync import add_validated_argument, with_validated
 from administrativelevels.management.commands.priorities_sync_helpers import (
     AdministrativeLevelIndex,
     apply_endorsements,
@@ -41,6 +42,7 @@ class Command(BaseCommand):
                 "(last_sync). Par défaut, ces documents plus anciens sont ignorés."
             ),
         )
+        add_validated_argument(parser)
 
     def check_for_valid_facilitator(self, facilitator):
         db = self.nsc.get_db(facilitator).get_query_result({
@@ -71,15 +73,13 @@ class Command(BaseCommand):
         facilitator_dbs = self.nsc.list_all_databases('facilitator')
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
-                # Getting only priorities tasks validated
-                db = self.nsc.get_db(db_name).get_query_result({
+                db = self.nsc.get_db(db_name).get_query_result(with_validated({
                     "type": "task",
                     "phase_name": "PLANIFICATION",
-                    "validated": True, # Get only tasks validated
                     "name": {
                         "$in": [task_name_contain_meeting_date] + village_priorities_tasks_name
                     }
-                })
+                }, options['validated']))
 
                 ranking_priority = {
                     "coso": 0,

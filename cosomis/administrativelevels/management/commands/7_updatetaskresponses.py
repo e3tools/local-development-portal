@@ -2,6 +2,7 @@ import json
 from django.core.management.base import BaseCommand, CommandError
 from no_sql_client import NoSQLClient
 from administrativelevels.models import AdministrativeLevel, Task, Activity, Phase
+from administrativelevels.management.commands._couch_sync import add_validated_argument, with_validated
 
 
 def parse_fields(fields, field_types, response):
@@ -62,6 +63,26 @@ def update_task_responses(document):
 class Command(BaseCommand):
     help = 'Description of your command'
 
+    def add_arguments(self, parser):
+        add_validated_argument(parser)
+        parser.add_argument(
+            '--noinput', '--no-input', action='store_false', dest='interactive',
+            help="Ne pas demander de confirmation avant de modifier les tasks.",
+        )
+
+    def confirm(self, validated):
+        try:
+            answer = input(
+                "Cette commande remplace les réponses (form_responses) des tasks terminées par une liste\n"
+                "« libellé / réponse ». La page du village ne pourra plus afficher le détail de ces tasks\n"
+                "(formulaire et pièces jointes).\n"
+                "Tasks CouchDB lues : validated = %s.\n\n"
+                "Tapez « yes » pour continuer, ou autre chose pour annuler : " % ' '.join(validated)
+            )
+        except EOFError:  # no terminal to answer from
+            answer = ''
+        return answer.strip().lower() == 'yes'
+
     def check_for_valid_facilitator(self, facilitator):
         db = self.nsc.get_db(facilitator).get_query_result({
             "type": "facilitator"
@@ -75,15 +96,17 @@ class Command(BaseCommand):
         return False
 
     def handle(self, *args, **options):
-        # Your command logic here
+        if options['interactive'] and not self.confirm(options['validated']):
+            self.stdout.write('Annulé : aucune task modifiée.')
+            return
         self.nsc = NoSQLClient()
         facilitator_dbs = self.nsc.list_all_databases('facilitator')
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
-                db = self.nsc.get_db(db_name).get_query_result({
+                db = self.nsc.get_db(db_name).get_query_result(with_validated({
                     "type": "task",
                     "completed": True
-                })
+                }, options['validated']))
                 for document in db:
                     update_task_responses(document)
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))

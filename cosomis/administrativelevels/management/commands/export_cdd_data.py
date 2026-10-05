@@ -7,11 +7,14 @@ from cloudant.result import Result
 from cloudant.document import Document
 from investments.models import Investment
 from administrativelevels.models import AdministrativeLevel
-from investments.models import Category, Sector
+from administrativelevels.management.commands._couch_sync import add_validated_argument, with_validated
 
 
 class Command(BaseCommand):
     help = 'Export all of the tasks data into a json file'
+
+    def add_arguments(self, parser):
+        add_validated_argument(parser)
 
     total_priorities = 0
     total_villages = 0
@@ -39,9 +42,9 @@ class Command(BaseCommand):
         facilitator_dbs = self.nsc.list_all_databases('facilitator')
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
-                db = self.nsc.get_db(db_name).get_query_result({
+                db = self.nsc.get_db(db_name).get_query_result(with_validated({
                     "type": "task"
-                })
+                }, options['validated']))
                 for document in db:
                     self.format_task(document)
         # Save data_collected to a JSON file

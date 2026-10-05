@@ -2,9 +2,13 @@ from django.core.management.base import BaseCommand
 from no_sql_client import NoSQLClient
 from investments.models import Investment
 from administrativelevels.models import AdministrativeLevel
+from administrativelevels.management.commands._couch_sync import add_validated_argument, with_validated
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        add_validated_argument(parser)
+
     def check_for_valid_facilitator(self, facilitator):
         db = self.nsc.get_db(facilitator).get_query_result({"type": "facilitator"})
         for document in db:
@@ -21,11 +25,11 @@ class Command(BaseCommand):
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
                 db = self.nsc.get_db(db_name).get_query_result(
-                    {
+                    with_validated({
                         "type": "task",
                         "phase_name": "PLANIFICATION",
                         "name": "Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage",
-                    }
+                    }, options["validated"])
                 )
                 for document in db:
                     update_investment_document(document)

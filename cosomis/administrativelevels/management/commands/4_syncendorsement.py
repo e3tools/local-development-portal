@@ -5,11 +5,15 @@ from cloudant.result import Result
 from cloudant.document import Document
 from investments.models import Investment
 from administrativelevels.models import AdministrativeLevel, Category
+from administrativelevels.management.commands._couch_sync import add_validated_argument, with_validated
 from investments.models import Sector
 
 
 
 class Command(BaseCommand):
+
+    def add_arguments(self, parser):
+        add_validated_argument(parser)
 
     def check_for_valid_facilitator(self, facilitator):
         db = self.nsc.get_db(facilitator).get_query_result({
@@ -35,14 +39,14 @@ class Command(BaseCommand):
 
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
-                db = self.nsc.get_db(db_name).get_query_result({
+                db = self.nsc.get_db(db_name).get_query_result(with_validated({
                     "type": "task",
                     "phase_name": "PLANIFICATION",
                     "name": {
                         "$in": village_priorities_tasks_name
-                    }
+                    },
                     # "name": "Identification et établissement de la liste des besoins prioritaires pour la composante 1.1  par groupe"
-                })
+                }, options['validated']))
                 for document in db:
                     update_or_create_priorities_document(document)
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))

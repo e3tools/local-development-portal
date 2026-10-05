@@ -1,10 +1,14 @@
 from django.core.management.base import BaseCommand
 from no_sql_client import NoSQLClient
 from administrativelevels.models import AdministrativeLevel
+from administrativelevels.management.commands._couch_sync import add_validated_argument, with_validated
 from cosomis.constants import IGNORES
 
 class Command(BaseCommand):
     help = 'Description of your command'
+
+    def add_arguments(self, parser):
+        add_validated_argument(parser)
 
     def check_for_valid_facilitator(self, facilitator):
         db = self.nsc.get_db(facilitator).get_query_result({
@@ -26,11 +30,11 @@ class Command(BaseCommand):
         facilitator_dbs = self.nsc.list_all_databases('facilitator')
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
-                db = self.nsc.get_db(db_name).get_query_result({
+                db = self.nsc.get_db(db_name).get_query_result(with_validated({
                     "type": "task",
                     "phase_name": "VISITES PREALABLES",
                     "name": "Etablissement du profil du village",
-                })
+                }, options['validated']))
                 for document in db:
                     update_or_create_adm_document(self.nsc, document)
         self.stdout.write(self.style.SUCCESS('Successfully executed mycommand!'))

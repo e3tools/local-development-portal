@@ -5,11 +5,15 @@ from cloudant.result import Result
 from cloudant.document import Document
 from investments.models import Investment
 from administrativelevels.models import AdministrativeLevel, Sector
+from administrativelevels.management.commands._couch_sync import add_validated_argument, with_validated
 
 counter = 0
 
 class Command(BaseCommand):
     help = 'Check which villages do not have the three required investments'
+
+    def add_arguments(self, parser):
+        add_validated_argument(parser)
 
     def check_for_valid_facilitator(self, facilitator):
         db = self.nsc.get_db(facilitator).get_query_result({
@@ -31,11 +35,11 @@ class Command(BaseCommand):
         # Iterate over each facilitator database
         for db_name in facilitator_dbs:
             if self.check_for_valid_facilitator(db_name):
-                db = self.nsc.get_db(db_name).get_query_result({
+                db = self.nsc.get_db(db_name).get_query_result(with_validated({
                     "type": "task",
                     "phase_name": "PLANIFICATION",
                     "name": "Soutenir la communauté dans la sélection des priorités par sous-composante (1.1, 1.2 et 1.3) à soumettre à la discussion du CCD lors de la réunion cantonale d'arbitrage"
-                })
+                }, options['validated']))
 
                 # Check for villages missing investments
                 for document in db:
