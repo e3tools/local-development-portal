@@ -156,9 +156,11 @@ class CantonPlanningRepository:
     """
 
     def get_villages_for_canton(self, canton: AdministrativeLevel):
+        """The canton's CVD headquarters villages: the planning cycle is run
+        there, so they are the only villages the canton tab lists."""
         return (
             AdministrativeLevel.objects
-            .filter(parent=canton)
+            .filter(parent=canton, is_headquarters=True)
             .filter(AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE))
             .annotate(investments_count=Count("investments"))
             .order_by("name")
@@ -227,7 +229,7 @@ class CantonPlanningService:
     def get_summary(self) -> CantonPlanningSummary:
         logger.info("Building planning summary for canton '%s' (id=%s)", self._canton.name, self._canton.pk)
 
-        villages = list(self._repo.get_villages_for_canton(self._canton).filter(is_headquarters=True))
+        villages = list(self._repo.get_villages_for_canton(self._canton))
         
         # In tests with mocks, get_phases_for_canton might not be mocked
         # so we fall back to a safe way to handle it.

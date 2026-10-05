@@ -35,11 +35,13 @@ def _make_canton(name="Canton Test", **kwargs):
     )
 
 
-def _make_village(name, canton):
+def _make_village(name, canton, is_headquarters=True):
+    # The canton tab only lists CVD headquarters villages.
     return AdministrativeLevel.objects.create(
         name=name,
         type=AdministrativeLevel.VILLAGE,
-        parent=canton
+        parent=canton,
+        is_headquarters=is_headquarters,
     )
 
 def _make_phase(village, name, order=None):
@@ -143,6 +145,15 @@ class CantonPlanningSummaryViewContextTest(CantonPlanningSummaryViewBaseTest):
         village_names = [v.village_name for v in summary.villages]
         self.assertIn(self.village_a.name, village_names)
         self.assertIn(self.village_b.name, village_names)
+
+    def test_villages_that_are_not_headquarters_are_left_out(self):
+        hamlet = _make_village(name="Village Hamlet", canton=self.canton, is_headquarters=False)
+        _make_phase(hamlet, "Phase 1")
+
+        summary = self._get_context()['planning_summary']
+
+        self.assertNotIn(hamlet.pk, [v.village_id for v in summary.villages])
+        self.assertEqual(summary.village_count, 2)
 
     def test_planning_summary_contains_phases_headers(self):
         ctx = self._get_context()
