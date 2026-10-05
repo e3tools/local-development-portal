@@ -626,6 +626,10 @@ msgstr "Date d'identification des besoins"
 msgid "Village Development Plan"
 msgstr "Plan de Développement du Village"
 
+#: .\administrativelevels\templates\canton\canton_detail.html
+msgid "Canton Development Plan"
+msgstr "Plan de Développement du Canton"
+
 #: .\administrativelevels\templates\administrative_level\detail\index.html:141
 #: .\administrativelevels\templates\attachments\attachments.html:674
 #: .\dashboard\views_excel.py:21

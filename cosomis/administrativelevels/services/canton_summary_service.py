@@ -1,8 +1,20 @@
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, F
 from django.db.models.functions import Coalesce
 from cosomis.constants import IMAGE_EXTENSIONS
 from administrativelevels.models import AdministrativeLevel
 from investments.models import Attachment, Investment
+
+# The canton development plan is the file uploaded under this label on the
+# cantonal arbitration task, which each project words differently. Every
+# headquarters village's cycle carries a copy of that task.
+CANTON_PLAN_TASK_NAMES = (
+    "Appui au CCD dans  l'analyse des PAV des villages, l'arbitrage, la sélection des sous - projets "
+    "à financer et l'affection des ressources par sous - projet",  # COSO
+    "Appui au CCD dans  l'analyse des PAV des villages, l'arbitrage, la sélection des sous - projets "
+    "à financer et l'affectation des ressources par sous - projet",  # FA-COSO
+    "Appui au CCD dans  l'analyse des PAV des villages, l'arbitrage des priorités pour la rédaction du PDC.",  # PURS
+)
+CANTON_PLAN_ATTACHMENT_NAME = "Télecharger le document du plan d'actions cantonales finalisé"
 
 
 class CantonSummaryService:
@@ -93,6 +105,29 @@ class CantonSummaryService:
             # 'priority_count': investment_agg['priority_count'],
             # 'total_estimated_cost': investment_agg['total_estimated_cost'],
         }
+
+    def get_development_plans(self) -> list:
+        """
+        Returns the canton development plan of each project as
+        (project name, Attachment) pairs ordered by project name: the most
+        recently validated copy among the child villages' tasks.
+        """
+        plans = (
+            Attachment.objects.filter(
+                name=CANTON_PLAN_ATTACHMENT_NAME,
+                task__name__in=CANTON_PLAN_TASK_NAMES,
+                task__validated=True,
+                task__activity__phase__village__in=self._child_villages,
+            )
+            .exclude(url__startswith='file:')  # still on the tablet, never uploaded
+            .annotate(project_name=F('task__activity__phase__project__name'))
+            .order_by(F('task__date_validated').desc(nulls_last=True), '-id')
+            .only('id', 'url')
+        )
+        latest = {}
+        for plan in plans:
+            latest.setdefault(plan.project_name, plan)
+        return sorted(latest.items(), key=lambda item: item[0] or '')
 
     def get_carousel_images(self, max_images: int = 5) -> list:
         """

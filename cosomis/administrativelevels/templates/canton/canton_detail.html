@@ -150,6 +150,16 @@
 								FCFA
 							</td>
 						</tr>
+						{% for project_name, plan in development_plans %}
+							<tr>
+								<td class="border-0 p-0 pl-2 text-left font-weight-bold">
+									{% translate "Canton Development Plan" %}{% if development_plans|length > 1 and project_name %} ({{ project_name }}){% endif %}
+								</td>
+								<td class="border-0 p-0 pr-2 text-right">
+									<a href="{{ plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
+								</td>
+							</tr>
+						{% endfor %}
 						</tbody>
 					</table>
 				</div>
