@@ -1,0 +1,18 @@
+{% load i18n custom_tags %}
+{% comment %}
+Row of a profile summary table for the development plans (one per project).
+One plan: a direct download link. Several: "View" opens development_plans_modal.html.
+Takes plans, label and modal_id.
+{% endcomment %}
+{% if plans %}
+    <tr>
+        <td class="border-0 p-0 pl-2 text-left font-weight-bold">{{ label }}</td>
+        <td class="border-0 p-0 pr-2 text-right">
+            {% if plans|length == 1 %}
+                <a href="{{ plans.0.url|imgAWSS3Filter }}" target="_blank" rel="noopener">{% translate 'Download' %}</a>
+            {% else %}
+                <a href="#" data-toggle="modal" data-target="#{{ modal_id }}">{% translate 'View' %}</a>
+            {% endif %}
+        </td>
+    </tr>
+{% endif %}

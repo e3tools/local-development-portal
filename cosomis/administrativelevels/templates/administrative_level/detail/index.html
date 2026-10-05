@@ -135,14 +135,8 @@
                                 <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Date of needs identification" %}</td>
                                 <td class="border-0 p-0 pr-2 text-right">{{ object.identified_priority|default:'-' }}</td>
                             </tr>
-                            {% if development_plan %}
-                                <tr>
-                                    <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Village Development Plan" %}</td>
-                                    <td class="border-0 p-0 pr-2 text-right">
-                                        <a href="{{ development_plan.url|imgAWSS3Filter }}">{% translate 'Download' %}</a>
-                                    </td>
-                                </tr>
-                            {% endif %}
+                            {% translate "Village Development Plan" as plan_label %}
+                            {% include 'components/development_plans_row.html' with plans=development_plans label=plan_label modal_id='developmentPlansModal' %}
                             {% if planning_status.facilitator %}
                                 <tr>
                                     <td class="border-0 p-0 pl-2 text-left font-weight-bold">{% translate "Facilitator" %}</td>
@@ -322,6 +316,9 @@
     </div>
 
     {% include 'common/rejection_reason_modal.html' %}
+
+    {% translate "Village Development Plan" as plan_label %}
+    {% include 'components/development_plans_modal.html' with plans=development_plans label=plan_label modal_id='developmentPlansModal' %}
 
 {% endblock %}
 

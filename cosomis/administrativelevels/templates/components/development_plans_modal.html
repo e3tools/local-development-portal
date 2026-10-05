@@ -1,0 +1,44 @@
+{% load i18n custom_tags %}
+{% comment %}
+Lists the development plans opened from development_plans_row.html, when there
+are several. Takes plans, label and modal_id.
+{% endcomment %}
+{% if plans|length > 1 %}
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" role="dialog" aria-labelledby="{{ modal_id }}-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ modal_id }}-title">{{ label }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% translate 'Close' %}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table mb-0">
+                    <thead>
+                    <tr>
+                        <th>{% translate 'Project' %}</th>
+                        <th>{% translate 'Validation date' %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for plan in plans %}
+                        <tr>
+                            <td>{{ plan.project_name|default:'-' }}</td>
+                            <td>{{ plan.validated_on|date:'SHORT_DATE_FORMAT'|default:'-' }}</td>
+                            <td class="text-right">
+                                <a href="{{ plan.url|imgAWSS3Filter }}" target="_blank" rel="noopener">{% translate 'Download' %}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% translate 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -36,6 +36,7 @@ from administrativelevels.models import AdministrativeLevel, Phase, Task, Projec
 from administrativelevels.services.canton_map_service import CantonMapService
 from administrativelevels.services.canton_planning_service import CantonPlanningService
 from administrativelevels.services.canton_summary_service import CantonSummaryService
+from administrativelevels.services.development_plans import village_development_plans
 from cosomis.constants import IMAGE_EXTENSIONS
 from cosomis.mixins import PageMixin, LoginRequiredApproveRequiredMixin, GRMMixin
 from cosomis.utils_functions import get_api_datas
@@ -330,9 +331,9 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
                 selected_planning_project = context['planning_projects'].first()
             context['selected_planning_project'] = selected_planning_project
             context['phases'] = self._get_planning_cycle(selected_planning_project)
+            context['development_plans'] = village_development_plans(admin_level)
         else:
             context['phases'] = self._get_planning_cycle()
-        context['development_plan'] = self._get_development_plan(context['phases'])
 
         tasks_qs = Task.objects.filter(activity__phase__village=admin_level)
         current_task = admin_level.get_current_task()
@@ -514,20 +515,6 @@ class AdministrativeLevelDetailView(PageMixin, GRMMixin, LoginRequiredApproveReq
 
     def _get_planning_cycle(self, project=None):
         return build_planning_cycle(self.object, project)
-
-    def _get_development_plan(self, phases):
-        phase = next((phase for phase in phases if phase['order'] == 3), None)
-        if phase is not None:
-            activity = next((activity for activity in phase['activities'] if activity['order'] == 2), None)
-            if activity is not None:
-                task = next((task for task in activity['tasks'] if task['order'] == 1), None)
-                if task is not None:
-                    task_obj = Task.objects.get(id=task['id'])
-                    return task_obj.attachments.filter(
-                        Q(type__icontains='pdf') |
-                        Q(type__icontains='Document')
-                    ).first()
-        return None
 
     def __get_upper_services_infrastructure(self, parent):
         children = parent.children.all()
@@ -1384,20 +1371,6 @@ class CantonDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, C
             phase_node["status"] = activities_status
             phases.append(phase_node)
         return phases
-
-    def _get_development_plan(self, phases):
-        phase = next((phase for phase in phases if phase['order'] == 3), None)
-        if phase is not None:
-            activity = next((activity for activity in phase['activities'] if activity['order'] == 2), None)
-            if activity is not None:
-                task = next((task for task in activity['tasks'] if task['order'] == 1), None)
-                if task is not None:
-                    task_obj = Task.objects.get(id=task['id'])
-                    return task_obj.attachments.filter(
-                        Q(type__icontains='pdf') |
-                        Q(type__icontains='Document')
-                    ).first()
-        return None
 
 
 

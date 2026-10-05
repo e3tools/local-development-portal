@@ -630,6 +630,10 @@ msgstr "Plan de Développement du Village"
 msgid "Canton Development Plan"
 msgstr "Plan de Développement du Canton"
 
+#: .\administrativelevels\templates\components\development_plans_modal.html
+msgid "Validation date"
+msgstr "Date de validation"
+
 #: .\administrativelevels\templates\administrative_level\detail\index.html:141
 #: .\administrativelevels\templates\attachments\attachments.html:674
 #: .\dashboard\views_excel.py:21
