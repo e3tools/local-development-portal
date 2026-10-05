@@ -194,7 +194,15 @@ def build_planning_cycle(admin_level, project=None):
     phases_qs = admin_level.phases.all()
     if project is not None:
         phases_qs = phases_qs.filter(project=project)
-    for phase in phases_qs.order_by("order"):
+    # Three queries for the whole cycle instead of one per phase and per activity.
+    phases_qs = phases_qs.order_by("order").prefetch_related(Prefetch(
+        "activities",
+        queryset=Activity.objects.order_by("order").prefetch_related(Prefetch(
+            "tasks",
+            queryset=Task.objects.order_by("order").only("id", "activity_id", "name", "order", "status"),
+        )),
+    ))
+    for phase in phases_qs:
         phase_node = {
             "id": phase.id,
             "name": phase.name,
@@ -202,7 +210,7 @@ def build_planning_cycle(admin_level, project=None):
             "activities": list(),
         }
         activities_status = None
-        for activity in phase.activities.all().order_by("order"):
+        for activity in phase.activities.all():
             activity_node = {
                 "id": activity.id,
                 "name": activity.name,
@@ -210,7 +218,7 @@ def build_planning_cycle(admin_level, project=None):
                 "tasks": list(),
             }
             tasks_status = None
-            for task in activity.tasks.all().order_by("order"):
+            for task in activity.tasks.all():
                 task_node = {
                     "id": task.id,
                     "name": task.name,
@@ -1252,6 +1260,7 @@ class CantonDetailView(PageMixin, GRMMixin, LoginRequiredApproveRequiredMixin, C
 
         # New: Villages Summary card
         context["villages_summary"] = summary_service.get_villages_summary()
+        context["development_plans"] = summary_service.get_development_plans()
 
         # Keep existing villages queryset for the Villages tab
         context["villages"] = AdministrativeLevel.objects.filter(

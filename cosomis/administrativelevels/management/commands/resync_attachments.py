@@ -1,20 +1,17 @@
-from django.core.management.base import BaseCommand, CommandError
-from no_sql_client import NoSQLClient
-from cloudant.result import Result
-from cloudant.document import Document
-from administrativelevels.models import AdministrativeLevel, Task
+from django.core.management.base import BaseCommand
+from django.db.models import F, OuterRef, Subquery
+
+from administrativelevels.models import Task
 from investments.models import Attachment
 
 
 class Command(BaseCommand):
-    help = 'Take attachments from task documents and change the adminsitrative level'
-
+    help = "Set each task attachment's administrative level to its task's village"
 
     def handle(self, *args, **options):
-        attachments = Attachment.objects.all()
-        for attachment in attachments:
-            if attachment.task:
-                attachment.adm = attachment.task.activity.phase.village
-                attachment.save()
-        self.stdout.write(self.style.SUCCESS('Successfully synced attachments!'))
-
+        updated = Attachment.objects.filter(task__isnull=False).exclude(
+            adm_id=F('task__activity__phase__village_id')
+        ).update(adm_id=Subquery(
+            Task.objects.filter(pk=OuterRef('task_id')).values('activity__phase__village_id')[:1]
+        ))
+        self.stdout.write(self.style.SUCCESS('Successfully synced attachments! (%s updated)' % updated))

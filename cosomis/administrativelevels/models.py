@@ -558,6 +558,9 @@ class Task(BaseModel):
     no_sql_db_id = models.CharField(null=True, blank=True, max_length=255)
     form_responses = models.JSONField(null=True, blank=True)
     form = models.JSONField(null=True, blank=True)
+    # Review of the task in CouchDB: None until it is validated or rejected.
+    validated = models.BooleanField(null=True, blank=True)
+    date_validated = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return '%s. %s(%s) - %s' % (self.order, self.name, str(self.activity.id), self.status)

@@ -177,7 +177,7 @@ class AdministrativeLevelSummaryAjaxView(AJAXRequestMixin, LoginRequiredApproveR
         return HttpResponse(html)
 
 
-class TaskDetailAjaxView(generic.TemplateView):
+class TaskDetailAjaxView(LoginRequiredApproveRequiredMixin, generic.TemplateView):
     template_name = 'administrative_level/detail/task_detail.html'  # Define your template location
 
     def get_context_data(self, **kwargs):
@@ -188,16 +188,15 @@ class TaskDetailAjaxView(generic.TemplateView):
         task = Task.objects.filter(id=task_id).first()
 
         if task:
-            # Ensure dict_form_responses is a valid JSON string or dict
-            # Adding task details to the context
+            attachments = list(task.attachments.only('id', 'name', 'type', 'order', 'url'))
             context['task'] = {
                 'name': task.name,
                 'description': task.description,
                 'status': task.status,
                 'task': {
-                    'form_response': task.form_responses,  # This is now a properly formatted JSON string or a dict
-                    'form': task.form,  # This is now a properly formatted JSON string or a dict
-                    'attachments_ids': ','.join([str(attachment.id) for attachment in task.attachments.all()]),
+                    'form_response': task.form_responses,
+                    'form': task.form,
+                    'attachments_ids': ','.join(str(attachment.id) for attachment in attachments),
                     'attachments': [{
                         "name": attachment.name,
                         "type": attachment.type,
@@ -205,19 +204,9 @@ class TaskDetailAjaxView(generic.TemplateView):
                         "attachment": {
                             "uri": attachment.url
                         }
-                    } for attachment in task.attachments.all()],  # This is now a properly formatted JSON string or a dict
-                },  # This is now a properly formatted JSON string or a dict
+                    } for attachment in attachments],
+                },
             }
-
-            for attachment in task.attachments.all():
-                print('----')
-                print(attachment.id)
-                print(attachment.name)
-                print(attachment.type)
-                print(attachment.order)
-                print(attachment.url)
-                print('----')
-
         else:
             # Optionally handle the case where the task is not found
             context['error'] = 'Task not found'
