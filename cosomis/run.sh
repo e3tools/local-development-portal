@@ -31,7 +31,10 @@ case "$1" in
         python ./manage.py collectstatic --noinput
         gunicorn cosomis.wsgi:application \
         --bind 0.0.0.0:9000 \
-        --workers 4
+        --workers 4 \
+        --worker-class gthread \
+        --threads 4 \
+        --timeout 60
     ;;
 
     test )

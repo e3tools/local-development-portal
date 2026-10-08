@@ -1412,7 +1412,20 @@
 <script type="text/javascript">
 
     let investments_list = [];
-    let table = $(".table").DataTable({{ datatable_config | safe }});
+    // Inject project_id as a request param rather than mutating table.ajax.url()
+    // + reload() right after init — DataTables already performs its own
+    // automatic fetch on construction, so doing both fired the heaviest
+    // query twice on every single page load.
+    let dtConfig = {{ datatable_config | safe }};
+    let dtBaseAjaxUrl = dtConfig.ajax;
+    dtConfig.ajax = {
+        url: dtBaseAjaxUrl,
+        data: function (d) {
+            d.project_id = $('#project-select-id').val();
+            return d;
+        }
+    };
+    let table = $(".table").DataTable(dtConfig);
 
     // Toggle the skeleton overlay whenever DataTables fetches or processes rows,
     // and align it with the tbody so the column headers remain visible.
@@ -1451,12 +1464,6 @@
         });
     })();
 
-    let urlObj = new URL(table.ajax.url());
-    let params = new URLSearchParams(urlObj.search);
-    params.set('project_id', $('#project-select-id').val());
-    urlObj.search = params.toString();
-    table.ajax.url(urlObj.toString());
-    table.ajax.reload();
     table.on('draw', function () {
         $( document ).find('[data-toggle="popover"]').popover('dispose').popover();
         $('[data-toggle="popover"]').popover();

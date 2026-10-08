@@ -156,6 +156,11 @@ else:
         # EXTERNAL_DATABASE_NAME: env.db('LEGACY_DATABASE_URL')
     }
 
+# Reuse DB connections across requests instead of opening a fresh one each
+# time — /investments/ alone fires 3 near-simultaneous queries per page
+# load, and the connection setup overhead adds up under concurrency.
+DATABASES['default']['CONN_MAX_AGE'] = 60
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
