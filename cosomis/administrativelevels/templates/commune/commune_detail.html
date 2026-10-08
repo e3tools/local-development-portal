@@ -147,14 +147,14 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-3 col-6">
+		<!-- <div class="col-md-3 col-6">
 			<div class="card stat-card">
 				<div class="card-body text-center">
 					<div class="stat-value h2 font-weight-bold">{{ planning_status.priorities_identified|default:"0" }}</div>
 					<div class="stat-label text-muted">{% translate "Priorities Identified" %}</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<div class="col-md-3 col-6">
 			<div class="card stat-card">
 				<div class="card-body text-center">
@@ -257,7 +257,7 @@
 											<th class="align-middle"
 												rowspan="2">{% translate 'Sub-project priorities' %}</th>
 											<th class="align-middle" colspan="5">{% translate 'Priorities' %}</th>
-											<th class="align-middle" rowspan="2">{% translate 'Beneficiaries' %}</th>
+											<!-- <th class="align-middle" rowspan="2">{% translate 'Beneficiaries' %}</th> -->
 											<th class="align-middle" rowspan="2">{% translate 'Estimated cost' %}</th>
 											<th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
 											<th class="align-middle"
@@ -318,7 +318,7 @@
 													{% if subproject.endorsed_groups.minorities %}✓{% endif %}</td>
 												<td class="border-sides--light">
 													{% if subproject.endorsed_groups.farmers %}✓{% endif %}</td>
-												<td class="border-sides--light">{{ subproject.beneficiaries }}</td>
+												<!-- <td class="border-sides--light">{{ subproject.beneficiaries }}</td> -->
 												<td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
 												<td class="border-sides--light">{{ subproject.funded_by.name }}</td>
 												<td class="border-sides--light">{% if subproject.climate_contribution %}

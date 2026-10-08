@@ -141,11 +141,11 @@
 				<div class="card-body">
 					<div class="col-12">
 						<ul class="nav nav-tabs">
-							<li class="nav-item btn p-0">
+							<!-- <li class="nav-item btn p-0">
 								<a class="nav-link active" data-toggle="tab" href="#priorities">
 									{% translate "Priorities" %}
 								</a>
-							</li>
+							</li> -->
 							<li class="nav-item btn p-0 pl-2 pr-2">
 								<a class="nav-link" data-toggle="tab" href="#villages">
 									{% translate "Villages" %}
@@ -174,10 +174,10 @@
 						</ul>
 
 						<div class="tab-content">
-							<div id="priorities" class="tab-pane active">
+							<!-- <div id="priorities" class="tab-pane fade">
 								{% include 'canton/tabs/priorities.html' %}
-							</div>
-							<div id="villages" class="tab-pane fade">
+							</div> -->
+							<div id="villages" class="tab-pane active">
 								<div class="table-responsive">
 									<table class="table table-bordered">
 										<thead>
@@ -241,8 +241,7 @@
 												<th class="align-middle"
 													rowspan="2">{% translate 'Sub-project priorities' %}</th>
 												<th class="align-middle" colspan="5">{% translate 'Priorities' %}</th>
-												<th class="align-middle"
-													rowspan="2">{% translate 'Beneficiaries' %}</th>
+												<!-- <th class="align-middle" rowspan="2">{% translate 'Beneficiaries' %}</th> -->
 												<th class="align-middle"
 													rowspan="2">{% translate 'Estimated cost' %}</th>
 												<th class="align-middle" rowspan="2">{% translate 'Funded by' %}</th>
@@ -303,7 +302,7 @@
 														{% if subproject.endorsed_groups.minorities %}✓{% endif %}</td>
 													<td class="border-sides--light">
 														{% if subproject.endorsed_groups.farmers %}✓{% endif %}</td>
-													<td class="border-sides--light">{{ subproject.beneficiaries }}</td>
+													<!-- <td class="border-sides--light">{{ subproject.beneficiaries }}</td> -->
 													<td class="border-sides--light">{{ subproject.estimated_cost|intcomma }}</td>
 													<td class="border-sides--light">{{ subproject.funded_by.name }}</td>
 													<td class="border-sides--light">

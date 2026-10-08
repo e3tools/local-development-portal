@@ -100,7 +100,7 @@ class Command(BaseCommand):
         # ------------------------------------------------------------------ #
         # Import sector aliases to handle apostrophe variants and name mismatches
         try:
-            from investments.sectors_aliases import SECTOR_ALIASES
+            from investments.sector_aliases import SECTOR_ALIASES
         except ImportError:
             SECTOR_ALIASES = {}
 

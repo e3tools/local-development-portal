@@ -758,6 +758,7 @@ class CantonPrioritiesMixin:
             ),
             total_beneficiaries=Sum('administrative_level__total_population')
         ).order_by("funding_order", "ranking", "administrative_level__name")
+        print("qs------------- : ", base_qs)
         return self._get_queryset(base_qs)
 
     def _build_priorities_context(self, admin_level):
