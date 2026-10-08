@@ -1,0 +1,3243 @@
+{
+  "ca79e437352d9e147fec4c539d926553:1.1:1": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’une école maternelle"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.1:2": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de latrines publiques"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.1:3": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Acquisition d’équipements et petits matériels pour le ramassage des ordures"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.1:4": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation du barrage"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.1:5": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’un auto-gare"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2a:1": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangars"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2a:2": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de magasins de stockage"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2a:3": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de latrines publiques"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2a:4": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Électrification du marché"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2a:5": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de la clôture du marché"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2b:1": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Acquisition d’équipements et de petits matériels au profit des transformatrices de soja en fromage"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2b:2": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Acquisition d’équipements et de petits matériels au profit des Maraîchers"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2b:3": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement des capacités techniques de production des différents groupements"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2b:4": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Formation des groupements sur l’entrepreneuriat agricole"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.2b:5": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Création de centre de formation professionnelle"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.3:1": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Création des aires de jeux de basket-ball, volley-ball et handball"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.3:2": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Renforcement des capacités des agriculteurs sur les nouvelles techniques de culture et d’adaptation au changement climatique"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.3:3": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Formation des jeunes à l’entrepreneuriat"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.3:4": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Création d’un centre de formation professionnelle"
+  },
+  "ca79e437352d9e147fec4c539d926553:1.3:5": {
+    "administrative_level_name": "ALÉDJO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Installation d’une usine équipée de transformation des pommes d’acaju en jus"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.1:1": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Extension du centre de santé"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.1:2": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Extension du réseau électrique"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.1:3": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation d’un barrage"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.1:4": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de hangars dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.1:5": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Ouverture des vons"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2a:1": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangars"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2a:2": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de latrines publiques"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2a:3": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de magasins de stockage"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2a:4": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Électrification du marché"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2a:5": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de la clôture"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2b:1": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Installation d’une unité équipée de transformation du manioc en gari"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2b:2": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Installation d’une unité équipée de transformation des noix de palme"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2b:3": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Aménagement de bas-fonds et acquisition d’équipements pour le maraîchage"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2b:4": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Acquisition d’équipements et petits matériels pour la transformation de soja en fromage"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.2b:5": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Acquisition de machines de couture, de siffilage et de broderie au profit de l’association des couturières"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.3:1": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "CREATE_FUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement du terrain de football et acquisition d’équipements sportifs"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.3:2": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Acquisition d’équipements et de petits matériels d’élevage"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.3:3": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de bas-fonds et acquisition d’équipements et de petits matériels de maraîchage"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.3:4": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Formation des jeunes en entrepreneuriat"
+  },
+  "ca79e437352d9e147fec4c539d926fef:1.3:5": {
+    "administrative_level_name": "KADÉGUÉ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d’un lieu de regroupement pour jeune"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.1:1": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’un point d’eau multifonctionnel"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.1:2": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de latrines publiques"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.1:3": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Acquisition de machines agricoles pour les agriculteurs"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.1:4": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation d’un barrage"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.1:5": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation du lotissement et ouverture des vons"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2a:1": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangars"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2a:2": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des boutiques"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2a:3": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de latrines publiques"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2a:4": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réalisation de la clôture"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2a:5": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un auto-gare"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2b:1": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Acquisition d’équipements et de petits matériels au profit du groupement LANADI"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2b:2": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Acquisition d’équipements et matériels pour l’élevage"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2b:3": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Formation des agriculteurs sur les itinéraires techniques de production à l’aire du changement climatique"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2b:4": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Appui à la restructuration des groupements et renforcement des capacités"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.2b:5": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Acquisition de tricycles au profit du groupement LANADI"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.3:1": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Acquisition d’équipements et de petits matériels au profit du groupement NINI KEREGNE"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.3:2": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Acquisition d’équipements et de petits matériels pour l’apiculture"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.3:3": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Création d’une unité de transformation de pomme d’acaju"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.3:4": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement d’un aire de jeu pour la lutte traditionnelle"
+  },
+  "ca79e437352d9e147fec4c539d927b43:1.3:5": {
+    "administrative_level_name": "AKARADÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Acquisition d’équipements et formation des jeunes en maraîchage"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2a:1": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de 4 hangars de 16 places dans le marché de Boro"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2a:2": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un module de  4 boutiques dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2a:3": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un magasin de stockage de vivres dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2a:4": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’une boucherie dans le marché de Boro"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2a:5": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un bloc de latrines à 4 cabines plus douches dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2b:1": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Amelioration des conditions de travail au profit du groupement  de femmes transformatrice du karité \"An koua mon\""
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2b:2": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacité du groupement \"An koua mon\" sur les techniques de transformation du karité en beurre"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2b:3": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Amelioration des conditions de travail au profit du groupement de femmes transformatrice \" Yinmian\" à travers l’acquisition d’équipements et matériels de transformation di soja"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2b:4": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacité du groupement sur les techniques de transformation du soja en fromage"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.2b:5": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Amélioration des conditions de travail au profit du groupement de femmes transformatrice du gari en acquisition d’equipements et matériels"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.3:1": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Amélioration  à l’epanouissement des jeunes à travers la construction d’un centre de jeunes et de loisir plus lampadaires solaire"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.3:2": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Amélioration des conditions de distraction liée au football à travets l’acquisition d’équipement sportif"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.3:3": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Acquisition d’instruments de musique au profit de l’achestre du village"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.3:4": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Renforcement de capacité des jeunes à travers la formation sur les techniques d’élevage de volaile"
+  },
+  "ca79e437352d9e147fec4c539d9481e3:1.3:5": {
+    "administrative_level_name": "SANRÉKOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement du terrain de football"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.1:5": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Securisation des couloirs de passage des animaux sur 15km à travers l’implantation de bornes de délimitation"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.2a:4": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de boucherie moderne dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.2a:5": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un bloc de latrine à 4 cabines dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.2b:2": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacité sur les techniques de transformation du karité en beurre"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.2b:3": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Amélioration des conditions de travail au profit du groupement de femmes transformatrice du riz \" kanonkonikê\""
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.2b:4": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacité de l’association de transformation du riz"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.2b:5": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Amélioration des conditions de travail au profit du groupement de femmes transformatrice du soha\" Bakoun soum douari\""
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.3:2": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Amenagement du terrain de football"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.3:3": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Amélioration des conditions de distraction liée au football à travers l’acquisition d’équipement sportifs"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.3:4": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Réduire le taux de l’oisivité à travers la construction de centre formation en entrepreneuriat pour les jeunes"
+  },
+  "ca79e437352d9e147fec4c539d948fa1:1.3:5": {
+    "administrative_level_name": "SANDILO-GANDO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Améliorer la cohésion sociale entre les jeunes à travers l’organisation de championnat inter-villages."
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.1:4": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Acquisition de groupe de relaie au centre de santé"
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.1:5": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de parc de vaccination des bovins"
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.2a:4": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Installation d'infrastructures d'éclairage public dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.2a:5": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction du marché à bétail"
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.2b:4": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction d'unité d'élevage de moutons"
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.2b:5": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel d’égrenage de maïs"
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.3:3": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel d'éclairage public"
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.3:4": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "ca79e437352d9e147fec4c539d9722bc:1.3:5": {
+    "administrative_level_name": "LAKALI-KANEY",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de la place publique"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.1:2": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de Forage agropastoral"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.1:3": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de latrine public"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.1:4": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_FUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de magasin de stockage de céréales"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.1:5": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de parc de vaccination"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.2a:2": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché à bétail"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.2a:3": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Ouvrages de drainage d'eau pluviales au marché"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.2a:4": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de latrine public au marché"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.2a:5": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Ouvrages d'éclairage public au marché"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.2b:2": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de maraîchage"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.2b:3": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Aire de séchage de céréales"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.2b:4": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de fromage lait"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.2b:5": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel d'élevage de ruminants"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.3:2": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.3:3": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de flagellation traditionnelle"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.3:4": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel d'orchestre musicale"
+  },
+  "ca79e437352d9e147fec4c539d972cd3:1.3:5": {
+    "administrative_level_name": "KOARATÉDJI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Ouvrages d'éclairage public"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.1:2": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Ouvrages de drainage d'eau pluviales"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.1:3": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de latrine"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.1:4": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation du centre de santé"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.1:5": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de parc de vaccination"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.2a:2": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.2a:3": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Ouvrages de drainage d'eau pluviales dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.2a:4": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Ouvrages d'éclairage public"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.2a:5": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de latrine dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.2b:2": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation d'arachide"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.2b:3": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de fromage lait"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.2b:4": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction d'unité d’élevage de mouton"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.2b:5": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de maïs"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.3:2": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel d'orchestre musicale"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.3:3": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.3:4": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de la place publique"
+  },
+  "ca79e437352d9e147fec4c539d973aad:1.3:5": {
+    "administrative_level_name": "GUÉNÉ-GUIDIGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel d'éclairage public"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.1:2": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de forage agropastoral"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.1:3": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation du magasin de stockage"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.1:4": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de latrine public"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.1:5": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Ouvrages de franchissement"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.2a:2": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Aménagement de la piste rural"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.2a:3": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Aménagement du marché à bétail"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.2a:4": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de latrine public dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.2a:5": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Ouvrages d'éclairage public dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.2b:2": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation d'arachide"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.2b:3": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de fromage lait"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.2b:4": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de maraîchage"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.2b:5": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de pisciculture"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.3:3": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de lutte traditionnelle"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.3:4": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Ouvrages d'éclairage public"
+  },
+  "ca79e437352d9e147fec4c539d973ea5:1.3:5": {
+    "administrative_level_name": "TORO-ZOUGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction de maison de jeunes"
+  },
+  "ca79e437352d9e147fec4c539d99af82:1.1:1": {
+    "administrative_level_name": "TCHAMONGA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Eau"
+  },
+  "ca79e437352d9e147fec4c539d99af82:1.2a:1": {
+    "administrative_level_name": "TCHAMONGA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction du marché de Tokibi"
+  },
+  "ca79e437352d9e147fec4c539d99af82:1.2b:1": {
+    "administrative_level_name": "TCHAMONGA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Transformation du riz paddy en riz étuvé au profit des femmes de Tchamonga"
+  },
+  "ca79e437352d9e147fec4c539d99af82:1.3:1": {
+    "administrative_level_name": "TCHAMONGA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction du marché de Tokibi"
+  },
+  "ca79e437352d9e147fec4c539d99b034:1.1:1": {
+    "administrative_level_name": "TOKIBI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Eau"
+  },
+  "ca79e437352d9e147fec4c539d99b034:1.2a:1": {
+    "administrative_level_name": "TOKIBI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction du marché de Tokibi"
+  },
+  "ca79e437352d9e147fec4c539d99b034:1.2b:1": {
+    "administrative_level_name": "TOKIBI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Transformation du riz"
+  },
+  "ca79e437352d9e147fec4c539d99b034:1.3:1": {
+    "administrative_level_name": "TOKIBI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Fabrication de savon"
+  },
+  "ca79e437352d9e147fec4c539d99b530:1.1:1": {
+    "administrative_level_name": "DATORI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Eau"
+  },
+  "ca79e437352d9e147fec4c539d99b530:1.2a:1": {
+    "administrative_level_name": "DATORI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction du marché"
+  },
+  "ca79e437352d9e147fec4c539d99b530:1.2b:1": {
+    "administrative_level_name": "DATORI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Transformation du riz"
+  },
+  "ca79e437352d9e147fec4c539d99b530:1.3:1": {
+    "administrative_level_name": "DATORI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction de la maison des jeunes"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.1:1": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’un module de trois salles de classe à l’EPP kouhanrigou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.1:2": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation d’un point d’eau à usage multifonctionnel"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.1:3": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Éclairage de la voie quittant et l’EPP kouhanrigou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.1:4": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de WC public dans le village de koupagou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.1:5": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Doter des tables banc à l’EPP koupagou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2a:1": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réalisation d’un forage équipé dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2a:2": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de toilettes dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2a:3": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangars et boutiques dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2a:4": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réalisation d’un parking pour moto et vélo dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2a:5": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un marché de bétail pour le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2b:1": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités techniques et équipement des femmes du groupement TITOUNNA des Transformatrices de noix de karité en beurre"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2b:2": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités techniques à et matériels des eleveux de volaille du groupement TIBANTA de koupagou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2b:3": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement des capacités techniques et matériels des Transformatrices du riz paddy en riz étuvé du groupement TIBANTA"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2b:4": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Installation et équipement d’un centre de transformation de noix de karité en beurre"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.2b:5": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Dotation en équipements de production de maïs, de soja et de riz au profit des producteurs de koupagou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.3:1": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement et équipement du terrain de sport de l’EPP Koupagou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.3:2": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d’une salle de lecture et d’alphabétisation dans le village de koupagou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.3:3": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement d’un espace public de jeux, de loisirs et de dialogue intergénérationnel avec éclairage solaire dans le village de koupagou"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.3:4": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de la maison des jeunes de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9ae477:1.3:5": {
+    "administrative_level_name": "KOUPAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d’un centre de formation techniques des jeunes entrepreneurs"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.1:1": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation d’un point d’eau à usage multifonctionnel à Koussayagou"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.1:2": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement de la piste quittant tatchorta-embranchement du goudron et construction des ouvrages de franchissement"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.1:3": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’un module de trois salles de classe équipé à l’EPP Koussayagou"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.1:4": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Améaménagement de la piste quittant l’EPP Koussayagou jusqu’au village de koudouara (3km)"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.1:5": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’un centre de santé"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2a:1": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réalisation d’un forage équipé de pompe avec support en BA et tank  dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2a:2": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des hangars et boutiques dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2a:3": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un parking destiné au moto et vélo pour le marché"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2a:4": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des toilettes pour les riverain du marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2a:5": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un marché de bétail pour le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2b:1": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités techniques sur la transformation de soja en fromage et dérivés et dotation d’équipements au groupement TIBOYIKOU"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2b:2": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement des capacités techniques sur la transformation des noix d3 karité en beurre au profit du groupement de femme BATITE"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2b:3": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement les techniques techniques et en matériel des femmes Transformatrices du riz paddy en riz étuvé du groupement TEMOUNA"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2b:4": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Rendement en matériel de production du maïs soja au profit des producteurs de Koussayagou"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.2b:5": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Appui financier pour l’acquisition d’un motoculteur au profit des femmes du groupement smart valley"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.3:1": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement et équipement du terrain de sport de l’EPP Koussayagou"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.3:2": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d’un centre de lecture et d’alphabétisation à Koussayagou"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.3:3": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement d’un espace public de jeux et de loisirs équipé de panneaux solaires à Koussayagou"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.3:4": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d’un centre de loisir dans le village"
+  },
+  "ca79e437352d9e147fec4c539d9aeff6:1.3:5": {
+    "administrative_level_name": "KOUSSAYAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de la maison des jeunes de boukombé centre"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.1:1": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation d’un point d’eau à usage multifonctionnel à koudégou"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.1:2": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement de la piste de l’EPP Koumaagou-kouyaboua et construction des ouvrages de franchissement"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.1:3": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Électrification de l’EPP koumaagou"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.1:4": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement de la piste quittant l’EPP koumaagou jusqu’au village de kouyaboua"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.1:5": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement de la piste quittant koupagou-koumaagou et Ikounga et construction des ouvrages de franchissement"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2a:1": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un parking dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2a:2": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des hangars dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2a:3": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Électrification du marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2a:4": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réalisation d’un forage équipé dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2a:5": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des toilettes dans le marché"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2b:1": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement des capacités techniques des Transformatrices du riz du groupement TINITA sur les techniques de transformation de riz paddy en riz étuvé et dotation d’équipements"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2b:2": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement des capacités techniques sur la transformation de soja en fromage au profit du groupement des femmes TIBOYOUA"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2b:3": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement technique sur les techniques d’Elevage de volaille et dotation de matériel au profit du groupement TIDOU"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2b:4": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Appuyer les agriculteurs pour la mise en relations avec les partenaires techniques et financier pour l’écoulement des produits vivrier"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.2b:5": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement des capacités techniques des agriculteurs sur la fabrication des intrans naturels bio"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.3:1": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement et équipement du terrain de sport de l’EPP koumaagou"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.3:2": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d’une salle d’alphabétisation"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.3:3": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement d’un espace public de jeux et de dialogue intergénérationnel avec éclairage solaire à koumaagou"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.3:4": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Installation d’une pharmacie vétérinaire à koumaagou"
+  },
+  "ca79e437352d9e147fec4c539d9b01c2:1.3:5": {
+    "administrative_level_name": "KOUMAAGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Réalisation d’un centre de formation Entrepreneuriale des jeunes de koumaagou"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.1:1": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation d'un point à usage multifonctionnel à Tapatouta"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.1:2": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Éclairage des lieux publics : EPP Tapatouta et au niveau des pompes"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.1:3": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement de la piste Tapatouta-Koussétiégou et Natta"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.1:4": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Installation des lampadaire solaire sur les axes principaux de Taptouta"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.1:5": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’un magasin de stockage des vivres dans le village de Tapatouta"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2a:1": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des hangars et boutiques dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2a:2": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un parking pour le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2a:3": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des toilettes dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2a:4": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réalisation d’un forage dans le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2a:5": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d’un marché de bétail pour le marché de boukombé"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2b:1": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités des Transformatrices du riz du groupement TITCHINA de Tapatouta sur les techniques de transformation de riz paddy en riz étuvé et dotation d’équipements"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2b:2": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités sur les techniques de transformation du soja en fromage et dérivés et dotation d’équipements au groupement TIBOBENA"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2b:3": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités sur les techniques d’Elevage de volaille et dotation de matériel de base au groupement TIYOUA"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2b:4": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Appui technique et financier pour la transformation du savons liquide et solide au profit des jeunes de Tapatouta"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.2b:5": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement des capacités techniques et matériels au profit du groupement KONA des femmes Transformatrices de soja"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.3:1": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement et équipement du terrain de sport de l’EPP Tapatouta"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.3:2": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d’une salle de lecture et d’alphabétisation à Tapatouta"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.3:3": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement d’un espace public de jeux au profit des jeunes de Tapatouta"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.3:4": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Formation des jeunes sur l’entrepreneuriat agricoles"
+  },
+  "ca79e437352d9e147fec4c539d9b0c16:1.3:5": {
+    "administrative_level_name": "TATOUTA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement d’un lieu de rencontres des riverain du village et ceux voisin"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.1:1": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’une UVS"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.1:2": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de modules de trois salles de classe plus bureau magasin à l’EPP ADJIRO"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.1:3": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation d’un forage équipé d’un système photovoltaique"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.1:4": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Traçage du couloir de passage des animaux"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.1:5": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Électrification du village en énergie photovoltaique"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.2a:1": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de modules de latrines"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.2a:2": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar de marché"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.2a:3": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Électrification du marché"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.2a:4": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réalisation d’un poste de garde vélo"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.2a:5": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de magasin de stockage des produits agricoles"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.2b:1": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement en matériels de production de riz local"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.2b:2": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement en matériels de transformation de noix de karité en beurre de karité"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.2b:3": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement en matériels de transformation de soja en fromage"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.3:1": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Création d’une ferme agropastorale de production et commercialisation des produits transformés"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.3:2": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Création d’une unité de prestation agricole : acquisition de matériels agricoles"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.3:3": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Acquisition de moto tricycle pour le transport en commun"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.3:4": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Fournitures d’équipement en matériels d’élevage de petits ruminants"
+  },
+  "dbf38fb8b796040337d1b87824360550:1.3:5": {
+    "administrative_level_name": "ADJIRO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.1:1": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réalisation de forage équipé de système photovoltaique"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.1:2": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de magasin de stockage"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.1:3": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement de"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.1:4": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Électrification du village en énergie photovoltaique"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.2a:1": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar de marché"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.2a:2": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de magasin de stockage"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.2a:3": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réalisation de forage dans le marché"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.2b:1": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Restructuration du groupement des femmes transformatrices du riz"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.2b:2": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement en matériels de transformation de riz local"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.2b:3": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement en matériels de transformation de karité en beurre"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.2b:4": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement de transformation des fruits en jus"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.2b:5": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement en matériels de production de riz Paddy"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.3:1": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Fournitures d’équipement en matériels de production agricoles"
+  },
+  "dbf38fb8b796040337d1b878243613be:1.3:2": {
+    "administrative_level_name": "BIGUINA HOLOUDÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Fournitures d’équipement en matériels de production et de commercialisation des produits transformés"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.1:1": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d’un module de trois salles de classe"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.1:2": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de magasin de stockage"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.1:3": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Traçage du couloir de passage des animaux"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.2a:1": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar de marché"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.2a:2": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Aménagement de piste pour faciliter l’accès dans le marché"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.2a:3": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de magasin de stockage"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.2b:1": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fait d’équipements de transformation de manioc en gari"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.2b:2": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement de transformation de soja en fromage"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.2b:3": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement de transformation de mil en boisson locale"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.2b:4": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités techniques à travers la transformation de l’amidon de manioc en tapioca"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.2b:5": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Fournitures d’équipement de transformation de manioc en gari"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.3:1": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_FUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement d’un lieu de regroupement des jeunes"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.3:2": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction de la clôture du terrain de football"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.3:3": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Fournitures d’équipement en matériels d’élevage des volailles"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.3:4": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d’un centre de formation des artisans"
+  },
+  "dbf38fb8b796040337d1b8782436211d:1.3:5": {
+    "administrative_level_name": "KPRÈKÈTÈ",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Restructuration des jeunes conducteurs de tricycle"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.1:1": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation et extension des ouvrages d'eau"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.1:2": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation du pont de franchissement"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.1:3": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement de la piste"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.1:4": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Électrification solaire"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.1:5": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Couloir de passage des animaux"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2a:1": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des hangars dans le marché de Noumanè"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2a:2": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des boutiques"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2a:3": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des toilettes dans le marché"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2a:4": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d'un magasin de stockage des produits agricoles"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2a:5": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d'un parking"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2b:1": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Équipements pour la transformation des produits agricoles"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2b:2": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction des hangars"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2b:3": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Mise en place d'un site de maraîchage des femmes"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2b:4": {
+    "administrative_level_name": "ANGARA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction d'un magasin"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.2b:5": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de  capacités des sur la transformation des produits agricoles."
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.3:1": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d'une salle de réunion et des jeux"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.3:2": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Équipements du sport"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.3:3": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement du terrain de sport et des jeux"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.3:4": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement et extension du champ communautaire"
+  },
+  "dbf38fb8b796040337d1b8782436e9e6:1.3:5": {
+    "administrative_level_name": "ANGARA",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Instruments de sonorisation pour les animations culturelles et fêtières"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.1:1": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement et réfection de la piste"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.1:2": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d'ouvrage de franchissement"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.1:3": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation et extension des points d'eau"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.1:4": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Couloir de passage des animaux"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.1:5": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Électrification solaire"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2a:1": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des hangars dans le marché de Noumanè"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2a:2": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des boutiques"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2a:3": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des toilettes"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2a:4": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d'un magasin de stockage des produits agricoles"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2a:5": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d'un parking"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2b:1": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Aménagement d'une aire de séchage"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2b:2": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Aménagement d'un point de vente des produits laitiers"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2b:3": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Développer des activités de contre saiAménagement d'un espace pour le maraîchage son"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2b:4": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériels de transformation alimentaire"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.2b:5": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction des hangars"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.3:1": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d'une salle de réunion et des jeux"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.3:2": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Équipements du sport"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.3:3": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement du terrain de sport et des jeux"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.3:4": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Mise en place d'un espace vert"
+  },
+  "dbf38fb8b796040337d1b8782436fef7:1.3:5": {
+    "administrative_level_name": "KPAMALANGOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction des toilettes publiques"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.1:1": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Forage agropastoral"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.1:2": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Renforcement du plateau technique à la maternité"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.1:3": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement d'ouvrage de drainage d'eau pluviales"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.1:4": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d'ouvrage de franchissement"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.1:5": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement de la retenue d'eau"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2a:1": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d'ouvrage de franchissement au marché à bétail"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2a:2": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché de founougou"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2a:3": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar au marché à gougnirou"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2a:4": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché à bétail"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2a:5": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar au marché de Sampeto"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2b:1": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel pour le groupement de riz"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2b:2": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de savon local"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2b:3": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de karité"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2b:4": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de maraîchage"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.2b:5": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités des femmes"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.3:1": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel de sonorisation"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.3:2": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.3:3": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Installation d'ouvrage d'éclairage"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.3:4": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Équipement de l’EPP EN TABLE ET BANCS"
+  },
+  "dbf38fb8b796040337d1b878243bb510:1.3:5": {
+    "administrative_level_name": "SIMKPAROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Formation sur l'élevage de mouton"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.1:2": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Sécurisation des espaces pastorale"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.1:3": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation de retenue d'eau"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.1:4": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de latrine"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.1:5": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Installation de plantation d’anacarde"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.2a:3": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.2a:4": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar de vente de produits laitier"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.2a:5": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar au marché de Gougnirou"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.2b:1": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de fromage lait"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.2b:2": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de fabrication de savon"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.2b:3": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de karité"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.2b:4": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Aménagement de périmètre maraîcher"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.2b:5": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Équipement de maraîcher"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.3:2": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel de sonorisation"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.3:3": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Ouvrages d'éclairage public"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.3:4": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction de centre d'alphabétisation"
+  },
+  "dbf38fb8b796040337d1b878243bc24b:1.3:5": {
+    "administrative_level_name": "FOUNOUGO-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Réalisation de maisons de jeunes"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.1:1": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de forage agropastoral"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.1:2": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aménagement d'ouvrage de drainage d'eau pluviales"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.1:3": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de magasin de stockage de céréales"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.1:4": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de latrines publique"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.1:5": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "EXCLUDED_CAPACITY_CAP",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d'ouvrage de franchissement"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2a:1": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d'auto gare"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2a:2": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2a:3": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar au marché de Sempeto"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2a:4": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché à bétail"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2a:5": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar au marché de Gougnirou"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2b:1": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de fabrication de savon"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2b:2": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction de retenue d'eau"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2b:3": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de karité"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2b:4": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction de périmètre maraîcher"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.2b:5": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement de capacités des femmes"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.3:1": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel d’orchestre"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.3:2": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.3:3": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Réhabilitation de la maison du peuple"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.3:4": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Équipement d'éclairage public"
+  },
+  "dbf38fb8b796040337d1b878243bd21b:1.3:5": {
+    "administrative_level_name": "FOUNOUGO-YOMON",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d'un centre d'informatique"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.1:1": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de forage agropastoral"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.1:2": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation de retenue d'eau"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.1:3": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Équipement de table et bancs à l'école"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.1:4": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de salle de classe"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.1:5": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Sécurisation d'espace pastoral"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2a:1": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2a:2": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Aménagement piste rural"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2a:3": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché à bétail"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2a:4": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché femmes founougo"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2a:5": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation d'ouvrage de franchissement"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2b:1": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de lait en fromage"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2b:2": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de savon"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2b:3": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction de périmètre maraîcher"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2b:4": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de karité"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.2b:5": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de maraîchage"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.3:1": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.3:2": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel de sonorisation"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.3:3": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Formation sur le maraîchage"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.3:4": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction de maison de jeunes"
+  },
+  "dbf38fb8b796040337d1b878243bd2bf:1.3:5": {
+    "administrative_level_name": "GOUGNIROU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Ouvrages d'éclairage public"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.1:2": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Ouvrages de franchissement"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.1:3": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Sécurisation d'espace pastoraux"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.1:4": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de parc de vaccination"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.1:5": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Aire de pâturage"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.2a:2": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Aménagement de piste rurale"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.2a:3": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché à bétail"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.2a:4": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.2a:5": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar pour la vente des produits laitier"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.2b:2": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de savon"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.2b:3": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction de périmètre maraîcher"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.2b:4": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Réhabilitation de retenue d'eau"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.2b:5": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de karité"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.3:2": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel de sonorisation"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.3:3": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Arène de danse"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.3:4": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction de maison de jeunes"
+  },
+  "dbf38fb8b796040337d1b878243be100:1.3:5": {
+    "administrative_level_name": "GOUGNIROU-GAH",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel d'éclairage public"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.1:2": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation du centre de santé"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.1:3": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation de piste rural"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.1:4": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de magasin de stockage agropastoral"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.1:5": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction de salle de classe"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.2a:2": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.2a:3": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction d'ouvrage de franchissement au marché"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.2a:4": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation de marché à bétail"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.2a:5": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché de Gama"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.2b:2": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de fabrication de savon"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.2b:3": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de karité"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.2b:4": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction de périmètre maraîcher"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.2b:5": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de lait"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.3:2": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.3:3": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction de maison de jeunes"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.3:4": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Organisation de compétences musicale traditionnelle"
+  },
+  "dbf38fb8b796040337d1b878243beefd:1.3:5": {
+    "administrative_level_name": "GAMÉRÉ-ZONGO",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Matériel d'éclairage public"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.1:3": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation de piste rural"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.1:4": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Réhabilitation de retenue d'eau"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.1:5": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "EXCLUDED_CAPACITY_CAP",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Sécurisation d'espace pastoral"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.2a:2": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation de la piste jusqu'au marché"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.2a:3": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.2a:4": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché à bétail"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.2a:5": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Réhabilitation du marché de Sempeto"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.2b:2": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de savon"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.2b:3": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de karité"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.2b:4": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Construction de périmètre maraîcher"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.2b:5": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Matériel de transformation de lait"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.3:2": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement de terrain de football"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.3:3": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction de maison de jeunes"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.3:4": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Ouvrages d'éclairage public"
+  },
+  "dbf38fb8b796040337d1b878243bf7ef:1.3:5": {
+    "administrative_level_name": "KANDÉROU-KOTCHERA",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Installation de réseau GSM"
+  },
+  "dbf38fb8b796040337d1b878243bfc44:1.1:2": {
+    "administrative_level_name": "BOFOUNOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d'un centre d'élevage"
+  },
+  "dbf38fb8b796040337d1b878243bfc44:1.1:3": {
+    "administrative_level_name": "BOFOUNOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d'un module de classe"
+  },
+  "dbf38fb8b796040337d1b878243bfc44:1.1:4": {
+    "administrative_level_name": "BOFOUNOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction d'un magasin de stockage"
+  },
+  "dbf38fb8b796040337d1b878243bfc44:1.1:5": {
+    "administrative_level_name": "BOFOUNOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.1",
+    "title_raw": "Construction des latrines dans le marché"
+  },
+  "dbf38fb8b796040337d1b878243bfc44:1.2a:3": {
+    "administrative_level_name": "BOFOUNOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction des latrines dans le marché de Founougo"
+  },
+  "dbf38fb8b796040337d1b878243bfc44:1.2a:4": {
+    "administrative_level_name": "BOFOUNOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar et magasin au marché de Gougnirou"
+  },
+  "dbf38fb8b796040337d1b878243bfc44:1.2a:5": {
+    "administrative_level_name": "BOFOUNOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2a",
+    "title_raw": "Construction de hangar pour la vente des produits laitiers à Founougou et à Gougnirou"
+  },
+  "dbf38fb8b796040337d1b878243bfc44:1.3:5": {
+    "administrative_level_name": "BOFOUNOU",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d'un centre d'alphabétisation"
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.2b:1": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Aménagement d'un lieu pour le maraîchage"
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.2b:2": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Appui au groupement de femmes de Kpako Gbabi transformatrices en équipements maraichers ( grillage de clôture, arrosoirs, moto pompe, râteaux, houes, kit de micro irrigation de pote rampe avec gouteuse intégré etc..."
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.2b:3": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Appui au groupement de femmes de Kpako Gbabi transformatrices du produit agricole soja, karité en équipements ( grandes marmites, tonneau, sceau, grandes cuvettes, grandes louches, passoires, grands foyers amélioré,  bassines, égreneuses, décortiquées, bâches,  tables etc..."
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.2b:4": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Appui au groupement de femmes Kpako Gbabi productrices et transformatrices du riz local en équipements ( gants, bottes, grandes marmites, tonneau, sceau, grandes cuvettes,grande, louches, passoires, grands foyers amélioré, bassines etc"
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.2b:5": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.2b",
+    "title_raw": "Renforcement des capacités des femmes productrices et transformatrices des produits agro-alimentaires de Kpako Gbabi"
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.3:1": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Construction d'une maison des jeunes"
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.3:2": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Aménagement du terrain de football"
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.3:3": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Installation de panneaux solaires dans le village"
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.3:4": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "ALREADY_IN_DB",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Acquisition des instruments de musique"
+  },
+  "dbf38fb8b796040337d1b878243c09db:1.3:5": {
+    "administrative_level_name": "KPAKO-GBABI",
+    "decision": "CREATE_UNFUNDED",
+    "resolved_at": "2026-10-08",
+    "sub_component": "1.3",
+    "title_raw": "Le reboisement"
+  }
+}
