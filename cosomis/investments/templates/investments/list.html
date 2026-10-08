@@ -659,39 +659,25 @@
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label for="category-select-id">{% translate 'Sector' %}</label>
-                                            <select class="form-control" name="category-filter" id="category-select-id" empty-option="{% translate 'Sector' %}" style="width: 100%;">
-                                                <option selected value="">{% translate 'Sector' %}</option>
+                                            {% with selected_categories=query_strings_raw|getlist_int:'category-filter' %}
+                                            <select class="form-control" name="category-filter" id="category-select-id" multiple empty-option="{% translate 'Sector' %}" data-placeholder="{% translate 'Sector' %}" style="width: 100%;">
                                                 {% for category in categories %}
-                                                    {% if 'category-filter' in query_strings_raw %}
-                                                        {% if query_strings_raw|get_item:'category-filter' == category.id %}
-                                                        <option value="{{ category.id }}" selected>{{ category.name }}</option>
-                                                        {% else %}
-                                                        <option value="{{ category.id }}">{{ category.name }}</option>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <option value="{{ category.id }}">{{ category.name }}</option>
-                                                    {% endif %}
+                                                    <option value="{{ category.id }}" {% if category.id in selected_categories %}selected{% endif %}>{{ category.name }}</option>
                                                 {% endfor %}
                                             </select>
+                                            {% endwith %}
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label for="sector-select-id">{% translate 'Type' %}</label>
-                                            <select class="form-control" name="sector-filter" id="sector-select-id" data-disabled-hint="{% translate 'Choose a Sector first to enable this filter.' %}" empty-option="{% translate 'Sector' %}" style="width: 100%;" {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
-                                                <option selected value="">{% translate 'Type' %}</option>
+                                            {% with selected_sectors=query_strings_raw|getlist_int:'sector-filter' %}
+                                            <select class="form-control" name="sector-filter" id="sector-select-id" multiple data-disabled-hint="{% translate 'Choose a Sector first to enable this filter.' %}" empty-option="{% translate 'Sector' %}" data-placeholder="{% translate 'Type' %}" style="width: 100%;" {% if not 'category-filter' in query_strings_raw %}disabled{% endif %}>
                                                 {% for sector in sectors %}
-                                                    {% if 'sector-filter' in query_strings_raw %}
-                                                        {% if query_strings_raw|get_item:'sector-filter' == sector.id %}
-                                                        <option value="{{ sector.id }}" selected>{{ sector.name }}</option>
-                                                        {% else %}
-                                                        <option value="{{ sector.id }}">{{ sector.name }}</option>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <option value="{{ sector.id }}">{{ sector.name }}</option>
-                                                    {% endif %}
+                                                    <option value="{{ sector.id }}" {% if sector.id in selected_sectors %}selected{% endif %}>{{ sector.name }}</option>
                                                 {% endfor %}
                                             </select>
+                                            {% endwith %}
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -1659,30 +1645,38 @@
         };
 
         function change_sectors_selects(select_input, select_to_fill){
-            let selected_value = select_input.find(":selected").val();
+            // select_input.val() returns an array for a <select multiple> —
+            // the union of sectors across every selected category is fetched
+            // in one request (traditional:true so jQuery sends repeated
+            // value=1&value=2 params that request.POST.getlist('value') reads).
+            let selected_values = select_input.val() || [];
 
-            if (selected_value != '') {
+            if (selected_values.length > 0) {
                 let base_url = window.location.href.split('?')[0]
                 $.ajax({
                     type : "POST",
                     url: base_url + "ajax/sectors",
+                    traditional: true,
                     data: {
-                      value: selected_value,
+                      value: selected_values,
                       project_id: $('#project-select-id').val(),
                       csrfmiddlewaretoken: '{{ csrf_token }}',
                     },
                     success: function(response){
-                        select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                        let options = "";
                         response.values.forEach((element) => {
-                            select_to_fill.html(select_to_fill.html() + "<option value='" + element.id + "'>" + element.name + "</option>");
+                            options += "<option value='" + element.id + "'>" + element.name + "</option>";
                         })
+                        select_to_fill.html(options);
+                        select_to_fill.trigger('change');
                     }
                 });
                 select_to_fill.prop('disabled', false);
             }
             else {
                 select_to_fill.prop('disabled', 'disabled');
-                select_to_fill.html("<option selected value=''>" + select_to_fill.attr('empty-option') + "</option>");
+                select_to_fill.html("");
+                select_to_fill.trigger('change');
             }
         };
     });

@@ -84,28 +84,31 @@ class IndexListView(
             else:
                 return self.form_invalid(form)
         url = reverse("investments:home_investments")
-        final_querystring = request.GET.copy()
 
-        for key, value in request.GET.items():
-            if (
-                    key in request.POST
-                    and value != request.POST[key]
-                    and request.POST[key] != ""
-            ):
-                final_querystring.pop(key)
-
-        post_dict = request.POST.copy()
-        post_dict.update(final_querystring)
-        post_dict.pop("csrfmiddlewaretoken")
-        if "reset-hidden" in post_dict and post_dict["reset-hidden"] == "true":
+        if request.POST.get("reset-hidden") == "true":
             return redirect(url)
 
-        for key, value in request.POST.items():
-            if value == "":
-                post_dict.pop(key)
-        final_querystring.update(post_dict)
+        # Start from whatever filters are already in the URL (set by a
+        # *different* filter form than the one just submitted — this page
+        # has several independent filter forms), then overwrite only the
+        # keys the submitted form actually carries. Rebuilding each key with
+        # setlist() (rather than QueryDict.update(), which appends instead
+        # of replacing) is what lets a multi-select filter like
+        # category-filter/sector-filter submit several values at once
+        # without them accumulating on top of the previous page's values.
+        final_querystring = request.GET.copy()
+        submitted_keys = [
+            key for key in request.POST.keys()
+            if key not in ("csrfmiddlewaretoken", "reset-hidden")
+        ]
+        for key in submitted_keys:
+            final_querystring.pop(key, None)
+            values = [v for v in request.POST.getlist(key) if v != ""]
+            if values:
+                final_querystring.setlist(key, values)
+
         if final_querystring:
-            url = "{}?{}".format(url, urlencode(final_querystring))
+            url = "{}?{}".format(url, final_querystring.urlencode())
         return redirect(url)
 
     def get_form_kwargs(self):
@@ -171,9 +174,10 @@ class IndexListView(
         kwargs["villages"] = villages_qs
 
         kwargs["categories"] = Category.objects.all()
-        if "category-filter" in self.request.GET:
+        category_filter_ids = [v for v in self.request.GET.getlist("category-filter") if v]
+        if category_filter_ids:
             kwargs["sectors"] = Sector.objects.filter(
-                category=self.request.GET["category-filter"]
+                category__id__in=category_filter_ids
             )
 
         # kwargs["subpopulations"] = [
@@ -205,8 +209,11 @@ class IndexListView(
         kwargs["query_strings"] = self.get_query_strings_context()
         kwargs["query_strings_raw"] = self.request.GET.copy()
 
-        kwargs["selected_investments_data_querystring"] = '&'.join(
-            [key + '=' + value for key, value in kwargs["query_strings_raw"].items()])
+        # .urlencode() (not .items(), which only yields the last value per
+        # key) so multi-select filters like category-filter/sector-filter
+        # keep every selected value when carried into the DataTable's own
+        # ajax URL.
+        kwargs["selected_investments_data_querystring"] = kwargs["query_strings_raw"].urlencode()
 
         if self.request.user.organization is not None:
             kwargs["projects"] = self.request.user.organization.projects.all()

@@ -425,6 +425,24 @@ def get_item(dictionary, key):
         return dictionary.get(key)
 
 
+@register.filter
+def getlist_int(dictionary, key):
+    """Like `get_item` but for multi-select filters: returns every value for
+    `key` from a QueryDict as a list of ints, skipping blanks and anything
+    non-numeric."""
+    try:
+        values = dictionary.getlist(key)
+    except AttributeError:
+        return []
+    result = []
+    for value in values:
+        try:
+            result.append(int(value))
+        except (ValueError, TypeError):
+            continue
+    return result
+
+
 @register.filter(name="structureTheFields")
 def structure_the_fields(task):
     fields_values = {}

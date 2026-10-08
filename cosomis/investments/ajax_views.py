@@ -53,7 +53,8 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
     """
 
     def post(self, request, *args, **kwargs):
-        opt_qs = Sector.objects.filter(category__id=request.POST['value'])
+        category_ids = [v for v in request.POST.getlist('value') if v]
+        opt_qs = Sector.objects.filter(category__id__in=category_ids)
         return Response({
             'values': [{'id': adm.id, 'name': adm.name} for adm in opt_qs]
         })
@@ -203,16 +204,12 @@ class InvestmentModelViewSet(ModelViewSet):
                 administrative_level__id=self.request.GET["village-filter"],
             )
 
-        if "sector-filter" in self.request.GET and self.request.GET[
-            "sector-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
-        if "category-filter" in self.request.GET and self.request.GET[
-            "category-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                sector__category__id=self.request.GET["category-filter"]
-            )
+        sector_ids = [v for v in self.request.GET.getlist("sector-filter") if v]
+        if sector_ids:
+            queryset = queryset.filter(sector__id__in=sector_ids)
+        category_ids = [v for v in self.request.GET.getlist("category-filter") if v]
+        if category_ids:
+            queryset = queryset.filter(sector__category__id__in=category_ids)
 
         if "subpopulation-filter" in self.request.GET and self.request.GET[
             "subpopulation-filter"
