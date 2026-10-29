@@ -127,6 +127,25 @@ User.objects.create_superuser(email="x@y.com", username="x", password="…")
 # In tests: Client().login(email="x@y.com", password="…")
 ```
 
+### 6. Translation catalogs (`locale/fr/LC_MESSAGES/django.po` / `.mo`)
+
+A line-based merge of `develop2` once broke the French catalog: duplicate
+entries made `msgfmt` refuse the file, the committed `.mo` silently froze,
+and reviewed translations were overwritten. Rules:
+
+- **Run `make setup-git` once per clone.** It registers the merge driver
+  declared in `../.gitattributes` (`scripts/git-merge-po.sh`): on merge, the
+  **current branch's translations win** and entries that only exist on the
+  other branch are added — no duplicates, no overwritten translations. The
+  `.mo` keeps the current branch's version and must be recompiled.
+- GitHub's merge button does **not** run custom drivers: merge branches that
+  touch the `.po` locally.
+- After any merge or string change: `make generate-translations`, then
+  review new/`fuzzy` entries **one by one** — never strip `#, fuzzy` in bulk
+  (that is how "Available" became "Pas disponible").
+- `cosomis/tests/test_translations.py` fails if a `.po` does not compile or
+  the committed `.mo` is out of sync with it.
+
 ## How work usually ships
 
 - `develop2` is the shared integration branch — most feature PRs merge there.

@@ -3,6 +3,37 @@
 All notable user-visible and developer-facing changes are tracked here. The
 format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased] — 2026-10-29 (French translations)
+
+### Fixed
+
+- **French catalog rebuilt.** The 2026-06-19 merge of `develop2` (c94a1fb8)
+  left `django.po` uncompilable (duplicates) and, compared with the last good
+  `.mo`, had dropped 76 translations still used in the code and degraded 22
+  ("Available" → "Pas disponible", lost `%(rank)s` / `%(leaf)s`
+  placeholders). The `.mo` had stayed frozen since, so strings added by that
+  merge ("Cart", "Cancel", "Back", confirmation dialogs…) showed in English.
+  The `.po` is rebuilt from the last good one (573f4af9) plus the entries
+  only `develop2` had (`msgcat --use-first`), resynced with the code
+  (`makemessages`), its 17 fuzzy and 33 untranslated entries translated by
+  hand, and recompiled: 880 translations, none lost or changed against the
+  previous `.mo` except the intended fixes.
+- `cdd_funnel/templates/_stage_villages.html`: the plural branch of the
+  village counter used `{{ counter|intcomma }}` inside `blocktranslate`
+  (filters aren't allowed there), so the number disappeared ("villages
+  currently at this stage"). Now formatted through a `with` variable.
+
+### Added
+
+- Merge driver for `.po` files (`.gitattributes`,
+  `cosomis/scripts/git-merge-po.sh`, enabled per clone with `make setup-git`):
+  the current branch's translations win and entries only present on the
+  other branch are added. See `CLAUDE.md` § 6.
+- `cosomis/tests/test_translations.py`: fails if a `.po` does not compile or
+  the committed `.mo` is out of sync.
+- `make generate-translations` now ignores `venv/` and keeps source
+  locations (it used to scan the virtualenv and strip them).
+
 ## [Unreleased] — 2026-10-29 (funding filter)
 
 ### Added
@@ -16,12 +47,6 @@ format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `locale/fr/LC_MESSAGES/django.po` had 3 duplicate entries ("Gallery",
   "All Statuses", "Cantons", identical translations) that made `msgfmt` fail.
-  **Known issue:** the committed `django.mo` (last compiled 2026-06-19) is
-  more correct than the current `.po` — recompiling the `.po` as-is would drop
-  76 translations and degrade 22 others (old fuzzy matches). Until the `.po`
-  is reconciled, add new strings to the `.mo` without a full recompile
-  (`msgunfmt` the committed `.mo`, append the entry, `msgfmt`) and do **not**
-  run `make generate-translations`.
 
 ## [Unreleased] — 2026-10-29 (performance & security)
 

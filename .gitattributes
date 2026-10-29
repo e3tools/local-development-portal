@@ -1,0 +1,9 @@
+# gettext catalogs: the current branch's translations win on merge, entries
+# that only exist on the other branch are added, duplicates are impossible.
+# Driver: cosomis/scripts/git-merge-po.sh — enable per clone: `make setup-git`
+# (in cosomis/). Without it git falls back to a plain line-based merge.
+cosomis/locale/**/*.po merge=po-keep-current
+# Compiled catalogs are not mergeable: keep the current branch's file, then
+# recompile from the merged .po (cosomis/tests/test_translations.py fails
+# while the .mo is out of sync).
+cosomis/locale/**/*.mo binary merge=mo-keep-current

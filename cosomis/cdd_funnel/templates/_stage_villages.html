@@ -8,10 +8,10 @@
     <div>
         <h3 class="panel-title">{{ stage_label }}</h3>
         <p class="panel-subtitle">
-            {% blocktranslate count counter=total trimmed %}
-                {{ counter }} village currently at this stage
+            {% blocktranslate count counter=total with total_display=total|intcomma trimmed %}
+                {{ total_display }} village currently at this stage
             {% plural %}
-                {{ counter|intcomma }} villages currently at this stage
+                {{ total_display }} villages currently at this stage
             {% endblocktranslate %}
         </p>
     </div>
