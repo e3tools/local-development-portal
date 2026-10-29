@@ -123,6 +123,14 @@ class Investment(BaseModel): # Investment module
     abandoned_in_the_meantime = models.BooleanField(default=False)
     abandonment_history = models.JSONField(null=True, blank=True)
 
+    # Category review (/investments/category-review/): when a staff member
+    # confirmed the sector of this investment, by correcting it or by
+    # validating a page of results.
+    category_verified_at = models.DateTimeField(null=True, blank=True)
+    category_verified_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+
     def get_projects_priority_came_from(self, join_on_chain=True):
         projects = self.came_from.all()
         if join_on_chain:
@@ -144,6 +152,41 @@ class Investment(BaseModel): # Investment module
         
     def __str__(self):
         return f'{self.title}'
+
+
+class InvestmentSectorChange(models.Model):
+    """One sector correction made from the category review page.
+
+    Written only when a correction (or its undo) happens and never joined by
+    the listing queries, so keeping the history costs nothing on page loads.
+    """
+    investment = models.ForeignKey(
+        Investment, on_delete=models.CASCADE, related_name="sector_changes"
+    )
+    old_sector = models.ForeignKey(
+        Sector, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    new_sector = models.ForeignKey(
+        Sector, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    old_estimated_cost = models.PositiveBigIntegerField(null=True)
+    new_estimated_cost = models.PositiveBigIntegerField(null=True)
+    changed_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    changed_at = models.DateTimeField(auto_now_add=True)
+    # Set on the entry recording an undo: the correction it reverted.
+    undoes = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True, related_name="undone_by"
+    )
+
+    class Meta:
+        ordering = ["-changed_at", "-id"]
+        verbose_name = _("Sector change")
+        verbose_name_plural = _("Sector changes")
+
+    def __str__(self):
+        return f"{self.investment_id}: {self.old_sector_id} -> {self.new_sector_id}"
 
 
 class Package(BaseModel):  # investments module (orden de compra(cart de invesments(products)))

@@ -1,0 +1,82 @@
+{% load i18n humanize %}
+<div id="review-results">
+    <div class="review-progress">
+        <div class="review-progress__label">
+            <span>
+                {% blocktranslate count counter=page_obj.paginator.count with count_display=page_obj.paginator.count|intcomma trimmed %}
+                    {{ count_display }} investment
+                {% plural %}
+                    {{ count_display }} investments
+                {% endblocktranslate %}
+            </span>
+            <span>
+                {% blocktranslate with verified=progress.verified|intcomma total=progress.total|intcomma trimmed %}
+                    {{ verified }} / {{ total }} verified
+                {% endblocktranslate %}
+            </span>
+        </div>
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="{{ progress.total }}" aria-valuenow="{{ progress.verified }}">
+            <div class="progress-bar" style="width: {% if progress.total %}{% widthratio progress.verified progress.total 100 %}{% else %}0{% endif %}%"></div>
+        </div>
+    </div>
+
+    {% if page_obj.object_list %}
+        <div class="review-list">
+            {% for inv in page_obj %}
+                {% include "investments/category_review/_card.html" with card_state="default" %}
+            {% endfor %}
+        </div>
+
+        <div class="review-footer">
+            {% if unverified_ids %}
+                <form hx-post="{% url 'investments:category_review_verify' %}?{{ querystring }}{% if page_obj.number > 1 %}&amp;page={{ page_obj.number }}{% endif %}"
+                      hx-target="#review-results" hx-swap="outerHTML show:#review-results-wrap:top" hx-indicator="#review-results-wrap"
+                      method="post" action="{% url 'investments:category_review_verify' %}?{{ querystring }}">
+                    {% csrf_token %}
+                    {% for id in unverified_ids %}<input type="hidden" name="investment" value="{{ id }}">{% endfor %}
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-check-double mr-1"></i>
+                        {% blocktranslate count counter=unverified_ids|length trimmed %}
+                            Validate the {{ counter }} investment shown
+                        {% plural %}
+                            Validate the {{ counter }} investments shown
+                        {% endblocktranslate %}
+                    </button>
+                </form>
+            {% endif %}
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="review-pagination" aria-label="{% translate 'Pagination' %}">
+                    {% if page_obj.has_previous %}
+                        <a class="btn btn-outline-secondary" href="?{{ querystring }}&amp;page={{ page_obj.previous_page_number }}"
+                           hx-get="?{{ querystring }}&amp;page={{ page_obj.previous_page_number }}"
+                           hx-target="#review-results" hx-swap="outerHTML show:#review-results-wrap:top" hx-push-url="true" hx-indicator="#review-results-wrap">
+                            <i class="fas fa-chevron-left"></i> {% translate "Previous" %}
+                        </a>
+                    {% else %}<span></span>{% endif %}
+                    <span>
+                        {% blocktranslate with current=page_obj.number total=page_obj.paginator.num_pages trimmed %}
+                            Page {{ current }} of {{ total }}
+                        {% endblocktranslate %}
+                    </span>
+                    {% if page_obj.has_next %}
+                        <a class="btn btn-outline-secondary" href="?{{ querystring }}&amp;page={{ page_obj.next_page_number }}"
+                           hx-get="?{{ querystring }}&amp;page={{ page_obj.next_page_number }}"
+                           hx-target="#review-results" hx-swap="outerHTML show:#review-results-wrap:top" hx-push-url="true" hx-indicator="#review-results-wrap">
+                            {% translate "Next" %} <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% else %}<span></span>{% endif %}
+                </nav>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="review-empty">
+            <i class="fas fa-check-circle d-block"></i>
+            {% if filters.verified == "todo" and progress.total %}
+                {% translate "Everything matching these filters has been verified." %}
+            {% else %}
+                {% translate "No investment matches these filters." %}
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

@@ -3,6 +3,43 @@
 All notable user-visible and developer-facing changes are tracked here. The
 format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased] — 2026-10-29 (category review page)
+
+### Added
+
+- **Category review page** (`/investments/category-review/`, staff only:
+  sidebar entry for `is_staff` accounts, 404 for everyone else). Staff browse
+  investments as mobile-first cards (title, raising group — stored in
+  `description` —, village/commune, category › sub-category, funding and
+  verification badges), filter them (category / sub-category with cascade,
+  search in the title, "exclude funded" on by default, to verify / verified /
+  all) and fix misclassified ones inline. Everything after the first load is
+  HTMX fragments (`investments/views_category_review.py`, templates under
+  `investments/templates/investments/category_review/`).
+- **Correction rules** (`investments/category_review.py`): moving an
+  investment to another sub-category sets its `estimated_cost` from
+  `SECTOR_ESTIMATED_COSTS` (same rule as
+  `update_investment_estimated_costs_by_sector_bj`) and marks it verified;
+  the card offers **Undo**, which restores the exact previous sector and cost.
+- **History**: new `InvestmentSectorChange` table (who, when, old → new
+  sector and cost, `undoes` for undo entries), written only on corrections and
+  never joined by the listing; shown per card on demand and in the Django
+  admin (read-only).
+- **Verification tracking**: `Investment.category_verified_at` /
+  `category_verified_by`. A correction verifies the investment; "Validate the
+  N investments shown" verifies the rest of the page in one click (already
+  verified ones keep their first verifier). A progress bar shows verified /
+  total for the current filters. Migration `0032_category_review`.
+- `PageMixin` no longer tracks HTMX fragment requests as Mixpanel page views.
+
+### Fixed
+
+- `static/js/disableOnSubmit.js` disabled the submit buttons of every form on
+  submit, assuming a full page reload. HTMX forms (`hx-get` / `hx-post`) swap
+  a fragment instead, so their button stayed disabled and the form could not
+  be sent twice (category review filters, canton/commune priorities tabs).
+  HTMX forms are now skipped.
+
 ## [Unreleased] — 2026-10-29 (French translations)
 
 ### Fixed

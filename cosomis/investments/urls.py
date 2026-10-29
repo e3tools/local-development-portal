@@ -7,6 +7,10 @@ from .views import (
     ModeratorPackageReviewView, PackageDetailView, InvestorApprovesListView
 )
 from .ajax_views import FillAdmLevelsSelectFilters, FillSectorsSelectFilters, InvestmentModelViewSet
+from .views_category_review import (
+    CategoryReviewView, CategoryReviewSectorView, CategoryReviewUndoView,
+    CategoryReviewHistoryView, CategoryReviewVerifyView,
+)
 
 router = routers.DefaultRouter()
 router.register(r'datatable', InvestmentModelViewSet)
@@ -29,6 +33,14 @@ urlpatterns = [
         path('adm-levels', FillAdmLevelsSelectFilters.as_view()),
         path('sectors', FillSectorsSelectFilters.as_view()),
     ] + router.urls)),
+
+    path('category-review/', include([
+        path('', CategoryReviewView.as_view(), name='category_review'),
+        path('<int:pk>/sector', CategoryReviewSectorView.as_view(), name='category_review_sector'),
+        path('<int:pk>/history', CategoryReviewHistoryView.as_view(), name='category_review_history'),
+        path('changes/<int:pk>/undo', CategoryReviewUndoView.as_view(), name='category_review_undo'),
+        path('verify', CategoryReviewVerifyView.as_view(), name='category_review_verify'),
+    ])),
 
     path('export/', include('investments.export.urls')),
 ]

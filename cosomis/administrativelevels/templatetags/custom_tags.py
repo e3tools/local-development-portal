@@ -146,6 +146,11 @@ _NAV_SECTIONS = [
         'match': ('investments:profile',),
     },
     {
+        'label': gettext_lazy('Category review'),
+        'url': 'investments:category_review',
+        'match': ('investments:category_review',),
+    },
+    {
         'label': gettext_lazy('CDD Funnel'),
         'url': 'cdd_funnel:main_funnel',
         'match': ('cdd_funnel:main_funnel',),

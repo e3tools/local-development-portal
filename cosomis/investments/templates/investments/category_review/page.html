@@ -1,0 +1,210 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n %}
+
+{% block extracss %}
+    {{ block.super }}
+    <style>
+        /* Mobile first: one column, large touch targets; the grid opens up from md. */
+        .review-intro { color: var(--brand-muted); font-size: 14px; margin-bottom: 12px; }
+
+        .review-filters .card-body { padding: 14px; }
+        .review-filters .form-group { margin-bottom: 12px; }
+        .review-filters label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .review-filters .btn { min-height: 44px; }
+        .review-verified .btn { min-height: 40px; font-size: 13px; }
+        /* Outranks Bootstrap's .btn-outline-secondary:not(:disabled):not(.disabled).active */
+        .review-verified .btn-outline-secondary:not(:disabled):not(.disabled).active {
+            background: var(--brand-primary); border-color: var(--brand-primary); color: #fff;
+        }
+
+        .review-progress { margin: 4px 0 14px; }
+        .review-progress__label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+        .review-progress .progress { height: 8px; border-radius: 999px; background: var(--brand-primary-soft); }
+        .review-progress .progress-bar { background: var(--brand-primary); }
+
+        .review-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+        .review-card {
+            background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+            padding: 14px; box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+        }
+        .review-card.is-moved { border-color: var(--brand-primary-border); background: var(--brand-primary-soft); }
+        .review-card__head { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
+        .review-card__sector {
+            display: inline-block; max-width: 100%; font-size: 12px; font-weight: 600;
+            color: var(--brand-primary-darker); background: var(--brand-primary-soft);
+            border: 1px solid var(--brand-primary-border); border-radius: 999px; padding: 2px 10px;
+            white-space: normal;
+        }
+        .review-card__sector .sep { opacity: .55; margin: 0 2px; }
+        .review-badge { font-size: 11px; font-weight: 600; border-radius: 999px; padding: 2px 8px; }
+        .review-badge--verified { background: #e8f5e9; color: var(--color-success); }
+        .review-badge--todo { background: #f3f4f6; color: var(--brand-muted); }
+        .review-badge--funding { background: var(--brand-accent-soft); color: var(--brand-accent-dark); }
+        .review-card__title { font-size: 15px; font-weight: 600; line-height: 1.35; margin: 0 0 6px; color: var(--brand-text); }
+        .review-card__meta { font-size: 12.5px; color: var(--brand-muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+        .review-card__meta i { width: 14px; text-align: center; margin-right: 3px; }
+        .review-card__notice { font-size: 13px; margin-top: 10px; padding: 8px 10px; border-radius: 8px; background: #fff; border: 1px dashed var(--brand-primary-border); }
+        .review-card__notice--warning { border-color: var(--color-warning); }
+        .review-card__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .review-card__actions .btn { min-height: 40px; }
+        .review-card__editor:not(:empty), .review-card__history:not(:empty) { margin-top: 12px; }
+        .review-history { list-style: none; padding: 0; margin: 0; font-size: 12.5px; }
+        .review-history li { padding: 8px 0; border-top: 1px solid #f0f0f0; }
+        .review-history li:first-child { border-top: 0; }
+        .review-history .when { color: var(--brand-muted); }
+
+        .review-empty { text-align: center; padding: 40px 16px; color: var(--brand-muted); }
+        .review-empty i { font-size: 32px; color: var(--brand-primary-border); margin-bottom: 8px; }
+
+        /* Deliberately not sticky: "validate" is only reached after scrolling
+           past every card of the page, i.e. after actually looking at them. */
+        .review-footer { margin-top: 14px; padding: 10px 0; }
+        .review-footer .btn { min-height: 44px; }
+        .review-pagination { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; font-size: 13px; }
+
+        #review-loading { display: none; }
+        #review-loading.htmx-request { display: inline-block; }
+        .htmx-request.review-results-wrap { opacity: .55; transition: opacity .15s; }
+
+        @media (min-width: 768px) {
+            .review-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (min-width: 1400px) {
+            .review-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <p class="review-intro">
+        {% translate "Browse investments by category, correct the misclassified ones, then validate the page: the investments you did not correct are marked as verified." %}
+    </p>
+
+    <div class="card review-filters">
+        <div class="card-body">
+            <form id="review-filter-form" method="get" action="{% url 'investments:category_review' %}"
+                  hx-get="{% url 'investments:category_review' %}"
+                  hx-target="#review-results" hx-swap="outerHTML"
+                  hx-push-url="true" hx-indicator="#review-results-wrap">
+                <input type="hidden" name="submitted" value="1">
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="review-q">{% translate "Search in the title" %}</label>
+                            <input type="search" class="form-control" id="review-q" name="q"
+                                   value="{{ filters.query }}" placeholder="{% translate 'e.g. borehole' %}">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="review-category">{% translate "Category" %}</label>
+                            <select class="form-control" id="review-category" name="category-filter" multiple
+                                    data-placeholder="{% translate 'All categories' %}" style="width: 100%;">
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category.id|stringformat:"s" in filters.category_ids %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="review-sector">{% translate "Sub-category" %}</label>
+                            <select class="form-control" id="review-sector" name="sector-filter" multiple
+                                    data-placeholder="{% translate 'All sub-categories' %}" style="width: 100%;">
+                                {% for category, sectors in grouped_sectors %}
+                                    <optgroup label="{{ category.name }}" data-category="{{ category.id }}">
+                                        {% for sector in sectors %}
+                                            <option value="{{ sector.id }}" {% if sector.id|stringformat:"s" in filters.sector_ids %}selected{% endif %}>{{ sector.name }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-end">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="review-exclude-funded"
+                                       name="exclude-funded" value="1" {% if filters.exclude_funded %}checked{% endif %}>
+                                <label class="custom-control-label" for="review-exclude-funded">{% translate "Exclude funded investments" %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <div class="form-group">
+                            <label class="d-block">{% translate "Verification" %}</label>
+                            <div class="btn-group btn-group-toggle d-flex review-verified" data-toggle="buttons">
+                                <label class="btn btn-outline-secondary flex-fill {% if filters.verified == 'todo' %}active{% endif %}">
+                                    <input type="radio" name="verified" value="todo" autocomplete="off" {% if filters.verified == 'todo' %}checked{% endif %}> {% translate "To verify" %}
+                                </label>
+                                <label class="btn btn-outline-secondary flex-fill {% if filters.verified == 'done' %}active{% endif %}">
+                                    <input type="radio" name="verified" value="done" autocomplete="off" {% if filters.verified == 'done' %}checked{% endif %}> {% translate "Verified" %}
+                                </label>
+                                <label class="btn btn-outline-secondary flex-fill {% if filters.verified == 'all' %}active{% endif %}">
+                                    <input type="radio" name="verified" value="all" autocomplete="off" {% if filters.verified == 'all' %}checked{% endif %}> {% translate "All" context "verification filter" %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="form-group d-flex" style="gap: 8px;">
+                            <button type="submit" class="btn btn-primary flex-fill">{% translate "Apply" %}</button>
+                            <a href="{% url 'investments:category_review' %}" class="btn btn-outline-secondary flex-fill">{% translate "Reset" %}</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="review-results-wrap" class="review-results-wrap">
+        {% include "investments/category_review/_results.html" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript">
+(function () {
+    var form = document.getElementById('review-filter-form');
+    var $category = $('#review-category');
+    var $sector = $('#review-sector');
+    // Every sub-category option, grouped, kept aside so the list can be
+    // narrowed to the chosen categories and widened again.
+    var allGroups = $sector.find('optgroup').clone();
+
+    function cascadeSectors() {
+        var categories = $category.val() || [];
+        var selected = $sector.val() || [];
+        var groups = categories.length
+            ? allGroups.filter(function () { return categories.indexOf(String($(this).data('category'))) !== -1; })
+            : allGroups;
+        $sector.empty().append(groups.clone());
+        $sector.val(selected.filter(function (id) { return $sector.find('option[value="' + id + '"]').length; }));
+        $sector.trigger('change.select2');
+    }
+    $category.on('change', cascadeSectors);
+    $(cascadeSectors);
+
+    // The verification tabs apply immediately; other filters wait for "Apply".
+    $(form).on('change', 'input[name="verified"]', function () { form.requestSubmit(); });
+
+    // Fragments swapped in by HTMX (correction form) need select2 too.
+    document.body.addEventListener('htmx:afterSwap', function (evt) {
+        $(evt.detail.target).find('select.js-select2').each(function () {
+            $(this).select2({ width: '100%', language: '{{ LANGUAGE_CODE }}' });
+        });
+    });
+
+    // "Cancel" in a correction form just closes it.
+    $(document).on('click', '.js-close-editor', function () {
+        $(this).closest('.review-card__editor, .review-card__history').empty();
+    });
+})();
+</script>
+{% endblock %}

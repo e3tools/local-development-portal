@@ -1,0 +1,67 @@
+{% load i18n humanize %}
+<article class="review-card{% if card_state == 'moved' %} is-moved{% endif %}" id="need-{{ inv.id }}">
+    <div class="review-card__head">
+        <span class="review-card__sector">
+            {{ inv.sector.category.name }}<span class="sep">›</span>{{ inv.sector.name }}
+        </span>
+        {% if inv.category_verified_at %}
+            <span class="review-badge review-badge--verified"><i class="fas fa-check"></i> {% translate "Verified" %}</span>
+        {% else %}
+            <span class="review-badge review-badge--todo">{% translate "To verify" %}</span>
+        {% endif %}
+        {% if inv.project_status != "N" %}
+            <span class="review-badge review-badge--funding">{{ inv.get_project_status_display }}</span>
+        {% endif %}
+    </div>
+
+    <h3 class="review-card__title">{{ inv.title }}</h3>
+
+    <div class="review-card__meta">
+        {% if inv.description %}
+            <span title="{% translate 'Raised by' %}"><i class="fas fa-users"></i>{{ inv.description }}</span>
+        {% endif %}
+        <span title="{% translate 'Location' %}">
+            <i class="fas fa-map-marker-alt"></i>{{ inv.administrative_level.name }}{% if inv.administrative_level.parent.parent %}, {{ inv.administrative_level.parent.parent.name }}{% endif %}
+        </span>
+    </div>
+
+    {% if card_state == "moved" and change %}
+        <div class="review-card__notice">
+            {% blocktranslate with old=change.old_sector.name new=change.new_sector.name trimmed %}
+                Moved from <strong>{{ old }}</strong> to <strong>{{ new }}</strong>.
+            {% endblocktranslate %}
+            {% if change.old_estimated_cost != change.new_estimated_cost %}
+                {% blocktranslate with old=change.old_estimated_cost|intcomma new=change.new_estimated_cost|intcomma trimmed %}
+                    Estimated cost: {{ old }} → {{ new }} FCFA.
+                {% endblocktranslate %}
+            {% endif %}
+            <form class="d-inline" hx-post="{% url 'investments:category_review_undo' change.id %}"
+                  hx-target="#need-{{ inv.id }}" hx-swap="outerHTML"
+                  method="post" action="{% url 'investments:category_review_undo' change.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link btn-sm p-0 align-baseline">{% translate "Undo" %}</button>
+            </form>
+        </div>
+    {% elif card_state == "undone" %}
+        <div class="review-card__notice">{% translate "Correction undone: the previous sub-category and cost are restored." %}</div>
+    {% elif card_state == "stale" %}
+        <div class="review-card__notice review-card__notice--warning">{% translate "This correction can no longer be undone: the investment has been changed since." %}</div>
+    {% endif %}
+
+    <div class="review-card__actions">
+        <button type="button" class="btn btn-outline-primary btn-sm"
+                hx-get="{% url 'investments:category_review_sector' inv.id %}"
+                hx-target="#need-{{ inv.id }} .review-card__editor">
+            <i class="fas fa-pen mr-1"></i>{% translate "Correct" %}
+        </button>
+        {% if inv.has_sector_changes %}
+            <button type="button" class="btn btn-outline-secondary btn-sm"
+                    hx-get="{% url 'investments:category_review_history' inv.id %}"
+                    hx-target="#need-{{ inv.id }} .review-card__history">
+                <i class="fas fa-history mr-1"></i>{% translate "History" %}
+            </button>
+        {% endif %}
+    </div>
+    <div class="review-card__editor"></div>
+    <div class="review-card__history"></div>
+</article>

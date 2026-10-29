@@ -1,0 +1,21 @@
+{% load i18n %}
+<form hx-post="{% url 'investments:category_review_sector' inv.id %}"
+      hx-target="#need-{{ inv.id }}" hx-swap="outerHTML"
+      method="post" action="{% url 'investments:category_review_sector' inv.id %}">
+    {% csrf_token %}
+    <label for="sector-{{ inv.id }}" class="small font-weight-bold mb-1">{% translate "New sub-category" %}</label>
+    <select class="form-control js-select2" id="sector-{{ inv.id }}" name="sector" required>
+        {% for category, sectors in grouped_sectors %}
+            <optgroup label="{{ category.name }}">
+                {% for sector in sectors %}
+                    <option value="{{ sector.id }}" {% if sector.id == inv.sector_id %}selected{% endif %}>{{ sector.name }}</option>
+                {% endfor %}
+            </optgroup>
+        {% endfor %}
+    </select>
+    <small class="form-text text-muted">{% translate "The estimated cost is updated to the cost of the new sub-category." %}</small>
+    <div class="d-flex mt-2" style="gap: 8px;">
+        <button type="submit" class="btn btn-primary btn-sm flex-fill">{% translate "Save" %}</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm flex-fill js-close-editor">{% translate "Cancel" %}</button>
+    </div>
+</form>

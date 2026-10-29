@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 20:31+0000\n"
+"POT-Creation-Date: 2026-10-29 20:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,13 +231,13 @@ msgstr "Canton"
 
 #: administrativelevels/forms.py:249
 #: administrativelevels/templates/attachments/_grid.html:36
-#: administrativelevels/views.py:1812 investments/models.py:264
+#: administrativelevels/views.py:1812 investments/models.py:307
 msgid "Photo"
 msgstr "Photo"
 
 #: administrativelevels/forms.py:250
 #: administrativelevels/templates/attachments/_grid.html:47
-#: administrativelevels/views.py:1812 investments/models.py:264
+#: administrativelevels/views.py:1812 investments/models.py:307
 msgid "Document"
 msgstr "Document"
 
@@ -456,7 +456,9 @@ msgstr "Soumettre"
 #: administrativelevels/templates/administrative_level/create.html:115
 #: cosomis/templates/layouts/foot.html:42
 msgid "Some information is invalid. Please review the form and try again."
-msgstr "Certaines informations sont invalides. Veuillez vérifier le formulaire et réessayer."
+msgstr ""
+"Certaines informations sont invalides. Veuillez vérifier le formulaire et "
+"réessayer."
 
 #: administrativelevels/templates/administrative_level/create.html:157
 #: cosomis/templates/layouts/foot.html:44
@@ -687,7 +689,9 @@ msgstr "Bientôt disponible"
 msgid ""
 "We're building the Infrastructure and Services view for this village. Check "
 "back shortly."
-msgstr "Nous préparons la vue Infrastructures et services de ce village. Revenez bientôt."
+msgstr ""
+"Nous préparons la vue Infrastructures et services de ce village. Revenez "
+"bientôt."
 
 #: administrativelevels/templates/administrative_level/detail/index.html:330
 #: administrativelevels/templates/canton/canton_detail.html:40
@@ -782,7 +786,9 @@ msgstr "Pas encore de cycle de planification"
 msgid ""
 "Phases, activities and tasks for this village will appear here once the CDD "
 "cycle starts."
-msgstr "Les phases, activités et tâches de ce village apparaîtront ici dès le démarrage du cycle CDD."
+msgstr ""
+"Les phases, activités et tâches de ce village apparaîtront ici dès le "
+"démarrage du cycle CDD."
 
 #: administrativelevels/templates/administrative_level/detail/task_detail.html:156
 msgid "Download all"
@@ -1035,6 +1041,7 @@ msgstr "Choisir les documents à visualiser"
 #: administrativelevels/templates/attachments/attachments.html:601
 #: administrativelevels/templates/canton/tabs/priorities.html:118
 #: administrativelevels/templates/commune/tabs/priorities.html:144
+#: investments/templates/investments/category_review/page.html:158
 #: investments/templates/investments/list.html:761
 #: investments/templates/investments/list.html:882
 #: investments/templates/investments/list.html:1037
@@ -1057,13 +1064,17 @@ msgstr "Ouvrir dans un nouvel onglet"
 
 #: administrativelevels/templates/attachments/attachments.html:720
 #: administrativelevels/templates/project/list.html:100
-#: cdd_funnel/templates/_stage_villages.html:40 static/config/datatable.py:21
+#: cdd_funnel/templates/_stage_villages.html:40
+#: investments/templates/investments/category_review/_results.html:54
+#: static/config/datatable.py:21
 msgid "Previous"
 msgstr "Précédent"
 
 #: administrativelevels/templates/attachments/attachments.html:721
 #: administrativelevels/templates/project/list.html:110
-#: cdd_funnel/templates/_stage_villages.html:52 static/config/datatable.py:20
+#: cdd_funnel/templates/_stage_villages.html:52
+#: investments/templates/investments/category_review/_results.html:66
+#: static/config/datatable.py:20
 msgid "Next"
 msgstr "Suivant"
 
@@ -1384,6 +1395,7 @@ msgstr "Villages individuels"
 
 #: administrativelevels/templates/canton/tabs/priorities.html:37
 #: administrativelevels/templates/shared/grm_table.html:16
+#: investments/templates/investments/category_review/page.html:105
 #: investments/templates/investments/moderator/package_review.html:47
 msgid "Category"
 msgstr "Catégorie"
@@ -1413,6 +1425,7 @@ msgstr "Oui"
 #: administrativelevels/templates/canton/tabs/priorities.html:121
 #: administrativelevels/templates/commune/tabs/priorities.html:147
 #: dashboard/templates/dashboard_summary.html:191
+#: investments/templates/investments/category_review/page.html:159
 #: investments/templates/investments/list.html:762
 #: investments/templates/investments/list.html:883
 #: investments/templates/investments/list.html:1038
@@ -1590,7 +1603,15 @@ msgid ""
 "summary of\n"
 "\t\t%(name)s in <u>PDF</u> or <u>MS-Word</u> format.\n"
 "\t"
-msgstr "\n\t\tCette section décrit la zone centrée sur %(latitude)s / %(longitude)s,\n\t\tqui comprend %(name)s. Vous pouvez consulter les données d’autres zones avec\n\t\tl’<u>outil de vulnérabilité des clusters climatiques</u> et télécharger un résumé de\n\t\t%(name)s au format <u>PDF</u> ou <u>MS-Word</u>.\n\t"
+msgstr ""
+"\n"
+"\t\tCette section décrit la zone centrée sur %(latitude)s / %(longitude)s,\n"
+"\t\tqui comprend %(name)s. Vous pouvez consulter les données d’autres zones "
+"avec\n"
+"\t\tl’<u>outil de vulnérabilité des clusters climatiques</u> et télécharger "
+"un résumé de\n"
+"\t\t%(name)s au format <u>PDF</u> ou <u>MS-Word</u>.\n"
+"\t"
 
 #: administrativelevels/templates/climate/tabs/mapbox.html:24
 msgid "Ecosystem Classifications"
@@ -1791,6 +1812,7 @@ msgstr "Type de fichier"
 #: investments/templates/investments/cart.html:276
 #: investments/templates/investments/cart.html:301
 #: investments/templates/investments/cart.html:352
+#: investments/templates/investments/category_review/_history.html:23
 #: investments/templates/investments/investor/approvals_list.html:129
 #: investments/templates/investments/list.html:1238
 #: investments/templates/investments/moderator/approvals_list.html:196
@@ -2184,7 +2206,9 @@ msgstr "Import en cours… cela peut prendre un moment"
 #: administrativelevels/templates/project/create/bulk_upload_investments.html:33
 msgid ""
 "Excel .xlsx only, up to 5 MB. Large files may take a few seconds to import."
-msgstr "Excel .xlsx uniquement, 5 Mo maximum. Les fichiers volumineux peuvent prendre quelques secondes à importer."
+msgstr ""
+"Excel .xlsx uniquement, 5 Mo maximum. Les fichiers volumineux peuvent "
+"prendre quelques secondes à importer."
 
 #: administrativelevels/templates/project/create/bulk_upload_investments.html:56
 msgid "Please choose an Excel .xlsx file (not a CSV or .xls)."
@@ -2284,6 +2308,7 @@ msgstr "Date"
 #: administrativelevels/templates/project/detail.html:241
 #: administrativelevels/templates/project/detail.html:320
 #: investments/templates/investments/cart.html:333
+#: investments/templates/investments/category_review/_sector_form.html:18
 #: investments/templates/investments/profile.html:257
 #: investments/templates/investments/profile.html:476
 #: investments/templates/investments/profile.html:484
@@ -2463,65 +2488,70 @@ msgid "Gallery"
 msgstr "Galerie"
 
 #: administrativelevels/templatetags/custom_tags.py:144
-#: administrativelevels/templatetags/custom_tags.py:261
+#: administrativelevels/templatetags/custom_tags.py:266
 #: cosomis/templates/layouts/sidebar.html:85 usermanager/models.py:142
 msgid "User"
 msgstr "Utilisateur"
 
-#: administrativelevels/templatetags/custom_tags.py:149 cdd_funnel/views.py:68
-#: cosomis/templates/layouts/sidebar.html:95
+#: administrativelevels/templatetags/custom_tags.py:149
+#: investments/views_category_review.py:71
+msgid "Category review"
+msgstr "Vérification des catégories"
+
+#: administrativelevels/templatetags/custom_tags.py:154 cdd_funnel/views.py:68
+#: cosomis/templates/layouts/sidebar.html:102
 msgid "CDD Funnel"
 msgstr "Processus DCC"
 
-#: administrativelevels/templatetags/custom_tags.py:236
+#: administrativelevels/templatetags/custom_tags.py:241
 msgid "Principal Administrator"
 msgstr "Administrateur principal"
 
-#: administrativelevels/templatetags/custom_tags.py:239
+#: administrativelevels/templatetags/custom_tags.py:244
 msgid "Administrator"
 msgstr "Administrateur"
 
-#: administrativelevels/templatetags/custom_tags.py:241
+#: administrativelevels/templatetags/custom_tags.py:246
 msgid "CDD Specialist"
 msgstr "Spécialiste DCC"
 
-#: administrativelevels/templatetags/custom_tags.py:243
+#: administrativelevels/templatetags/custom_tags.py:248
 msgid "Evaluator"
 msgstr "Évaluateur"
 
-#: administrativelevels/templatetags/custom_tags.py:245
+#: administrativelevels/templatetags/custom_tags.py:250
 msgid "Accountant"
 msgstr "Comptable"
 
-#: administrativelevels/templatetags/custom_tags.py:247
+#: administrativelevels/templatetags/custom_tags.py:252
 msgid "Regional Coordinator"
 msgstr "Coordonnateur Regional"
 
-#: administrativelevels/templatetags/custom_tags.py:249
+#: administrativelevels/templatetags/custom_tags.py:254
 msgid "National Coordinator"
 msgstr "Coordonnateur National"
 
-#: administrativelevels/templatetags/custom_tags.py:251
+#: administrativelevels/templatetags/custom_tags.py:256
 msgid "General Manager"
 msgstr "Directeur(trice) Général(e)"
 
-#: administrativelevels/templatetags/custom_tags.py:253
+#: administrativelevels/templatetags/custom_tags.py:258
 msgid "Director"
 msgstr "Directeur(trice)"
 
-#: administrativelevels/templatetags/custom_tags.py:255
+#: administrativelevels/templatetags/custom_tags.py:260
 msgid "Advisor"
 msgstr "Conseillé"
 
-#: administrativelevels/templatetags/custom_tags.py:257
+#: administrativelevels/templatetags/custom_tags.py:262
 msgid "Minister"
 msgstr "Ministre"
 
-#: administrativelevels/templatetags/custom_tags.py:259
+#: administrativelevels/templatetags/custom_tags.py:264
 msgid "Infra"
 msgstr "Infrastructure"
 
-#: administrativelevels/templatetags/custom_tags.py:332
+#: administrativelevels/templatetags/custom_tags.py:337
 msgid "and"
 msgstr "et"
 
@@ -2580,7 +2610,9 @@ msgstr "Image de l’investissement téléversée."
 msgid ""
 "The image could not be uploaded. Please use a JPG or PNG under 5 MB and try "
 "again. (Technical detail: %(reason)s)"
-msgstr "L’image n’a pas pu être téléversée. Veuillez utiliser un JPG ou PNG de moins de 5 Mo et réessayer. (Détail technique : %(reason)s)"
+msgstr ""
+"L’image n’a pas pu être téléversée. Veuillez utiliser un JPG ou PNG de moins "
+"de 5 Mo et réessayer. (Détail technique : %(reason)s)"
 
 #: administrativelevels/views.py:1414
 msgid "Investment updated."
@@ -2688,7 +2720,9 @@ msgstr "Non spécifié"
 msgid ""
 "This stage no longer exists. It may have been renamed or removed — please "
 "reload the funnel."
-msgstr "Cette étape n’existe plus. Elle a peut-être été renommée ou supprimée — veuillez recharger l’entonnoir."
+msgstr ""
+"Cette étape n’existe plus. Elle a peut-être été renommée ou supprimée — "
+"veuillez recharger l’entonnoir."
 
 #: cdd_funnel/templates/_stage_villages.html:11
 #, python-format
@@ -2698,6 +2732,7 @@ msgstr[0] "%(total_display)s village actuellement à cette étape"
 msgstr[1] "%(total_display)s villages actuellement à cette étape"
 
 #: cdd_funnel/templates/_stage_villages.html:44
+#: investments/templates/investments/category_review/_results.html:58
 #, python-format
 msgid "Page %(current)s of %(total)s"
 msgstr "Page %(current)s sur %(total)s"
@@ -2896,7 +2931,7 @@ msgstr "Identifié"
 msgid "Not approved"
 msgstr "Non approuvé"
 
-#: cosomis/constants.py:38 investments/models.py:160 investments/models.py:208
+#: cosomis/constants.py:38 investments/models.py:203 investments/models.py:251
 #: investments/templates/investments/investor/approvals_list.html:16
 #: investments/templates/investments/investor/approvals_list.html:83
 #: investments/templates/investments/moderator/approvals_list.html:146
@@ -3048,11 +3083,13 @@ msgstr "Erreur réseau — vérifiez votre connexion et réessayez."
 
 #: cosomis/templates/layouts/foot.html:41
 msgid "Your session has expired. Please reload the page and sign in again."
-msgstr "Votre session a expiré. Veuillez recharger la page et vous reconnecter."
+msgstr ""
+"Votre session a expiré. Veuillez recharger la page et vous reconnecter."
 
 #: cosomis/templates/layouts/foot.html:43
 msgid "The server ran into a problem. Please try again in a moment."
-msgstr "Le serveur a rencontré un problème. Veuillez réessayer dans un instant."
+msgstr ""
+"Le serveur a rencontré un problème. Veuillez réessayer dans un instant."
 
 #: cosomis/templates/layouts/foot.html:116
 msgid "Veuillez aller changer votre mot de passe dans la session Utilisateur."
@@ -3098,7 +3135,12 @@ msgstr "Bienvenu(e)"
 msgid "Cart"
 msgstr "Panier"
 
-#: cosomis/templates/layouts/sidebar.html:106
+#: cosomis/templates/layouts/sidebar.html:95
+msgctxt "sidebar"
+msgid "Category review"
+msgstr "Catégorisation"
+
+#: cosomis/templates/layouts/sidebar.html:113
 msgid "Toggle Sidebar"
 msgstr "Basculer la barre latérale"
 
@@ -3639,14 +3681,22 @@ msgstr "En quelques jours"
 msgid "Percentage"
 msgstr "Pourcentage"
 
-#: investments/models.py:158
+#: investments/models.py:185
+msgid "Sector change"
+msgstr "Changement de sous-catégorie"
+
+#: investments/models.py:186
+msgid "Sector changes"
+msgstr "Changements de sous-catégorie"
+
+#: investments/models.py:201
 #: investments/templates/investments/investor/approvals_list.html:79
 #: investments/templates/investments/moderator/approvals_list.html:142
 #: investments/templates/investments/moderator/package_review.html:364
 msgid "Pending Submission"
 msgstr "En attente de soumission"
 
-#: investments/models.py:159 investments/models.py:207
+#: investments/models.py:202 investments/models.py:250
 #: investments/templates/investments/investor/approvals_list.html:81
 #: investments/templates/investments/moderator/approvals_list.html:144
 #: investments/templates/investments/moderator/package_review.html:366
@@ -3654,7 +3704,7 @@ msgstr "En attente de soumission"
 msgid "Pending Approval"
 msgstr "En attente d'approbation"
 
-#: investments/models.py:161 investments/models.py:209
+#: investments/models.py:204 investments/models.py:252
 #: investments/templates/investments/investor/approvals_list.html:20
 #: investments/templates/investments/investor/approvals_list.html:85
 #: investments/templates/investments/moderator/approvals_list.html:148
@@ -3663,43 +3713,43 @@ msgstr "En attente d'approbation"
 msgid "Rejected"
 msgstr "Rejeté"
 
-#: investments/models.py:162
+#: investments/models.py:205
 #: investments/templates/investments/investor/approvals_list.html:87
 #: investments/templates/investments/moderator/approvals_list.html:150
 #: investments/templates/investments/moderator/package_review.html:372
 msgid "Under Execution"
 msgstr "En construction"
 
-#: investments/models.py:163
+#: investments/models.py:206
 msgid "Partially Approved"
 msgstr "Approbation Partielle"
 
-#: investments/models.py:164
+#: investments/models.py:207
 msgid "Selected by Government"
 msgstr "Sélectionné par le gouvernement"
 
-#: investments/models.py:179
+#: investments/models.py:222
 msgid "Source of the funding, e.g., a particular organization or grant"
 msgstr ""
 "Source de financement, par exemple une organisation ou une subvention "
 "particulière"
 
-#: investments/models.py:189
+#: investments/models.py:232
 msgid ""
 "User who reviews the status of the Package. This user must be a moderator."
 msgstr ""
 "Utilisateur qui examine le statut du dossier. Cet utilisateur doit être un "
 "modérateur."
 
-#: investments/models.py:271
+#: investments/models.py:314
 msgid "Community Process"
 msgstr "Processus communautaire"
 
-#: investments/models.py:272
+#: investments/models.py:315
 msgid "Infrastructure in Progress"
 msgstr "L'infrastructure et Services"
 
-#: investments/models.py:273
+#: investments/models.py:316
 msgid "Completed Infrastructure"
 msgstr "Nombre d'infrastuctures"
 
@@ -3828,6 +3878,157 @@ msgstr "Vous devez sélectionner un projet lié à ces investissements."
 #: investments/templates/investments/cart.html:345
 msgid "Are you sure do you want to submit the package?"
 msgstr "Êtes-vous sûr de vouloir soumettre le package?"
+
+#: investments/templates/investments/category_review/_card.html:8
+#: investments/templates/investments/category_review/page.html:148
+msgid "Verified"
+msgstr "Vérifié"
+
+#: investments/templates/investments/category_review/_card.html:10
+#: investments/templates/investments/category_review/page.html:145
+msgid "To verify"
+msgstr "À vérifier"
+
+#: investments/templates/investments/category_review/_card.html:21
+msgid "Raised by"
+msgstr "Remonté par"
+
+#: investments/templates/investments/category_review/_card.html:23
+msgid "Location"
+msgstr "Localisation"
+
+#: investments/templates/investments/category_review/_card.html:30
+#, python-format
+msgid "Moved from <strong>%(old)s</strong> to <strong>%(new)s</strong>."
+msgstr "Déplacé de <strong>%(old)s</strong> vers <strong>%(new)s</strong>."
+
+#: investments/templates/investments/category_review/_card.html:34
+#, python-format
+msgid "Estimated cost: %(old)s → %(new)s FCFA."
+msgstr "Coût estimé : %(old)s → %(new)s FCFA."
+
+#: investments/templates/investments/category_review/_card.html:42
+msgid "Undo"
+msgstr "Annuler"
+
+#: investments/templates/investments/category_review/_card.html:46
+msgid "Correction undone: the previous sub-category and cost are restored."
+msgstr ""
+"Correction annulée : la sous-catégorie et le coût précédents sont rétablis."
+
+#: investments/templates/investments/category_review/_card.html:48
+msgid ""
+"This correction can no longer be undone: the investment has been changed "
+"since."
+msgstr ""
+"Cette correction ne peut plus être annulée : le besoin a été modifié depuis."
+
+#: investments/templates/investments/category_review/_card.html:55
+msgid "Correct"
+msgstr "Corriger"
+
+#: investments/templates/investments/category_review/_card.html:61
+msgid "History"
+msgstr "Historique"
+
+#: investments/templates/investments/category_review/_history.html:7
+msgid "unknown user"
+msgstr "utilisateur inconnu"
+
+#: investments/templates/investments/category_review/_history.html:8
+msgid "undo"
+msgstr "annulation"
+
+#: investments/templates/investments/category_review/_history.html:20
+msgid "No correction yet."
+msgstr "Aucune correction pour le moment."
+
+#: investments/templates/investments/category_review/_results.html:6
+#, python-format
+msgid "%(count_display)s investment"
+msgid_plural "%(count_display)s investments"
+msgstr[0] "%(count_display)s besoin"
+msgstr[1] "%(count_display)s besoins"
+
+#: investments/templates/investments/category_review/_results.html:13
+#, python-format
+msgid "%(verified)s / %(total)s verified"
+msgstr "%(verified)s / %(total)s vérifiés"
+
+#: investments/templates/investments/category_review/_results.html:39
+#, python-format
+msgid "Validate the %(counter)s investment shown"
+msgid_plural "Validate the %(counter)s investments shown"
+msgstr[0] "Valider le besoin affiché"
+msgstr[1] "Valider les %(counter)s besoins affichés"
+
+#: investments/templates/investments/category_review/_results.html:49
+msgid "Pagination"
+msgstr "Pagination"
+
+#: investments/templates/investments/category_review/_results.html:76
+msgid "Everything matching these filters has been verified."
+msgstr "Tous les besoins correspondant à ces filtres ont été vérifiés."
+
+#: investments/templates/investments/category_review/_results.html:78
+msgid "No investment matches these filters."
+msgstr "Aucun besoin ne correspond à ces filtres."
+
+#: investments/templates/investments/category_review/_sector_form.html:6
+msgid "New sub-category"
+msgstr "Nouvelle sous-catégorie"
+
+#: investments/templates/investments/category_review/_sector_form.html:16
+msgid "The estimated cost is updated to the cost of the new sub-category."
+msgstr "Le coût estimé est remplacé par celui de la nouvelle sous-catégorie."
+
+#: investments/templates/investments/category_review/_sector_form.html:19
+#: investments/templates/investments/moderator/package_review.html:525
+msgid "Cancel"
+msgstr "Annuler"
+
+#: investments/templates/investments/category_review/page.html:85
+msgid ""
+"Browse investments by category, correct the misclassified ones, then "
+"validate the page: the investments you did not correct are marked as "
+"verified."
+msgstr ""
+"Parcourez les besoins par catégorie, corrigez ceux qui sont mal classés, "
+"puis validez la page : les besoins que vous n’avez pas corrigés sont marqués "
+"comme vérifiés."
+
+#: investments/templates/investments/category_review/page.html:98
+msgid "Search in the title"
+msgstr "Rechercher dans l’intitulé"
+
+#: investments/templates/investments/category_review/page.html:100
+msgid "e.g. borehole"
+msgstr "ex. forage"
+
+#: investments/templates/investments/category_review/page.html:107
+msgid "All categories"
+msgstr "Toutes les catégories"
+
+#: investments/templates/investments/category_review/page.html:116
+msgid "Sub-category"
+msgstr "Sous-catégorie"
+
+#: investments/templates/investments/category_review/page.html:118
+msgid "All sub-categories"
+msgstr "Toutes les sous-catégories"
+
+#: investments/templates/investments/category_review/page.html:136
+msgid "Exclude funded investments"
+msgstr "Exclure les besoins financés"
+
+#: investments/templates/investments/category_review/page.html:142
+msgid "Verification"
+msgstr "Vérification"
+
+#: investments/templates/investments/category_review/page.html:151
+msgctxt "verification filter"
+msgid "All"
+msgstr "Tous"
 
 #: investments/templates/investments/investor/approvals_list.html:24
 msgid "Pending for approval"
@@ -4105,10 +4306,6 @@ msgstr "Confirmer l’action"
 msgid "This action cannot be undone."
 msgstr "Cette action est irréversible."
 
-#: investments/templates/investments/moderator/package_review.html:525
-msgid "Cancel"
-msgstr "Annuler"
-
 #: investments/templates/investments/moderator/package_review.html:696
 msgid "Approve this package?"
 msgstr "Approuver ce paquet ?"
@@ -4289,6 +4486,10 @@ msgstr "Examen du dossier d'investissement"
 #: investments/views.py:785
 msgid "Endorsed by pastoralist"
 msgstr "Soutenu par les minorités ethniques"
+
+#: investments/views_category_review.py:101
+msgid "Choose a sub-category."
+msgstr "Choisissez une sous-catégorie."
 
 #: static/config/datatable.py:11
 msgid "Show _MENU_ registers"
@@ -4708,10 +4909,6 @@ msgstr "Le mot de passe a été changé avec succès."
 #~| msgid "profile"
 #~ msgid "file"
 #~ msgstr "profil"
-
-#~| msgid "Director"
-#~ msgid "directory"
-#~ msgstr "Directeur(trice)"
 
 #~| msgid "Sites"
 #~ msgid "Site Maps"

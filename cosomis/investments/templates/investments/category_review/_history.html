@@ -1,0 +1,23 @@
+{% load i18n humanize %}
+<ul class="review-history">
+    {% for change in changes %}
+        <li>
+            <div class="when">
+                {{ change.changed_at|date:"SHORT_DATETIME_FORMAT" }}
+                · {{ change.changed_by.get_full_name|default:change.changed_by.email|default:_("unknown user") }}
+                {% if change.undoes_id %}· <strong>{% translate "undo" %}</strong>{% endif %}
+            </div>
+            <div>
+                {{ change.old_sector.category.name|default:"—" }} › {{ change.old_sector.name|default:"—" }}
+                <i class="fas fa-long-arrow-alt-right mx-1"></i>
+                {{ change.new_sector.category.name|default:"—" }} › {{ change.new_sector.name|default:"—" }}
+            </div>
+            {% if change.old_estimated_cost != change.new_estimated_cost %}
+                <div class="when">{{ change.old_estimated_cost|intcomma }} → {{ change.new_estimated_cost|intcomma }} FCFA</div>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li class="when">{% translate "No correction yet." %}</li>
+    {% endfor %}
+</ul>
+<button type="button" class="btn btn-link btn-sm p-0 js-close-editor">{% translate "Close" %}</button>

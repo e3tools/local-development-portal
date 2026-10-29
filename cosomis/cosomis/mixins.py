@@ -23,8 +23,9 @@ class PageMixin(object):
     
     def dispatch(self, request, *args, **kwargs):
         # Page views only: a POST (e.g. applying a filter) redirects to a GET
-        # that is tracked anyway. Business events are tracked explicitly.
-        if request.method == "GET":
+        # that is tracked anyway, and an HTMX request only fetches a fragment
+        # of a page already tracked. Business events are tracked explicitly.
+        if request.method == "GET" and not getattr(request, "htmx", False):
             track_user_activity(request, self.__class__.__name__)
 
         return super().dispatch(request, *args, **kwargs)

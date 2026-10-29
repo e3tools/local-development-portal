@@ -36,6 +36,11 @@ $(function () {
         if (this.checkValidity && !this.checkValidity()) {
             return;
         }
+        // HTMX forms swap a fragment instead of reloading the page: disabled
+        // buttons would stay disabled, so the form could not be sent again.
+        if (this.matches("[hx-get], [hx-post], [data-hx-get], [data-hx-post]")) {
+            return;
+        }
         disableOnSubmit($(this));
     });
 
