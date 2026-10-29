@@ -1451,6 +1451,14 @@
     }
 
     function sum_subprojects() {
+        // Nothing selected (always the case on page load): the totals are 0,
+        // no need for a round trip to the server.
+        if ($('.checkbox-select-all-monitor').val() !== 'true' && !$('.inv-list').val()) {
+            $('.total-selected-funding-display').html(numeral(0).format('0,0') + ' FCFA');
+            $('.total-selected-villages-display').html(numeral(0).format('0,0'));
+            $('.total-selected-subprojects-display').html(numeral(0).format('0,0'));
+            return;
+        }
         let base_url = window.location.href.split('?')[0]
 
         $.ajax({

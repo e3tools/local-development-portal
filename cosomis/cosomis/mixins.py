@@ -22,9 +22,11 @@ class PageMixin(object):
 
     
     def dispatch(self, request, *args, **kwargs):
-        
-        track_user_activity(request, self.__class__.__name__)
-        
+        # Page views only: a POST (e.g. applying a filter) redirects to a GET
+        # that is tracked anyway. Business events are tracked explicitly.
+        if request.method == "GET":
+            track_user_activity(request, self.__class__.__name__)
+
         return super().dispatch(request, *args, **kwargs)
     
 

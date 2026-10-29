@@ -21,7 +21,6 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     select_input = serializers.SerializerMethodField()
     title = serializers.SerializerMethodField()
-    administrative_level__type = serializers.SerializerMethodField()
     administrative_level__name = serializers.SerializerMethodField()
     administrative_level__parent__name = serializers.SerializerMethodField()
     administrative_level__parent__parent__name = serializers.SerializerMethodField()
@@ -34,7 +33,22 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Investment
-        fields = '__all__'
+        # The DataTable columns only (see IndexListView's datatable_config):
+        # '__all__' also serialized ~30 unused model fields per row, and would
+        # trigger a query per row for any field deferred by the viewset's .only().
+        fields = (
+            'id',
+            'select_input',
+            'title',
+            'administrative_level__type_with_projects_priority_came_from',
+            'estimated_cost',
+            'administrative_level__name',
+            'administrative_level__parent__name',
+            'administrative_level__parent__parent__name',
+            'administrative_level__parent__parent__parent__name',
+            'ranking',
+            'population_priority',
+        )
 
     def get_select_input(self, obj):
         checked = ' checked' if self.context.get('all_queryset') == 'true' else ''

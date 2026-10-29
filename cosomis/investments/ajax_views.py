@@ -8,13 +8,14 @@ from django.views import View
 
 from rest_framework import generics
 from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.response import Response
 
 from administrativelevels.models import AdministrativeLevel, Sector, Project, GeoSegment
 from .models import Investment, PackageFundedInvestment, Attachment
 from .serializers import InvestmentSerializer
 from cosomis.constants import IMAGE_EXTENSIONS
+from usermanager.permissions import IsApprovedUser
 
 
 class FillAdmLevelsSelectFilters(generics.GenericAPIView):
@@ -24,6 +25,8 @@ class FillAdmLevelsSelectFilters(generics.GenericAPIView):
     Multi-select: `value` may be repeated; the children of every selected
     parent are returned in one list.
     """
+
+    permission_classes = [IsApprovedUser]
 
     def post(self, request, *args, **kwargs):
         parent_ids = [v for v in request.POST.getlist('value') if v.isdigit()]
@@ -60,6 +63,8 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
     Region -> Prefecture -> Commune -> Canton -> Village
     """
 
+    permission_classes = [IsApprovedUser]
+
     def post(self, request, *args, **kwargs):
         category_ids = [v for v in request.POST.getlist('value') if v]
         opt_qs = Sector.objects.filter(category__id__in=category_ids)
@@ -68,7 +73,7 @@ class FillSectorsSelectFilters(generics.GenericAPIView):
         })
 
 
-class InvestmentModelViewSet(ModelViewSet):
+class InvestmentModelViewSet(ReadOnlyModelViewSet):
     # queryset = Investment.objects.filter(
     #     investment_status=Investment.PRIORITY,
     #     funded_by__isnull=True,
@@ -84,8 +89,23 @@ class InvestmentModelViewSet(ModelViewSet):
         'administrative_level__parent__parent__parent',
     ).prefetch_related(
         'came_from',
+    ).only(
+        # Only what InvestmentSerializer renders: rows sorted by Postgres
+        # shrink from ~5KB (every column of 5 joined tables) to ~270 bytes.
+        'id', 'title', 'description', 'estimated_cost', 'ranking',
+        'endorsed_by_youth', 'endorsed_by_women',
+        'endorsed_by_agriculturist', 'endorsed_by_pastoralist',
+        *[
+            'administrative_level' + '__parent' * depth + '__' + field
+            for depth in range(4)
+            for field in ('id', 'name', 'type', 'parent_id')
+        ],
     )
     serializer_class = InvestmentSerializer
+    # Read-only and restricted like the page itself: this used to be a full
+    # ModelViewSet with DRF's default AllowAny, so anonymous visitors could
+    # list, create, update and delete investments.
+    permission_classes = [IsApprovedUser]
 
     # "is-funded-filter" querystring value -> Investment.project_status
     FUNDED_FILTER_STATUSES = {
@@ -117,6 +137,17 @@ class InvestmentModelViewSet(ModelViewSet):
         "endorsed_by_chiefs",
     )
 
+    @staticmethod
+    def _totals(qs):
+        """Funding / villages / sub-projects totals in a single query."""
+        totals = qs.order_by().aggregate(
+            total_funding_display=Sum('estimated_cost'),
+            total_villages_display=Count('administrative_level', distinct=True),
+            total_subprojects_display=Count('id'),
+        )
+        totals['total_funding_display'] = totals['total_funding_display'] or 0
+        return totals
+
     @action(detail=False, methods=['POST'], url_path='results', url_name='results')
     def selected_investments_data(self, request, *args, **kwargs):
         qs = self.get_queryset()
@@ -137,9 +168,7 @@ class InvestmentModelViewSet(ModelViewSet):
         qs = qs.exclude(id__in=inv_ids) if request.data['all_queryset'] == 'true' else qs.filter(id__in=inv_ids)
 
         return Response({
-            'total_funding_display': qs.aggregate(total_funding_display=Sum('estimated_cost'))['total_funding_display'] or 0,
-            'total_villages_display': qs.values('administrative_level').distinct().count(),
-            'total_subprojects_display': qs.count(),
+            **self._totals(qs),
             'project_total_fund': project_amount,
             'project_id': project_id,
         })
@@ -160,9 +189,7 @@ class InvestmentModelViewSet(ModelViewSet):
             project_id = None
 
         return Response({
-            'total_funding_display': qs.aggregate(total_funding_display=Sum('estimated_cost'))['total_funding_display'] or 0,
-            'total_villages_display': qs.values('administrative_level').distinct().count(),
-            'total_subprojects_display': qs.count(),
+            **self._totals(qs),
             'project_total_fund': project_amount,
             'project_id': project_id,
         })

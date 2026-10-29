@@ -3,6 +3,43 @@
 All notable user-visible and developer-facing changes are tracked here. The
 format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased] — 2026-10-29 (performance & security)
+
+### Security
+
+- **`/investments/ajax/datatable/` allowed anonymous writes.**
+  `InvestmentModelViewSet` was a full `ModelViewSet` with DRF's default
+  `AllowAny` (no `DEFAULT_PERMISSION_CLASSES`): anyone, logged in or not,
+  could list, create, update and **delete** investments (verified: anonymous
+  `DELETE` → 204). Now a `ReadOnlyModelViewSet` restricted to approved users
+  (`usermanager.permissions.IsApprovedUser`, the DRF twin of
+  `LoginRequiredApproveRequiredMixin`); the `adm-levels`/`sectors` cascade
+  endpoints get the same permission.
+
+### Changed
+
+- **Mixpanel no longer blocks requests.** Each call took ~0.6s from the prod
+  VM and `PageMixin.dispatch` made two per page view (four when applying a
+  filter: POST + redirected GET). Calls now go through a background thread
+  with a bounded queue, a 2s timeout and no retries (library default: no
+  timeout, 4 retries); nothing is sent when `MIXPANEL_TOKEN` is empty or
+  the `test` placeholder; the user profile (`people_set`) is sent once per
+  session; `PageMixin` tracks GET page views only (explicit business events
+  such as `PackageSubmitted` are unchanged).
+- **`/investments/` DataTable query** uses `.only()` on the rendered columns
+  (Postgres sorted ~5KB rows across 5 joined tables, now ~270 bytes) and
+  `InvestmentSerializer` lists its fields instead of `'__all__'`. Local
+  median for a 10-row page: 56ms → 30ms.
+- **Totals** (`results` / `total-results`) are computed in one `aggregate()`
+  instead of three queries; the `results` call is skipped client-side when
+  nothing is selected (always the case on page load).
+- **Admin-level dropdowns** are only rendered when their parent is selected
+  (the AJAX cascade fills them otherwise): page HTML 240KB → 109KB, 993 →
+  45 `<option>` elements on the Benin dataset.
+- Tests: `cosomis/tests/test_mixpanel_tracking.py`,
+  `investments/tests/test_ajax_permissions.py`,
+  `investments/tests/test_list_performance.py` (query-count guards).
+
 ## [Unreleased] — 2026-10-29
 
 ### Added

@@ -1,3 +1,4 @@
+from rest_framework.permissions import BasePermission
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.defaults import page_not_found
 from django.utils.translation import gettext_lazy as _
@@ -277,3 +278,11 @@ class IsInvestorMixin(UserPassesTestMixin):
 
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.is_approved and not self.request.user.is_moderator
+
+
+class IsApprovedUser(BasePermission):
+    """DRF counterpart of LoginRequiredApproveRequiredMixin (cosomis/mixins.py)."""
+
+    def has_permission(self, request, view):
+        user = request.user
+        return bool(user and user.is_authenticated and user.is_approved)

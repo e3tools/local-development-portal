@@ -158,8 +158,13 @@ class IndexListView(
         prefectures_qs = adm_queryset.filter(
             AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
         )
+        # A dropdown whose parent is not selected is disabled and gets filled
+        # by the AJAX cascade: rendering every option anyway (848 villages on
+        # Benin) only bloated the page.
         if region_filter_id:
             prefectures_qs = prefectures_qs.filter(parent__id=region_filter_id)
+        else:
+            prefectures_qs = prefectures_qs.none()
         kwargs["prefectures"] = prefectures_qs
 
         # Multi-select: each dropdown lists the children of every selected parent.
@@ -174,6 +179,8 @@ class IndexListView(
             ]
             if parent_ids:
                 level_qs = level_qs.filter(parent__id__in=parent_ids)
+            else:
+                level_qs = level_qs.none()
             kwargs[context_key] = level_qs
 
         kwargs["categories"] = Category.objects.all()
