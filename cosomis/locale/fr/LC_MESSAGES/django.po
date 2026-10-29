@@ -1895,9 +1895,6 @@ msgstr "Creation de projet"
 msgid "Project tracking"
 msgstr "Suivi des projets"
 
-msgid "Gallery"
-msgstr "Galerie"
-
 msgid "User"
 msgstr "Utilisateur"
 
@@ -2496,9 +2493,6 @@ msgstr "Choisissez d'abord un %(level)s pour activer ce filtre."
 msgid "Sub-Project Status"
 msgstr "Statut du sous-projet"
 
-msgid "All Statuses"
-msgstr "Tous les statuts"
-
 msgid "Total Priorities"
 msgstr "Total priorités communautaires"
 
@@ -2617,9 +2611,6 @@ msgstr "Nombre de sous-projets sélectionnés"
 
 msgid "Number of infrastructures"
 msgstr "Nombre d'infrastuctures"
-
-msgid "Cantons"
-msgstr "Cantons"
 
 msgid "Total estimate for subprojects"
 msgstr "Estimation totale des sous-projets"
@@ -2987,6 +2978,10 @@ msgstr "Non financé"
 #: investments/templates/investments/list.html:752
 #: investments/templates/investments/list.html:760
 #| msgid "Recording in progress..."
+msgid "Funded — not started"
+msgstr "Financé — non démarré"
+
+#: investments/templates/investments/list.html
 msgid "Funded — in progress"
 msgstr "Financé — en cours"
 

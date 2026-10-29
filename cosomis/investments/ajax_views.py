@@ -110,6 +110,7 @@ class InvestmentModelViewSet(ReadOnlyModelViewSet):
     # "is-funded-filter" querystring value -> Investment.project_status
     FUNDED_FILTER_STATUSES = {
         "not_funded": Investment.NOT_FUNDED,
+        "funded_not_started": Investment.FUNDED_NOT_STARTED,
         "in_progress": Investment.IN_PROGRESS,
         "completed": Investment.COMPLETED,
     }

@@ -746,6 +746,7 @@
                                             <input type="hidden" name="is-funded-filter" value="">
                                             <select class="form-control" name="is-funded-filter" id="funded-select-id" multiple data-placeholder="{% translate 'Funding Status' %}" style="width: 100%;">
                                                 <option value="not_funded" {% if 'not_funded' in selected_funding %}selected{% endif %}>{% translate "Unfunded needs" %}</option>
+                                                <option value="funded_not_started" {% if 'funded_not_started' in selected_funding %}selected{% endif %}>{% translate "Funded — not started" %}</option>
                                                 <option value="in_progress" {% if 'in_progress' in selected_funding %}selected{% endif %}>{% translate "Funded — in progress" %}</option>
                                                 <option value="completed" {% if 'completed' in selected_funding %}selected{% endif %}>{% translate "Funded — completed" %}</option>
                                             </select>

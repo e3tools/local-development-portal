@@ -3,6 +3,26 @@
 All notable user-visible and developer-facing changes are tracked here. The
 format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased] — 2026-10-29 (funding filter)
+
+### Added
+
+- **"Funded — not started" option in `/investments/`' funding-status filter**
+  (`funded_not_started` → `Investment.FUNDED_NOT_STARTED`). 1,426 investments
+  carry this status (set by `import_new_funded_investments` and, for funded
+  new needs, `import_new_needs_bj`) and could not be filtered until now.
+
+### Fixed
+
+- `locale/fr/LC_MESSAGES/django.po` had 3 duplicate entries ("Gallery",
+  "All Statuses", "Cantons", identical translations) that made `msgfmt` fail.
+  **Known issue:** the committed `django.mo` (last compiled 2026-06-19) is
+  more correct than the current `.po` — recompiling the `.po` as-is would drop
+  76 translations and degrade 22 others (old fuzzy matches). Until the `.po`
+  is reconciled, add new strings to the `.mo` without a full recompile
+  (`msgunfmt` the committed `.mo`, append the entry, `msgfmt`) and do **not**
+  run `make generate-translations`.
+
 ## [Unreleased] — 2026-10-29 (performance & security)
 
 ### Security

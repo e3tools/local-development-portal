@@ -125,17 +125,35 @@ class FundingStatusFilterTest(FiltersBaseTest):
         cls.not_funded = _make_investment(
             cls.village, cls.sector, "not-funded", status=Investment.NOT_FUNDED
         )
+        cls.not_started = _make_investment(
+            cls.village, cls.sector, "not-started", status=Investment.FUNDED_NOT_STARTED
+        )
         cls.in_progress = _make_investment(
             cls.village, cls.sector, "in-progress", status=Investment.IN_PROGRESS
         )
         cls.completed = _make_investment(
             cls.village, cls.sector, "completed", status=Investment.COMPLETED
         )
+        cls.all_ids = {
+            cls.not_funded.id, cls.not_started.id, cls.in_progress.id, cls.completed.id
+        }
 
     def test_no_filter_returns_all(self):
+        self.assertEqual(_filtered_ids({}), self.all_ids)
+
+    def test_funded_not_started(self):
+        # Set by the funded-subprojects imports (import_new_funded_investments).
         self.assertEqual(
-            _filtered_ids({}),
-            {self.not_funded.id, self.in_progress.id, self.completed.id},
+            _filtered_ids({"is-funded-filter": "funded_not_started"}),
+            {self.not_started.id},
+        )
+
+    def test_every_funded_state_together_excludes_only_unfunded(self):
+        self.assertEqual(
+            _filtered_ids(
+                {"is-funded-filter": ["funded_not_started", "in_progress", "completed"]}
+            ),
+            self.all_ids - {self.not_funded.id},
         )
 
     def test_single_value(self):
@@ -152,8 +170,7 @@ class FundingStatusFilterTest(FiltersBaseTest):
 
     def test_blank_and_unknown_values_are_ignored(self):
         self.assertEqual(
-            _filtered_ids({"is-funded-filter": ["", "bogus"]}),
-            {self.not_funded.id, self.in_progress.id, self.completed.id},
+            _filtered_ids({"is-funded-filter": ["", "bogus"]}), self.all_ids
         )
         self.assertEqual(
             _filtered_ids({"is-funded-filter": ["", "bogus", "completed"]}),
@@ -163,13 +180,28 @@ class FundingStatusFilterTest(FiltersBaseTest):
     def test_selected_options_are_preselected_in_template(self):
         self._login()
         response = self.client.get(
-            self.url + "?is-funded-filter=not_funded&is-funded-filter=completed"
+            self.url
+            + "?is-funded-filter=funded_not_started&is-funded-filter=completed"
         )
         self.assertEqual(response.status_code, 200)
         html = response.content.decode()
         self.assertEqual(
-            _selected_values(html, "is-funded-filter"), ["not_funded", "completed"]
+            _selected_values(html, "is-funded-filter"), ["funded_not_started", "completed"]
         )
+
+    def test_every_funding_state_is_offered(self):
+        self._login()
+        html = re.sub(r"<!--.*?-->", "", self.client.get(self.url).content.decode(), flags=re.S)
+        select = re.search(r'<select[^>]*name="is-funded-filter"[^>]*>(.*?)</select>', html, re.S)
+        self.assertEqual(
+            re.findall(r'<option value="([^"]*)"', select.group(1)),
+            list(InvestmentModelViewSet.FUNDED_FILTER_STATUSES),
+        )
+
+    def test_not_started_label_is_translated(self):
+        self._login()
+        html = self.client.get(self.url).content.decode()
+        self.assertIn("Financé — non démarré", html)
 
 
 # ---------------------------------------------------------------------------
