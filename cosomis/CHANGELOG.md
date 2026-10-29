@@ -3,6 +3,47 @@
 All notable user-visible and developer-facing changes are tracked here. The
 format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased] — 2026-10-29
+
+### Added
+
+- **Multi-select on every remaining `/investments/` filter**, completing the
+  category/sector work below:
+  - **Funding status** (`is-funded-filter`): several states OR-ed
+    (`project_status__in`), via `InvestmentModelViewSet.FUNDED_FILTER_STATUSES`.
+  - **Endorsed by** (`subpopulation-filter`): "endorsed by at least one of the
+    selected groups" (OR of `Q(endorsed_by_x=True)`). Today a BJ need is
+    endorsed by exactly one group, but the query stays correct if that changes.
+  - **Administrative levels** (prefecture → village; the root/region select
+    stays single, it is hidden on Benin): ids within a level are OR-ed,
+    levels are AND-ed (picking a commune narrows the selected departments to
+    it). `FillAdmLevelsSelectFilters` returns the children of every selected
+    parent; the page's pre-loaded dropdowns do the same.
+- `getlist` template filter (`custom_tags.py`) — string counterpart of
+  `getlist_int`, used to pre-select string-valued multi-selects.
+- `investments/tests/test_list_filters.py` — first tests for the
+  `/investments/` filters (queryset, cascade endpoint, template
+  pre-selection, badges, `IndexListView.post()` merge). Replaces the empty
+  `investments/tests.py` stub.
+
+### Fixed
+
+- **Clearing a multi-select did not remove its filter.** A `<select multiple>`
+  with nothing selected submits nothing, so `IndexListView.post()` kept the
+  old value from the URL (affected category/sector since 2026-10-08). Each
+  multi-select is now preceded by `<input type="hidden" name="…" value="">`.
+- **`subpopulation-filter` was passed straight to `.filter(**{value: True})`.**
+  Now restricted to `SUBPOPULATION_FILTER_FIELDS`. `IndexListView.get_queryset()`
+  held a dead copy of every filter (it ended in `.none()`) that still raised
+  `FieldError` (HTTP 500) on an unknown value — reduced to `.none()`.
+- **Filter badges** showed only the last value of multi-valued keys, showed
+  the raw field name for "Endorsed by", and never showed admin-level badges
+  on Benin (hard-coded Togo `type` strings). They now list every selected
+  value, use `type_filter_q`, add the missing canton badge, and hide the root
+  badge on single-root datasets.
+- Village dropdown pre-load read the misspelt `cantons-filter` key and so
+  always listed every village.
+
 ## [Unreleased] — 2026-10-08
 
 ### Added

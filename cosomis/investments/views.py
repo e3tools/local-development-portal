@@ -76,6 +76,16 @@ class IndexListView(
     form_class = InvestmentsForm
     title = _("Investments")
 
+    # BJ context: added endorsed_by_chiefs for Notables & Chefferie group.
+    # Ids must match InvestmentModelViewSet.SUBPOPULATION_FILTER_FIELDS.
+    SUBPOPULATIONS = [
+        {"id": "endorsed_by_youth",         "name": _("Endorsed by youth")},
+        {"id": "endorsed_by_women",         "name": _("Endorsed by women")},
+        {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
+        {"id": "endorsed_by_pastoralist",   "name": _("Endorsed by ethnic minorities")},
+        {"id": "endorsed_by_chiefs",        "name": _("Endorsed by chiefs")},
+    ]
+
     def post(self, request, *args, **kwargs):
         if "cart-submitted" in request.POST:
             form = self.get_form()
@@ -152,26 +162,19 @@ class IndexListView(
             prefectures_qs = prefectures_qs.filter(parent__id=region_filter_id)
         kwargs["prefectures"] = prefectures_qs
 
-        communes_qs = adm_queryset.filter(
-            AdministrativeLevel.type_filter_q(AdministrativeLevel.COMMUNE)
-        )
-        if "prefecture-filter" in self.request.GET:
-            communes_qs = communes_qs.filter(parent__id=self.request.GET["prefecture-filter"])
-        kwargs["communes"] = communes_qs
-
-        cantons_qs = adm_queryset.filter(
-            AdministrativeLevel.type_filter_q(AdministrativeLevel.CANTON)
-        )
-        if "commune-filter" in self.request.GET:
-            cantons_qs = cantons_qs.filter(parent__id=self.request.GET["commune-filter"])
-        kwargs["cantons"] = cantons_qs
-
-        villages_qs = adm_queryset.filter(
-            AdministrativeLevel.type_filter_q(AdministrativeLevel.VILLAGE)
-        )
-        if "cantons-filter" in self.request.GET:
-            villages_qs = villages_qs.filter(parent__id=self.request.GET["cantons-filter"])
-        kwargs["villages"] = villages_qs
+        # Multi-select: each dropdown lists the children of every selected parent.
+        for context_key, level, parent_filter_key in (
+            ("communes", AdministrativeLevel.COMMUNE, "prefecture-filter"),
+            ("cantons", AdministrativeLevel.CANTON, "commune-filter"),
+            ("villages", AdministrativeLevel.VILLAGE, "canton-filter"),
+        ):
+            level_qs = adm_queryset.filter(AdministrativeLevel.type_filter_q(level))
+            parent_ids = [
+                v for v in self.request.GET.getlist(parent_filter_key) if v.isdigit()
+            ]
+            if parent_ids:
+                level_qs = level_qs.filter(parent__id__in=parent_ids)
+            kwargs[context_key] = level_qs
 
         kwargs["categories"] = Category.objects.all()
         category_filter_ids = [v for v in self.request.GET.getlist("category-filter") if v]
@@ -189,14 +192,7 @@ class IndexListView(
         #         "name": _("Endorsed by ethnic minorities"),
         #     },
         # ]
-        # BJ context: added endorsed_by_chiefs for Notables & Chefferie group.
-        kwargs["subpopulations"] = [
-            {"id": "endorsed_by_youth",         "name": _("Endorsed by youth")},
-            {"id": "endorsed_by_women",         "name": _("Endorsed by women")},
-            {"id": "endorsed_by_agriculturist", "name": _("Endorsed by agriculturist")},
-            {"id": "endorsed_by_pastoralist",   "name": _("Endorsed by ethnic minorities")},
-            {"id": "endorsed_by_chiefs",        "name": _("Endorsed by chiefs")},
-        ]
+        kwargs["subpopulations"] = self.SUBPOPULATIONS
 
         kwargs["priorities"] = [
             {"id": 1, "name": _("Priority 1")},
@@ -278,152 +274,55 @@ class IndexListView(
         return context
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        if "region-filter" in self.request.GET and self.request.GET[
-            "region-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                administrative_level__parent__parent__parent__parent__id=self.request.GET[
-                    "region-filter"
-                ],
-                administrative_level__parent__parent__parent__parent__type=AdministrativeLevel.REGION,
-            )
-        if "prefecture-filter" in self.request.GET and self.request.GET[
-            "prefecture-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                administrative_level__parent__parent__parent__id=self.request.GET[
-                    "prefecture-filter"
-                ],
-                administrative_level__parent__parent__parent__type=AdministrativeLevel.PREFECTURE,
-            )
-        if "commune-filter" in self.request.GET and self.request.GET[
-            "commune-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                administrative_level__parent__parent__id=self.request.GET[
-                    "commune-filter"
-                ],
-                administrative_level__parent__parent__type=AdministrativeLevel.COMMUNE,
-            )
-        if "canton-filter" in self.request.GET and self.request.GET[
-            "canton-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                administrative_level__parent__id=self.request.GET["canton-filter"],
-                administrative_level__parent__type=AdministrativeLevel.CANTON,
-            )
-        if "village-filter" in self.request.GET and self.request.GET[
-            "village-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                administrative_level__id=self.request.GET["village-filter"],
-                administrative_level__type=AdministrativeLevel.VILLAGE,
-            )
+        # The table rows, totals and every filter are served by
+        # InvestmentModelViewSet (investments/ajax_views.py) over AJAX; this
+        # view never lists investments itself. The old per-filter code that
+        # lived here was dead (it ended in .none()) but still crashed the page
+        # on unknown filter values, since .filter() resolves field names eagerly.
+        return super().get_queryset().none()
 
-        if "sector-filter" in self.request.GET and self.request.GET[
-            "sector-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(sector__id=self.request.GET["sector-filter"])
-        if "category-filter" in self.request.GET and self.request.GET[
-            "category-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                sector__category__id=self.request.GET["category-filter"]
-            )
+    # Badge label, querystring key and canonical level of each admin filter
+    ADM_LEVEL_BADGES = (
+        ("Regions", "region-filter", AdministrativeLevel.REGION),
+        ("Prefectures", "prefecture-filter", AdministrativeLevel.PREFECTURE),
+        ("Communes", "commune-filter", AdministrativeLevel.COMMUNE),
+        ("Cantons", "canton-filter", AdministrativeLevel.CANTON),
+        ("Villages", "village-filter", AdministrativeLevel.VILLAGE),
+    )
 
-        if "subpopulation-filter" in self.request.GET and self.request.GET[
-            "subpopulation-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                **{self.request.GET["subpopulation-filter"]: True}
-            )
-
-        if "climate-contribution-filter" in self.request.GET and self.request.GET[
-            "climate-contribution-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                climate_contribution=self.request.GET["climate-contribution-filter"]
-            )
-
-        if "priorities-filter" in self.request.GET and self.request.GET[
-            "priorities-filter"
-        ] not in ["", None]:
-            priorities = [1]
-            if self.request.GET["priorities-filter"] == '2':
-                priorities.append(2)
-            elif self.request.GET["priorities-filter"] == '3':
-                priorities.append(2)
-                priorities.append(3)
-            queryset = queryset.filter(
-                ranking__in=priorities
-            )
-
-        # BJ context: 3-state funding filter replacing the old true/false binary.
-        # not_funded = unfunded needs, in_progress = funded and ongoing,
-        # completed = funded and done. Empty = show all.
-        # BEFORE:
-        # if "is-funded-filter" in self.request.GET and self.request.GET[
-        #     "is-funded-filter"
-        # ] not in ["", None]:
-        #     if self.request.GET["is-funded-filter"] == 'true':
-        #         queryset = queryset.exclude(project_status=Investment.NOT_FUNDED)
-        #     else:
-        #         queryset = queryset.exclude(project_status=Investment.FUNDED)
-        funded_filter = self.request.GET.get("is-funded-filter", "")
-        if funded_filter == "not_funded":
-            queryset = queryset.filter(project_status=Investment.NOT_FUNDED)
-        elif funded_filter == "in_progress":
-            queryset = queryset.filter(project_status=Investment.IN_PROGRESS)
-        elif funded_filter == "completed":
-            queryset = queryset.filter(project_status=Investment.COMPLETED)
-        elif funded_filter == "funded_not_started":
-            queryset = queryset.filter(project_status=Investment.FUNDED_NOT_STARTED)
-
-        return queryset.none()
+    def _names_badge(self, queryset, key):
+        """Comma-separated names of every id selected for a multi-select filter."""
+        ids = [v for v in self.request.GET.getlist(key) if v.isdigit()]
+        return ", ".join(queryset.filter(id__in=ids).values_list("name", flat=True))
 
     def get_query_strings_context(self):
         resp = dict()
-        for key, value in self.request.GET.items():
-            if key == "region-filter":
-                resp["Regions"] = ", ".join(
-                    AdministrativeLevel.objects.filter(
-                        id__in=[int(value)], type=AdministrativeLevel.REGION
-                    ).values_list("name", flat=True)
-                )
-            if key == "prefecture-filter":
-                resp["Prefectures"] = ", ".join(
-                    AdministrativeLevel.objects.filter(
-                        id__in=[int(value)], type=AdministrativeLevel.PREFECTURE
-                    ).values_list("name", flat=True)
-                )
-            if key == "commune-filter":
-                resp["Communes"] = ", ".join(
-                    AdministrativeLevel.objects.filter(
-                        id__in=[int(value)], type=AdministrativeLevel.COMMUNE
-                    ).values_list("name", flat=True)
-                )
-            if key == "village-filter":
-                resp["Villages"] = ", ".join(
-                    AdministrativeLevel.objects.filter(
-                        id__in=[int(value)], type=AdministrativeLevel.VILLAGE
-                    ).values_list("name", flat=True)
-                )
+        for label, key, level in self.ADM_LEVEL_BADGES:
+            level_qs = AdministrativeLevel.objects.filter(
+                AdministrativeLevel.type_filter_q(level)
+            )
+            # Single-root dataset (Benin): the root select is hidden, so is its badge.
+            if level == AdministrativeLevel.REGION and level_qs.count() == 1:
+                continue
+            names = self._names_badge(level_qs, key)
+            if names:
+                resp[label] = names
+        for label, key, queryset in (
+            ("Categories", "category-filter", Category.objects.all()),
+            ("Sectors", "sector-filter", Sector.objects.all()),
+        ):
+            names = self._names_badge(queryset, key)
+            if names:
+                resp[label] = names
 
-            if key == "category-filter":
-                resp["Categories"] = ", ".join(
-                    Category.objects.filter(
-                        id__in=[int(value)],
-                    ).values_list("name", flat=True)
-                )
-            if key == "sector-filter":
-                resp["Sectors"] = ", ".join(
-                    Sector.objects.filter(
-                        id__in=[int(value)],
-                    ).values_list("name", flat=True)
-                )
+        for key, value in self.request.GET.items():
             if key == "subpopulation-filter":
-                resp["Subpopulations"] = " ".join(value.split("_"))
+                names = dict((sp["id"], sp["name"]) for sp in self.SUBPOPULATIONS)
+                selected = [
+                    str(names[v]) for v in self.request.GET.getlist(key) if v in names
+                ]
+                if selected:
+                    resp["Subpopulations"] = ", ".join(selected)
 
             if key == "climate-contribution-filter":
                 resp["Climate contribution"] = _("Yes") if value == "True" else _("No")

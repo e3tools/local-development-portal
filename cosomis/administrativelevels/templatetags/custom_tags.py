@@ -426,16 +426,21 @@ def get_item(dictionary, key):
 
 
 @register.filter
-def getlist_int(dictionary, key):
-    """Like `get_item` but for multi-select filters: returns every value for
-    `key` from a QueryDict as a list of ints, skipping blanks and anything
-    non-numeric."""
+def getlist(dictionary, key):
+    """Like `get_item` but for multi-select filters: returns every non-blank
+    value for `key` from a QueryDict as a list of strings."""
     try:
         values = dictionary.getlist(key)
     except AttributeError:
         return []
+    return [value for value in values if value != ""]
+
+
+@register.filter
+def getlist_int(dictionary, key):
+    """Like `getlist` but returns ints, skipping anything non-numeric."""
     result = []
-    for value in values:
+    for value in getlist(dictionary, key):
         try:
             result.append(int(value))
         except (ValueError, TypeError):

@@ -20,12 +20,20 @@ from cosomis.constants import IMAGE_EXTENSIONS
 class FillAdmLevelsSelectFilters(generics.GenericAPIView):
     """
     Region -> Prefecture -> Commune -> Canton -> Village
+
+    Multi-select: `value` may be repeated; the children of every selected
+    parent are returned in one list.
     """
 
     def post(self, request, *args, **kwargs):
-        adm_obj = AdministrativeLevel.objects.get(id=request.POST['value'])
-        opt_qs = AdministrativeLevel.objects.filter(parent=adm_obj)
-        if adm_obj.is_region():
+        parent_ids = [v for v in request.POST.getlist('value') if v.isdigit()]
+        parents = list(AdministrativeLevel.objects.filter(id__in=parent_ids))
+        opt_qs = AdministrativeLevel.objects.filter(parent__in=parents)
+        # Every selected parent comes from the same dropdown, hence the same level.
+        adm_obj = parents[0] if parents else None
+        if adm_obj is None:
+            pass
+        elif adm_obj.is_region():
             opt_qs = opt_qs.filter(
                 AdministrativeLevel.type_filter_q(AdministrativeLevel.PREFECTURE)
             )
@@ -78,6 +86,36 @@ class InvestmentModelViewSet(ModelViewSet):
         'came_from',
     )
     serializer_class = InvestmentSerializer
+
+    # "is-funded-filter" querystring value -> Investment.project_status
+    FUNDED_FILTER_STATUSES = {
+        "not_funded": Investment.NOT_FUNDED,
+        "in_progress": Investment.IN_PROGRESS,
+        "completed": Investment.COMPLETED,
+    }
+
+    # (querystring key, canonical level, path from Investment to that level)
+    ADM_LEVEL_FILTERS = (
+        ("region-filter", AdministrativeLevel.REGION,
+         "administrative_level__parent__parent__parent__parent"),
+        ("prefecture-filter", AdministrativeLevel.PREFECTURE,
+         "administrative_level__parent__parent__parent"),
+        ("commune-filter", AdministrativeLevel.COMMUNE,
+         "administrative_level__parent__parent"),
+        ("canton-filter", AdministrativeLevel.CANTON,
+         "administrative_level__parent"),
+        ("village-filter", AdministrativeLevel.VILLAGE,
+         "administrative_level"),
+    )
+
+    # Allowed "subpopulation-filter" values (Investment boolean fields)
+    SUBPOPULATION_FILTER_FIELDS = (
+        "endorsed_by_youth",
+        "endorsed_by_women",
+        "endorsed_by_agriculturist",
+        "endorsed_by_pastoralist",
+        "endorsed_by_chiefs",
+    )
 
     @action(detail=False, methods=['POST'], url_path='results', url_name='results')
     def selected_investments_data(self, request, *args, **kwargs):
@@ -147,62 +185,14 @@ class InvestmentModelViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if "region-filter" in self.request.GET and self.request.GET[
-            "region-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.REGION,
-                    field="administrative_level__parent__parent__parent__parent__type",
-                ),
-                administrative_level__parent__parent__parent__parent__id=self.request.GET[
-                    "region-filter"
-                ],
-            )
-        if "prefecture-filter" in self.request.GET and self.request.GET[
-            "prefecture-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.PREFECTURE,
-                    field="administrative_level__parent__parent__parent__type",
-                ),
-                administrative_level__parent__parent__parent__id=self.request.GET[
-                    "prefecture-filter"
-                ],
-            )
-        if "commune-filter" in self.request.GET and self.request.GET[
-            "commune-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.COMMUNE,
-                    field="administrative_level__parent__parent__type",
-                ),
-                administrative_level__parent__parent__id=self.request.GET[
-                    "commune-filter"
-                ],
-            )
-        if "canton-filter" in self.request.GET and self.request.GET[
-            "canton-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.CANTON,
-                    field="administrative_level__parent__type",
-                ),
-                administrative_level__parent__id=self.request.GET["canton-filter"],
-            )
-        if "village-filter" in self.request.GET and self.request.GET[
-            "village-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                AdministrativeLevel.type_filter_q(
-                    AdministrativeLevel.VILLAGE,
-                    field="administrative_level__type",
-                ),
-                administrative_level__id=self.request.GET["village-filter"],
-            )
+        # Multi-select: ids within one level are OR-ed, levels are AND-ed.
+        for key, level, path in self.ADM_LEVEL_FILTERS:
+            adm_ids = [v for v in self.request.GET.getlist(key) if v.isdigit()]
+            if adm_ids:
+                queryset = queryset.filter(
+                    AdministrativeLevel.type_filter_q(level, field=path + "__type"),
+                    **{path + "__id__in": adm_ids}
+                )
 
         sector_ids = [v for v in self.request.GET.getlist("sector-filter") if v]
         if sector_ids:
@@ -211,12 +201,14 @@ class InvestmentModelViewSet(ModelViewSet):
         if category_ids:
             queryset = queryset.filter(sector__category__id__in=category_ids)
 
-        if "subpopulation-filter" in self.request.GET and self.request.GET[
-            "subpopulation-filter"
-        ] not in ["", None]:
-            queryset = queryset.filter(
-                **{self.request.GET["subpopulation-filter"]: True}
-            )
+        # Multi-select: "endorsed by at least one of the selected groups".
+        # Only whitelisted field names are used, never the raw querystring.
+        subpopulation_q = Q()
+        for field in self.request.GET.getlist("subpopulation-filter"):
+            if field in self.SUBPOPULATION_FILTER_FIELDS:
+                subpopulation_q |= Q(**{field: True})
+        if subpopulation_q:
+            queryset = queryset.filter(subpopulation_q)
 
         if "climate-contribution-filter" in self.request.GET and self.request.GET[
             "climate-contribution-filter"
@@ -251,13 +243,14 @@ class InvestmentModelViewSet(ModelViewSet):
         #         queryset = queryset.exclude(
         #             project_status=Investment.FUNDED
         #         )
-        funded_filter = self.request.GET.get("is-funded-filter", "")
-        if funded_filter == "not_funded":
-            queryset = queryset.filter(project_status=Investment.NOT_FUNDED)
-        elif funded_filter == "in_progress":
-            queryset = queryset.filter(project_status=Investment.IN_PROGRESS)
-        elif funded_filter == "completed":
-            queryset = queryset.filter(project_status=Investment.COMPLETED)
+        # Multi-select: several states are OR-ed together; unknown values are ignored.
+        funded_statuses = [
+            self.FUNDED_FILTER_STATUSES[v]
+            for v in self.request.GET.getlist("is-funded-filter")
+            if v in self.FUNDED_FILTER_STATUSES
+        ]
+        if funded_statuses:
+            queryset = queryset.filter(project_status__in=funded_statuses)
 
         queryset = self._climate_filters(queryset)
 
