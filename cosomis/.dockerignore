@@ -6,8 +6,11 @@ README.md
 LICENSE
 .vscode
 venv*/
-.env
-local_settings.py
+# A bare ".env" only matches the context root; settings.py reads cosomis/.env.
+# Production gets its config from docker-compose's env_file.
+**/.env
+**/.env.*
+**/local_settings.py
 
 .git
 .idea
